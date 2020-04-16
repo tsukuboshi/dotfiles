@@ -5,10 +5,10 @@ export PS1='\e[1;32m\W \t \e[1;31m\u \e[1;32m$ \e[0m'
 export LANG="ja_JP.UTF-8"
 
 # エイリアス設定
-alias ls='ls -F'
-alias la='ls -aF'
-alias ll='ls -lF'
-alias lla='ls -laF'
+alias ls='ls -FG'
+alias la='ls -aFG'
+alias ll='ls -lFG'
+alias lla='ls -laFG'
 
 alias ..='cd ..'
 alias ...='cd ../..'
