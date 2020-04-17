@@ -18,6 +18,8 @@ alias rm='rm -i'
 alias mv='mv -i'
 alias cp='cp -i'
 
+alias relogin='exec $SHELL -l'
+
 alias vi='vim'
 
 alias vu='vagrant up'
