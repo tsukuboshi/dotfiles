@@ -1,10 +1,17 @@
-# プロンプト設定
+# prompt
 export PS1='\e[1;32m\W \t \e[1;31m\u \e[1;32m$ \e[0m'
 
-# 日本語設定
+# japanese
 export LANG="ja_JP.UTF-8"
 
-# エイリアス設定
+# nodebrew
+export PATH=$HOME/.nodebrew/current/bin:$PATH
+
+# rbenv
+export PATH="~/.rbenv/shims:/usr/local/bin:$PATH"
+eval "$(rbenv init -)"
+
+# alias
 alias ls='ls -FG'
 alias la='ls -aFG'
 alias ll='ls -lFG'
