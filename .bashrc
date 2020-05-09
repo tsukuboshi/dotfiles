@@ -4,13 +4,6 @@ export PS1='\[\e[1;31m\]\u \[\e[1;32m\]\W \[\e[1;33m\]\$ \[\e[0m\]'
 # japanese
 export LANG="ja_JP.UTF-8"
 
-# nodebrew
-export PATH=$HOME/.nodebrew/current/bin:$PATH
-
-# rbenv
-export PATH="~/.rbenv/shims:/usr/local/bin:$PATH"
-eval "$(rbenv init -)"
-
 # alias
 alias ls='ls -FG'
 alias la='ls -aFG'
