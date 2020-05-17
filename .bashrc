@@ -1,5 +1,5 @@
 # prompt
-export PS1='\[\e[1;31m\]\u \[\e[1;32m\]\W \[\e[1;33m\]\$ \[\e[0m\]'
+export PS1='\n\[\e[1;31m\]\u \[\e[1;32m\]\W \[\e[1;33m\]\$ \[\e[0m\]'
 
 # japanese
 export LANG="ja_JP.UTF-8"
