@@ -1,0 +1,15 @@
+{
+    "workbench.startupEditor": "welcomePage",
+    "workbench.iconTheme": "material-icon-theme",
+    "sync.gist": "9cffde291a0fb8e9d1cb2906bc601fd1",
+    "sync.autoDownload": true,
+    "sync.autoUpload": true,
+    "sync.forceDownload": false,
+    "sync.forceUpload": false,
+    "window.zoomLevel": 0,
+    "terminal.external.osxExec": "iTerm.app",
+    "workbench.colorTheme": "Quiet Light"
+},
+"[ruby]": {
+    "editor.tabSize": 2
+}
