@@ -1,0 +1,10 @@
+[user]
+	name = Kaito Yoshiba
+	email = 53089786+tsukuboshi@users.noreply.github.com
+[color]
+	ui = auto
+[core]
+	editor = code --wait
+	excludesfile = $HOME/Documents/dotfiles/.gitignore_global
+[pull]
+	rebase = true
