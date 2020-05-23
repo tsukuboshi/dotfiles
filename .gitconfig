@@ -1,0 +1,10 @@
+[user]
+	name = Kaito Yoshiba
+	email = silk.120.k6god3@gmail.com
+[color]
+	ui = auto
+[core]
+	editor = code --wait
+	excludesfile = /Users/yoshiba/Documents/dotfiles/.gitignore_global
+[pull]
+	rebase = true
