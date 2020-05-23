@@ -8,8 +8,8 @@
     "sync.forceUpload": false,
     "window.zoomLevel": 0,
     "terminal.external.osxExec": "iTerm.app",
-    "workbench.colorTheme": "Quiet Light"
-},
-"[ruby]": {
-    "editor.tabSize": 2
+    "workbench.colorTheme": "Quiet Light",
+    "[ruby]": {
+        "editor.tabSize": 2
+    }
 }
