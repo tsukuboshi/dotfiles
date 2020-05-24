@@ -5,6 +5,6 @@
 	ui = auto
 [core]
 	editor = code --wait
-	excludesfile = /Users/yoshiba/Documents/dotfiles/.gitignore_global
+	excludesfile = /Users/yoshiba/.gitignore_global
 [pull]
 	rebase = true
