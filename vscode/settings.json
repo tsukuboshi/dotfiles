@@ -9,6 +9,13 @@
     "window.zoomLevel": 0,
     "terminal.external.osxExec": "iTerm.app",
     "workbench.colorTheme": "Quiet Light",
+
+    "bracket-pair-colorizer-2.colors": [
+        "Orchid",
+        "Blue",
+        "Purple"
+    ],
+
     "[ruby]": {
         "editor.tabSize": 2
     }
