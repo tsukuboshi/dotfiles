@@ -20,7 +20,7 @@ alias cp='cp -i'
 
 alias relogin='exec $SHELL -l'
 
-alias delds = 'find . -name ".DS_Store" -type f -ls -delete'
+alias delds='find . -name ".DS_Store" -type f -ls -delete'
 
 alias d='docker'
 alias dc="docker container"
