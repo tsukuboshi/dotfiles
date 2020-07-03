@@ -14,13 +14,11 @@ alias ..='cd ..'
 alias ...='cd ../..'
 alias ....='cd ../../..'
 
-alias rm='rm -i'
-alias mv='mv -i'
-alias cp='cp -i'
-
 alias relogin='exec $SHELL -l'
 
 alias delds='find . -name ".DS_Store" -type f -ls -delete'
+
+alias yrm='yes | rm -r'
 
 alias d='docker'
 alias dc="docker container"
