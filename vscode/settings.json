@@ -9,14 +9,17 @@
     "window.zoomLevel": 0,
     "terminal.external.osxExec": "iTerm.app",
     "workbench.colorTheme": "Quiet Light",
+    "editor.tabSize": 2,
+    "emmet.includeLanguages": {
+        "*.erb": "html", "ruby": "html"
+    },
 
     "bracket-pair-colorizer-2.colors": [
         "Orchid",
         "Blue",
         "Purple"
     ],
-
-    "[ruby]": {
-        "editor.tabSize": 2
-    }
+    "explorer.confirmDelete": false,
+    "liveServer.settings.donotShowInfoMsg": true,
+    "editor.renameOnType": true,
 }
