@@ -22,6 +22,7 @@ alias yrm='yes | rm -r'
 
 alias d='docker'
 alias dc="docker container"
+alias dce="docker container exec -it"
 alias di="docker image"
 alias dn="docker network"
 alias ds="docker system"
