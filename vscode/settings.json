@@ -1,25 +1,63 @@
 {
-    "workbench.startupEditor": "welcomePage",
-    "workbench.iconTheme": "material-icon-theme",
-    "sync.gist": "9cffde291a0fb8e9d1cb2906bc601fd1",
-    "sync.autoDownload": true,
-    "sync.autoUpload": true,
-    "sync.forceDownload": false,
-    "sync.forceUpload": false,
-    "window.zoomLevel": 0,
-    "terminal.external.osxExec": "iTerm.app",
-    "workbench.colorTheme": "Quiet Light",
-    "editor.tabSize": 2,
-    "emmet.includeLanguages": {
-        "*.erb": "html", "ruby": "html"
-    },
+  // ================
+  // general settings
+  // ================
 
-    "bracket-pair-colorizer-2.colors": [
-        "Orchid",
-        "Blue",
-        "Purple"
-    ],
-    "explorer.confirmDelete": false,
-    "liveServer.settings.donotShowInfoMsg": true,
-    "editor.renameOnType": true,
+  "editor.wordWrap": "on",
+  "editor.fontSize": 12,
+  "editor.tabSize": 2,
+  "editor.copyWithSyntaxHighlighting": false,
+  "editor.dragAndDrop": false,
+
+  "files.insertFinalNewline": true,
+  "files.trimFinalNewlines": true,
+  "files.trimTrailingWhitespace": true,
+  "files.autoSave": "off",
+  "files.associations": {
+    "*.erb": "erb"
+  },
+  "files.exclude": {
+    "**/.git": true,
+    "**/.svn": true,
+    "**/.hg": true,
+    "**/CVS": true,
+    "**/.DS_Store": true,
+    "**/bin": true,
+  },
+  "files.eol": "\n",
+  "files.autoGuessEncoding": true,
+
+  "emmet.triggerExpansionOnTab": true,
+  "emmet.includeLanguages": {
+    "erb": "html"
+  },
+  "emmet.variables": {
+    "lang": "ja"
+  },
+
+  "workbench.startupEditor": "none",
+  "workbench.iconTheme": "material-icon-theme",
+  "workbench.colorTheme": "Quiet Light",
+
+  // ===================
+  // extensions settings
+  // ===================
+
+  "extensions.autoUpdate": true,
+  "extensions.ignoreRecommendations": false,
+
+  "liveServer.settings.donotShowInfoMsg": true,
+
+  "bracket-pair-colorizer-2.colors": [
+    "Orchid",
+    "Blue",
+    "Purple"
+  ],
+
+  "sync.gist": "9cffde291a0fb8e9d1cb2906bc601fd1",
+  "sync.autoDownload": true,
+  "sync.autoUpload": true,
+  "sync.forceDownload": false,
+  "sync.forceUpload": false,
+
 }
