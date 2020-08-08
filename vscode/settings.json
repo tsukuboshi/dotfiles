@@ -59,5 +59,6 @@
   "sync.autoUpload": true,
   "sync.forceDownload": false,
   "sync.forceUpload": false,
+  "window.zoomLevel": 1,
 
 }
