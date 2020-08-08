@@ -333,13 +333,13 @@
 		<integer>1</integer>
 	</dict>
 	<key>NSWindow Frame NSNavPanelAutosaveName</key>
-	<string>440 292 799 448 0 0 1440 877 </string>
+	<string>320 321 799 448 0 0 1440 877 </string>
 	<key>NSWindow Frame SUAutomaticUpdateAlert</key>
 	<string>332 392 616 174 0 0 1280 697 </string>
 	<key>NSWindow Frame SUUpdateAlert</key>
 	<string>530 476 620 392 0 0 1680 1027 </string>
 	<key>NSWindow Frame iTerm Window 0</key>
-	<string>0 877 1440 429 0 0 1440 877 </string>
+	<string>0 448 1440 429 0 0 1440 877 </string>
 	<key>New Bookmarks</key>
 	<array>
 		<dict>
@@ -495,6 +495,8 @@
 				<key>Red Component</key>
 				<real>1</real>
 			</dict>
+			<key>Automatically Log</key>
+			<true/>
 			<key>BM Growl</key>
 			<true/>
 			<key>Background Color</key>
@@ -903,6 +905,8 @@
 				<key>Red Component</key>
 				<real>0.016622762661427259</real>
 			</dict>
+			<key>Log Directory</key>
+			<string>/Users/yoshiba/terminal_logs</string>
 			<key>Mouse Reporting</key>
 			<true/>
 			<key>Name</key>
@@ -1712,16 +1716,16 @@
 	<key>NoSyncFrame_SharedPreferences</key>
 	<dict>
 		<key>screenFrame</key>
-		<string>{{0, 0}, {1680, 1050}}</string>
+		<string>{{0, 0}, {1440, 900}}</string>
 		<key>topLeft</key>
-		<string>{408, 750}</string>
+		<string>{97, 877}</string>
 	</dict>
 	<key>NoSyncHaveUsedCopyMode</key>
 	<true/>
 	<key>NoSyncInstallationId</key>
 	<string>FFB888E0-56B1-4CB9-BFDC-DE7ACA8D7468</string>
 	<key>NoSyncLaunchExperienceControllerRunCount</key>
-	<integer>59</integer>
+	<integer>61</integer>
 	<key>NoSyncNextAnnoyanceTime</key>
 	<real>605344227.57232594</real>
 	<key>NoSyncOnboardingWindowHasBeenShown</key>
@@ -2490,7 +2494,7 @@
 	<key>SUHasLaunchedBefore</key>
 	<true/>
 	<key>SULastCheckTime</key>
-	<date>2020-07-23T11:55:42Z</date>
+	<date>2020-08-07T11:56:48Z</date>
 	<key>SUSendProfileInfo</key>
 	<false/>
 	<key>SUUpdateGroupIdentifier</key>
