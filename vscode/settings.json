@@ -22,7 +22,7 @@
     "**/.hg": true,
     "**/CVS": true,
     "**/.DS_Store": true,
-    "**/bin": true,
+    "**/bin": true
   },
   "files.eol": "\n",
   "files.autoGuessEncoding": true,
@@ -38,6 +38,8 @@
   "workbench.startupEditor": "none",
   "workbench.iconTheme": "material-icon-theme",
   "workbench.colorTheme": "Quiet Light",
+
+  "window.title": "${dirty}${activeEditorMedium}${separator}${rootName}",
 
   // ===================
   // extensions settings
@@ -59,6 +61,7 @@
   "sync.autoUpload": true,
   "sync.forceDownload": false,
   "sync.forceUpload": false,
-  "window.zoomLevel": 1,
+
+  "window.zoomLevel": 1
 
 }
