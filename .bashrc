@@ -68,12 +68,8 @@ case `uname -a` in
     # stop warning
     export BASH_SILENCE_DEPRECATION_WARNING=1
 
-    # nodebrew
-    export PATH=$HOME/.nodebrew/current/bin:$PATH
-
-    # rbenv
-    export PATH="~/.rbenv/shims:/usr/local/bin:$PATH"
-    eval "$(rbenv init -)"
+    #anyenv
+    eval "$(anyenv init -)"
 
     ;;
 esac
