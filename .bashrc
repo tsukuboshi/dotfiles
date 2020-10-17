@@ -5,15 +5,25 @@ export PS1='\n\[\e[1;31m\]\u \[\e[1;32m\]\W \[\e[1;33m\]\$ \[\e[0m\]'
 export LANG="ja_JP.UTF-8"
 
 # alias for ls
-alias ls='ls -FG'
-alias la='ls -aFG'
-alias ll='ls -lFG'
-alias lla='ls -laFG'
+alias ls='ls -F'
+alias la='ls -AF'
+alias ll='ls -lF'
+alias lla='ls -lAF'
 
 # alias for cd
 alias ..='cd ..'
 alias ...='cd ../..'
 alias ....='cd ../../..'
+
+# alias for exa
+alias exa='exa -F'
+alias el='exa -lF'
+alias ea='exa -aF'
+alias ela='exa -laF'
+alias etl='exa -TL'
+
+# alias for bat
+alias bat='bat -pp'
 
 # alias for docker
 alias d='docker'
