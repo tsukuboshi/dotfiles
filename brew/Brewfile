@@ -19,6 +19,7 @@ brew "wget"
 cask "alfred"
 cask "appcleaner"
 cask "bettertouchtool"
+cask "box-drive"
 cask "cheatsheet"
 cask "clipy"
 cask "dash"
@@ -28,12 +29,11 @@ cask "docker"
 cask "dropbox"
 cask "google-chrome"
 cask "google-japanese-ime"
-cask "slack"
-cask "rectangle"
 cask "iterm2"
 cask "kindle"
 cask "microsoft-edge"
 cask "skitch"
+cask "slack"
 cask "sourcetree"
 cask "the-unarchiver"
 cask "virtualbox"
@@ -41,5 +41,9 @@ cask "vagrant"
 cask "visual-studio-code"
 cask "zoomus"
 
+mas "BetterSnapTool", id: 417375580
 mas "LINE", id: 539883307
 mas "KakaoTalk", id: 869223134
+mas "Magnet", id: 441258766
+mas "Todoist", id: 585829637
+mas "Xcode", id: 497799835
