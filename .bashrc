@@ -20,7 +20,7 @@ alias exa='exa -F'
 alias el='exa -lF'
 alias ea='exa -aF'
 alias ela='exa -laF'
-alias etl='exa -TL'
+alias etree='exa -TL'
 
 # alias for bat
 alias bat='bat -pp'
@@ -72,7 +72,7 @@ alias delds='find . -name ".DS_Store" -type f -ls -delete'
 alias yrm='yes | rm -r'
 
 # OS X or Linux
-case `uname -a` in
+case $(uname -a) in
     Darwin* )
 
     # stop warning
