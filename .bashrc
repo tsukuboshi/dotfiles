@@ -1,31 +1,21 @@
-# prompt
-export PS1='\n\[\e[1;31m\]\u \[\e[1;32m\]\W \[\e[1;33m\]\$ \[\e[0m\]'
-
-# language
-export LANG="ja_JP.UTF-8"
-
-# alias for ls
+# User specific aliases and functions
 alias ls='ls -F'
 alias la='ls -AF'
 alias ll='ls -lF'
 alias lla='ls -lAF'
 
-# alias for cd
 alias ..='cd ..'
 alias ...='cd ../..'
 alias ....='cd ../../..'
 
-# alias for exa
 alias exa='exa -F'
 alias el='exa -lF'
 alias ea='exa -aF'
 alias ela='exa -laF'
 alias etree='exa -TL'
 
-# alias for bat
 alias bat='bat -pp'
 
-# alias for docker
 alias d='docker'
 alias dc="docker container"
 alias dce="docker container exec -it"
@@ -35,7 +25,6 @@ alias ds="docker system"
 alias dv="docker volume"
 alias d-c='docker-compose'
 
-# alias for git
 alias g='git'
 alias ga='git add'
 alias gd='git diff'
@@ -47,7 +36,6 @@ alias gco='git checkout'
 alias gf='git fetch'
 alias gc='git commit'
 
-# alias for vagrant
 alias v='vagrant'
 alias vu='vagrant up'
 alias vh='vagrant halt'
@@ -62,24 +50,8 @@ alias vgs='vagrant global-status'
 alias vssh='vagrant ssh'
 alias vsshc='vagrant ssh-config'
 
-# relogin this shell
 alias relogin='exec $SHELL -l'
 
-# delete DS_Store
 alias delds='find . -name ".DS_Store" -type f -ls -delete'
 
-# delete all files and directories
 alias yrm='yes | rm -r'
-
-# OS X or Linux
-case $(uname -a) in
-    Darwin* )
-
-    # stop warning
-    export BASH_SILENCE_DEPRECATION_WARNING=1
-
-    #anyenv
-    eval "$(anyenv init -)"
-
-    ;;
-esac
