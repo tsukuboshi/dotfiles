@@ -53,5 +53,3 @@ alias vsshc='vagrant ssh-config'
 alias relogin='exec $SHELL -l'
 
 alias delds='find . -name ".DS_Store" -type f -ls -delete'
-
-alias yrm='yes | rm -r'
