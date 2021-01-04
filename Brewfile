@@ -22,6 +22,7 @@ cask "appcleaner"
 cask "bettertouchtool"
 cask "box-drive"
 cask "cheatsheet"
+cask "coteditor"
 cask "dash"
 cask "deepl"
 cask "discord"
@@ -45,7 +46,6 @@ cask "visual-studio-code"
 cask "zoomus"
 
 mas "BetterSnapTool", id: 417375580
-mas "CotEditor", id: 1024640650
 mas "LINE", id: 539883307
 mas "KakaoTalk", id: 869223134
 mas "Magnet", id: 441258766
