@@ -22,4 +22,4 @@ jobs:
 
       # Runs a single command using the runners shell
       - name: Deploy dotfiles
-        run: bash .bin/install.sh
+        run: bash install.sh
