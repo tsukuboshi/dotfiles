@@ -1,0 +1,53 @@
+{
+	// See https://go.microsoft.com/fwlink/?LinkId=827846 to learn about workspace recommendations.
+	// Extension identifier format: ${publisher}.${name}. Example: vscode.csharp
+
+	// List of extensions which should be recommended for users of this workspace.
+	"recommendations": [
+		"aliariff.vscode-erb-beautify",
+		"bung87.rails",
+		"bung87.vscode-gemfile",
+		"chrmarti.regex",
+		"coenraads.bracket-pair-colorizer",
+		"craigmaslowski.erb",
+		"deerawan.vscode-dash",
+		"donjayamanne.githistory",
+		"eamodio.gitlens",
+		"ecmel.vscode-html-css",
+		"formulahendry.auto-close-tag",
+		"formulahendry.auto-complete-tag",
+		"formulahendry.auto-rename-tag",
+		"hediet.vscode-drawio",
+		"hookyqr.beautify",
+		"ionutvmi.path-autocomplete",
+		"kaiwood.endwise",
+		"mads-hartmann.bash-ide-vscode",
+		"marcostazi.vs-code-vagrantfile",
+		"mosapride.zenkaku",
+		"ms-azuretools.vscode-docker",
+		"ms-ceintl.vscode-language-pack-ja",
+		"ms-vscode-remote.remote-containers",
+		"ms-vscode-remote.remote-ssh",
+		"ms-vscode-remote.remote-ssh-edit",
+		"ms-vscode-remote.vscode-remote-extensionpack",
+		"ms-vscode.powershell",
+		"naumovs.color-highlight",
+		"oderwat.indent-rainbow",
+		"pkief.material-icon-theme",
+		"rebornix.ruby",
+		"redhat.vscode-yaml",
+		"ritwickdey.liveserver",
+		"ryu1kn.partial-diff",
+		"shakram02.bash-beautify",
+		"shan.code-settings-sync",
+		"sianglim.slim",
+		"timonwong.shellcheck",
+		"vincaslt.highlight-matching-tag",
+		"wingrunr21.vscode-ruby",
+		"xabikos.javascriptsnippets"
+	],
+	// List of extensions recommended by VS Code that should not be recommended for users of this workspace.
+	"unwantedRecommendations": [
+
+	]
+}
