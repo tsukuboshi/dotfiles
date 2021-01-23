@@ -856,6 +856,8 @@
 			<true/>
 			<key>Option Key Sends</key>
 			<integer>0</integer>
+			<key>Plain Text Logging</key>
+			<false/>
 			<key>Prompt Before Closing 2</key>
 			<false/>
 			<key>Right Option Key Sends</key>
@@ -1106,6 +1108,8 @@
 				<key>Red Component</key>
 				<real>0.88627450980392153</real>
 			</dict>
+			<key>Automatically Log</key>
+			<true/>
 			<key>BM Growl</key>
 			<true/>
 			<key>Background Color</key>
@@ -1556,6 +1560,8 @@
 				<key>Red Component</key>
 				<real>0.0</real>
 			</dict>
+			<key>Log Directory</key>
+			<string>/var/log/iterm</string>
 			<key>Mouse Reporting</key>
 			<true/>
 			<key>Name</key>
@@ -1619,7 +1625,7 @@
 			<key>Transparency</key>
 			<real>0.29999999999999999</real>
 			<key>Unlimited Scrollback</key>
-			<false/>
+			<true/>
 			<key>Use Bold Font</key>
 			<true/>
 			<key>Use Bright Bold</key>
@@ -1638,6 +1644,8 @@
 			<string>/Users/yoshiba</string>
 		</dict>
 	</array>
+	<key>OnlyWhenMoreTabs</key>
+	<true/>
 	<key>OpenArrangementAtStartup</key>
 	<false/>
 	<key>OpenNoWindowsAtStartup</key>
@@ -1679,6 +1687,8 @@
 	</dict>
 	<key>Print In Black And White</key>
 	<true/>
+	<key>PromptOnQuit</key>
+	<false/>
 	<key>SoundForEsc</key>
 	<false/>
 	<key>UseLionStyleFullscreen</key>
