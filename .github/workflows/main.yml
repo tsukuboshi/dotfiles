@@ -27,5 +27,3 @@ jobs:
         run: ./link.sh
       - name: Set macoS system preferences
         run: ./default.sh
-      - name: Sync vscode settings
-        run: ./vscode/sync.sh
