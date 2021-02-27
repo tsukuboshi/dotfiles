@@ -25,5 +25,7 @@ jobs:
         run: ./brew.sh
       - name: Link dotfiles
         run: ./link.sh
-      - name: Set MacOS
+      - name: Set macoS system preferences
         run: ./default.sh
+      - name: Sync vscode settings
+        run: ./vscode/sync.sh
