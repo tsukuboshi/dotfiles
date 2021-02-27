@@ -1,16 +1,11 @@
 #!/bin/bash
 
-# Change dotfiles directory
-cd "$(dirname "$0")" || exit
+SCRIPT_DIR="$(cd "$(dirname "$0")" && pwd)"
 
-# Deploy dotfiles
 for dotfile in .??*; do
-    # Ignore unnecessary dotfiles
-    [[ "$dotfile" == ".etc" ]] && continue
     [[ "$dotfile" == ".git" ]] && continue
     [[ "$dotfile" == ".github" ]] && continue
     [[ "$dotfile" == ".DS_Store" ]] && continue
 
-    # Link dotfiles
-    ln -fnsv "${PWD}/$dotfile" "$HOME/$dotfile"
+    ln -fnsv "${SCRIPT_DIR}/$dotfile" "$HOME/$dotfile"
 done
