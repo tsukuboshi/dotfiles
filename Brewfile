@@ -36,10 +36,16 @@ cask "microsoft-edge"
 cask "ocenaudio"
 cask "skitch"
 cask "slack"
-cask "sourcetree"
+# cask "sourcetree"
 cask "tableplus"
 cask "the-unarchiver"
 cask "virtualbox"
 cask "vagrant"
 cask "visual-studio-code"
 cask "zoom"
+
+# mas "BetterSnapTool", id: 417375580
+# mas "LINE", id: 539883307
+# mas "KakaoTalk", id: 869223134
+# mas "Magnet", id: 441258766
+# mas "Todoist", id: 585829637
