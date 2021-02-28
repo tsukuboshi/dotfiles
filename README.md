@@ -39,8 +39,8 @@ Set alfred.
 
 
 ```
-1. Click "Preferences" Tab.
-2. Click "Advanced" Tab.
+1. Click "Preferences" tab.
+2. Click "Advanced" tab.
 3. Click "Set preferences folder…" button.
 4. Choose "$HOME/dotfiles/alfred/Alfred.alfredpreferences".
 5. Click "Set folder and restart Alfred" button.
@@ -50,9 +50,9 @@ Set iterm2.
 
 
 ```
-1. Click "Preferences" Tab.
-2. Click "General" Tab.
-3. Click "Preferences" Tab.
+1. Click "Preferences" tab.
+2. Click "General" tab.
+3. Click "Preferences" tab.
 4. Turn on "Load preference from a custom folder or URL."
 5. Enter "$HOME/dotfiles/iterm/com.googlecode.iterm2.plist".
 6. Execute "sudo killall cfprefsd" command.
