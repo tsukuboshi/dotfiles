@@ -39,23 +39,23 @@ Set alfred.
 
 
 ```
-①Click "Preferences" Tab.
-②Click "Advanced" Tab.
-③Click "Set preferences folder…" button.
-④Choose "$HOME/dotfiles/alfred/Alfred.alfredpreferences".
-⑤Click "Set folder and restart Alfred" button.
+1. Click "Preferences" Tab.
+2. Click "Advanced" Tab.
+3. Click "Set preferences folder…" button.
+4. Choose "$HOME/dotfiles/alfred/Alfred.alfredpreferences".
+5. Click "Set folder and restart Alfred" button.
 ```
 
 Set iterm2.
 
 
 ```
-①Click "Preferences" Tab.
-②Click "General" Tab.
-③Click "Preferences" Tab.
-④Turn on "Load preference from a custom folder or URL."
-⑤Enter "$HOME/dotfiles/iterm/com.googlecode.iterm2.plist".
-⑥Execute "sudo killall cfprefsd" command.
+1. Click "Preferences" Tab.
+2. Click "General" Tab.
+3. Click "Preferences" Tab.
+4. Turn on "Load preference from a custom folder or URL."
+5. Enter "$HOME/dotfiles/iterm/com.googlecode.iterm2.plist".
+6. Execute "sudo killall cfprefsd" command.
 ```
 
 Set visual studio code.
