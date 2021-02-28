@@ -39,7 +39,7 @@ Set alfred.
 
 
 ```
-1. Click "Preferences" tab.
+1. Press "command + ," on alfred.
 2. Click "Advanced" tab.
 3. Click "Set preferences folder…" button.
 4. Choose "$HOME/dotfiles/alfred/Alfred.alfredpreferences".
@@ -50,18 +50,21 @@ Set iterm2.
 
 
 ```
-1. Click "Preferences" tab.
+1. Press "command + ," on iterm2.
 2. Click "General" tab.
 3. Click "Preferences" tab.
 4. Turn on "Load preference from a custom folder or URL."
 5. Enter "$HOME/dotfiles/iterm/com.googlecode.iterm2.plist".
-6. Execute "sudo killall cfprefsd" command.
+6. Execute "sudo killall cfprefsd".
 ```
 
-Set visual studio code.
+Set visual studio code. Before you use sync.sh, you must install code command.
 
-```shell
-$ ./vscode/sync.sh
+```
+1. Press "shift + command + P" on visual studio code.
+2. Search and Click "Command: Install 'code' command in PATH command".
+3. Restart visual studio code.
+4. Execute "$HOME/dotfiles/vscode/sync.sh".
 ```
 
 (Optional)Set virtual machine.
