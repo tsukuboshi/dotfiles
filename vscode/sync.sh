@@ -3,11 +3,19 @@
 SCRIPT_DIR="$(cd "$(dirname "$0")" && pwd)"
 VSCODE_SETTING_DIR=~/Library/Application\ Support/Code/User
 
+# Link settings.json
 if [ -L "${VSCODE_SETTING_DIR}/settings.json" ]; then
   ln -fsvn "${SCRIPT_DIR}/settings.json" "${VSCODE_SETTING_DIR}/settings.json"
 fi
 
-cat < "${SCRIPT_DIR}/extensions" | while read -r line
-do
-  code --install-extension "$line"
-done
+# Install extensions using the code command
+if [ "$(which code)" != "" ]; then
+  if [ "$(code --list-extensions)" != "$(cat "${SCRIPT_DIR}/extensions")" ]; then
+    cat < "${SCRIPT_DIR}/extensions" | while read -r line
+    do
+      code --install-extension "$line"
+    done
+  fi
+else
+  echo "Install the code command from the command palette to add your extensions."
+fi

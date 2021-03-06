@@ -58,7 +58,7 @@ Set iterm2.
 6. Execute "sudo killall cfprefsd".
 ```
 
-Set visual studio code. Before you use sync.sh, you must install code command.
+Set visual studio code.
 
 ```
 1. Press "shift + command + P" on visual studio code.
