@@ -12,27 +12,27 @@ Dotfiles for macOS.
 Download installation materials.
 
 ```shell
-$ git clone git@github.com:kuraboshi/dotfiles.git
+$ cd $HOME
 
-$ cd $HOME/dotfiles
+$ git clone git@github.com:kuraboshi/dotfiles.git
 ```
 
 Install macOS applications.
 
 ```shell
-$ ./brew.sh
+$ $HOME/dotfiles/brew.sh
 ```
 
 Link dotfiles.
 
 ```shell
-$ ./link.sh
+$ $HOME/dotfiles/link.sh
 ```
 
 Set macOS system preferences.
 
 ```shell
-$ ./default.sh
+$ $HOME/dotfiles/default.sh
 ```
 
 Set alfred.
