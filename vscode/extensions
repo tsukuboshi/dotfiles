@@ -1,4 +1,5 @@
 aliariff.vscode-erb-beautify
+batisteo.vscode-django
 bung87.rails
 bung87.vscode-gemfile
 chrmarti.regex
@@ -6,6 +7,7 @@ CoenraadS.bracket-pair-colorizer-2
 CraigMaslowski.erb
 deerawan.vscode-dash
 donjayamanne.githistory
+donjayamanne.python-extension-pack
 eamodio.gitlens
 ecmel.vscode-html-css
 formulahendry.auto-close-tag
@@ -17,10 +19,13 @@ HookyQR.beautify
 ionutvmi.path-autocomplete
 kaiwood.endwise
 mads-hartmann.bash-ide-vscode
+magicstack.MagicPython
 marcostazi.VS-code-vagrantfile
 mosapride.zenkaku
 ms-azuretools.vscode-docker
 MS-CEINTL.vscode-language-pack-ja
+ms-python.python
+ms-toolsai.jupyter
 ms-vscode-remote.remote-containers
 ms-vscode-remote.remote-ssh
 ms-vscode-remote.remote-ssh-edit
@@ -37,5 +42,7 @@ shakram02.bash-beautify
 sianglim.slim
 timonwong.shellcheck
 vincaslt.highlight-matching-tag
+VisualStudioExptTeam.vscodeintellicode
+wholroyd.jinja
 wingrunr21.vscode-ruby
 xabikos.JavaScriptSnippets
