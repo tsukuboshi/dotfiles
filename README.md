@@ -16,22 +16,10 @@ Download installation materials.
 $ cd ~ && git clone git@github.com:kuraboshi/dotfiles.git
 ```
 
-Install macOS applications.
+Set macOS.
 
 ```shell
-$ cd ~/dotfiles && ./brew.sh
-```
-
-Link dotfiles.
-
-```shell
-$ cd ~/dotfiles && ./link.sh
-```
-
-Set macOS system preferences.
-
-```shell
-$ cd ~/dotfiles && ./default.sh
+$ cd ~/dotfiles && make
 ```
 
 Set alfred.
