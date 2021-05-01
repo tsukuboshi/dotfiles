@@ -21,9 +21,5 @@ jobs:
       - uses: actions/checkout@v2
 
       # Runs a single command using the runners shell
-      - name: Install macOS applications
-        run: ./brew.sh
-      - name: Link dotfiles
-        run: ./link.sh
-      - name: Set macoS system preferences
-        run: ./default.sh
+      - name: Set MacOS.
+        run: make
