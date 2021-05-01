@@ -66,6 +66,7 @@ Set visual studio code.
 2. Search and Click "Command: Install 'code' command in PATH command".
 3. Restart visual studio code.
 4. Execute "~/dotfiles/vscode/sync.sh".
+5. If you want to output the current extensions, execute "code --list-extensions > ~/dotfiles/vscode/extensions".
 ```
 
 (Optional)Set virtual machine.
