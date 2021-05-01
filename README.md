@@ -13,27 +13,25 @@ Dotfiles for macOS.
 Download installation materials.
 
 ```shell
-$ cd ~
-
-$ git clone git@github.com:kuraboshi/dotfiles.git
+$ cd ~ && git clone git@github.com:kuraboshi/dotfiles.git
 ```
 
 Install macOS applications.
 
 ```shell
-$ ~/dotfiles/brew.sh
+$ cd ~/dotfiles && ./brew.sh
 ```
 
 Link dotfiles.
 
 ```shell
-$ ~/dotfiles/link.sh
+$ cd ~/dotfiles && ./link.sh
 ```
 
 Set macOS system preferences.
 
 ```shell
-$ ~/dotfiles/default.sh
+$ cd ~/dotfiles && ./default.sh
 ```
 
 Set alfred.
@@ -65,13 +63,11 @@ Set visual studio code.
 1. Press "shift + command + P" on visual studio code.
 2. Search and Click "Command: Install 'code' command in PATH command".
 3. Restart visual studio code.
-4. Execute "~/dotfiles/vscode/sync.sh".
+4. Execute "cd dotfiles && ./vscode/sync.sh".
 5. If you want to output the current extensions, execute "code --list-extensions > ~/dotfiles/vscode/extensions".
 ```
 
 (Optional)Set virtual machine.
 ```shell
-$ cd ~/dotfiles/vagrant
-
-$ vagrant up
+$ cd ~/dotfiles/vagrant && vagrant up
 ```
