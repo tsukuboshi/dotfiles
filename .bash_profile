@@ -1,6 +1,6 @@
 # Get the aliases and functions
-if [ -f ~/.bashrc ]; then
-  . ~/.bashrc
+if [ -r ~/.bashrc ]; then
+  source ~/.bashrc
 fi
 
 # Set the prompt
@@ -8,6 +8,11 @@ export PS1='\n\[\e[1;31m\]\u \[\e[1;32m\]\W \[\e[1;33m\]\$ \[\e[0m\]'
 
 # Set the language
 export LANG="ja_JP.UTF-8"
+
+# Set vscode
+if [ "$(which code)" != "" ]; then
+  export PATH="/Applications/Visual\ Studio\ Code.app/Contents/Resources/app/bin:$PATH"
+fi
 
 # Set anyenv
 if [ "$(which anyenv)" != "" ]; then
@@ -21,13 +26,19 @@ if [ "$(which aws_completer)" != "" ]; then
 fi
 
 # Set bash-completion
-[ -f "/usr/local/etc/profile.d/bash_completion.sh" ] && . "/usr/local/etc/profile.d/bash_completion.sh"
+if [ -r "/usr/local/etc/profile.d/bash_completion.sh" ]; then
+  source /usr/local/etc/profile.d/bash_completion.sh
+fi
 
 # Set git-completion
-[ -f "/usr/local/etc/bash_completion.d/git-completion.sh" ] && . "/usr/local/etc/bash_completion.d/git-completion.sh"
+if [ -r "/usr/local/etc/bash_completion.d/git-completion.sh" ]; then
+  source /usr/local/etc/bash_completion.d/git-completion.sh
+fi
 
 # Set git-prompt
-[ -f "/usr/local/etc/bash_completion.d/git-prompt.sh" ] && . "/usr/local/etc/bash_completion.d/git-prompt.sh"
+if [ -r "/usr/local/etc/bash_completion.d/git-prompt.sh" ]; then
+  source /usr/local/etc/bash_completion.d/git-prompt.sh
+fi
 
 # OS X or Linux
 case $(uname -a) in
