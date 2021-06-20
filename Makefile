@@ -3,12 +3,12 @@ all: brew link default
 
 # Install macOS applications.
 brew:
-	./brew.sh
+	.bin/brew.sh
 
 # Link dotfiles.
 link:
-	./link.sh
+	.bin/link.sh
 
 # Set macOS system preferences.
 default:
-	./default.sh
+	.bin/default.sh
