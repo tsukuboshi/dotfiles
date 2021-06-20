@@ -1,14 +1,14 @@
 # Do everything.
-all: brew link default
+all: link default link brew
 
-# Install macOS applications.
-brew:
-	.bin/brew.sh
+# Set macOS system preferences.
+default:
+	.bin/default.sh
 
 # Link dotfiles.
 link:
 	.bin/link.sh
 
-# Set macOS system preferences.
-default:
-	.bin/default.sh
+# Install macOS applications.
+brew:
+	.bin/brew.sh
