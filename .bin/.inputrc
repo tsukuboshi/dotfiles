@@ -1,0 +1,19 @@
+# Tabキーによる補完を有効にする
+TAB: menu-complete
+
+# 補完時に大文字小文字を無視する
+set completion-ignore-case on
+
+# 日本語入力を有効にする
+set convert-meta off
+set meta-flag on
+set output-meta on
+
+# ファイルタイプに色を付ける
+set colored-stats on
+
+# 補完の接頭辞に色を付ける
+set colored-completion-prefix on
+
+# 実行ファイルに印を付ける
+# set visible-stats on
