@@ -48,7 +48,10 @@
     "Purple"
   ],
 
+  "editor.suggestSelection": "first",
+
   "explorer.confirmDelete": false,
+  "explorer.confirmDragAndDrop": false,
 
   "extensions.autoUpdate": true,
   "extensions.ignoreRecommendations": false,
@@ -57,23 +60,23 @@
 
   "liveServer.settings.donotShowInfoMsg": true,
 
-  "sync.gist": "9cffde291a0fb8e9d1cb2906bc601fd1",
+
+  "python.languageServer": "Microsoft",
+
   "sync.autoDownload": true,
   "sync.autoUpload": true,
   "sync.forceDownload": false,
   "sync.forceUpload": false,
+  "sync.gist": "9cffde291a0fb8e9d1cb2906bc601fd1",
+
+  "vsintellicode.modify.editor.suggestSelection": "automaticallyOverrodeDefaultValue",
 
   "workbench.startupEditor": "none",
-  "workbench.iconTheme": "material-icon-theme",
   "workbench.colorTheme": "Quiet Light",
-  "workbench.editorAssociations": [
-    {
-      "viewType": "jupyter.notebook.ipynb",
-      "filenamePattern": "*.ipynb"
-    }
-  ],
-  "editor.suggestSelection": "first",
-  "vsintellicode.modify.editor.suggestSelection": "automaticallyOverrodeDefaultValue",
-  "python.languageServer": "Microsoft",
+  "workbench.editorAssociations": {
+    "*.ipynb": "jupyter.notebook.ipynb"
+  },
+  "workbench.iconTheme": "material-icon-theme",
   "workbench.panel.defaultLocation": "right",
+
 }
