@@ -11,8 +11,9 @@ alias ....='cd ../../..'
 
 alias relogin='exec $SHELL -l'
 
-alias delds='find . -name ".DS_Store" -type f -ls -delete'
+alias rmtrash='rm -rf ${HOME}/.Trash/*'
 
+alias delds='find . -name ".DS_Store" -type f -ls -delete'
 
 alias ell='exa -lF'
 alias ela='exa -laF'
