@@ -41,8 +41,6 @@ cask "slack"
 # cask "sourcetree"
 cask "tableplus"
 cask "the-unarchiver"
-cask "virtualbox"
-cask "vagrant"
 cask "visual-studio-code"
 cask "zoom"
 
