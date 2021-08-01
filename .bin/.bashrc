@@ -30,3 +30,6 @@ alias d='docker'
 alias dc='docker-compose'
 
 alias k='kubectl'
+
+alias c='code'
+alias cle='code --list-extensions'
