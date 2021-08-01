@@ -20,6 +20,9 @@ alias etree='exa -TL'
 
 alias g='git'
 
+alias a='aws'
+alias asg='aws sts get-caller-identity'
+
 alias t='terraform'
 
 alias d='docker'
