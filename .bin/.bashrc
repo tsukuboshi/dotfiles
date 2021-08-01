@@ -2,6 +2,9 @@
 alias ll='ls -lF'
 alias la='ls -lAF'
 
+alias e='export'
+alias en='export -n'
+
 alias ..='cd ..'
 alias ...='cd ../..'
 alias ....='cd ../../..'
@@ -16,8 +19,6 @@ alias ela='exa -laF'
 alias etree='exa -TL'
 
 alias g='git'
-
-alias v='vagrant'
 
 alias t='terraform'
 
