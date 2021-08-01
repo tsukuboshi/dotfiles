@@ -69,6 +69,8 @@
   "sync.forceUpload": false,
   "sync.gist": "9cffde291a0fb8e9d1cb2906bc601fd1",
 
+  "redhat.telemetry.enabled": true,
+
   "vsintellicode.modify.editor.suggestSelection": "automaticallyOverrodeDefaultValue",
 
   "workbench.startupEditor": "none",
