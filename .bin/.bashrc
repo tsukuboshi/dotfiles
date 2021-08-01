@@ -15,6 +15,8 @@ alias rmtrash='rm -rf ${HOME}/.Trash/*'
 
 alias delds='find . -name ".DS_Store" -type f -ls -delete'
 
+alias b="brew"
+
 alias ell='exa -lF'
 alias ela='exa -laF'
 alias etree='exa -TL'
