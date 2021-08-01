@@ -16,6 +16,7 @@ brew "heroku"
 brew "mas"
 brew "rsync"
 brew "tree"
+brew "watch"
 brew "wget"
 
 cask "alfred"
