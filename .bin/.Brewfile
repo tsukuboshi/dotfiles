@@ -7,7 +7,6 @@ tap "homebrew/cask-versions"
 tap "homebrew/core"
 
 brew "anyenv"
-brew "bat"
 brew "bash-completion"
 brew "exa"
 brew "git"
