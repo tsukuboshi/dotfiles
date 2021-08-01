@@ -54,8 +54,3 @@ Set visual studio code.
 4. Execute "cd dotfiles && ./vscode/sync.sh".
 5. If you want to output the current extensions, execute "code --list-extensions > ~/dotfiles/vscode/extensions".
 ```
-
-(Optional)Set virtual machine.
-```shell
-$ cd ~/dotfiles/vagrant && vagrant up
-```
