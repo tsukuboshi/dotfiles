@@ -19,6 +19,8 @@ alias g='git'
 
 alias v='vagrant'
 
+alias t='terraform'
+
 alias d='docker'
 alias dc='docker-compose'
 
