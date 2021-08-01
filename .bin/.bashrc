@@ -21,3 +21,5 @@ alias v='vagrant'
 
 alias d='docker'
 alias dc='docker-compose'
+
+alias k='kubectl'
