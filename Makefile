@@ -1,5 +1,5 @@
 # Do everything.
-all: link default link brew
+all: default link brew
 
 # Set macOS system preferences.
 default:
