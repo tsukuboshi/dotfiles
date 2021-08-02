@@ -54,3 +54,10 @@ Set visual studio code.
 4. Execute "cd dotfiles && ./vscode/sync.sh".
 5. If you want to output the current extensions, execute "code --list-extensions > ~/dotfiles/vscode/extensions".
 ```
+
+Set google chrome.
+
+```
+1. Access each URL in "~/dotfiles/chrome/extensions" with Google Chrome.
+2. Click "Add Chrome" button.
+```
