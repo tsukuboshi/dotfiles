@@ -22,9 +22,11 @@ mads-hartmann.bash-ide-vscode
 magicstack.MagicPython
 marcostazi.VS-code-vagrantfile
 mosapride.zenkaku
+mrmlnc.vscode-apache
 ms-azuretools.vscode-docker
 MS-CEINTL.vscode-language-pack-ja
 ms-python.python
+ms-python.vscode-pylance
 ms-toolsai.jupyter
 ms-vscode-remote.remote-containers
 ms-vscode-remote.remote-ssh
