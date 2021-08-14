@@ -5,23 +5,32 @@ if [ "$(uname)" != "Darwin" ] ; then
 	exit 1
 fi
 
-#----------------------------------------------------------
+# ====================
+#
 # Base
-#----------------------------------------------------------
+#
+# ====================
+
 
 # Disable auto-capitalization
 defaults write NSGlobalDomain NSAutomaticCapitalizationEnabled -bool false
 
-#----------------------------------------------------------
+# ====================
+#
 # Dock
-#----------------------------------------------------------
+#
+# ====================
+
 
 # Disable animation at application launch
 defaults write com.apple.dock launchanim -bool false
 
-#----------------------------------------------------------
+# ====================
+#
 # Finder
-#----------------------------------------------------------
+#
+# ====================
+
 
 # Disable animation
 defaults write com.apple.finder DisableAllAnimations -bool true
@@ -38,9 +47,11 @@ defaults write com.apple.finder ShowStatusBar -bool true
 # Display the path bar
 defaults write com.apple.finder ShowPathbar -bool true
 
-#----------------------------------------------------------
+# ====================
+#
 # SystemUIServer
-#----------------------------------------------------------
+#
+# ====================
 
 # Display date, day, and time in the menu bar
 defaults write com.apple.menuextra.clock DateFormat -string 'EEE d MMM HH:mm'
