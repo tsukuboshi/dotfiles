@@ -40,6 +40,11 @@ if [ -r "/usr/local/etc/bash_completion.d/git-prompt.sh" ]; then
   source /usr/local/etc/bash_completion.d/git-prompt.sh
 fi
 
+# Set terraform-completion
+if [ "$(which terraform)" != "" ]; then
+  complete -C $HOME/.anyenv/envs/tfenv/versions/1.0.0/terraform terraform
+fi
+
 # OS X or Linux
 case $(uname -a) in
   Darwin* )
