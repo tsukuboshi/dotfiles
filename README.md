@@ -1,10 +1,15 @@
-dotfiles
-====
+# dotfiles
 
 &emsp;
-## Description
+## Overview
 
-Dotfiles for macOS.
+This repository contains scripts to set macOS.
+
+&emsp;
+
+## Required
+
+- [macOS](https://www.apple.com/jp/macos/big-sur/) - v11.4
 
 &emsp;
 
