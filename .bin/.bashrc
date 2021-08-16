@@ -61,8 +61,8 @@ alias db='docker build .'
 alias dil='docker image ls'
 alias dcl='docker container ls -a'
 function dce (){
-  local CONRAINER=$1
-  docker container exec -it ${CONRAINER} bash
+  local CONTAINER=$1
+  docker container exec -it ${CONTAINER} bash
 }
 alias dsp='docker system prune --volumes'
 alias dcu='docker compose up -d'
