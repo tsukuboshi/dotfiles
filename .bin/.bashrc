@@ -22,23 +22,27 @@ alias bd='brew doctor'
 alias ell='exa -lF'
 alias ela='exa -laF'
 function etree (){
-  exa -TL $1
+  local DEPTH=${1:-2}
+  exa -TL ${DEPTH}
 }
 
 alias g='git'
 alias gs='git status'
 function ga (){
-  git add $1
+  local FILE=${1:-.}
+  git add ${FILE}
 }
 function gc (){
-  git commit -m "$1"
+  local MESSAGE=$1
+  git commit -m "${MESSAGE}"
 }
 alias gp='git push origin main'
 alias gac='git reset HEAD .'
 alias gcc='git reset --hard HEAD~'
 
 function eap (){
-  export AWS_PROFILE=$1
+  local PROFILE=${1:-tf-demo}
+  export AWS_PROFILE=${PROFILE}
 }
 alias enap='export -n AWS_PROFILE'
 alias a='aws'
@@ -57,7 +61,8 @@ alias db='docker build .'
 alias dil='docker image ls'
 alias dcl='docker container ls -a'
 function dce (){
-  docker container exec -it $1 bash
+  local CONRAINER=$1
+  docker container exec -it ${CONRAINER} bash
 }
 alias dsp='docker system prune --volumes'
 alias dcu='docker compose up -d'
