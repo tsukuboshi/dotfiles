@@ -64,6 +64,8 @@ function dce (){
   local CONTAINER=$1
   docker container exec -it ${CONTAINER} bash
 }
+alias dip='docker image prune'
+alias dcp='docker container prune'
 alias dsp='docker system prune --volumes'
 alias dcu='docker compose up -d'
 alias dcd='docker compose down'
