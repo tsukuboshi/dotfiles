@@ -5,7 +5,6 @@ bung87.vscode-gemfile
 chrmarti.regex
 CoenraadS.bracket-pair-colorizer-2
 CraigMaslowski.erb
-deerawan.vscode-dash
 donjayamanne.githistory
 donjayamanne.python-extension-pack
 eamodio.gitlens
@@ -20,11 +19,10 @@ ionutvmi.path-autocomplete
 kaiwood.endwise
 mads-hartmann.bash-ide-vscode
 magicstack.MagicPython
-marcostazi.VS-code-vagrantfile
 mosapride.zenkaku
-mrmlnc.vscode-apache
 ms-azuretools.vscode-docker
 MS-CEINTL.vscode-language-pack-ja
+ms-kubernetes-tools.vscode-kubernetes-tools
 ms-python.python
 ms-python.vscode-pylance
 ms-toolsai.jupyter
@@ -32,7 +30,6 @@ ms-vscode-remote.remote-containers
 ms-vscode-remote.remote-ssh
 ms-vscode-remote.remote-ssh-edit
 ms-vscode-remote.vscode-remote-extensionpack
-ms-vscode.powershell
 naumovs.color-highlight
 oderwat.indent-rainbow
 PKief.material-icon-theme
