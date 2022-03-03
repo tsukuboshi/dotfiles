@@ -18,7 +18,7 @@ This repository contains scripts to set macOS.
 Download installation materials.
 
 ```shell
-$ cd ~ && git clone git@github.com:kuraboshi/dotfiles.git
+$ cd ~ && git clone https://github.com/kuraboshi/dotfiles
 ```
 
 Set macOS.
