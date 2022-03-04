@@ -1,5 +1,9 @@
 # Do everything.
-all: link defaults brew
+all: init link defaults brew
+
+# Set initial preference.
+init:
+	.bin/init.sh
 
 # Link dotfiles.
 link:
