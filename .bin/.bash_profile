@@ -9,6 +9,11 @@ export PS1='\n\[\e[1;31m\]\u \[\e[1;32m\]\W \[\e[1;33m\]\$ \[\e[0m\]'
 # Set the language
 export LANG="ja_JP.UTF-8"
 
+# Set brew
+if [ “$(which brew)” != “” ]; then
+  eval “$(/opt/homebrew/bin/brew shellenv)”
+fi
+
 # Set vscode
 if [ "$(which code)" != "" ]; then
   export PATH="/Applications/Visual\ Studio\ Code.app/Contents/Resources/app/bin:$PATH"
