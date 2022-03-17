@@ -4,10 +4,10 @@
 [color]
 	ui = true
 [commit]
-	template = /Users/yoshiba/.stCommitMsg
+	template = ~/.stCommitMsg
 [core]
 	editor = code --wait
-	excludesfile = /Users/yoshiba/.gitignore_global
+	excludesfile = ~/.gitignore_global
 	autocrlf = false
 	ignorecase = false
 	quotepath = false
@@ -23,7 +23,7 @@
 	default = simple
 [difftool "sourcetree"]
 	cmd = opendiff \"$LOCAL\" \"$REMOTE\"
-	path = 
+	path =
 [mergetool "sourcetree"]
 	cmd = /Applications/Sourcetree.app/Contents/Resources/opendiff-w.sh \"$LOCAL\" \"$REMOTE\" -ancestor \"$BASE\" -merge \"$MERGED\"
 	trustExitCode = true
