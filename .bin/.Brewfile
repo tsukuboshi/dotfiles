@@ -21,6 +21,7 @@ brew "wget"
 
 cask "alfred"
 cask "appcleaner"
+cask "aws-vault"
 # cask "bettertouchtool"
 cask "cheatsheet"
 cask "clipy"
