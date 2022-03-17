@@ -36,7 +36,8 @@ function gc (){
   local MESSAGE=$1
   git commit -m "${MESSAGE}"
 }
-alias gp='git push origin main'
+alias gps='git push origin main'
+alias gpl='git pull origin main'
 alias gac='git reset HEAD .'
 alias gcc='git reset --hard HEAD~'
 
