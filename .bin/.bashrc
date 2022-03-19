@@ -23,14 +23,14 @@ alias ell='exa -lF'
 alias ela='exa -laF'
 function etree (){
   local DEPTH=${1:-2}
-  exa -TL ${DEPTH}
+  exa -TL "${DEPTH}"
 }
 
 alias g='git'
 alias gs='git status'
 function ga (){
   local FILE=${1:-.}
-  git add ${FILE}
+  git add "${FILE}"
 }
 function gc (){
   local MESSAGE=$1
@@ -40,6 +40,19 @@ alias gps='git push origin main'
 alias gpl='git pull origin main'
 alias gac='git reset HEAD .'
 alias gcc='git reset --hard HEAD~'
+function gss (){
+  local MESSAGE=$1
+  git stash save "${MESSAGE}"
+}
+alias gsl='git stash list'
+function gsa (){
+  local STASH_NAME=$1
+  git stash apply "${STASH_NAME}"
+}
+function gsd (){
+  local STASH_NAME=$1
+  git stash drop "${STASH_NAME}"
+}
 
 function eap (){
   local PROFILE=${1:-tf-demo}
