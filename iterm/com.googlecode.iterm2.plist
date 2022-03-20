@@ -863,7 +863,7 @@
 				<real>0.0</real>
 			</dict>
 			<key>Log Directory</key>
-			<string>$HOME/logs</string>
+			<string>$HOME/logs/iterm</string>
 			<key>Mouse Reporting</key>
 			<true/>
 			<key>Name</key>
