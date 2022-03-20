@@ -863,7 +863,7 @@
 				<real>0.0</real>
 			</dict>
 			<key>Log Directory</key>
-			<string>/Users/yoshiba.kaito/logs</string>
+			<string>/Users/yoshiba.kaito/logs/iterm</string>
 			<key>Mouse Reporting</key>
 			<true/>
 			<key>Name</key>
