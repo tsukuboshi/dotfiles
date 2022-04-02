@@ -19,17 +19,16 @@ if [ "$(which code)" == "" ]; then
   export PATH="/Applications/Visual\ Studio\ Code.app/Contents/Resources/app/bin:$PATH"
 fi
 
-# Set anyenv
-if [ "$(which anyenv)" == "" ]; then
-  export PATH="$HOME/.anyenv/bin:$PATH"
-  eval "$(anyenv init -)"
-fi
-
 # Set Typescript Compiler
 if [ "$(which tsc)" == "" ]; then
   export PATH="$(npm bin -g):$PATH"
 fi
 
+# Set anyenv
+if [ "$(which anyenv)" != "" ]; then
+  export PATH="$HOME/.anyenv/bin:$PATH"
+  eval "$(anyenv init -)"
+fi
 # Set aws-completion
 if [ "$(which aws_completer)" != "" ]; then
   complete -C aws_completer aws
