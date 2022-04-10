@@ -32,7 +32,6 @@
     "**/.hg": true,
     "**/CVS": true,
     "**/.DS_Store": true,
-    "**/bin": true
   },
   "files.eol": "\n",
   "files.autoGuessEncoding": true,
