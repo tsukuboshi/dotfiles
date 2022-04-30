@@ -55,16 +55,20 @@ function gsd (){
 }
 
 function eap (){
-  local PROFILE=${1:-tf-demo}
+  local PROFILE=${1:-kuraboshi}
   export AWS_PROFILE=${PROFILE}
 }
 alias enap='export -n AWS_PROFILE'
 alias a='aws'
 alias asg='aws sts get-caller-identity'
 
-alias cit='aws-vault exec kuraboshi -- cdk init app --language typescript'
+function cit (){
+  local PROJECT=${1}
+  aws-vault exec kuraboshi -- cdk init ${PROJECT} --language typescript
+}
 alias cs='aws-vault exec kuraboshi -- cdk synth'
 alias cb='aws-vault exec kuraboshi -- cdk bootstrap'
+alias cdf='aws-vault exec kuraboshi -- cdk diff'
 alias cdp='aws-vault exec kuraboshi -- cdk deploy'
 alias cds='aws-vault exec kuraboshi -- cdk destroy'
 
