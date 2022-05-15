@@ -54,6 +54,10 @@ function gsd (){
   git stash drop "${STASH_NAME}"
 }
 
+alias nrb='npm run build'
+alias nrw='npm run watch'
+alias nrt='npm run test'
+
 function eap (){
   local PROFILE=${1:-kuraboshi}
   export AWS_PROFILE=${PROFILE}
