@@ -70,22 +70,68 @@ function cit (){
   local PROJECT=${1}
   aws-vault exec kuraboshi -- cdk init ${PROJECT} --language typescript
 }
-alias cs='aws-vault exec kuraboshi -- cdk synth'
-alias cb='aws-vault exec kuraboshi -- cdk bootstrap'
-alias cdf='aws-vault exec kuraboshi -- cdk diff'
-alias cdp='aws-vault exec kuraboshi -- cdk deploy'
-alias cds='aws-vault exec kuraboshi -- cdk destroy'
 
-alias tin='aws-vault exec kuraboshi -- terraform init'
-alias tf='aws-vault exec kuraboshi -- terraform fmt -recursive'
-alias tg='aws-vault exec kuraboshi -- terraform get'
-alias tc='aws-vault exec kuraboshi -- terraform console'
-alias tim='aws-vault exec kuraboshi -- terraform import'
-alias tv='aws-vault exec kuraboshi -- terraform validate'
-alias tp='aws-vault exec kuraboshi -- terraform plan'
-alias ta='aws-vault exec kuraboshi -- terraform apply'
-alias ts='aws-vault exec kuraboshi -- terraform state'
-alias td='aws-vault exec kuraboshi -- terraform destroy'
+function cs (){
+  local PROFILE=${1:-kuraboshi}
+  aws-vault exec ${PROFILE} -- cdk synth
+}
+function cb (){
+  local PROFILE=${1:-kuraboshi}
+  aws-vault exec ${PROFILE} -- cdk bootstrap
+}
+function cdf (){
+  local PROFILE=${1:-kuraboshi}
+  aws-vault exec ${PROFILE} -- cdk diff
+}
+function cdp (){
+  local PROFILE=${1:-kuraboshi}
+  aws-vault exec ${PROFILE} -- cdk deploy
+}
+function cds (){
+  local PROFILE=${1:-kuraboshi}
+  aws-vault exec ${PROFILE} -- cdk destroy
+}
+
+function tin (){
+  local PROFILE=${1:-kuraboshi}
+  aws-vault exec ${PROFILE} -- terraform init
+}
+function tf (){
+  local PROFILE=${1:-kuraboshi}
+  aws-vault exec ${PROFILE} -- terraform fmt -recursive
+}
+function tg (){
+  local PROFILE=${1:-kuraboshi}
+  aws-vault exec ${PROFILE} -- terraform get
+}
+function tc (){
+  local PROFILE=${1:-kuraboshi}
+  aws-vault exec ${PROFILE} -- terraform console
+}
+function tim (){
+  local PROFILE=${1:-kuraboshi}
+  aws-vault exec ${PROFILE} -- terraform import
+}
+function tv (){
+  local PROFILE=${1:-kuraboshi}
+  aws-vault exec ${PROFILE} -- terraform validate
+}
+function tp (){
+  local PROFILE=${1:-kuraboshi}
+  aws-vault exec ${PROFILE} -- terraform plan
+}
+function ta (){
+  local PROFILE=${1:-kuraboshi}
+  aws-vault exec ${PROFILE} -- terraform apply
+}
+function ts (){
+  local PROFILE=${1:-kuraboshi}
+  aws-vault exec ${PROFILE} -- terraform state
+}
+function td (){
+  local PROFILE=${1:-kuraboshi}
+  aws-vault exec ${PROFILE} -- terraform destroy
+}
 
 alias d='docker'
 alias db='docker build .'
