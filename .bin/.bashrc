@@ -67,8 +67,8 @@ alias a='aws'
 alias asg='aws sts get-caller-identity'
 
 function cit (){
-  local PROJECT=${1}
-  aws-vault exec kuraboshi -- cdk init ${PROJECT} --language typescript
+  local PROFILE=${1:-kuraboshi}
+  aws-vault exec ${PROFILE} -- cdk init --language typescript
 }
 
 function cs (){
