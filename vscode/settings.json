@@ -22,6 +22,9 @@
   "files.insertFinalNewline": true,
   "files.trimFinalNewlines": true,
   "files.trimTrailingWhitespace": true,
+  "[markdown]": {
+    "files.trimTrailingWhitespace": false
+  },
   "files.autoSave": "off",
   "files.associations": {
     "*.erb": "erb"
@@ -39,7 +42,6 @@
   "terminal.integrated.defaultLocation": "editor",
 
   "window.title": "${dirty}${activeEditorMedium}${separator}${rootName}",
-  "window.zoomLevel": 1,
 
   // ===================
   //
@@ -47,7 +49,7 @@
   //
   // ===================
 
-  "aws.profile": "profile:default",
+  "aws.profile": "profile:classmethod",
 
   "editor.suggestSelection": "first",
 
