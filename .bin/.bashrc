@@ -59,7 +59,7 @@ alias nrw='npm run watch'
 alias nrt='npm run test'
 
 function eap (){
-  local PROFILE=${1:-kuraboshi}
+  local PROFILE=${1:-tsukuboshi}
   export AWS_PROFILE=${PROFILE}
 }
 alias enap='export -n AWS_PROFILE'
@@ -67,69 +67,69 @@ alias a='aws'
 alias asg='aws sts get-caller-identity'
 
 function cit (){
-  local PROFILE=${1:-kuraboshi}
+  local PROFILE=${1:-tsukuboshi}
   aws-vault exec ${PROFILE} -- cdk init --language typescript
 }
 
 function cs (){
-  local PROFILE=${1:-kuraboshi}
+  local PROFILE=${1:-tsukuboshi}
   aws-vault exec ${PROFILE} -- cdk synth
 }
 function cb (){
-  local PROFILE=${1:-kuraboshi}
+  local PROFILE=${1:-tsukuboshi}
   aws-vault exec ${PROFILE} -- cdk bootstrap
 }
 function cdf (){
-  local PROFILE=${1:-kuraboshi}
+  local PROFILE=${1:-tsukuboshi}
   aws-vault exec ${PROFILE} -- cdk diff
 }
 function cdp (){
-  local PROFILE=${1:-kuraboshi}
+  local PROFILE=${1:-tsukuboshi}
   aws-vault exec ${PROFILE} -- cdk deploy
 }
 function cds (){
-  local PROFILE=${1:-kuraboshi}
+  local PROFILE=${1:-tsukuboshi}
   aws-vault exec ${PROFILE} -- cdk destroy
 }
 
 function tin (){
-  local PROFILE=${1:-kuraboshi}
+  local PROFILE=${1:-tsukuboshi}
   aws-vault exec ${PROFILE} -- terraform init
 }
 function tf (){
-  local PROFILE=${1:-kuraboshi}
+  local PROFILE=${1:-tsukuboshi}
   aws-vault exec ${PROFILE} -- terraform fmt -recursive
 }
 function tg (){
-  local PROFILE=${1:-kuraboshi}
+  local PROFILE=${1:-tsukuboshi}
   aws-vault exec ${PROFILE} -- terraform get
 }
 function tc (){
-  local PROFILE=${1:-kuraboshi}
+  local PROFILE=${1:-tsukuboshi}
   aws-vault exec ${PROFILE} -- terraform console
 }
 function tim (){
-  local PROFILE=${1:-kuraboshi}
+  local PROFILE=${1:-tsukuboshi}
   aws-vault exec ${PROFILE} -- terraform import
 }
 function tv (){
-  local PROFILE=${1:-kuraboshi}
+  local PROFILE=${1:-tsukuboshi}
   aws-vault exec ${PROFILE} -- terraform validate
 }
 function tp (){
-  local PROFILE=${1:-kuraboshi}
+  local PROFILE=${1:-tsukuboshi}
   aws-vault exec ${PROFILE} -- terraform plan
 }
 function ta (){
-  local PROFILE=${1:-kuraboshi}
+  local PROFILE=${1:-tsukuboshi}
   aws-vault exec ${PROFILE} -- terraform apply
 }
 function ts (){
-  local PROFILE=${1:-kuraboshi}
+  local PROFILE=${1:-tsukuboshi}
   aws-vault exec ${PROFILE} -- terraform state
 }
 function td (){
-  local PROFILE=${1:-kuraboshi}
+  local PROFILE=${1:-tsukuboshi}
   aws-vault exec ${PROFILE} -- terraform destroy
 }
 
