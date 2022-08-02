@@ -28,6 +28,14 @@ function etree (){
 
 alias g='git'
 alias gs='git status'
+function gcl (){
+  local URL=$1
+  git clone "${URL}"
+}
+function gcb (){
+  local BRANCH=$1
+  git checkout -b "${BRANCH}"
+}
 function ga (){
   local FILE=${1:-.}
   git add "${FILE}"
