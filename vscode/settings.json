@@ -129,6 +129,10 @@
     "!Split",
     "!Split sequence"
   ],
-  "yaml.validate": false
+  "yaml.validate": false,
+  "editor.suggest.showMethods": true,
+  "editor.suggest.preview": true,
+  "editor.acceptSuggestionOnEnter": "on",
+  "editor.snippetSuggestions": "top"
 
 }
