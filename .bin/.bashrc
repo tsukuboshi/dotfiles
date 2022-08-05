@@ -73,6 +73,7 @@ function eap (){
 alias enap='export -n AWS_PROFILE'
 alias a='aws'
 alias asg='aws sts get-caller-identity'
+alias asl='aws sso login'
 
 function cit (){
   local PROFILE=${1:-tsukuboshi}
