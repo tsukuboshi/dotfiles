@@ -235,3 +235,15 @@ override.tf.json
 terraform.rc
 
 .terraform.lock.hcl
+
+# ====================
+#
+# SAM CLI
+#
+# ====================
+
+# SAM-specific ignores
+.aws-sam/
+packaged.yaml
+samconfig.toml
+*.db
