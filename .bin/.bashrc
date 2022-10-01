@@ -27,10 +27,15 @@ function etree (){
 }
 
 alias g='git'
+alias gb='git branch'
 alias gs='git status'
 function gcl (){
   local URL=$1
   git clone "${URL}"
+}
+function gch (){
+  local BRANCH=${1:-main}
+  git checkout "${BRANCH}"
 }
 function gcb (){
   local BRANCH=$1
@@ -41,11 +46,17 @@ function ga (){
   git add "${FILE}"
 }
 function gc (){
-  local MESSAGE=$1
+  local MESSAGE=${1:-minor adjustment}
   git commit -m "${MESSAGE}"
 }
-alias gps='git push origin HEAD'
+alias gca='git commit --amend'
+alias gf='git fetch'
+function gr(){
+  local BRANCH=${1:-main}
+  git rebase "${BRANCH}"
+}
 alias gpl='git pull origin HEAD'
+alias gps='git push origin HEAD'
 alias gac='git reset HEAD .'
 alias gcc='git reset --hard HEAD~'
 function gss (){
