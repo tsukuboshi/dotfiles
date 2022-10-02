@@ -7,7 +7,7 @@
 	template = ~/.stCommitMsg
 [core]
 	editor = code --wait
-	# excludesfile = ${HOME}/.gitignore_global
+	# excludesfile = ${HOME}/.config/git/ignore
 	autocrlf = false
 	ignorecase = false
 	quotepath = false
