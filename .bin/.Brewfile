@@ -8,6 +8,7 @@ tap "homebrew/core"
 
 brew "anyenv"
 brew "bash-completion"
+brew "cfn-lint"
 brew "exa"
 brew "git"
 brew "git-secrets"
