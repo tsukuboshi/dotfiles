@@ -8,7 +8,7 @@
   "editor.copyWithSyntaxHighlighting": false,
   "editor.dragAndDrop": false,
   "editor.fontSize": 12,
-  "editor.formatOnSave": true,
+  "editor.formatOnSave": false,
   "editor.snippetSuggestions": "top",
   "editor.suggest.showMethods": true,
   "editor.suggest.preview": true,
