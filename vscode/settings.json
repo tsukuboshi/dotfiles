@@ -56,6 +56,7 @@
   "json.schemas": [],
   "liveServer.settings.donotShowInfoMsg": true,
   "python.languageServer": "Default",
+  "python.linting.pylintEnabled": true,
   "redhat.telemetry.enabled": true,
   "vsintellicode.modify.editor.suggestSelection": "automaticallyOverrodeDefaultValue",
   "workbench.colorTheme": "Quiet Light",
