@@ -4,21 +4,24 @@
   // general settings
   //
   // ================
-
-  "editor.wordWrap": "on",
-  "editor.fontSize": 12,
-  "editor.tabSize": 2,
+  "editor.acceptSuggestionOnEnter": "on",
   "editor.copyWithSyntaxHighlighting": false,
   "editor.dragAndDrop": false,
-
+  "editor.fontSize": 12,
+  "editor.formatOnSave": true,
+  "editor.snippetSuggestions": "top",
+  "editor.suggest.showMethods": true,
+  "editor.suggest.preview": true,
+  "editor.suggestSelection": "first",
+  "editor.tabSize": 2,
   "emmet.triggerExpansionOnTab": true,
+  "editor.wordWrap": "on",
   "emmet.includeLanguages": {
     "erb": "html"
   },
   "emmet.variables": {
     "lang": "ja"
   },
-
   "files.insertFinalNewline": true,
   "files.trimFinalNewlines": true,
   "files.trimTrailingWhitespace": true,
@@ -38,68 +41,52 @@
   },
   "files.eol": "\n",
   "files.autoGuessEncoding": true,
-
   "terminal.integrated.defaultLocation": "editor",
-
   "window.title": "${dirty}${activeEditorMedium}${separator}${rootName}",
-
   // ===================
   //
   // extensions settings
   //
   // ===================
-
   "aws.profile": "profile:classmethod",
-
-  "editor.suggestSelection": "first",
-
   "explorer.confirmDelete": false,
   "explorer.confirmDragAndDrop": false,
-
   "extensions.autoUpdate": true,
   "extensions.ignoreRecommendations": false,
-
   "json.schemas": [],
-
   "liveServer.settings.donotShowInfoMsg": true,
-
   "python.languageServer": "Default",
-
   "redhat.telemetry.enabled": true,
-
   "vsintellicode.modify.editor.suggestSelection": "automaticallyOverrodeDefaultValue",
-
-  "workbench.startupEditor": "none",
   "workbench.colorTheme": "Quiet Light",
   "workbench.colorCustomizations": {
-    "terminal.background":"#090300",
-    "terminal.foreground":"#A5A2A2",
-    "terminalCursor.background":"#A5A2A2",
-    "terminalCursor.foreground":"#A5A2A2",
-    "terminal.ansiBlack":"#090300",
-    "terminal.ansiBlue":"#01A0E4",
-    "terminal.ansiBrightBlack":"#5C5855",
-    "terminal.ansiBrightBlue":"#01A0E4",
-    "terminal.ansiBrightCyan":"#B5E4F4",
-    "terminal.ansiBrightGreen":"#01A252",
-    "terminal.ansiBrightMagenta":"#A16A94",
-    "terminal.ansiBrightRed":"#DB2D20",
-    "terminal.ansiBrightWhite":"#F7F7F7",
-    "terminal.ansiBrightYellow":"#FDED02",
-    "terminal.ansiCyan":"#B5E4F4",
-    "terminal.ansiGreen":"#01A252",
-    "terminal.ansiMagenta":"#A16A94",
-    "terminal.ansiRed":"#DB2D20",
-    "terminal.ansiWhite":"#A5A2A2",
-    "terminal.ansiYellow":"#FDED02"
+    "terminal.background": "#090300",
+    "terminal.foreground": "#A5A2A2",
+    "terminalCursor.background": "#A5A2A2",
+    "terminalCursor.foreground": "#A5A2A2",
+    "terminal.ansiBlack": "#090300",
+    "terminal.ansiBlue": "#01A0E4",
+    "terminal.ansiBrightBlack": "#5C5855",
+    "terminal.ansiBrightBlue": "#01A0E4",
+    "terminal.ansiBrightCyan": "#B5E4F4",
+    "terminal.ansiBrightGreen": "#01A252",
+    "terminal.ansiBrightMagenta": "#A16A94",
+    "terminal.ansiBrightRed": "#DB2D20",
+    "terminal.ansiBrightWhite": "#F7F7F7",
+    "terminal.ansiBrightYellow": "#FDED02",
+    "terminal.ansiCyan": "#B5E4F4",
+    "terminal.ansiGreen": "#01A252",
+    "terminal.ansiMagenta": "#A16A94",
+    "terminal.ansiRed": "#DB2D20",
+    "terminal.ansiWhite": "#A5A2A2",
+    "terminal.ansiYellow": "#FDED02"
   },
   "workbench.editorAssociations": {
     "*.ipynb": "jupyter.notebook.ipynb"
   },
   "workbench.iconTheme": "material-icon-theme",
   "workbench.panel.defaultLocation": "right",
-
-  "yaml.schemaStore.enable": false,
+  "workbench.startupEditor": "none",
   "yaml.customTags": [
     "!And",
     "!And sequence",
@@ -129,10 +116,6 @@
     "!Split",
     "!Split sequence"
   ],
+  "yaml.schemaStore.enable": false,
   "yaml.validate": false,
-  "editor.suggest.showMethods": true,
-  "editor.suggest.preview": true,
-  "editor.acceptSuggestionOnEnter": "on",
-  "editor.snippetSuggestions": "top"
-
 }
