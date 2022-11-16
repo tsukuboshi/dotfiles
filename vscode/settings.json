@@ -48,7 +48,7 @@
   // extensions settings
   //
   // ===================
-  "aws.profile": "profile:classmethod",
+  "editor.defaultFormatter": "esbenp.prettier-vscode",
   "explorer.confirmDelete": false,
   "explorer.confirmDragAndDrop": false,
   "extensions.autoUpdate": true,
@@ -117,5 +117,5 @@
     "!Split sequence"
   ],
   "yaml.schemaStore.enable": false,
-  "yaml.validate": false,
+  "yaml.validate": false
 }
