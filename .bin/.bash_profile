@@ -14,14 +14,14 @@ if [ "$(which brew)" == "" ]; then
   eval "$(/opt/homebrew/bin/brew shellenv)"
 fi
 
+# Set rancher desktop
+if [ "$(which rdctl)" == "" ]; then
+  export PATH="$HOME/.rd/bin:$PATH"
+fi
+
 # Set vscode
 if [ "$(which code)" == "" ]; then
   export PATH="/Applications/Visual\ Studio\ Code.app/Contents/Resources/app/bin:$PATH"
-fi
-
-# Set Typescript Compiler
-if [ "$(which tsc)" == "" ]; then
-  export PATH="$(npm bin -g):$PATH"
 fi
 
 # Set anyenv
@@ -29,6 +29,7 @@ if [ "$(which anyenv)" != "" ]; then
   export PATH="$HOME/.anyenv/bin:$PATH"
   eval "$(anyenv init -)"
 fi
+
 # Set aws-completion
 if [ "$(which aws_completer)" != "" ]; then
   complete -C aws_completer aws
@@ -39,11 +40,6 @@ if [ "$(which terraform)" != "" ]; then
   complete -C $HOME/.anyenv/envs/tfenv/versions/1.0.0/terraform terraform
 fi
 
-# Set bash-completion
-if [ -r "/usr/local/etc/profile.d/bash_completion.sh" ]; then
-  source /usr/local/etc/profile.d/bash_completion.sh
-fi
-
 # Set git-completion
 if [ -r "/usr/local/etc/bash_completion.d/git-completion.sh" ]; then
   source /usr/local/etc/bash_completion.d/git-completion.sh
@@ -52,6 +48,16 @@ fi
 # Set git-prompt
 if [ -r "/usr/local/etc/bash_completion.d/git-prompt.sh" ]; then
   source /usr/local/etc/bash_completion.d/git-prompt.sh
+fi
+
+# Set bash-completion
+if [ -r "/usr/local/etc/profile.d/bash_completion.sh" ]; then
+  source /usr/local/etc/profile.d/bash_completion.sh
+fi
+
+# Set Typescript Compiler
+if [ "$(which tsc)" == "" ]; then
+  export PATH="$(npm bin -g):$PATH"
 fi
 
 # OS X or Linux
