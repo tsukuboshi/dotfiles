@@ -55,7 +55,10 @@ function gr(){
   local BRANCH=${1:-main}
   git rebase "${BRANCH}"
 }
+alias gf='git fetch origin HEAD'
+alias gfa='git fetch --all'
 alias gpl='git pull origin HEAD'
+alias gpla='git pull --all'
 alias gps='git push origin HEAD'
 alias gac='git reset HEAD .'
 alias gcc='git reset --hard HEAD~'
