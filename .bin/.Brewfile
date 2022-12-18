@@ -54,6 +54,7 @@ cask "sourcetree"
 cask "the-unarchiver"
 cask "visual-studio-code"
 # cask "zoom"
+# cask 1password-cli
 
 # mas "BetterSnapTool", id: 417375580
 # mas "LINE", id: 539883307
