@@ -156,6 +156,12 @@ function td (){
   aws-vault exec ${PROFILE} -- terraform destroy
 }
 
+alias ops='eval $(op signin)'
+function otp (){
+  local ITEMID=${1:-AWS}
+  op item get ${ITEMID} --otp
+}
+
 alias d='docker'
 alias db='docker build .'
 alias dil='docker image ls'
