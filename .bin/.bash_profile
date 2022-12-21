@@ -30,6 +30,11 @@ if [ "$(which anyenv)" != "" ]; then
   eval "$(anyenv init -)"
 fi
 
+# Set rbenv
+if [ "$(which rbenv)" != "" ]; then
+  eval "$(rbenv init - bash)"
+fi
+
 # Set aws-completion
 if [ "$(which aws_completer)" != "" ]; then
   complete -C aws_completer aws
