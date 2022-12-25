@@ -26,6 +26,7 @@ function etree (){
 }
 
 alias gb='git branch'
+alias gba='git branch --all'
 alias gs='git status'
 function gcl (){
   local URL=$1
@@ -43,23 +44,31 @@ function ga (){
   local FILE=${1:-.}
   git add "${FILE}"
 }
-function gc (){
+function gcm (){
   local MESSAGE=${1:-minor adjustment}
   git commit -m "${MESSAGE}"
 }
 alias gca='git commit --amend'
-alias gf='git fetch'
-function gr(){
+function grb(){
   local BRANCH=${1:-main}
   git rebase "${BRANCH}"
 }
-alias gf='git fetch origin HEAD'
+function gf (){
+  local BRANCH=${1:-HEAD}
+  git fetch origin "${BRANCH}"
+}
 alias gfa='git fetch --all'
-alias gpl='git pull origin HEAD'
+function gpl (){
+  local BRANCH=${1:-HEAD}
+  git pull origin "${BRANCH}"
+}
 alias gpla='git pull --all'
-alias gps='git push origin HEAD'
-alias gac='git reset HEAD .'
-alias gcc='git reset --hard HEAD~'
+function gps (){
+  local BRANCH=${1:-HEAD}
+  git push origin "${BRANCH}"
+}
+alias grs='git reset HEAD .'
+alias grh='git reset --hard HEAD~'
 function gss (){
   local MESSAGE=$1
   git stash save "${MESSAGE}"
