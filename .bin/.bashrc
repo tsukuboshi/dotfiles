@@ -161,6 +161,10 @@ function td (){
   local PROFILE=${1:-tsukuboshi}
   aws-vault exec ${PROFILE} -- terraform destroy
 }
+function tdoc (){
+  local MODULE_PATH=${1:-.}
+  terraform-docs markdown table --output-file README.md --output-mode inject ${MODULE_PATH}
+}
 
 alias ops='eval $(op signin)'
 function otp (){
