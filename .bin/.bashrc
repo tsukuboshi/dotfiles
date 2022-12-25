@@ -17,6 +17,8 @@ alias bg='brew upgrade'
 alias bo='brew outdated'
 alias bl='brew list'
 alias bd='brew doctor'
+alias bbc='brew bundle check --global'
+alias bbi='brew bundle install --global'
 
 alias ell='exa -lF'
 alias ela='exa -laF'
