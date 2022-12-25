@@ -85,6 +85,9 @@ function gsd (){
   git stash drop "${STASH_NAME}"
 }
 
+alias av='anyenv versions'
+alias au='anyenv update'
+
 alias nrb='npm run build'
 alias nrw='npm run watch'
 alias nrt='npm run test'
