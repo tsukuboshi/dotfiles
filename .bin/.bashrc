@@ -12,7 +12,6 @@ alias rmtrash='rm -rf ${HOME}/.Trash/*'
 
 alias delds='find . -name ".DS_Store" -type f -ls -delete'
 
-alias b='brew'
 alias bd='brew update'
 alias bg='brew upgrade'
 alias bo='brew outdated'
@@ -26,7 +25,6 @@ function etree (){
   exa -TL "${DEPTH}"
 }
 
-alias g='git'
 alias gb='git branch'
 alias gs='git status'
 function gcl (){
@@ -85,7 +83,6 @@ function eap (){
   export AWS_PROFILE=${PROFILE}
 }
 alias enap='export -n AWS_PROFILE'
-alias a='aws'
 alias asg='aws sts get-caller-identity'
 alias asl='aws sso login'
 
@@ -162,7 +159,6 @@ function otp (){
   op item get ${ITEMID} --otp
 }
 
-alias d='docker'
 alias db='docker build .'
 alias dil='docker image ls'
 alias dcl='docker container ls -a'
@@ -176,9 +172,6 @@ alias dsp='docker system prune --volumes'
 alias dcu='docker compose up -d'
 alias dcd='docker compose down'
 
-alias k='kubectl'
-
 alias gle="ls -l ${HOME}/Library/Application\ Support/Google/Chrome/Default/Extensions | awk '{print \$9}' | sed 's/^/https:\/\/chrome.google.com\/webstore\/detail\//g' | sed -e '1,2d'"
 
-alias c='code'
 alias cle='code --list-extensions'
