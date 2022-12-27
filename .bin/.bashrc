@@ -31,7 +31,7 @@ alias gb='git branch'
 alias gba='git branch --all'
 function gbd (){
   local BRANCH=$1
-  git bransh -d "${BRANCH}"
+  git branch -d "${BRANCH}"
 }
 alias gs='git status'
 function gcl (){
