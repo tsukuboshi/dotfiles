@@ -23,6 +23,6 @@ jobs:
       - name: Checkout
         uses: actions/checkout@v3
 
-      # Initilize and place dotfiles
+      # Initialize and place dotfiles
       - name: Setup Dotfiles
         run: make
