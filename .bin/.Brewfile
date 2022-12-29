@@ -8,7 +8,7 @@ tap "homebrew/core"
 
 brew "anyenv"
 brew "bash-completion"
-brew "cfn-lint"
+# brew "cfn-lint"
 brew "docker"
 # brew "eslint"
 brew "exa"
