@@ -42,6 +42,9 @@
   "files.eol": "\n",
   "files.autoGuessEncoding": true,
   "python.linting.flake8Enabled": true,
+  "python.linting.flake8Args": [
+    "--ignore=E501"
+  ],
   "terminal.integrated.defaultLocation": "editor",
   "window.title": "${dirty}${activeEditorMedium}${separator}${rootName}",
   "[ruby]": {
