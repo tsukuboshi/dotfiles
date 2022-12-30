@@ -77,6 +77,10 @@
   "liveServer.settings.donotShowInfoMsg": true,
   "python.languageServer": "Default",
   "redhat.telemetry.enabled": true,
+  "shellcheck.ignorePatterns": {
+    "**/.bash_profile": true,
+    "**/.bashrc": true,
+  },
   "vsintellicode.modify.editor.suggestSelection": "automaticallyOverrodeDefaultValue",
   "workbench.colorTheme": "Quiet Light",
   "workbench.colorCustomizations": {
@@ -100,9 +104,6 @@
     "terminal.ansiRed": "#DB2D20",
     "terminal.ansiWhite": "#A5A2A2",
     "terminal.ansiYellow": "#FDED02"
-  },
-  "workbench.editorAssociations": {
-    "*.ipynb": "jupyter.notebook.ipynb"
   },
   "workbench.iconTheme": "material-icon-theme",
   "workbench.panel.defaultLocation": "right",
