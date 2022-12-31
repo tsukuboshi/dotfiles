@@ -1,6 +1,5 @@
 cask_args appdir: "/Applications"
 
-tap "heroku/brew"
 tap "homebrew/bundle"
 tap "homebrew/cask"
 tap "homebrew/cask-versions"
@@ -37,8 +36,6 @@ cask "cheatsheet"
 # cask "docker"
 cask "firefox"
 # cask "google-chrome"
-# cask "google-japanese-ime"
-# cask "hyperswitch"
 cask "iterm2"
 cask "keyboardcleantool"
 # cask "kindle"
@@ -48,13 +45,12 @@ cask "notion"
 cask "postman"
 cask "rancher"
 cask "rectangle"
-# cask "skitch"
+cask "skitch"
 # cask "slack"
-cask "sourcetree"
 cask "the-unarchiver"
 cask "visual-studio-code"
 # cask "zoom"
-# cask 1password-cli
+# cask "1password-cli"
 
 # mas "BetterSnapTool", id: 417375580
 # mas "LINE", id: 539883307
