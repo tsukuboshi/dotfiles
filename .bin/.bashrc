@@ -14,6 +14,8 @@ alias delds='find . -name ".DS_Store" -type f -ls -delete'
 
 alias bd='brew update'
 alias bg='brew upgrade'
+alias bgc='brew upgrade --cask'
+alias bgcg='brew upgrade --cask --greedy'
 alias bo='brew outdated'
 alias bl='brew list'
 alias bd='brew doctor'
