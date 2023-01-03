@@ -178,7 +178,6 @@ function tdoc (){
   terraform-docs markdown table --output-file README.md --output-mode inject ${MODULE_PATH}
 }
 
-alias ops='eval $(op signin)'
 function otp (){
   local ITEMID=${1:-AWS}
   op item get ${ITEMID} --otp
