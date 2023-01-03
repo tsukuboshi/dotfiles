@@ -106,6 +106,16 @@ function eap (){
 alias enap='export -n AWS_PROFILE'
 alias asg='aws sts get-caller-identity'
 alias asl='aws sso login'
+function ec2exec (){
+  local INSTANCE_ID=$1
+  aws ssm start-session --target ${INSTANCE_ID}
+}
+function ecsexec (){
+  local CLUSTER_NAME=$1
+  local TASK_ID=$2
+  local CONTAINER_NAME=$3
+  aws ecs execute-command --cluster ${CLUSTER_NAME} --task ${TASK_ID} --container ${CONTAINER_NAME} --interactive --command "/bin/sh"
+}
 
 function cit (){
   local PROFILE=${1:-tsukuboshi}
