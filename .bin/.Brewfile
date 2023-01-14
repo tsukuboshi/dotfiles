@@ -7,7 +7,7 @@ tap "homebrew/core"
 tap "aws/tap"
 
 brew "anyenv"
-brew "aws-sam-cli"
+# brew "aws-sam-cli"
 brew "bash-completion"
 # brew "cfn-lint"
 brew "docker"
