@@ -57,7 +57,7 @@ function gpl (){
 
 function gch (){
   local LOCAL_BRANCH=${1:-main}
-  git checkout "${BRANCH}"
+  git checkout "${LOCAL_BRANCH}"
 }
 function gcb (){
   local LOCAL_BRANCH=$1
