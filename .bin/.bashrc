@@ -32,52 +32,62 @@ function etree (){
 
 alias gb='git branch'
 alias gba='git branch --all'
-function gbd (){
-  local BRANCH=$1
-  git branch -d "${BRANCH}"
-}
 alias gs='git status'
 function gcl (){
   local URL=$1
   git clone "${URL}"
 }
+function gbd (){
+  local LOCAL_BRANCH=$1
+  git branch -d "${LOCAL_BRANCH}"
+}
+function gf (){
+  local REMOTE_BRANCH=${1:-HEAD}
+  git fetch origin "${REMOTE_BRANCH}"
+}
+alias gfa='git fetch --all'
+function gm (){
+  local TRAKING_BRANCH=${1:-HEAD}
+  git merge origin/"${TRAKING_BRANCH}"
+}
+function gpl (){
+  local REMOTE_BRANCH=${1:-HEAD}
+  git pull origin "${REMOTE_BRANCH}"
+}
+
 function gch (){
-  local BRANCH=${1:-main}
+  local LOCAL_BRANCH=${1:-main}
   git checkout "${BRANCH}"
 }
 function gcb (){
-  local BRANCH=$1
-  git checkout -b "${BRANCH}"
+  local LOCAL_BRANCH=$1
+  git checkout -b "${LOCAL_BRANCH}"
+}
+function gcbr (){
+  local LOCAL_BRANCH=$1
+  local REMOTE_BRANCH=$2
+  git checkout -b "${LOCAL_BRANCH}" "${REMOTE_BRANCH}"
 }
 function ga (){
   local FILE=${1:-.}
   git add "${FILE}"
 }
+alias gax='git reset HEAD'
+function gr (){
+  local FILE=$1
+  git rm "${FILE}"
+}
 function gcm (){
-  local MESSAGE=${1:-minor adjustment}
+  local MESSAGE=${1:-fix}
   git commit -m "${MESSAGE}"
 }
 alias gca='git commit --amend'
-function grb(){
-  local BRANCH=${1:-main}
-  git rebase "${BRANCH}"
-}
-function gf (){
-  local BRANCH=${1:-HEAD}
-  git fetch origin "${BRANCH}"
-}
-alias gfa='git fetch --all'
-function gpl (){
-  local BRANCH=${1:-HEAD}
-  git pull origin "${BRANCH}"
+alias gcx='git reset --hard HEAD^'
+function gps (){
+  local REMOTE_BRANCH=${1:-HEAD}
+  git push origin "${REMOTE_BRANCH}"
 }
 alias gpla='git pull --all'
-function gps (){
-  local BRANCH=${1:-HEAD}
-  git push origin "${BRANCH}"
-}
-alias grs='git reset HEAD .'
-alias grh='git reset --hard HEAD~'
 function gss (){
   local MESSAGE=$1
   git stash save "${MESSAGE}"
