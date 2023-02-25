@@ -102,6 +102,10 @@ function gsd (){
   git stash drop "${STASH_NAME}"
 }
 
+alias pci='pre-commit install'
+alias pcr='pre-commit run -a'
+alias pcu='pre-commit autoupdate'
+
 alias av='anyenv versions'
 alias au='anyenv update'
 
