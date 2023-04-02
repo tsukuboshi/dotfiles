@@ -35,9 +35,7 @@ brew "wget"
 cask "alfred"
 cask "appcleaner"
 cask "aws-vault"
-# cask "bettertouchtool"
 cask "cheatsheet"
-# cask "clipy"
 # cask "discord"
 # cask "docker"
 cask "firefox"
@@ -51,15 +49,8 @@ cask "notion"
 cask "postman"
 cask "rancher"
 cask "rectangle"
-# cask "skitch"
 # cask "slack"
 cask "the-unarchiver"
 cask "visual-studio-code"
 # cask "zoom"
 # cask "1password-cli"
-
-# mas "BetterSnapTool", id: 417375580
-# mas "LINE", id: 539883307
-# mas "KakaoTalk", id: 869223134
-# mas "Magnet", id: 441258766
-# mas "Todoist", id: 585829637
