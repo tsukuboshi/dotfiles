@@ -11,6 +11,7 @@ exiasr.hadolint
 formulahendry.auto-close-tag
 formulahendry.auto-complete-tag
 formulahendry.auto-rename-tag
+github.vscode-github-actions
 hashicorp.terraform
 hediet.vscode-drawio
 ionutvmi.path-autocomplete
