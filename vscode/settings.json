@@ -53,7 +53,8 @@
   },
   "[python]": {
     "editor.tabSize": 4,
-    "editor.insertSpaces": true
+    "editor.insertSpaces": true,
+    "editor.formatOnType": true
   },
   "[javascript]": {
     "editor.tabSize": 2,
