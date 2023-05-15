@@ -28,7 +28,8 @@
   "[markdown]": {
     "files.trimTrailingWhitespace": false
   },
-  "files.autoSave": "off",
+  "files.autoSave": "afterDelay",
+  "files.autoSaveDelay": 10000,
   "files.associations": {
     "*.erb": "erb"
   },
@@ -139,5 +140,5 @@
     "!Split sequence"
   ],
   "yaml.schemaStore.enable": false,
-  "yaml.validate": false,
+  "yaml.validate": false
 }
