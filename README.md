@@ -27,30 +27,6 @@ Set macOS.
 $ cd ~/dotfiles && make
 ```
 
-Set alfred.
-
-
-```
-1. Register Powerpack with Alfred.
-2. Press "command + ," on alfred.
-3. Click "Advanced" tab.
-4. Click "Set preferences folder…" button.
-5. Choose "~/dotfiles/alfred/Alfred.alfredpreferences".
-6. Click "Set folder and restart Alfred" button.
-```
-
-Set iterm2.
-
-
-```
-1. Press "command + ," on iterm2.
-2. Click "General" tab.
-3. Click "Preferences" tab.
-4. Turn on "Load preference from a custom folder or URL."
-5. Enter "~/dotfiles/iterm/com.googlecode.iterm2.plist".
-6. Execute "sudo killall cfprefsd".
-```
-
 Set visual studio code.
 
 ```
@@ -66,4 +42,5 @@ Set google chrome.
 ```
 1. Access each URL in "~/dotfiles/chrome/extensions" with Google Chrome.
 2. Click "Add Chrome" button.
+3. If you want to output the current extensions, execute "ls -l ${HOME}/Library/Application\ Support/Google/Chrome/Default/Extensions | awk '{print \$9}' | sed 's/^/https:\/\/chrome.google.com\/webstore\/detail\//g' | sed -e '1,2d' > ~/dotfiles/chrome/extensions".
 ```
