@@ -1,38 +1,30 @@
 {
-  // ================
-  //
-  // general settings
-  //
-  // ================
   "editor.acceptSuggestionOnEnter": "on",
-  "editor.copyWithSyntaxHighlighting": false,
+  "editor.copyWithSyntaxHighlighting": true,
+  "editor.defaultFormatter": "esbenp.prettier-vscode",
   "editor.dragAndDrop": false,
   "editor.fontSize": 12,
-  "editor.formatOnSave": false,
+  "editor.formatOnSave": true,
+  "editor.insertSpaces": true,
   "editor.snippetSuggestions": "top",
   "editor.suggest.showMethods": true,
   "editor.suggest.preview": true,
   "editor.suggestSelection": "first",
   "editor.tabSize": 2,
-  "emmet.triggerExpansionOnTab": true,
   "editor.wordWrap": "on",
-  "emmet.includeLanguages": {
-    "erb": "html"
-  },
+  "emmet.triggerExpansionOnTab": true,
   "emmet.variables": {
     "lang": "ja"
   },
+  "explorer.confirmDelete": false,
+  "explorer.confirmDragAndDrop": false,
+  "extensions.autoUpdate": true,
+  "extensions.ignoreRecommendations": false,
   "files.insertFinalNewline": true,
   "files.trimFinalNewlines": true,
   "files.trimTrailingWhitespace": true,
-  "[markdown]": {
-    "files.trimTrailingWhitespace": false
-  },
   "files.autoSave": "afterDelay",
   "files.autoSaveDelay": 10000,
-  "files.associations": {
-    "*.erb": "erb"
-  },
   "files.exclude": {
     "**/.git": true,
     "**/.svn": true,
@@ -42,48 +34,16 @@
   },
   "files.eol": "\n",
   "files.autoGuessEncoding": true,
-  "python.linting.flake8Enabled": true,
-  "python.linting.flake8Args": [
-    "--ignore=E501"
-  ],
-  "terminal.integrated.defaultLocation": "editor",
-  "window.title": "${dirty}${activeEditorMedium}${separator}${rootName}",
-  "[ruby]": {
-    "editor.tabSize": 2,
-    "editor.insertSpaces": true
-  },
-  "[python]": {
-    "editor.tabSize": 4,
-    "editor.insertSpaces": true,
-    "editor.formatOnType": true
-  },
-  "[javascript]": {
-    "editor.tabSize": 2,
-    "editor.insertSpaces": true
-  },
-  "[typescript]": {
-    "editor.tabSize": 2,
-    "editor.insertSpaces": true
-  },
-  // ===================
-  //
-  // extensions settings
-  //
-  // ===================
-  "editor.defaultFormatter": "esbenp.prettier-vscode",
-  "explorer.confirmDelete": false,
-  "explorer.confirmDragAndDrop": false,
-  "extensions.autoUpdate": true,
-  "extensions.ignoreRecommendations": false,
   "json.schemas": [],
   "liveServer.settings.donotShowInfoMsg": true,
-  "python.languageServer": "Default",
   "redhat.telemetry.enabled": true,
+  "terminal.integrated.defaultLocation": "editor",
   "shellcheck.ignorePatterns": {
     "**/.bash_profile": true,
-    "**/.bashrc": true,
+    "**/.bashrc": true
   },
   "vsintellicode.modify.editor.suggestSelection": "automaticallyOverrodeDefaultValue",
+  "window.title": "${dirty}${activeEditorMedium}${separator}${rootName}",
   "workbench.colorTheme": "Quiet Light",
   "workbench.colorCustomizations": {
     "terminal.background": "#090300",
@@ -140,5 +100,27 @@
     "!Split sequence"
   ],
   "yaml.schemaStore.enable": false,
-  "yaml.validate": false
+  "yaml.validate": false,
+  "[javascript]": {
+    "editor.tabSize": 2
+  },
+  "[json]": {
+    "editor.tabSize": 4
+  },
+  "[markdown]": {
+    "files.trimTrailingWhitespace": false,
+    "editor.tabSize": 2
+  },
+  "[python]": {
+    "editor.tabSize": 4,
+    "python.languageServer": "Default",
+    "python.linting.flake8Args": ["--ignore=E501"],
+    "python.linting.flake8Enabled": true
+  },
+  "[terraform]": {
+    "editor.tabSize": 2
+  },
+  "[typescript]": {
+    "editor.tabSize": 2
+  }
 }
