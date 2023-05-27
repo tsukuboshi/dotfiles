@@ -1,10 +1,10 @@
 {
   "editor.acceptSuggestionOnEnter": "on",
   "editor.copyWithSyntaxHighlighting": true,
-  "editor.defaultFormatter": "esbenp.prettier-vscode",
+  "editor.defaultFormatter": null,
   "editor.dragAndDrop": false,
   "editor.fontSize": 12,
-  "editor.formatOnSave": true,
+  "editor.formatOnSave": false,
   "editor.insertSpaces": true,
   "editor.snippetSuggestions": "top",
   "editor.suggest.showMethods": true,
@@ -36,8 +36,12 @@
   "files.autoGuessEncoding": true,
   "json.schemas": [],
   "liveServer.settings.donotShowInfoMsg": true,
+  "python.languageServer": "Default",
+  "python.linting.flake8Args": ["--ignore=E501"],
+  "python.linting.flake8Enabled": true,
   "redhat.telemetry.enabled": true,
   "terminal.integrated.defaultLocation": "editor",
+  "textlint.autoFixOnSave": true,
   "shellcheck.ignorePatterns": {
     "**/.bash_profile": true,
     "**/.bashrc": true
@@ -102,25 +106,44 @@
   "yaml.schemaStore.enable": false,
   "yaml.validate": false,
   "[javascript]": {
-    "editor.tabSize": 2
+    "editor.defaultFormatter": "esbenp.prettier-vscode",
+    "editor.tabSize": 2,
+    "editor.formatOnSave": true,
+    "editor.formatOnSaveMode": "modifications"
   },
   "[json]": {
+    "editor.defaultFormatter": "esbenp.prettier-vscode",
+    "editor.formatOnSave": true,
+    "editor.formatOnSaveMode": "file",
     "editor.tabSize": 4
   },
   "[markdown]": {
     "files.trimTrailingWhitespace": false,
-    "editor.tabSize": 2
+    "editor.defaultFormatter": "taichi.vscode-textlint",
+    "editor.formatOnSave": true,
+    "editor.formatOnSaveMode": "file"
   },
   "[python]": {
     "editor.tabSize": 4,
-    "python.languageServer": "Default",
-    "python.linting.flake8Args": ["--ignore=E501"],
-    "python.linting.flake8Enabled": true
+    "editor.formatOnSave": true,
+    "editor.formatOnSaveMode": "modifications"
   },
   "[terraform]": {
-    "editor.tabSize": 2
+    "editor.defaultFormatter": "hashicorp.terraform",
+    "editor.formatOnSave": true,
+    "editor.formatOnSaveMode": "modifications",
+    "editor.tabSize": 4
+  },
+  "[terraform-vars]": {
+    "editor.defaultFormatter": "hashicorp.terraform",
+    "editor.formatOnSave": true,
+    "editor.formatOnSaveMode": "modifications",
+    "editor.tabSize": 4
   },
   "[typescript]": {
+    "editor.defaultFormatter": "esbenp.prettier-vscode",
+    "editor.formatOnSave": true,
+    "editor.formatOnSaveMode": "modifications",
     "editor.tabSize": 2
   }
 }
