@@ -107,9 +107,9 @@
   "yaml.validate": false,
   "[javascript]": {
     "editor.defaultFormatter": "esbenp.prettier-vscode",
-    "editor.tabSize": 2,
     "editor.formatOnSave": true,
-    "editor.formatOnSaveMode": "modifications"
+    "editor.formatOnSaveMode": "modifications",
+    "editor.tabSize": 2
   },
   "[json]": {
     "editor.defaultFormatter": "esbenp.prettier-vscode",
@@ -124,9 +124,9 @@
     "editor.formatOnSaveMode": "file"
   },
   "[python]": {
-    "editor.tabSize": 4,
     "editor.formatOnSave": true,
-    "editor.formatOnSaveMode": "modifications"
+    "editor.formatOnSaveMode": "modifications",
+    "editor.tabSize": 4
   },
   "[terraform]": {
     "editor.defaultFormatter": "hashicorp.terraform",
