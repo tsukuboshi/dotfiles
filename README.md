@@ -18,13 +18,13 @@ This repository contains scripts to set macOS.
 Download installation materials.
 
 ```shell
-$ cd ~ && git clone https://github.com/tsukuboshi/dotfiles
+$ git clone https://github.com/tsukuboshi/dotfiles
 ```
 
 Set macOS.
 
 ```shell
-$ cd ~/dotfiles && make
+$ cd dotfiles && make
 ```
 
 Set visual studio code.
