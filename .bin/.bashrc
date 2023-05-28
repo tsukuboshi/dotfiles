@@ -118,6 +118,12 @@ function eap (){
   export AWS_PROFILE=${PROFILE}
 }
 alias enap='export -n AWS_PROFILE'
+
+function awsume (){
+  local PROFILE=${1:-tsukuboshi}
+  source $(pyenv which awsume) ${PROFILE}
+}
+
 alias asg='aws sts get-caller-identity'
 alias asl='aws sso login'
 function ec2exec (){
@@ -202,11 +208,6 @@ function tdoc (){
   terraform-docs markdown table --output-file README.md --output-mode inject ${MODULE_PATH}
 }
 
-function otp (){
-  local ITEMID=${1:-AWS}
-  op item get ${ITEMID} --otp
-}
-
 alias db='docker build .'
 alias dil='docker image ls'
 alias dcl='docker container ls -a'
@@ -224,4 +225,13 @@ alias gle="ls -l ${HOME}/Library/Application\ Support/Google/Chrome/Default/Exte
 
 alias cle='code --list-extensions'
 
-alias awsume="source \$(pyenv which awsume)"
+function otp (){
+  local ITEMID=${1:-AWS}
+  if [ "$(which op)" != "" ]; then
+    op item get ${ITEMID} --otp
+  elif [ "$(which bw)" != "" ]; then
+    bw get totp ${ITEMID}
+  else
+    echo  "Install the password manager command to get your totp."
+  fi
+}
