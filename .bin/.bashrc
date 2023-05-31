@@ -51,7 +51,7 @@ function gm (){
   git merge origin/"${TRAKING_BRANCH}"
 }
 function gpl (){
-  local REMOTE_BRANCH=${1:-HEAD}
+  # local REMOTE_BRANCH=${1:-HEAD}
   git pull origin "${REMOTE_BRANCH}"
 }
 
