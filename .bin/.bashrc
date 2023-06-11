@@ -12,15 +12,20 @@ alias rmtrash='rm -rf ${HOME}/.Trash/*'
 
 alias delds='find . -name ".DS_Store" -type f -ls -delete'
 
-alias bd='brew update'
+alias bl='brew list --formula'
+alias bo='brew upgrade --dry-run'
 alias bg='brew upgrade'
-alias bgn='brew upgrade --dry-run'
-alias bgc='brew upgrade --cask --greedy'
-alias bgcn='brew upgrade --cask --greedy --dry-run'
-alias bo='brew outdated'
-alias bl='brew list'
-alias bd='brew doctor'
-alias bbc='brew bundle check --global'
+
+alias cl='brew list --cask'
+alias co='brew upgrade --cask --greedy --dry-run'
+alias cg='brew upgrade --cask --greedy'
+
+alias ml='mas list'
+alias mo='mas outdated'
+alias mg='mas upgrade'
+
+alias bbl='brew bundle list --global --all'
+alias bbc='brew bundle check --global --formula'
 alias bbi='brew bundle install --global'
 
 alias ell='exa -lF'
