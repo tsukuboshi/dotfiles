@@ -142,28 +142,28 @@ function ecsexec (){
   aws ecs execute-command --cluster ${CLUSTER_NAME} --task ${TASK_ID} --container ${CONTAINER_NAME} --interactive --command "/bin/sh"
 }
 
-function cit (){
+function cdkin (){
   local PROFILE=${1:-tsukuboshi}
   aws-vault exec ${PROFILE} -- cdk init --language typescript
 }
 
-function cs (){
+function cdks (){
   local PROFILE=${1:-tsukuboshi}
   aws-vault exec ${PROFILE} -- cdk synth
 }
-function cb (){
+function cdkb (){
   local PROFILE=${1:-tsukuboshi}
   aws-vault exec ${PROFILE} -- cdk bootstrap
 }
-function cdf (){
+function cdki (){
   local PROFILE=${1:-tsukuboshi}
   aws-vault exec ${PROFILE} -- cdk diff
 }
-function cdp (){
+function cdkp (){
   local PROFILE=${1:-tsukuboshi}
   aws-vault exec ${PROFILE} -- cdk deploy
 }
-function cds (){
+function cdkd (){
   local PROFILE=${1:-tsukuboshi}
   aws-vault exec ${PROFILE} -- cdk destroy
 }
