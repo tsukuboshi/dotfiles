@@ -18,7 +18,7 @@
 	defaultBranch = main
 	templatedir = ~/.git-templates/git-secrets
 [pull]
-	rebase = true
+	rebase = false
 [push]
 	default = simple
 [secrets]
