@@ -5,9 +5,9 @@ fi
 
 # Set the prompt
 function parse_git_branch {
-  git branch --no-color 2> /dev/null | sed -e '/^[^*]/d' -e 's/* \(.*\)/ [\1]/'
+  git branch --no-color 2> /dev/null | sed -e '/^[^*]/d' -e 's/* \(.*\)/ \1/'
 }
-export PS1="\n\[\e[1;31m\]\u \[\e[1;32m\]\W \[\e[1;34m\]\$(parse_git_branch) \[\e[1;33m\]\$ \[\e[0m\]"
+export PS1="\n\[\e[1;31m\]\u \[\e[1;32m\]\W\[\e[1;34m\]\$(parse_git_branch) \[\e[1;33m\]\$ \[\e[0m\]"
 
 
 # Set the language
