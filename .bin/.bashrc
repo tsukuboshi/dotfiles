@@ -35,17 +35,15 @@ function etree (){
   exa -TL "${DEPTH}"
 }
 
-alias gb='git branch'
-alias gba='git branch --all'
-alias gs='git status'
-function gcl (){
-  local URL=$1
-  git clone "${URL}"
-}
+alias gb='git branch --all'
+alias gbl='git branch'
+alias gbr='git branch --remote'
 function gbd (){
   local LOCAL_BRANCH=$1
-  git branch -d "${LOCAL_BRANCH}"
+  git branch -D "${LOCAL_BRANCH}"
 }
+
+alias gs='git status'
 function gf (){
   local REMOTE_BRANCH=${1:-HEAD}
   git fetch origin "${REMOTE_BRANCH}"
@@ -53,26 +51,15 @@ function gf (){
 alias gfa='git fetch --all'
 function gm (){
   local TRAKING_BRANCH=${1:-HEAD}
-  git merge origin/"${TRAKING_BRANCH}"
+  git merge origin "${TRAKING_BRANCH}"
 }
 function gpl (){
-  # local REMOTE_BRANCH=${1:-HEAD}
+  local REMOTE_BRANCH=${1:-HEAD}
   git pull origin "${REMOTE_BRANCH}"
 }
-
-function gch (){
-  local LOCAL_BRANCH=${1:-main}
-  git checkout "${LOCAL_BRANCH}"
-}
-function gcb (){
-  local LOCAL_BRANCH=$1
-  git checkout -b "${LOCAL_BRANCH}"
-}
-function gcbr (){
-  local LOCAL_BRANCH=$1
-  local REMOTE_BRANCH=$2
-  git checkout -b "${LOCAL_BRANCH}" "${REMOTE_BRANCH}"
-}
+alias gpla='git pull --all'
+alias gch="git checkout"
+alias gcb="git checkout -b"
 function ga (){
   local FILE=${1:-.}
   git add "${FILE}"
@@ -92,20 +79,13 @@ function gps (){
   local REMOTE_BRANCH=${1:-HEAD}
   git push origin "${REMOTE_BRANCH}"
 }
-alias gpla='git pull --all'
 function gss (){
   local MESSAGE=$1
   git stash save "${MESSAGE}"
 }
+alias gsu='git stash save -u'
 alias gsl='git stash list'
-function gsa (){
-  local STASH_NAME=$1
-  git stash apply "${STASH_NAME}"
-}
-function gsd (){
-  local STASH_NAME=$1
-  git stash drop "${STASH_NAME}"
-}
+alias gsc='git stash clear'
 
 alias pci='pre-commit install'
 alias pcr='pre-commit run -a'
