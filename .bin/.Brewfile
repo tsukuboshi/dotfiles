@@ -7,7 +7,7 @@ tap "homebrew/core"
 tap "aws/tap"
 
 brew "anyenv"
-brew "awsume"
+# brew "awsume"
 # brew "aws-sam-cli"
 brew "bash-completion"
 # brew "bitwarden-cli"
