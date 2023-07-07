@@ -54,12 +54,16 @@ function gm (){
   git merge origin "${TRAKING_BRANCH}"
 }
 function gpl (){
-  local REMOTE_BRANCH=${1:-HEAD}
+  local REMOTE_BRANCH=${1:-`git branch --contains | cut -d " " -f 2`}
   git pull origin "${REMOTE_BRANCH}"
 }
 alias gpla='git pull --all'
 alias gch="git checkout"
 alias gcb="git checkout -b"
+function gcbo (){
+  local BRANCH=${1}
+  git checkout -b ${BRANCH} origin/${BRANCH}
+}
 function ga (){
   local FILE=${1:-.}
   git add "${FILE}"
