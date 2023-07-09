@@ -40,6 +40,7 @@
   "python.languageServer": "Default",
   "python.linting.flake8Args": ["--ignore=E501"],
   "python.linting.flake8Enabled": true,
+  "python.linting.mypyEnabled": true,
   "redhat.telemetry.enabled": true,
   "terminal.integrated.defaultLocation": "editor",
   "textlint.autoFixOnSave": true,
