@@ -36,6 +36,7 @@
   "files.autoGuessEncoding": true,
   "json.schemas": [],
   "liveServer.settings.donotShowInfoMsg": true,
+  "python.defaultInterpreterPath": "/usr/bin/python3",
   "python.languageServer": "Default",
   "python.linting.flake8Args": ["--ignore=E501"],
   "python.linting.flake8Enabled": true,
