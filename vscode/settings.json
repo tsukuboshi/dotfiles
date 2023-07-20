@@ -5,6 +5,7 @@
   "editor.dragAndDrop": false,
   "editor.fontSize": 12,
   "editor.formatOnSave": false,
+  "editor.inlineSuggest.enabled": true,
   "editor.insertSpaces": true,
   "editor.snippetSuggestions": "top",
   "editor.suggest.showMethods": true,
@@ -34,6 +35,12 @@
   },
   "files.eol": "\n",
   "files.autoGuessEncoding": true,
+  "github.copilot.enable": {
+    "*": true,
+    "plaintext": false,
+    "markdown": true,
+    "scminput": false
+  },
   "json.schemas": [],
   "liveServer.settings.donotShowInfoMsg": true,
   "python.defaultInterpreterPath": "/usr/bin/python3",
@@ -149,12 +156,5 @@
     "editor.formatOnSave": true,
     "editor.formatOnSaveMode": "modifications",
     "editor.tabSize": 2
-  },
-  "editor.inlineSuggest.enabled": true,
-  "github.copilot.enable": {
-    "*": true,
-    "plaintext": false,
-    "markdown": true,
-    "scminput": false
   }
 }
