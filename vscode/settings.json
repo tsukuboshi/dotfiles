@@ -156,5 +156,6 @@
     "editor.formatOnSave": true,
     "editor.formatOnSaveMode": "modifications",
     "editor.tabSize": 2
-  }
+  },
+  "window.zoomLevel": -1
 }
