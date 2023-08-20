@@ -77,7 +77,10 @@ function gcm (){
   local MESSAGE=${1:-fix}
   git commit -m "${MESSAGE}"
 }
-alias gca='git commit --amend'
+function gcma (){
+  local MESSAGE=${1:-fix}
+  git commit -m --amend "${MESSAGE}"
+}
 alias gcx='git reset --hard HEAD^'
 function gps (){
   local REMOTE_BRANCH=${1:-HEAD}
