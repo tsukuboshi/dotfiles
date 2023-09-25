@@ -1,6 +1,5 @@
 amazonwebservices.aws-toolkit-vscode
 aws-scripting-guy.cform
-bpruitt-goddard.mermaid-markdown-syntax-highlighting
 chrmarti.regex
 DavidAnson.vscode-markdownlint
 dbaeumer.vscode-eslint
@@ -14,6 +13,7 @@ formulahendry.auto-close-tag
 formulahendry.auto-complete-tag
 formulahendry.auto-rename-tag
 GitHub.copilot
+GitHub.copilot-chat
 github.vscode-github-actions
 hashicorp.terraform
 hediet.vscode-drawio
