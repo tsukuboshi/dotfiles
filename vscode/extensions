@@ -1,5 +1,6 @@
 amazonwebservices.aws-toolkit-vscode
 aws-scripting-guy.cform
+bpruitt-goddard.mermaid-markdown-syntax-highlighting
 chrmarti.regex
 DavidAnson.vscode-markdownlint
 dbaeumer.vscode-eslint
@@ -24,6 +25,7 @@ mhutchie.git-graph
 mosapride.zenkaku
 ms-azuretools.vscode-docker
 MS-CEINTL.vscode-language-pack-ja
+ms-python.black-formatter
 ms-python.flake8
 ms-python.python
 ms-python.vscode-pylance

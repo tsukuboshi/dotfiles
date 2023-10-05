@@ -44,6 +44,11 @@
   "json.schemas": [],
   "liveServer.settings.donotShowInfoMsg": true,
   "python.defaultInterpreterPath": "/usr/bin/python3",
+  "python.formatting.blackArgs": [
+    "--line-length",
+    "119"
+],
+  "python.formatting.provider": "black",
   "python.languageServer": "Default",
   // "python.linting.flake8Args": ["--ignore=E501"],
   "python.linting.flake8Enabled": true,
@@ -52,7 +57,6 @@
   "terminal.integrated.copyOnSelection": true,
   "terminal.integrated.defaultLocation": "editor",
   "terminal.integrated.rightClickBehavior": "paste",
-  "textlint.autoFixOnSave": true,
   "shellcheck.ignorePatterns": {
     "**/.bash_profile": true,
     "**/.bashrc": true
