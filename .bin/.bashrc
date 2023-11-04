@@ -118,6 +118,10 @@ function awsume (){
 
 alias asg='aws sts get-caller-identity'
 alias asl='aws sso login'
+function asl (){
+  local PROFILE=$1
+  aws sso login --profile ${PROFILE}
+}
 function ec2exec (){
   local INSTANCE_ID=$1
   aws ssm start-session --target ${INSTANCE_ID}
@@ -129,31 +133,20 @@ function ecsexec (){
   aws ecs execute-command --cluster ${CLUSTER_NAME} --task ${TASK_ID} --container ${CONTAINER_NAME} --interactive --command "/bin/sh"
 }
 
-function cdkin (){
-  local PROFILE=${1:-tsukuboshi}
-  aws-vault exec ${PROFILE} -- cdk init --language typescript
-}
+alias samv='sam validate'
+alias samb='sam build'
+alias samp='sam deploy'
+alias samd='sam destroy'
 
-function cdks (){
-  local PROFILE=${1:-tsukuboshi}
-  aws-vault exec ${PROFILE} -- cdk synth
+function cdkin (){
+  local LANGUAGE=${1:-typescript}
+  cdk init --language ${LANGUAGE}
 }
-function cdkb (){
-  local PROFILE=${1:-tsukuboshi}
-  aws-vault exec ${PROFILE} -- cdk bootstrap
-}
-function cdki (){
-  local PROFILE=${1:-tsukuboshi}
-  aws-vault exec ${PROFILE} -- cdk diff
-}
-function cdkp (){
-  local PROFILE=${1:-tsukuboshi}
-  aws-vault exec ${PROFILE} -- cdk deploy
-}
-function cdkd (){
-  local PROFILE=${1:-tsukuboshi}
-  aws-vault exec ${PROFILE} -- cdk destroy
-}
+alias cdks='cdk synthesize'
+alias cdki='cdk diff'
+alias cdkp='cdk deploy'
+alias cdkl='cdk list'
+alias cdkd='cdk destroy'
 
 function tin (){
   local PROFILE=${1:-tsukuboshi}
