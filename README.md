@@ -44,3 +44,6 @@ Set google chrome.
 2. Click "Add Chrome" button.
 3. If you want to output the current extensions, execute "ls -l ${HOME}/Library/Application\ Support/Google/Chrome/Default/Extensions | awk '{print \$9}' | sed 's/^/https:\/\/chrome.google.com\/webstore\/detail\//g' | sed -e '1,2d' > ~/dotfiles/chrome/extensions".
 ```
+## References
+
+[Mac の環境を dotfiles でセットアップしてみた\(2023 年度版\)](https://zenn.dev/tsukuboshi/articles/6e82aef942d9af)
