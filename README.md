@@ -32,6 +32,22 @@ Set visual studio code.
 5. If you want to output the current extensions, execute "code --list-extensions > ~/dotfiles/vscode/extensions".
 ```
 
+Set raycast.
+
+```
+1. Press "command + ," on raycast.
+2. Click "Advanced" tab.
+3. If you want to export your raycast data, click "Export" button.
+4. Click "Export" button.
+5. Choose "~/dotfiles/raycast" directory.
+6. If you want to import your raycast data, click "Import" button.
+7. Click "Select file" button.
+8. Choose "~/dotfiles/raycast/Raycast yyyy-mm-dd hh.mm.ss.rayconfig" file.
+9. Click "Import" button.
+10. Click "Import" button.
+11. Click "Continue" button.
+```
+
 Set google chrome.
 
 ```
