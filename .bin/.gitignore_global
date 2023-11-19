@@ -417,5 +417,5 @@ terraform.rc
 # SAM-specific ignores
 .aws-sam/
 packaged.yaml
-samconfig.toml
+# samconfig.toml
 *.db
