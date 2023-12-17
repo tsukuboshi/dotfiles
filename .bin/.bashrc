@@ -106,6 +106,10 @@ alias au='anyenv update'
 alias nrb='npm run build'
 alias nrw='npm run watch'
 alias nrt='npm run test'
+alias nig='npm install -g'
+alias nid='npm install -D'
+alias ncu='npx -p npm-check-updates  -c "ncu"'
+alias ncuu='npx -p npm-check-updates  -c "ncu -u"'
 
 function eap (){
   local PROFILE=${1:-tsukuboshi}
