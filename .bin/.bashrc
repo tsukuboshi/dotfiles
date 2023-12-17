@@ -8,6 +8,8 @@ alias ....='cd ../../..'
 
 alias relogin='exec $SHELL -l'
 
+alias checkip='curl inet-ip.info'
+
 alias rmtrash='rm -rf ${HOME}/.Trash/*'
 
 alias delds='find . -name ".DS_Store" -type f -ls -delete'
