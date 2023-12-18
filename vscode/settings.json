@@ -161,5 +161,7 @@
     "editor.formatOnSaveMode": "modifications",
     "editor.tabSize": 2
   },
-  "window.zoomLevel": -1
+  "window.zoomLevel": -2,
+  "javascript.updateImportsOnFileMove.enabled": "never",
+  "terminal.integrated.enableMultiLinePasteWarning": false
 }
