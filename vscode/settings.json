@@ -134,9 +134,9 @@
   },
   "[markdown]": {
     "files.trimTrailingWhitespace": false,
-    "editor.defaultFormatter": "taichi.vscode-textlint",
+    "editor.defaultFormatter": "DavidAnson.vscode-markdownlint",
     "editor.formatOnSave": true,
-    "editor.formatOnSaveMode": "file"
+    "editor.formatOnSaveMode": "file",
   },
   "[python]": {
     "editor.formatOnSave": true,
