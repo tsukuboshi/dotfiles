@@ -50,7 +50,7 @@
 ],
   "python.formatting.provider": "black",
   "python.languageServer": "Default",
-  // "python.linting.flake8Args": ["--ignore=E501"],
+  "python.linting.flake8Args": ["--ignore=E203, E501, W503, T499"],
   "python.linting.flake8Enabled": true,
   "python.linting.mypyEnabled": true,
   "redhat.telemetry.enabled": true,
@@ -122,8 +122,10 @@
   "yaml.validate": false,
   "[javascript]": {
     "editor.defaultFormatter": "esbenp.prettier-vscode",
+    "editor.codeActionsOnSave": {
+      "source.organizeImports": true
+    },
     "editor.formatOnSave": true,
-    "editor.formatOnSaveMode": "modifications",
     "editor.tabSize": 2
   },
   "[json]": {
@@ -139,26 +141,34 @@
     "editor.formatOnSaveMode": "file",
   },
   "[python]": {
+    "editor.codeActionsOnSave": {
+      "source.organizeImports": true
+    },
     "editor.formatOnSave": true,
-    "editor.formatOnSaveMode": "modifications",
     "editor.tabSize": 4
   },
   "[terraform]": {
+    "editor.codeActionsOnSave": {
+      "source.organizeImports": true
+    },
     "editor.defaultFormatter": "hashicorp.terraform",
     "editor.formatOnSave": true,
-    "editor.formatOnSaveMode": "modifications",
     "editor.tabSize": 4
   },
   "[terraform-vars]": {
+    "editor.codeActionsOnSave": {
+      "source.organizeImports": true
+    },
     "editor.defaultFormatter": "hashicorp.terraform",
     "editor.formatOnSave": true,
-    "editor.formatOnSaveMode": "modifications",
     "editor.tabSize": 4
   },
   "[typescript]": {
+    "editor.codeActionsOnSave": {
+      "source.organizeImports": true
+    },
     "editor.defaultFormatter": "esbenp.prettier-vscode",
     "editor.formatOnSave": true,
-    "editor.formatOnSaveMode": "modifications",
     "editor.tabSize": 2
   },
   "window.zoomLevel": -2,
