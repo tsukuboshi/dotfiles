@@ -23,6 +23,11 @@ if [ "$(which rdctl)" == "" ]; then
   export PATH="$HOME/.rd/bin:$PATH"
 fi
 
+# Set Poetry
+if [ "$(which poetry)" == "" ]; then
+  export PATH="$HOME/.local/bin:$PATH"
+fi
+
 # Set vscode
 if [ "$(which code)" == "" ]; then
   export PATH="/Applications/Visual\ Studio\ Code.app/Contents/Resources/app/bin:$PATH"
