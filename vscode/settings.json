@@ -138,7 +138,7 @@
     "files.trimTrailingWhitespace": false,
     "editor.defaultFormatter": "DavidAnson.vscode-markdownlint",
     "editor.formatOnSave": true,
-    "editor.formatOnSaveMode": "file",
+    "editor.formatOnSaveMode": "file"
   },
   "[python]": {
     "editor.codeActionsOnSave": {
