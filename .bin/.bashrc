@@ -34,13 +34,6 @@ alias bbl='brew bundle list --global --all'
 alias bbc='brew bundle check --global --formula'
 alias bbi='brew bundle install --global'
 
-alias ell='exa -lF'
-alias ela='exa -laF'
-function etree (){
-  local DEPTH=${1:-2}
-  exa -TL "${DEPTH}"
-}
-
 alias gb='git branch --all'
 alias gbl='git branch'
 alias gbr='git branch --remote'
