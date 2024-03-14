@@ -29,6 +29,8 @@ ms-ceintl.vscode-language-pack-ja
 ms-python.black-formatter
 ms-python.debugpy
 ms-python.flake8
+ms-python.isort
+ms-python.mypy-type-checker
 ms-python.python
 ms-python.vscode-pylance
 ms-vsliveshare.vsliveshare
