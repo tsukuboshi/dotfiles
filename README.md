@@ -13,13 +13,13 @@ This repository contains scripts to set macOS.
 Download installation materials.
 
 ```shell
-$ git clone https://github.com/tsukuboshi/dotfiles
+git clone https://github.com/tsukuboshi/dotfiles
 ```
 
 Set macOS.
 
 ```shell
-$ cd dotfiles && make
+cd dotfiles && make
 ```
 
 Set visual studio code.
@@ -58,5 +58,5 @@ Set google chrome.
 
 ## References
 
-- [Mac の環境を dotfiles でセットアップしてみた\(2023 年度版\)](https://zenn.dev/tsukuboshi/articles/6e82aef942d9af)
-- [Macの環境をdotfilesでセットアップしてみた \| DevelopersIO](https://dev.classmethod.jp/articles/joined-mac-dotfiles-customize/)
+- [Mac の環境を dotfiles でセットアップしてみた改](https://zenn.dev/tsukuboshi/articles/6e82aef942d9af)
+- [Mac の環境を dotfiles でセットアップしてみた \| DevelopersIO](https://dev.classmethod.jp/articles/joined-mac-dotfiles-customize/)
