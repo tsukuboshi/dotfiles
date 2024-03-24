@@ -196,14 +196,31 @@ function tdoc (){
   terraform-docs markdown table --output-file README.md --output-mode inject ${MODULE_PATH}
 }
 
-alias db='docker build .'
-alias dil='docker image ls'
-alias dcl='docker container ls -a'
+function dib (){
+  local IMAGE=${1:-itest}
+  docker image build -t ${IMAGE} .
+}
+alias dil='docker image ls -a'
+alias dip='docker image prune'
+function dcr (){
+  local PORT=${1:-80}
+  local IMAGE=${2:-itest}
+  local CONTAINER=${3:-ctest}
+  docker container run --platform linux/x86_64 --name ${CONTAINER} -d -p ${PORT}:80 ${IMAGE}
+}
 function dce (){
-  local CONTAINER=$1
+  local CONTAINER=${1:-ctest}
   docker container exec -it ${CONTAINER} bash
 }
-alias dip='docker image prune'
+function dcs () {
+  local CONTAINER=${1:-ctest}
+  docker container stop $(docker container ls -a --filter="name=${CONTAINER}" --format="{{.ID}}")
+}
+function dcrm () {
+  local CONTAINER=${1:-ctest}
+  docker container rm $(docker container ls -a --filter="name=${CONTAINER}" --format="{{.ID}}")
+}
+alias dcl='docker container ls -a'
 alias dcp='docker container prune'
 alias dsp='docker system prune --volumes'
 alias dcu='docker compose up -d'
