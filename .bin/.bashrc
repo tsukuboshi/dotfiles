@@ -198,7 +198,7 @@ function tdoc (){
 
 function dib (){
   local IMAGE=${1:-itest}
-  docker image build -t ${IMAGE} .
+  docker image build --platform linux/x86_64 -t ${IMAGE} .
 }
 alias dil='docker image ls -a'
 alias dip='docker image prune'
