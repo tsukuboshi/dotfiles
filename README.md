@@ -22,7 +22,7 @@ Move to target repository.
 cd dotfiles
 ```
 
-Set macOS.
+Build macOS from Makefile.
 
 ```shell
 make
