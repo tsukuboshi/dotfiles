@@ -14,6 +14,11 @@ Download installation materials.
 
 ```shell
 git clone https://github.com/tsukuboshi/dotfiles
+```
+
+Move to target repository.
+
+```shell
 cd dotfiles
 ```
 
