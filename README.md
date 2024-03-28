@@ -30,5 +30,5 @@ make
 
 ## References
 
-- [Mac の環境を dotfiles でセットアップしてみた改](https://zenn.dev/tsukuboshi/articles/6e82aef942d9af)
-- [Mac の環境を dotfiles でセットアップしてみた \| DevelopersIO](https://dev.classmethod.jp/articles/joined-mac-dotfiles-customize/)
+- [Macの環境をdotfilesでセットアップしてみた改](https://zenn.dev/tsukuboshi/articles/6e82aef942d9af)
+- [Macの環境をdotfilesでセットアップしてみた \| DevelopersIO](https://dev.classmethod.jp/articles/joined-mac-dotfiles-customize/)
