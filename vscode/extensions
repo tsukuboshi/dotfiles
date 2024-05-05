@@ -1,11 +1,14 @@
 alefragnani.project-manager
 amazonwebservices.aws-toolkit-vscode
+arjun.swagger-viewer
 aws-scripting-guy.cform
 bpruitt-goddard.mermaid-markdown-syntax-highlighting
 chrmarti.regex
 davidanson.vscode-markdownlint
 dbaeumer.vscode-eslint
 donjayamanne.githistory
+dorzey.vscode-sqlfluff
+dsznajder.es7-react-js-snippets
 eamodio.gitlens
 eastman.vscode-cfn-nag
 ecmel.vscode-html-css
@@ -19,6 +22,7 @@ github.copilot-chat
 github.vscode-github-actions
 hashicorp.terraform
 hediet.vscode-drawio
+htmlhint.vscode-htmlhint
 ionutvmi.path-autocomplete
 janisdd.vscode-edit-csv
 kddejong.vscode-cfn-lint
@@ -43,6 +47,7 @@ rogalmic.bash-debug
 ryu1kn.partial-diff
 shd101wyy.markdown-preview-enhanced
 streetsidesoftware.code-spell-checker
+stylelint.vscode-stylelint
 taichi.vscode-textlint
 tfsec.tfsec
 timonwong.shellcheck
@@ -50,5 +55,6 @@ tomoki1207.pdf
 vincaslt.highlight-matching-tag
 visualstudioexptteam.intellicode-api-usage-examples
 visualstudioexptteam.vscodeintellicode
+xabikos.javascriptsnippets
 yzane.markdown-pdf
 yzhang.markdown-all-in-one
