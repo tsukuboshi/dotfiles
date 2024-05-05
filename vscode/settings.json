@@ -1,4 +1,5 @@
 {
+  // "css.enabledLanguages": ["html", "typescript", "typescriptreact"],
   "editor.acceptSuggestionOnEnter": "on",
   "editor.copyWithSyntaxHighlighting": true,
   "editor.defaultFormatter": null,
@@ -13,6 +14,11 @@
   "editor.suggestSelection": "first",
   "editor.tabSize": 2,
   "editor.wordWrap": "on",
+  "emmet.showSuggestionsAsSnippets": true,
+  "emmet.includeLanguages": {
+    "javascript": "javascriptreact",
+    "typescript": "typescriptreact",
+  },
   "emmet.triggerExpansionOnTab": true,
   "emmet.variables": {
     "lang": "ja"
