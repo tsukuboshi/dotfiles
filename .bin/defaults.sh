@@ -7,23 +7,27 @@ fi
 
 # ====================
 #
-# Base
+# Common
 #
 # ====================
 
+# Disable the sound effects on boot
+defaults write -g com.apple.trackpad.scaling 3
 
-# Disable auto-capitalization
-defaults write NSGlobalDomain NSAutomaticCapitalizationEnabled -bool false
+# Increase the mouse speed
+defaults write -g com.apple.mouse.scaling 1.5
 
-# ====================
-#
-# Dock
-#
-# ====================
+# Increase the keyboard repeat rate
+defaults write -g KeyRepeat -int 1
 
+# Increase the keyboard initial delay
+defaults write -g InitialKeyRepeat -int 10
 
-# Disable animation at application launch
-defaults write com.apple.dock launchanim -bool false
+# Disable Spelling Correction
+defaults write -g NSAutomaticSpellingCorrectionEnabled -bool false
+
+# Disable make .DS_Store
+defaults write com.apple.desktopservices DSDontWriteNetworkStores -bool true
 
 # ====================
 #
@@ -31,15 +35,11 @@ defaults write com.apple.dock launchanim -bool false
 #
 # ====================
 
-
-# Disable animation
-defaults write com.apple.finder DisableAllAnimations -bool true
+# Show files with all extensions
+defaults write NSGlobalDomain AppleShowAllExtensions -bool true
 
 # Show hidden files by default
 defaults write com.apple.finder AppleShowAllFiles -bool true
-
-# Show files with all extensions
-defaults write NSGlobalDomain AppleShowAllExtensions -bool true
 
 # Display the status bar
 defaults write com.apple.finder ShowStatusBar -bool true
