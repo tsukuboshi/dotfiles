@@ -20,10 +20,6 @@ defaults write com.apple.menuextra.battery ShowPercent -string "YES"
 # Display date, day, and time in the menu bar
 defaults write com.apple.menuextra.clock DateFormat -string 'EEE d MMM HH:mm'
 
-# Set `${HOME}` as the default location for new Finder windows
-defaults write com.apple.finder NewWindowTarget -string "PfDe"
-defaults write com.apple.finder NewWindowTargetPath -string "file://${HOME}/"
-
 # Show the full POSIX path as Finder window title
 defaults write com.apple.finder _FXShowPosixPathInTitle -bool true
 
