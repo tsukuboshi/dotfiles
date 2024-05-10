@@ -57,9 +57,6 @@ defaults write -g AppleShowAllExtensions -bool true
 # Increase trackpad speed
 defaults write -g com.apple.trackpad.scaling 3
 
-# Wipe all app icons from the Dock
-defaults write com.apple.dock persistent-apps -array
-
 for app in "Dock" \
 	"Finder" \
 	"SystemUIServer"; do
