@@ -58,8 +58,3 @@ for app in "Dock" \
 	"SystemUIServer"; do
 	killall "${app}" &> /dev/null
 done
-
-# References:
-# 1. https://qiita.com/djmonta/items/17531dde1e82d9786816
-# 2. https://qiita.com/keitean/items/bf82da152fd587fa29ef
-# 3. https://qiita.com/dodonki1223/items/2bb296111e561c93035e
