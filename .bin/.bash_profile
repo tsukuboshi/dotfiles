@@ -44,6 +44,13 @@ if [ "$(which rbenv)" != "" ]; then
   eval "$(rbenv init - bash)"
 fi
 
+# Set asdf
+if [ "$(which asdf)" != "" ]; then
+  echo -e "\n. \"$(brew --prefix asdf)/libexec/asdf.sh\"" >& /dev/null
+  echo -e "\n. \"$(brew --prefix asdf)/etc/bash_completion.d/asdf.bash\"" >& /dev/null
+fi
+
+
 # Set aws-completion
 if [ "$(which aws_completer)" != "" ]; then
   complete -C aws_completer aws
