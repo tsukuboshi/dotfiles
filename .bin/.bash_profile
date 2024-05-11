@@ -70,7 +70,7 @@ if [ -r "/usr/local/etc/profile.d/bash_completion.sh" ]; then
 fi
 
 # Set Typescript Compiler
-if [ "$(which tsc)" == "" ]; then
+if [ "$(which tsc)" == "" ] && [ "$(which npm)" != "" ]; then
   export PATH="$(npm bin -g):$PATH"
 fi
 
