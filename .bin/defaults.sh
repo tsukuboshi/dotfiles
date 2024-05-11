@@ -11,15 +11,6 @@ defaults write com.apple.dock autohide -bool true
 # Avoid creating `.DS_Store` files on network volumes
 defaults write com.apple.desktopservices DSDontWriteNetworkStores -bool true
 
-# Disable the "Are you sure you want to open this application?" dialog
-defaults write com.apple.LaunchServices LSQuarantine -bool false
-
-# Display battery level in the menu bar
-defaults write com.apple.menuextra.battery ShowPercent -string "YES"
-
-# Display date, day, and time in the menu bar
-defaults write com.apple.menuextra.clock DateFormat -string 'EEE d MMM HH:mm'
-
 # Show the full POSIX path as Finder window title
 defaults write com.apple.finder _FXShowPosixPathInTitle -bool true
 
@@ -35,6 +26,19 @@ defaults write com.apple.finder ShowStatusBar -bool true
 # Show Tab bar in Finder
 defaults write com.apple.finder ShowTabView -bool true
 
+# Disable the "Are you sure you want to open this application?" dialog
+defaults write com.apple.LaunchServices LSQuarantine -bool false
+
+# Disable live conversion
+defaults write com.apple.inputmethod.Kotoeri JIMPrefLiveConversionKey -bool false
+
+# Display battery level in the menu bar
+defaults write com.apple.menuextra.battery ShowPercent -string "YES"
+
+# Display date, day, and time in the menu bar
+defaults write com.apple.menuextra.clock DateFormat -string 'EEE d MMM HH:mm'
+
+
 # Increase keyboard initial delay
 defaults write -g InitialKeyRepeat -int 10
 
@@ -43,9 +47,6 @@ defaults write -g KeyRepeat -int 1
 
 # Increase mouse speed
 defaults write -g com.apple.mouse.scaling 1.5
-
-# Disable Spelling Correction
-defaults write -g NSAutomaticSpellingCorrectionEnabled -bool false
 
 # Show files with all extensions
 defaults write -g AppleShowAllExtensions -bool true
