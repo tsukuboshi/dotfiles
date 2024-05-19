@@ -11,3 +11,10 @@ fi
 if [ -L "${HOME}/.wakeup" ]; then
   ln -fsvn "${SCRIPT_DIR}/.wakeup" "${HOME}/.wakeup"
 fi
+
+# Restart sleepwatcher
+if [ "$(which sleepwatcher)" != "" ]; then
+  brew services restart sleepwatcher
+else
+  echo "Install sleepwatcher using brew to start the service."
+fi
