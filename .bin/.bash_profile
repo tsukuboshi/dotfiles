@@ -46,8 +46,8 @@ fi
 
 # Set asdf
 if [ "$(which asdf)" != "" ]; then
-  echo -e "\n. \"$(brew --prefix asdf)/libexec/asdf.sh\"" >& /dev/null
-  echo -e "\n. \"$(brew --prefix asdf)/etc/bash_completion.d/asdf.bash\"" >& /dev/null
+  source /opt/homebrew/opt/asdf/libexec/asdf.sh
+  source /opt/homebrew/opt/asdf/etc/bash_completion.d/asdf.bash
 fi
 
 
