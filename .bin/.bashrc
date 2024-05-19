@@ -116,7 +116,11 @@ alias enap='export -n AWS_PROFILE'
 
 function awsume (){
   local PROFILE=${1:-tsukuboshi}
-  source $(pyenv which awsume) ${PROFILE}
+  if [ "$(which pyenv)" == "" ]; then
+    source awsume ${PROFILE}
+  else
+    source $(pyenv which awsume) ${PROFILE}
+  fi
 }
 
 alias asg='aws sts get-caller-identity'
