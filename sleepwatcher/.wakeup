@@ -1,1 +1,2 @@
-/usr/local/bin/blueutil -p 1
+#!/bin/bash
+blueutil -p 1
