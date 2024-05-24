@@ -46,19 +46,14 @@ fi
 
 # Set asdf
 if [ "$(which asdf)" != "" ]; then
-  echo -e "\n. \"$(brew --prefix asdf)/libexec/asdf.sh\"" >& /dev/null
-  echo -e "\n. \"$(brew --prefix asdf)/etc/bash_completion.d/asdf.bash\"" >& /dev/null
+  source /opt/homebrew/opt/asdf/libexec/asdf.sh
+  source /opt/homebrew/opt/asdf/etc/bash_completion.d/asdf.bash
 fi
 
 
 # Set aws-completion
 if [ "$(which aws_completer)" != "" ]; then
   complete -C aws_completer aws
-fi
-
-# Set terraform-completion
-if [ "$(which terraform)" != "" ]; then
-  complete -C $HOME/.anyenv/envs/tfenv/versions/1.0.0/terraform terraform
 fi
 
 # Set git-completion
