@@ -121,6 +121,7 @@ function awsume (){
   else
     source $(pyenv which awsume) ${PROFILE}
   fi
+  relogin
 }
 
 alias asg='aws sts get-caller-identity'
