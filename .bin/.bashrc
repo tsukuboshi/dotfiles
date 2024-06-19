@@ -34,6 +34,17 @@ alias bbl='brew bundle list --global --all'
 alias bbc='brew bundle check --global --formula'
 alias bbi='brew bundle install --global'
 
+function otp (){
+  local ITEMID=${1:-AWS}
+  if [ "$(which op)" != "" ]; then
+    op item get ${ITEMID} --otp
+  elif [ "$(which bw)" != "" ]; then
+    bw get totp ${ITEMID}
+  else
+    echo  "Install the password manager command to get your totp."
+  fi
+}
+
 alias gb='git branch --all'
 alias gbl='git branch'
 alias gbr='git branch --remote'
@@ -117,9 +128,9 @@ alias enap='export -n AWS_PROFILE'
 function awsume (){
   local PROFILE=${1:-tsukuboshi}
   if [ "$(which pyenv)" == "" ]; then
-    source awsume ${PROFILE}
+    source awsume ${PROFILE} --mfa-token `otp`
   else
-    source $(pyenv which awsume) ${PROFILE}
+    source $(pyenv which awsume) ${PROFILE} --mfa-token `otp`
   fi
   exec $SHELL -l
 }
@@ -233,14 +244,3 @@ alias dcd='docker compose down'
 
 alias lcsj='ln -fsvn ${HOME}/dotfiles/vscode/settings.json ${HOME}/Library/Application\ Support/Code/User/settings.json'
 alias cle='code --list-extensions'
-
-function otp (){
-  local ITEMID=${1:-AWS}
-  if [ "$(which op)" != "" ]; then
-    op item get ${ITEMID} --otp
-  elif [ "$(which bw)" != "" ]; then
-    bw get totp ${ITEMID}
-  else
-    echo  "Install the password manager command to get your totp."
-  fi
-}
