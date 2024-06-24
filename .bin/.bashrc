@@ -74,6 +74,16 @@ function gcbo (){
   local BRANCH=${1}
   git checkout -b ${BRANCH} origin/${BRANCH}
 }
+function gcpcm (){
+  local TO_BRANCH=${1:-`git branch --contains | cut -d " " -f 2`}
+  local FROM_BRANCH=${2:-main}
+  echo "Git pull from ${FROM_BRANCH}..."
+  git checkout ${FROM_BRANCH}
+  git pull origin ${FROM_BRANCH}
+  echo "Git merge to ${TO_BRANCH}..."
+  git checkout ${TO_BRANCH}
+  git merge ${FROM_BRANCH}
+}
 function ga (){
   local FILE=${1:-.}
   git add "${FILE}"
