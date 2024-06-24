@@ -5,14 +5,14 @@ fi
 
 # Set the prompt
 function parse_git_branch {
-  git branch --no-color 2> /dev/null | sed -e '/^[^*]/d' -e 's/* \(.*\)/ \1/'
+  git branch --no-color 2> /dev/null | sed -e '/^[^*]/d' -e 's/* \(.*\)/\1/'
 }
 
 function parse_aws_profile {
   aws sts get-caller-identity --query 'Arn' --output text 2>/dev/null | awk -F '/' '{print $3}'
 }
 
-export PS1="\n\[\e[1;31m\]\u \[\e[1;32m\]\W\[\e[1;34m\]\$(parse_git_branch) \[\e[1;33m\]$(parse_aws_profile) \[\e[1;35m\]\$ \[\e[0m\]"
+export PS1="\n\[\e[1;31m\]\u \[\e[1;32m\]\W \[\e[1;34m\]\$(parse_git_branch) \[\e[1;33m\]$(parse_aws_profile) \[\e[1;35m\]\$ \[\e[0m\]"
 
 
 # Set the language
