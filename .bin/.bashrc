@@ -64,7 +64,7 @@ function gm (){
   git merge origin "${TRAKING_BRANCH}"
 }
 function gpl (){
-  local REMOTE_BRANCH=${1:-`git branch --contains | cut -d " " -f 2`}
+  local REMOTE_BRANCH=${1:-`git branch --no-color 2> /dev/null | sed -e '/^[^*]/d' -e 's/* \(.*\)/\1/'`}
   git pull origin "${REMOTE_BRANCH}"
 }
 alias gpla='git pull --all'
@@ -75,7 +75,7 @@ function gcbo (){
   git checkout -b ${BRANCH} origin/${BRANCH}
 }
 function gcpcm (){
-  local TO_BRANCH=${1:-`git branch --contains | cut -d " " -f 2`}
+  local TO_BRANCH=${1:-`git branch --no-color 2> /dev/null | sed -e '/^[^*]/d' -e 's/* \(.*\)/\1/'`}
   local FROM_BRANCH=${2:-main}
   echo "Git pull from ${FROM_BRANCH}..."
   git checkout ${FROM_BRANCH}
