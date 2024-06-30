@@ -51,11 +51,16 @@ defaults write -g KeyRepeat -int 1
 # Increase mouse speed
 defaults write -g com.apple.mouse.scaling 1.5
 
-# Show files with all extensions
-defaults write -g AppleShowAllExtensions -bool true
+# Use the Fn key as a standard function key
+defaults write -g com.apple.keyboard.fnState -bool true
 
 # Increase trackpad speed
 defaults write -g com.apple.trackpad.scaling 3
+
+# Show files with all extensions
+defaults write -g AppleShowAllExtensions -bool true
+
+
 
 for app in "Dock" \
 	"Finder" \
