@@ -1,16 +1,14 @@
 #!/bin/bash
 
-SCRIPT_DIR="$(cd "$(dirname "$0")" && pwd)"
+BLUE_UTIL_PATH=$(which blueutil)
 
-# Link .sleep
-if [ -L "${HOME}/.sleep" ]; then
-  ln -fsvn "${SCRIPT_DIR}/.sleep" "${HOME}/.sleep"
-fi
+# Add sleep script
+echo "$BLUE_UTIL_PATH -p 0" > ~/.sleep
+chmod 777 ~/.sleep
 
-# Link .wakeup
-if [ -L "${HOME}/.wakeup" ]; then
-  ln -fsvn "${SCRIPT_DIR}/.wakeup" "${HOME}/.wakeup"
-fi
+# Add wakeup script
+echo "$BLUE_UTIL_PATH -p 1" > ~/.wakeup
+chmod 777 ~/.wakeup
 
 # Restart sleepwatcher
 if [ "$(which sleepwatcher)" != "" ]; then
