@@ -135,7 +135,17 @@ function eap (){
 }
 alias enap='export -n AWS_PROFILE'
 
-function awsume (){
+function aup (){
+  local PROFILE=${1:-tsukuboshi}
+  if [ "$(which pyenv)" == "" ]; then
+    source awsume ${PROFILE}
+  else
+    source $(pyenv which awsume) ${PROFILE}
+  fi
+  exec $SHELL -l
+}
+
+function aupo (){
   local PROFILE=${1:-tsukuboshi}
   if [ "$(which pyenv)" == "" ]; then
     source awsume ${PROFILE} --mfa-token `otp`
