@@ -49,6 +49,10 @@
   },
   "json.schemas": [],
   "liveServer.settings.donotShowInfoMsg": true,
+  "markdownlint.config": {
+    "default": true,
+    "MD034": false
+  },
   "python.defaultInterpreterPath": "/usr/bin/python3",
   "python.languageServer": "Default",
 //   "python.formatting.blackArgs": [
