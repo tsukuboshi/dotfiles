@@ -53,7 +53,7 @@ function gbd (){
   git branch -D "${LOCAL_BRANCH}"
 }
 
-alias gs='git status'
+alias gst='git status'
 function gf (){
   local REMOTE_BRANCH=${1:-HEAD}
   git fetch origin "${REMOTE_BRANCH}"
@@ -64,19 +64,19 @@ function gm (){
   git merge origin "${TRAKING_BRANCH}"
 }
 function gpl (){
-  local REMOTE_BRANCH=${1:-`git branch --no-color 2> /dev/null | sed -e '/^[^*]/d' -e 's/* \(.*\)/\1/'`}
+  local REMOTE_BRANCH=${1:-$(git branch --no-color 2> /dev/null | sed -e '/^[^*]/d' -e 's/* \(.*\)/\1/')}
   git pull origin "${REMOTE_BRANCH}"
 }
 alias gpla='git pull --all'
-alias gch="git checkout"
-alias gcb="git checkout -b"
+alias gsw="git switch"
+alias gswc="git switch -c"
 function gcbo (){
   local BRANCH=${1}
   git checkout -b ${BRANCH} origin/${BRANCH}
 }
 function gcpcm (){
-  local TO_BRANCH=${1:-`git branch --no-color 2> /dev/null | sed -e '/^[^*]/d' -e 's/* \(.*\)/\1/'`}
-  local FROM_BRANCH=${2:-main}
+  local FROM_BRANCH=${1:-main}
+  local TO_BRANCH=${2:-$(git branch --no-color 2> /dev/null | sed -e '/^[^*]/d' -e 's/* \(.*\)/\1/')}
   echo "Git pull from ${FROM_BRANCH}..."
   git checkout ${FROM_BRANCH}
   git pull origin ${FROM_BRANCH}
