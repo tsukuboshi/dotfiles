@@ -64,7 +64,7 @@
   // "python.linting.flake8Args": ["--ignore=E203, E501, W503, T499"],
   // "python.linting.flake8Enabled": true,
   // "python.linting.mypyEnabled": true,
-  "redhat.telemetry.enabled": true,
+  "redhat.telemetry.enabled": false,
   "terminal.integrated.copyOnSelection": true,
   "terminal.integrated.defaultLocation": "editor",
   "terminal.integrated.enableMultiLinePasteWarning": false,
