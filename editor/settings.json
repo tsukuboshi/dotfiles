@@ -98,7 +98,7 @@
   //   "terminal.ansiWhite": "#A5A2A2",
   //   "terminal.ansiYellow": "#FDED02"
   // },
-  "workbench.iconTheme": "material-icon-theme",
+  // "workbench.iconTheme": "material-icon-theme",
   "workbench.startupEditor": "none",
   "yaml.customTags": [
     "!And",
