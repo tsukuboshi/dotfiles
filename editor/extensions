@@ -1,13 +1,15 @@
+FaroSystemAppender constructor
 alefragnani.project-manager
 amazonwebservices.aws-toolkit-vscode
+anysphere.pyright
 arjun.swagger-viewer
 aws-scripting-guy.cform
+bierner.markdown-mermaid
 bpruitt-goddard.mermaid-markdown-syntax-highlighting
 chrmarti.regex
 davidanson.vscode-markdownlint
 dbaeumer.vscode-eslint
 donjayamanne.githistory
-dorzey.vscode-sqlfluff
 dsznajder.es7-react-js-snippets
 eamodio.gitlens
 eastman.vscode-cfn-nag
@@ -18,7 +20,6 @@ formulahendry.auto-close-tag
 formulahendry.auto-complete-tag
 formulahendry.auto-rename-tag
 github.copilot
-github.copilot-chat
 github.vscode-github-actions
 hashicorp.terraform
 hediet.vscode-drawio
