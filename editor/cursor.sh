@@ -4,7 +4,7 @@ SCRIPT_DIR="$(cd "$(dirname "$0")" && pwd)"
 CURDOR_SETTING_PATH="${HOME}/Library/Application\ Support/Cursor/User/settings.json"
 
 # Link settings.json to cursor
-if [ -e "${CURDOR_SETTING_PATH}" ] || [ -L "${CURDOR_SETTING_PATH}" ]; then
+if not [ -L "${VSCODE_SETTING_PATH}" ]; then
   echo "Linking settings.json to cursor..."
   ln -fsvn "${SCRIPT_DIR}/settings.json" "${CURDOR_SETTING_PATH}"
 else
