@@ -4,7 +4,7 @@ SCRIPT_DIR="$(cd "$(dirname "$0")" && pwd)"
 VSCODE_SETTING_PATH="${HOME}/Library/Application\ Support/Code/User/settings.json"
 
 # Link settings.json to vscode
-if [ -e "${VSCODE_SETTING_PATH}" ] || [ -L "${VSCODE_SETTING_PATH}" ]; then
+if not [ -L "${VSCODE_SETTING_PATH}" ]; then
   echo "Linking settings.json to vscode..."
   ln -fsvn "${SCRIPT_DIR}/settings.json" "${VSCODE_SETTING_PATH}"
 else
