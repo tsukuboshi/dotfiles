@@ -1,10 +1,12 @@
 # User specific aliases and functions
-alias ll='ls -lF'
-alias la='ls -lAF'
-
 alias ..='cd ..'
 alias ...='cd ../..'
 alias ....='cd ../../..'
+
+alias ll='ls -lF'
+alias la='ls -lAF'
+
+alias sudo='sudo '
 
 alias relogin='exec $SHELL -l'
 
