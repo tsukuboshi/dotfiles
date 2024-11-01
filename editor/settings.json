@@ -151,4 +151,5 @@
       "editor.formatOnSave": true,
       "editor.tabSize": 2
     },
+    "typescript.updateImportsOnFileMove.enabled": "always",
   }
