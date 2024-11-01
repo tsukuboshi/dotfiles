@@ -28,10 +28,6 @@ alias ml='mas list'
 alias mo='mas outdated'
 alias mg='mas upgrade'
 
-# alias al='echo "************brew***************"; brew list --formula; echo "************cask***************"; brew list --cask; echo "************mas***************"; mas list'
-# alias ao='echo "************brew***************"; brew upgrade --dry-run; echo "************cask***************"; brew upgrade --cask --greedy --dry-run; echo "************mas***************"; mas outdated'
-# alias ag='echo "************brew***************"; brew upgrade; echo "************cask***************"; brew upgrade --cask --greedy; echo "************mas***************"; mas upgrade'
-
 alias al='printf "\n\033[1;36m=== Homebrew Formulae ===\033[0m\n"; brew list --formula; printf "\n\033[1;36m=== Homebrew Casks ===\033[0m\n"; brew list --cask; printf "\n\033[1;36m=== Mac App Store ===\033[0m\n"; mas list'
 
 alias ao='printf "\n\033[1;33m=== Homebrew Formulae Updates ===\033[0m\n"; brew upgrade --dry-run; printf "\n\033[1;33m=== Homebrew Casks Updates ===\033[0m\n"; brew upgrade --cask --greedy --dry-run; printf "\n\033[1;33m=== Mac App Store Updates ===\033[0m\n"; mas outdated'
