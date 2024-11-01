@@ -28,11 +28,11 @@ alias ml='mas list'
 alias mo='mas outdated'
 alias mg='mas upgrade'
 
-alias al='printf "\n\033[1;36m=== Homebrew Formulae ===\033[0m\n"; brew list --formula; printf "\n\033[1;36m=== Homebrew Casks ===\033[0m\n"; brew list --cask; printf "\n\033[1;36m=== Mac App Store ===\033[0m\n"; mas list'
+alias al='printf "\n\033[1;36m=== Homebrew Formulae List ===\033[0m\n"; brew list --formula; printf "\n\033[1;36m=== Homebrew Casks List ===\033[0m\n"; brew list --cask; printf "\n\033[1;36m=== App Store Apps List ===\033[0m\n"; mas list'
 
-alias ao='printf "\n\033[1;33m=== Homebrew Formulae Updates ===\033[0m\n"; brew upgrade --dry-run; printf "\n\033[1;33m=== Homebrew Casks Updates ===\033[0m\n"; brew upgrade --cask --greedy --dry-run; printf "\n\033[1;33m=== Mac App Store Updates ===\033[0m\n"; mas outdated'
+alias ao='printf "\n\033[1;33m=== Homebrew Formulae Outdated===\033[0m\n"; brew upgrade --dry-run; printf "\n\033[1;33m=== Homebrew Casks Outdated ===\033[0m\n"; brew upgrade --cask --greedy --dry-run; printf "\n\033[1;33m=== App Store Apps Outdated ===\033[0m\n"; mas outdated'
 
-alias ag='printf "\n\033[1;32m=== Updating Homebrew Formulae ===\033[0m\n"; brew upgrade; printf "\n\033[1;32m=== Updating Homebrew Casks ===\033[0m\n"; brew upgrade --cask --greedy; printf "\n\033[1;32m=== Updating Mac App Store Apps ===\033[0m\n"; mas upgrade'
+alias ag='printf "\n\033[1;32m=== Homebrew Formulae Upgrade ===\033[0m\n"; brew upgrade; printf "\n\033[1;32m=== Homebrew Casks Upgrade ===\033[0m\n"; brew upgrade --cask --greedy; printf "\n\033[1;32m=== App Store Apps Upgrade ===\033[0m\n"; mas upgrade'
 
 alias bbl='brew bundle list --global --all'
 alias bbc='brew bundle check --global --formula'
