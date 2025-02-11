@@ -44,6 +44,11 @@ if [ "$(which anyenv)" != "" ]; then
   eval "$(anyenv init -)"
 fi
 
+# Set mise
+if [ "$(which mise)" != "" ]; then
+  eval "$(mise activate bash)"
+fi
+
 # Set rbenv
 if [ "$(which rbenv)" != "" ]; then
   eval "$(rbenv init - bash)"
