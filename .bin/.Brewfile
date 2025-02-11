@@ -3,7 +3,7 @@ cask_args appdir: "/Applications"
 tap "aws/tap"
 
 # brew "anyenv"
-# brew "asdf"
+# brew "mise"
 brew "awsume"
 # brew "aws-sam-cli"
 brew "bash-completion"

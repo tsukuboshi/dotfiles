@@ -152,4 +152,10 @@
       "editor.tabSize": 2
     },
     "typescript.updateImportsOnFileMove.enabled": "always",
+    "workbench.editorAssociations": {
+      "{git,gitlens,conflictResolution,vscode-local-history}:/**/*.tc.json": "default",
+      "*.copilotmd": "vscode.markdown.preview.editor",
+      "*.png": "hediet.vscode-drawio"
+    },
+    "hediet.vscode-drawio.resizeImages": null,
   }

@@ -122,11 +122,8 @@ alias pci='pre-commit install'
 alias pcr='pre-commit run -a'
 alias pcu='pre-commit autoupdate'
 
-alias aev='anyenv versions'
-alias aeu='anyenv update'
-
-alias adv='asdf list'
-alias adu='asdf plugin update --all'
+alias av='anyenv versions'
+alias au='anyenv update'
 
 alias nrb='npm run build'
 alias nrw='npm run watch'
