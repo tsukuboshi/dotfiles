@@ -1,7 +1,5 @@
-FaroSystemAppender constructor
 alefragnani.project-manager
 amazonwebservices.aws-toolkit-vscode
-anysphere.pyright
 arjun.swagger-viewer
 aws-scripting-guy.cform
 bierner.markdown-mermaid
@@ -20,6 +18,7 @@ formulahendry.auto-close-tag
 formulahendry.auto-complete-tag
 formulahendry.auto-rename-tag
 github.copilot
+github.copilot-chat
 github.vscode-github-actions
 hashicorp.terraform
 hediet.vscode-drawio
@@ -45,6 +44,7 @@ pkief.material-icon-theme
 redhat.vscode-yaml
 ritwickdey.liveserver
 rogalmic.bash-debug
+rooveterinaryinc.roo-cline
 ryu1kn.partial-diff
 shd101wyy.markdown-preview-enhanced
 streetsidesoftware.code-spell-checker
