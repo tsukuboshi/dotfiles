@@ -41,7 +41,7 @@
     "files.eol": "\n",
     "files.autoGuessEncoding": true,
     "github.copilot.enable": {
-      "*": true,
+      "*": false,
       "plaintext": false,
       "markdown": true,
       "scminput": false
