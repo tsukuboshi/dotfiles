@@ -10,23 +10,37 @@ This repository contains scripts to set macOS.
 
 ## Install
 
-Download installation materials.
+1. Download installation materials.
 
 ```shell
 git clone https://github.com/tsukuboshi/dotfiles
 ```
 
-Move to target repository.
+2. Move to target repository.
 
 ```shell
 cd dotfiles
 ```
 
-Build macOS from Makefile.
+3. Build macOS from Makefile.
 
 ```shell
 make
 ```
+
+4. Additional setup required:
+
+- Editor: Follow instructions in `editor/README.md`
+- Runtime Management: Follow instructions in `runtime/README.md`
+- Launcher: Follow instructions in `launcher/README.md`
+
+## Repository Structure
+
+- `.bin/`: Setup scripts
+- `editor/`: Editor configurations
+- `runtime/`: Runtime Management configurations (Python, Node.js, etc.)
+- `launcher/`: Launcher: configurations
+- `sleepwatcher/`: Sleep mode configurations
 
 ## References
 
