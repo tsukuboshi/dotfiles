@@ -1,4 +1,3 @@
-alefragnani.project-manager
 amazonwebservices.aws-toolkit-vscode
 anysphere.pyright
 arjun.swagger-viewer
@@ -9,6 +8,7 @@ chrmarti.regex
 davidanson.vscode-markdownlint
 dbaeumer.vscode-eslint
 donjayamanne.githistory
+dorzey.vscode-sqlfluff
 dsznajder.es7-react-js-snippets
 eamodio.gitlens
 eastman.vscode-cfn-nag
@@ -19,7 +19,6 @@ formulahendry.auto-close-tag
 formulahendry.auto-complete-tag
 formulahendry.auto-rename-tag
 github.copilot
-github.copilot-chat
 github.vscode-github-actions
 hashicorp.terraform
 hediet.vscode-drawio
@@ -42,10 +41,11 @@ ms-vsliveshare.vsliveshare
 naumovs.color-highlight
 oderwat.indent-rainbow
 pkief.material-icon-theme
+prisma.prisma
+rangav.vscode-thunder-client
 redhat.vscode-yaml
 ritwickdey.liveserver
 rogalmic.bash-debug
-rooveterinaryinc.roo-cline
 ryu1kn.partial-diff
 shd101wyy.markdown-preview-enhanced
 streetsidesoftware.code-spell-checker
