@@ -1,5 +1,7 @@
 amazonwebservices.aws-toolkit-vscode
+amazonwebservices.codewhisperer-for-command-line-companion
 anysphere.pyright
+aquasecurityofficial.trivy-vulnerability-scanner
 arjun.swagger-viewer
 aws-scripting-guy.cform
 bierner.markdown-mermaid
@@ -8,7 +10,6 @@ chrmarti.regex
 davidanson.vscode-markdownlint
 dbaeumer.vscode-eslint
 donjayamanne.githistory
-dorzey.vscode-sqlfluff
 dsznajder.es7-react-js-snippets
 eamodio.gitlens
 eastman.vscode-cfn-nag
@@ -19,7 +20,6 @@ formulahendry.auto-close-tag
 formulahendry.auto-complete-tag
 formulahendry.auto-rename-tag
 github.copilot
-github.vscode-github-actions
 hashicorp.terraform
 hediet.vscode-drawio
 htmlhint.vscode-htmlhint
@@ -51,7 +51,6 @@ shd101wyy.markdown-preview-enhanced
 streetsidesoftware.code-spell-checker
 stylelint.vscode-stylelint
 taichi.vscode-textlint
-tfsec.tfsec
 timonwong.shellcheck
 tomoki1207.pdf
 vincaslt.highlight-matching-tag
