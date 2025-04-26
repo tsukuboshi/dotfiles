@@ -122,8 +122,11 @@ alias pci='pre-commit install'
 alias pcr='pre-commit run -a'
 alias pcu='pre-commit autoupdate'
 
-alias av='anyenv versions'
-alias au='anyenv update'
+# alias av='anyenv versions'
+# alias au='anyenv update'
+
+alias al='mise list'
+alias au='mise upgrade'
 
 alias nrb='npm run build'
 alias nrw='npm run watch'
@@ -143,6 +146,7 @@ function aup (){
   local PROFILE=${1:-tsukuboshi}
   if [ "$(which pyenv)" == "" ]; then
     source awsume ${PROFILE}
+
   else
     source $(pyenv which awsume) ${PROFILE}
   fi
