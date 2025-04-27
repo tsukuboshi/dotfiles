@@ -266,7 +266,9 @@ function dcrm () {
 }
 alias dcl='docker container ls -a'
 alias dcp='docker container prune'
-alias dsp='docker system prune --volumes'
+alias dbp='docker builder prune'
+alias dsd='docker system df'
+alias dsp='docker system prune'
 alias dcu='docker compose up -d'
 alias dcd='docker compose down'
 
