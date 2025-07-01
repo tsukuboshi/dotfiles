@@ -1,6 +1,3 @@
-amazonwebservices.aws-toolkit-vscode
-amazonwebservices.codewhisperer-for-command-line-companion
-anysphere.pyright
 aquasecurityofficial.trivy-vulnerability-scanner
 arjun.swagger-viewer
 aws-scripting-guy.cform
@@ -31,7 +28,6 @@ mosapride.zenkaku
 ms-azuretools.vscode-docker
 ms-ceintl.vscode-language-pack-ja
 ms-python.black-formatter
-ms-python.debugpy
 ms-python.flake8
 ms-python.isort
 ms-python.mypy-type-checker
@@ -43,7 +39,6 @@ oderwat.indent-rainbow
 pkief.material-icon-theme
 prisma.prisma
 rangav.vscode-thunder-client
-redhat.vscode-yaml
 ritwickdey.liveserver
 rogalmic.bash-debug
 ryu1kn.partial-diff
