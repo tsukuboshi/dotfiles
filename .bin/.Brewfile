@@ -30,7 +30,7 @@ brew "wget"
 
 cask "appcleaner"
 # cask "aws-vault"
-cask "cursor"
+# cask "cursor"
 # cask "dbeaver-community"
 # cask "discord"
 cask "firefox"
