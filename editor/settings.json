@@ -1,6 +1,7 @@
 {
-    "accessibility.signals.chatRequestSent": {"sound": "off"},
-    "accessibility.signals.chatResponsePending": {"sound": "off"},
+    "accessibility.signals.chatRequestSent": {
+      "sound": "off"
+    },
     "accessibility.signals.clear": {"sound": "off"},
     "accessibility.signals.lineHasFoldedArea": {"sound": "off"},
     "accessibility.signals.lineHasInlineSuggestion": {"sound": "off"},
@@ -19,6 +20,7 @@
     "accessibility.signals.diffLineModified": {"sound": "off"},
     "accessibility.signals.diffLineInserted": {"sound": "off"},
     "accessibility.signals.diffLineDeleted": {"sound": "off"},
+    "accessibility.signals.progress": { "sound": "off" },
     "editor.acceptSuggestionOnEnter": "on",
     "editor.copyWithSyntaxHighlighting": true,
     "editor.defaultFormatter": null,
@@ -75,9 +77,10 @@
     },
     "python.defaultInterpreterPath": "/usr/bin/python3",
     "python.languageServer": "Default",
-    "redhat.telemetry.enabled": true,
+    "terminal.integrated.fontSize": 12,
     "terminal.integrated.copyOnSelection": true,
     "terminal.integrated.defaultLocation": "editor",
+    "terminal.integrated.defaultProfile.osx": "bash",
     "terminal.integrated.enableMultiLinePasteWarning": false,
     "terminal.integrated.rightClickBehavior": "paste",
     "shellcheck.ignorePatterns": {
@@ -86,6 +89,8 @@
     },
     "vsintellicode.modify.editor.suggestSelection": "automaticallyOverrodeDefaultValue",
     "window.title": "${dirty}${activeEditorMedium}${separator}${rootName}",
+    "window.zoomLevel": 0,
+    "workbench.activityBar.orientation": "vertical",
     "workbench.iconTheme": "material-icon-theme",
     "workbench.startupEditor": "none",
     "yaml.customTags": [
@@ -119,7 +124,6 @@
     ],
     "yaml.schemaStore.enable": false,
     "yaml.validate": false,
-    "window.zoomLevel": -2,
     "[javascript]": {
       "editor.defaultFormatter": "esbenp.prettier-vscode",
       "editor.codeActionsOnSave": {
@@ -171,11 +175,4 @@
       "editor.formatOnSave": true,
       "editor.tabSize": 2
     },
-    "typescript.updateImportsOnFileMove.enabled": "always",
-    "workbench.editorAssociations": {
-      "{git,gitlens,conflictResolution,vscode-local-history}:/**/*.tc.json": "default",
-      "*.copilotmd": "vscode.markdown.preview.editor",
-      "*.png": "hediet.vscode-drawio"
-    },
-    "hediet.vscode-drawio.resizeImages": null,
 }
