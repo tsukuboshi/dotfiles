@@ -1,178 +1,170 @@
 {
-    "accessibility.signals.chatRequestSent": {
-      "sound": "off"
+  "accessibility.signals.chatRequestSent": {
+    "sound": "off"
+  },
+  "accessibility.signals.clear": { "sound": "off" },
+  "accessibility.signals.lineHasFoldedArea": { "sound": "off" },
+  "accessibility.signals.lineHasInlineSuggestion": { "sound": "off" },
+  "accessibility.signals.noInlayHints": { "sound": "off" },
+  "accessibility.signals.notebookCellCompleted": { "sound": "off" },
+  "accessibility.signals.onDebugBreak": { "sound": "off" },
+  "accessibility.signals.notebookCellFailed": { "sound": "off" },
+  "accessibility.signals.taskCompleted": { "sound": "off" },
+  "accessibility.signals.terminalQuickFix": { "sound": "off" },
+  "accessibility.signals.terminalCommandFailed": { "sound": "off" },
+  "accessibility.signals.terminalBell": { "sound": "off" },
+  "accessibility.signals.taskFailed": { "sound": "off" },
+  "accessibility.signals.lineHasWarning": { "sound": "off" },
+  "accessibility.signals.lineHasError": { "sound": "off" },
+  "accessibility.signals.lineHasBreakpoint": { "sound": "off" },
+  "accessibility.signals.diffLineModified": { "sound": "off" },
+  "accessibility.signals.diffLineInserted": { "sound": "off" },
+  "accessibility.signals.diffLineDeleted": { "sound": "off" },
+  "accessibility.signals.progress": { "sound": "off" },
+  "editor.acceptSuggestionOnEnter": "on",
+  "editor.copyWithSyntaxHighlighting": true,
+  "editor.defaultFormatter": "esbenp.prettier-vscode",
+  "editor.dragAndDrop": false,
+  "editor.fontSize": 12,
+  "editor.formatOnSave": true,
+  "editor.formatOnSaveMode": "modificationsIfAvailable",
+  "editor.inlineSuggest.enabled": true,
+  "editor.insertSpaces": true,
+  "editor.snippetSuggestions": "top",
+  "editor.suggest.showMethods": true,
+  "editor.suggest.preview": true,
+  "editor.suggestSelection": "first",
+  "editor.tabSize": 2,
+  "editor.wordWrap": "on",
+  "emmet.showSuggestionsAsSnippets": true,
+  "emmet.includeLanguages": {
+    "javascript": "javascriptreact",
+    "typescript": "typescriptreact"
+  },
+  "emmet.triggerExpansionOnTab": true,
+  "emmet.variables": {
+    "lang": "ja"
+  },
+  "explorer.confirmDelete": false,
+  "explorer.confirmDragAndDrop": false,
+  "extensions.autoUpdate": true,
+  "extensions.ignoreRecommendations": false,
+  "files.insertFinalNewline": true,
+  "files.trimFinalNewlines": true,
+  "files.trimTrailingWhitespace": true,
+  "files.autoSave": "afterDelay",
+  "files.autoSaveDelay": 10000,
+  "files.exclude": {
+    "**/.git": true,
+    "**/.svn": true,
+    "**/.hg": true,
+    "**/CVS": true,
+    "**/.DS_Store": true
+  },
+  "files.eol": "\n",
+  "files.autoGuessEncoding": true,
+  "github.copilot.enable": {
+    "*": false,
+    "plaintext": false,
+    "markdown": true,
+    "scminput": false
+  },
+  "javascript.updateImportsOnFileMove.enabled": "never",
+  "json.schemas": [],
+  "liveServer.settings.donotShowInfoMsg": true,
+  "markdownlint.config": {
+    "default": true,
+    "MD034": false
+  },
+  "python.defaultInterpreterPath": "/usr/bin/python3",
+  "python.languageServer": "Default",
+  "terminal.integrated.fontSize": 12,
+  "terminal.integrated.copyOnSelection": true,
+  "terminal.integrated.defaultLocation": "editor",
+  "terminal.integrated.defaultProfile.osx": "bash",
+  "terminal.integrated.enableMultiLinePasteWarning": false,
+  "terminal.integrated.rightClickBehavior": "paste",
+  "shellcheck.ignorePatterns": {
+    "**/.bash_profile": true,
+    "**/.bashrc": true
+  },
+  "vsintellicode.modify.editor.suggestSelection": "automaticallyOverrodeDefaultValue",
+  "window.title": "${dirty}${activeEditorMedium}${separator}${rootName}",
+  "window.zoomLevel": 0,
+  "workbench.activityBar.orientation": "vertical",
+  "workbench.iconTheme": "material-icon-theme",
+  "workbench.startupEditor": "none",
+  "yaml.customTags": [
+    "!And",
+    "!And sequence",
+    "!If",
+    "!If sequence",
+    "!Not",
+    "!Not sequence",
+    "!Equals",
+    "!Equals sequence",
+    "!Or",
+    "!Or sequence",
+    "!FindInMap",
+    "!FindInMap sequence",
+    "!Base64",
+    "!Join",
+    "!Join sequence",
+    "!Cidr",
+    "!Ref",
+    "!Sub",
+    "!Sub sequence",
+    "!GetAtt",
+    "!GetAZs",
+    "!ImportValue",
+    "!ImportValue sequence",
+    "!Select",
+    "!Select sequence",
+    "!Split",
+    "!Split sequence"
+  ],
+  "yaml.schemaStore.enable": false,
+  "yaml.validate": false,
+  "[javascript]": {
+    "editor.defaultFormatter": "esbenp.prettier-vscode",
+    "editor.codeActionsOnSave": {
+      "source.organizeImports": "explicit"
     },
-    "accessibility.signals.clear": {"sound": "off"},
-    "accessibility.signals.lineHasFoldedArea": {"sound": "off"},
-    "accessibility.signals.lineHasInlineSuggestion": {"sound": "off"},
-    "accessibility.signals.noInlayHints": {"sound": "off"},
-    "accessibility.signals.notebookCellCompleted": {"sound": "off"},
-    "accessibility.signals.onDebugBreak": {"sound": "off"},
-    "accessibility.signals.notebookCellFailed": {"sound": "off"},
-    "accessibility.signals.taskCompleted": {"sound": "off"},
-    "accessibility.signals.terminalQuickFix": {"sound": "off"},
-    "accessibility.signals.terminalCommandFailed": {"sound": "off"},
-    "accessibility.signals.terminalBell": {"sound": "off"},
-    "accessibility.signals.taskFailed": {"sound": "off"},
-    "accessibility.signals.lineHasWarning": {"sound": "off"},
-    "accessibility.signals.lineHasError": {"sound": "off"},
-    "accessibility.signals.lineHasBreakpoint": {"sound": "off"},
-    "accessibility.signals.diffLineModified": {"sound": "off"},
-    "accessibility.signals.diffLineInserted": {"sound": "off"},
-    "accessibility.signals.diffLineDeleted": {"sound": "off"},
-    "accessibility.signals.progress": { "sound": "off" },
-    "editor.acceptSuggestionOnEnter": "on",
-    "editor.copyWithSyntaxHighlighting": true,
-    "editor.defaultFormatter": null,
-    "editor.dragAndDrop": false,
-    "editor.fontSize": 12,
-    "editor.formatOnSave": false,
-    "editor.inlineSuggest.enabled": true,
-    "editor.insertSpaces": true,
-    "editor.snippetSuggestions": "top",
-    "editor.suggest.showMethods": true,
-    "editor.suggest.preview": true,
-    "editor.suggestSelection": "first",
-    "editor.tabSize": 2,
-    "editor.wordWrap": "on",
-    "emmet.showSuggestionsAsSnippets": true,
-    "emmet.includeLanguages": {
-      "javascript": "javascriptreact",
-      "typescript": "typescriptreact",
+    "editor.tabSize": 2
+  },
+  "[json]": {
+    "editor.defaultFormatter": "esbenp.prettier-vscode",
+    "editor.tabSize": 4
+  },
+  "[markdown]": {
+    "files.trimTrailingWhitespace": false,
+    "editor.defaultFormatter": "DavidAnson.vscode-markdownlint"
+  },
+  "[python]": {
+    "editor.codeActionsOnSave": {
+      "source.organizeImports": "explicit"
     },
-    "emmet.triggerExpansionOnTab": true,
-    "emmet.variables": {
-      "lang": "ja"
+    "editor.tabSize": 4
+  },
+  "[terraform]": {
+    "editor.codeActionsOnSave": {
+      "source.organizeImports": "explicit"
     },
-    "explorer.confirmDelete": false,
-    "explorer.confirmDragAndDrop": false,
-    "extensions.autoUpdate": true,
-    "extensions.ignoreRecommendations": false,
-    "files.insertFinalNewline": true,
-    "files.trimFinalNewlines": true,
-    "files.trimTrailingWhitespace": true,
-    "files.autoSave": "afterDelay",
-    "files.autoSaveDelay": 10000,
-    "files.exclude": {
-      "**/.git": true,
-      "**/.svn": true,
-      "**/.hg": true,
-      "**/CVS": true,
-      "**/.DS_Store": true
+    "editor.defaultFormatter": "hashicorp.terraform",
+    "editor.tabSize": 4
+  },
+  "[terraform-vars]": {
+    "editor.codeActionsOnSave": {
+      "source.organizeImports": "explicit"
     },
-    "files.eol": "\n",
-    "files.autoGuessEncoding": true,
-    "github.copilot.enable": {
-      "*": false,
-      "plaintext": false,
-      "markdown": true,
-      "scminput": false
+    "editor.defaultFormatter": "hashicorp.terraform",
+    "editor.tabSize": 4
+  },
+  "[typescript]": {
+    "editor.codeActionsOnSave": {
+      "source.organizeImports": "explicit"
     },
-    "javascript.updateImportsOnFileMove.enabled": "never",
-    "json.schemas": [],
-    "liveServer.settings.donotShowInfoMsg": true,
-    "markdownlint.config": {
-      "default": true,
-      "MD034": false
-    },
-    "python.defaultInterpreterPath": "/usr/bin/python3",
-    "python.languageServer": "Default",
-    "terminal.integrated.fontSize": 12,
-    "terminal.integrated.copyOnSelection": true,
-    "terminal.integrated.defaultLocation": "editor",
-    "terminal.integrated.defaultProfile.osx": "bash",
-    "terminal.integrated.enableMultiLinePasteWarning": false,
-    "terminal.integrated.rightClickBehavior": "paste",
-    "shellcheck.ignorePatterns": {
-      "**/.bash_profile": true,
-      "**/.bashrc": true
-    },
-    "vsintellicode.modify.editor.suggestSelection": "automaticallyOverrodeDefaultValue",
-    "window.title": "${dirty}${activeEditorMedium}${separator}${rootName}",
-    "window.zoomLevel": 0,
-    "workbench.activityBar.orientation": "vertical",
-    "workbench.iconTheme": "material-icon-theme",
-    "workbench.startupEditor": "none",
-    "yaml.customTags": [
-      "!And",
-      "!And sequence",
-      "!If",
-      "!If sequence",
-      "!Not",
-      "!Not sequence",
-      "!Equals",
-      "!Equals sequence",
-      "!Or",
-      "!Or sequence",
-      "!FindInMap",
-      "!FindInMap sequence",
-      "!Base64",
-      "!Join",
-      "!Join sequence",
-      "!Cidr",
-      "!Ref",
-      "!Sub",
-      "!Sub sequence",
-      "!GetAtt",
-      "!GetAZs",
-      "!ImportValue",
-      "!ImportValue sequence",
-      "!Select",
-      "!Select sequence",
-      "!Split",
-      "!Split sequence"
-    ],
-    "yaml.schemaStore.enable": false,
-    "yaml.validate": false,
-    "[javascript]": {
-      "editor.defaultFormatter": "esbenp.prettier-vscode",
-      "editor.codeActionsOnSave": {
-        "source.organizeImports": "explicit"
-      },
-      "editor.formatOnSave": true,
-      "editor.tabSize": 2
-    },
-    "[json]": {
-      "editor.defaultFormatter": "esbenp.prettier-vscode",
-      "editor.formatOnSave": true,
-      "editor.formatOnSaveMode": "file",
-      "editor.tabSize": 4
-    },
-    "[markdown]": {
-      "files.trimTrailingWhitespace": false,
-      "editor.defaultFormatter": "DavidAnson.vscode-markdownlint",
-      "editor.formatOnSave": true,
-      "editor.formatOnSaveMode": "file"
-    },
-    "[python]": {
-      "editor.codeActionsOnSave": {
-        "source.organizeImports": "explicit"
-      },
-      "editor.formatOnSave": true,
-      "editor.tabSize": 4
-    },
-    "[terraform]": {
-      "editor.codeActionsOnSave": {
-        "source.organizeImports": "explicit"
-      },
-      "editor.defaultFormatter": "hashicorp.terraform",
-      "editor.formatOnSave": true,
-      "editor.tabSize": 4
-    },
-    "[terraform-vars]": {
-      "editor.codeActionsOnSave": {
-        "source.organizeImports": "explicit"
-      },
-      "editor.defaultFormatter": "hashicorp.terraform",
-      "editor.formatOnSave": true,
-      "editor.tabSize": 4
-    },
-    "[typescript]": {
-      "editor.codeActionsOnSave": {
-        "source.organizeImports": "explicit"
-      },
-      "editor.defaultFormatter": "esbenp.prettier-vscode",
-      "editor.formatOnSave": true,
-      "editor.tabSize": 2
-    },
+    "editor.defaultFormatter": "esbenp.prettier-vscode",
+    "editor.tabSize": 2
+  }
 }
