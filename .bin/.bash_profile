@@ -1,6 +1,3 @@
-# Amazon Q pre block. Keep at the top of this file.
-[[ -f "${HOME}/Library/Application Support/amazon-q/shell/bash_profile.pre.bash" ]] && builtin source "${HOME}/Library/Application Support/amazon-q/shell/bash_profile.pre.bash"
-
 # Get the aliases and functions
 if [ -r ~/.bashrc ]; then
   source ~/.bashrc
@@ -17,9 +14,11 @@ function parse_aws_profile {
 
 export PS1="\n\[\e[1;31m\]\u \[\e[1;32m\]\W \[\e[1;34m\]\$(parse_git_branch) \[\e[1;33m\]$(parse_aws_profile) \[\e[1;35m\]\$ \[\e[0m\]"
 
-
 # Set the language
 export LANG="ja_JP.UTF-8"
+
+# Set bracket mode off on vscode
+bind 'set enable-bracketed-paste off'
 
 # Set brew
 if [ "$(which brew)" == "" ]; then
