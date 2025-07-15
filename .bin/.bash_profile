@@ -20,6 +20,9 @@ export LANG="ja_JP.UTF-8"
 # Set bracket mode off on vscode
 bind 'set enable-bracketed-paste off'
 
+# Set git
+export PATH="/opt/homebrew/bin:$PATH"
+
 # Set brew
 if [ "$(which brew)" == "" ]; then
   eval "$(/opt/homebrew/bin/brew shellenv)"
