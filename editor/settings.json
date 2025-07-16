@@ -127,9 +127,6 @@
   "yaml.validate": false,
   "[javascript]": {
     "editor.defaultFormatter": "esbenp.prettier-vscode",
-    "editor.codeActionsOnSave": {
-      "source.organizeImports": "explicit"
-    },
     "editor.tabSize": 2
   },
   "[json]": {
@@ -141,29 +138,17 @@
     "editor.defaultFormatter": "DavidAnson.vscode-markdownlint"
   },
   "[python]": {
-    "editor.codeActionsOnSave": {
-      "source.organizeImports": "explicit"
-    },
     "editor.tabSize": 4
   },
   "[terraform]": {
-    "editor.codeActionsOnSave": {
-      "source.organizeImports": "explicit"
-    },
     "editor.defaultFormatter": "hashicorp.terraform",
     "editor.tabSize": 4
   },
   "[terraform-vars]": {
-    "editor.codeActionsOnSave": {
-      "source.organizeImports": "explicit"
-    },
     "editor.defaultFormatter": "hashicorp.terraform",
     "editor.tabSize": 4
   },
   "[typescript]": {
-    "editor.codeActionsOnSave": {
-      "source.organizeImports": "explicit"
-    },
     "editor.defaultFormatter": "esbenp.prettier-vscode",
     "editor.tabSize": 2
   }
