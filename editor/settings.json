@@ -64,11 +64,12 @@
   "files.eol": "\n",
   "files.autoGuessEncoding": true,
   "github.copilot.enable": {
-    "*": false,
+    "*": true,
     "plaintext": false,
     "markdown": true,
     "scminput": false
   },
+  "github.copilot.nextEditSuggestions.enabled": true,
   "javascript.updateImportsOnFileMove.enabled": "never",
   "json.schemas": [],
   "liveServer.settings.donotShowInfoMsg": true,
