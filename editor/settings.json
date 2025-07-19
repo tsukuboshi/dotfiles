@@ -23,7 +23,6 @@
   "accessibility.signals.progress": { "sound": "off" },
   "editor.acceptSuggestionOnEnter": "on",
   "editor.copyWithSyntaxHighlighting": true,
-  "editor.defaultFormatter": "esbenp.prettier-vscode",
   "editor.dragAndDrop": false,
   "editor.fontSize": 12,
   "editor.formatOnSave": true,
@@ -128,6 +127,10 @@
   "yaml.validate": false,
   "[javascript]": {
     "editor.defaultFormatter": "esbenp.prettier-vscode",
+    "editor.codeActionsOnSave": {
+      "source.organizeImports": "explicit",
+      "source.fixAll.eslint": "explicit"
+    },
     "editor.tabSize": 2
   },
   "[json]": {
@@ -139,10 +142,18 @@
     "editor.defaultFormatter": "DavidAnson.vscode-markdownlint"
   },
   "[python]": {
+    "editor.defaultFormatter": "charliermarsh.ruff",
+    "editor.codeActionsOnSave": {
+      "source.fixAll.ruff": "explicit",
+      "source.organizeImports.ruff": "explicit"
+    },
     "editor.tabSize": 4
   },
   "[terraform]": {
     "editor.defaultFormatter": "hashicorp.terraform",
+    "editor.codeActionsOnSave": {
+      "source.formatAll.terraform": true
+    },
     "editor.tabSize": 4
   },
   "[terraform-vars]": {
@@ -151,6 +162,10 @@
   },
   "[typescript]": {
     "editor.defaultFormatter": "esbenp.prettier-vscode",
+    "editor.codeActionsOnSave": {
+      "source.organizeImports": "explicit",
+      "source.fixAll.eslint": "explicit"
+    },
     "editor.tabSize": 2
   }
 }
