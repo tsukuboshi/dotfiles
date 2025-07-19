@@ -1,0 +1,9 @@
+[settings]
+idiomatic_version_file_enable_tools = ["node"]
+
+[tools]
+python = '3.12.10'
+node = "22.15.1"
+ruby = '3.3.5'
+golang = '1.22.9'
+terraform = '1.10.5'

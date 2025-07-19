@@ -1,6 +1,0 @@
-[tools]
-python = '3.9.16'
-node = '20.18.3'
-ruby = '3.3.5'
-golang = '1.22.9'
-terraform = '1.10.5'
