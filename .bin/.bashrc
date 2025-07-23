@@ -58,25 +58,24 @@ function gbd (){
 }
 
 alias gst='git status'
-function gf (){
-  local REMOTE_BRANCH=${1:-HEAD}
-  git fetch origin "${REMOTE_BRANCH}"
-}
-alias gfa='git fetch --all'
-function gm (){
-  local TRAKING_BRANCH=${1:-HEAD}
-  git merge origin "${TRAKING_BRANCH}"
-}
+alias gfe='git fetch origin'
+alias gfea='git fetch --all'
+alias gme='git merge origin'
 function gpl (){
-  local REMOTE_BRANCH=${1:-$(git branch --no-color 2> /dev/null | sed -e '/^[^*]/d' -e 's/* \(.*\)/\1/')}
-  git pull origin "${REMOTE_BRANCH}"
+  local CURRENT_BRANCH=${1:-$(git branch --no-color 2> /dev/null | sed -e '/^[^*]/d' -e 's/* \(.*\)/\1/')}
+  git pull origin "${CURRENT_BRANCH}"
 }
 alias gpla='git pull --all'
 alias gsw="git switch"
 alias gswc="git switch -c"
-function gcbo (){
-  local BRANCH=${1}
-  git checkout -b ${BRANCH} origin/${BRANCH}
+function gswcb (){
+  local CURRENT_BRANCH=${1:-$(git branch --no-color 2> /dev/null | sed -e '/^[^*]/d' -e 's/* \(.*\)/\1/')}
+  git switch -c "${CURRENT_BRANCH}_backup"
+  git switch "${CURRENT_BRANCH}"
+}
+function grei (){
+  local FROM_BRANCH=${1:-main}
+  git rebase -i origin/${FROM_BRANCH}
 }
 function gcpcm (){
   local FROM_BRANCH=${1:-main}
@@ -88,28 +87,26 @@ function gcpcm (){
   git checkout ${TO_BRANCH}
   git merge ${FROM_BRANCH}
 }
-function ga (){
+function gad (){
   local FILE=${1:-.}
   git add "${FILE}"
 }
 alias gax='git reset HEAD'
-function gr (){
+function grm (){
   local FILE=$1
   git rm "${FILE}"
 }
-function gcm (){
+function gcom (){
   local MESSAGE=${1:-fix}
   git commit -m "${MESSAGE}"
 }
-function gcma (){
+function gcoma (){
   local MESSAGE=${1:-fix}
   git commit -m --amend "${MESSAGE}"
 }
 alias gcx='git reset --hard HEAD^'
-function gps (){
-  local REMOTE_BRANCH=${1:-HEAD}
-  git push origin "${REMOTE_BRANCH}"
-}
+alias gps='git push origin HEAD'
+alias gpsf='git push -f origin HEAD'
 function gss (){
   local MESSAGE=$1
   git stash save "${MESSAGE}"
@@ -121,9 +118,6 @@ alias gsc='git stash clear'
 alias pci='pre-commit install'
 alias pcr='pre-commit run -a'
 alias pcu='pre-commit autoupdate'
-
-# alias av='anyenv versions'
-# alias au='anyenv update'
 
 alias al='mise list'
 alias au='mise upgrade'
