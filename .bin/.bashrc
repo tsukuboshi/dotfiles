@@ -8,7 +8,10 @@ alias la='ls -lAF'
 
 alias sudo='sudo '
 
-alias relogin='exec $SHELL -l'
+function relogin (){
+  local SHELL_TYPE=${1:-/bin/bash}
+  exec "${SHELL_TYPE}" -l
+}
 
 alias checkip='curl inet-ip.info'
 
