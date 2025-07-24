@@ -23,6 +23,7 @@
   "accessibility.signals.progress": { "sound": "off" },
   "editor.acceptSuggestionOnEnter": "on",
   "editor.copyWithSyntaxHighlighting": true,
+  "editor.defaultFormatter": "esbenp.prettier-vscode",
   "editor.dragAndDrop": false,
   "editor.fontSize": 12,
   "editor.formatOnSave": true,
@@ -152,7 +153,7 @@
   "[terraform]": {
     "editor.defaultFormatter": "hashicorp.terraform",
     "editor.codeActionsOnSave": {
-      "source.formatAll.terraform": true
+      "source.formatAll.terraform": "explicit"
     },
     "editor.tabSize": 4
   },
@@ -166,6 +167,5 @@
       "source.organizeImports": "explicit",
       "source.fixAll.eslint": "explicit"
     },
-    "editor.tabSize": 2
   }
 }
