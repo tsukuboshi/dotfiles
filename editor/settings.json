@@ -129,8 +129,7 @@
   "[javascript]": {
     "editor.defaultFormatter": "esbenp.prettier-vscode",
     "editor.codeActionsOnSave": {
-      "source.organizeImports": "explicit",
-      "source.fixAll.eslint": "explicit"
+      "source.organizeImports": "explicit"
     },
     "editor.tabSize": 2
   },
@@ -145,7 +144,6 @@
   "[python]": {
     "editor.defaultFormatter": "charliermarsh.ruff",
     "editor.codeActionsOnSave": {
-      "source.fixAll.ruff": "explicit",
       "source.organizeImports.ruff": "explicit"
     },
     "editor.tabSize": 4
