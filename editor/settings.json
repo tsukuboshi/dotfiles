@@ -73,6 +73,14 @@
   "javascript.updateImportsOnFileMove.enabled": "never",
   "json.schemas": [],
   "liveServer.settings.donotShowInfoMsg": true,
+  "leetcode.defaultLanguage": "typescript",
+  "leetcode.filePath": {
+    "typescript": {
+      "folder": "typescript",
+      "filename": "${tag}${difficulty}${id}${PascalCaseName}.${ext}"
+    }
+  },
+  "leetcode.workspaceFolder": "/Users/tsukuboshi/work/leetcode",
   "markdownlint.config": {
     "default": true,
     "MD034": false
