@@ -59,7 +59,6 @@ function gbd (){
   local LOCAL_BRANCH=$1
   git branch -D "${LOCAL_BRANCH}"
 }
-
 alias gst='git status'
 alias gfe='git fetch origin'
 alias gfea='git fetch --all'
@@ -69,12 +68,13 @@ function gpl (){
   git pull origin "${CURRENT_BRANCH}"
 }
 alias gpla='git pull --all'
-alias gsw="git switch"
-alias gswc="git switch -c"
-function gswcb (){
+function gsw (){
+  local BRANCH=${1:-main}
+  git switch "${BRANCH}"
+}
+function gswc (){
   local CURRENT_BRANCH=${1:-$(git branch --no-color 2> /dev/null | sed -e '/^[^*]/d' -e 's/* \(.*\)/\1/')}
   git switch -c "${CURRENT_BRANCH}_backup"
-  git switch "${CURRENT_BRANCH}"
 }
 function grei (){
   local FROM_BRANCH=${1:-main}
@@ -89,6 +89,14 @@ function gcpcm (){
   echo "Git merge to ${TO_BRANCH}..."
   git checkout ${TO_BRANCH}
   git merge ${FROM_BRANCH}
+}
+function guis (){
+  local FILE=${1:-CLAUDE.md}
+  git update-index --skip-worktree "${FILE}"
+}
+function guin (){
+  local FILE=${1:-CLAUDE.md}
+  git update-index --skip-worktree "${FILE}"
 }
 function gad (){
   local FILE=${1:-.}
