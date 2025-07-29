@@ -73,8 +73,8 @@ function gsw (){
   git switch "${BRANCH}"
 }
 function gswc (){
-  local CURRENT_BRANCH=${1:-$(git branch --no-color 2> /dev/null | sed -e '/^[^*]/d' -e 's/* \(.*\)/\1/')}
-  git switch -c "${CURRENT_BRANCH}_backup"
+  local CURRENT_BRANCH="${1:-$(git branch --no-color 2> /dev/null | sed -e '/^[^*]/d' -e 's/* \(.*\)/\1/')}_backup"
+  git switch -c "${CURRENT_BRANCH}"
 }
 function grei (){
   local FROM_BRANCH=${1:-main}
