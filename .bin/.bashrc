@@ -69,7 +69,7 @@ function gpl (){
 }
 alias gpla='git pull --all'
 function gsw (){
-  local BRANCH=${1:-main}
+  local BRANCH=${1:--}
   git switch "${BRANCH}"
 }
 function gswc (){
