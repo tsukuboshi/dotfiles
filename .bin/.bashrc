@@ -76,7 +76,7 @@ function gswc (){
   local CURRENT_BRANCH="${1:-$(git branch --no-color 2> /dev/null | sed -e '/^[^*]/d' -e 's/* \(.*\)/\1/')_backup}"
   git switch -c "${CURRENT_BRANCH}"
 }
-function grei (){
+function grb (){
   local FROM_BRANCH=${1:-main}
   git rebase -i origin/${FROM_BRANCH}
 }
@@ -96,7 +96,7 @@ function guis (){
 }
 function guin (){
   local FILE=${1:-CLAUDE.md}
-  git update-index --skip-worktree "${FILE}"
+  git update-index --no-skip-worktree "${FILE}"
 }
 function gad (){
   local FILE=${1:-.}
@@ -115,7 +115,18 @@ function gcoma (){
   local MESSAGE=${1:-fix}
   git commit -m --amend "${MESSAGE}"
 }
-alias gcx='git reset --hard HEAD^'
+function gch () {
+  local FILE_NAME=${1:-.}
+  git checkout "${FILE_NAME}"
+}
+function gcl () {
+  local FILE_NAME=${1:-.}
+  git clean -df "${FILE_NAME}"
+}
+function grs (){
+  local FILE_NAME=${1:-.}
+  git reset HEAD "${FILE_NAME}"
+}
 alias gps='git push origin HEAD'
 alias gpsf='git push -f origin HEAD'
 function gss (){
