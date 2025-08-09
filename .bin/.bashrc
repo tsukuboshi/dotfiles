@@ -128,7 +128,7 @@ function grs (){
   git reset HEAD "${FILE_NAME}"
 }
 alias gps='git push origin HEAD'
-alias gpsf='git push -f origin HEAD'
+alias gpsf='git push --force-with-lease --force-if-includes origin HEAD'
 function gss (){
   local MESSAGE=$1
   git stash save "${MESSAGE}"
@@ -292,3 +292,6 @@ alias lvsj='ln -fsvn ${HOME}/dotfiles/vscode/settings.json ${HOME}/Library/Appli
 alias lcsj='ln -fsvn ${HOME}/dotfiles/vscode/settings.json ${HOME}/Library/Application\ Support/Cursor/User/settings.json'
 alias vle='code --list-extensions'
 alias cle='cursor --list-extensions'
+
+# Created by `pipx` on 2025-08-09 04:48:59
+export PATH="$PATH:/Users/tsukuboshi/.local/bin"
