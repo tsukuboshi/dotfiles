@@ -23,6 +23,9 @@ bind 'set enable-bracketed-paste off'
 # Set git
 export PATH="/opt/homebrew/bin:$PATH"
 
+# Set pipx
+export PATH="$PATH:$HOME/.local/bin"
+
 # Set brew
 if [ "$(which brew)" == "" ]; then
   eval "$(/opt/homebrew/bin/brew shellenv)"
