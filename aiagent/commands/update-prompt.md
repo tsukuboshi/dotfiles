@@ -26,10 +26,7 @@ fi
 GITHUB_OWNER=$(echo $GITHUB_PATH | cut -d'/' -f1)
 GITHUB_REPO=$(echo $GITHUB_PATH | cut -d'/' -f2)
 
-gh api \
-  -H "Accept: application/vnd.github+json" \
-  -H "X-GitHub-Api-Version: 2022-11-28" \
-  /repos/${GITHUB_OWNER}/${GITHUB_REPO}/pulls/$ARGUMENT/comments
+gh api "/repos/${GITHUB_OWNER}/${GITHUB_REPO}/pulls/$ARGUMENT/comments"
 ```
 
 # プロンプトファイルの更新
