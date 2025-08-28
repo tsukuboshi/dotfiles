@@ -1,6 +1,6 @@
 ---
-allowed-tools: Bash(cat:*), Bash(gh:*), Bash(git:*)
-description: "Push a Pull Request Draft (PR Number Required)"
+allowed-tools: Bash(gh:*), Bash(git:*), Read(.github/PULL_REQUEST_TEMPLATE.md)
+description: "Push a Pull Request Draft (PR Number Optional)"
 ---
 
 以下の手順で新しいPull request(PR)を作成してください。
@@ -31,8 +31,6 @@ fi
 ```bash
 git show HEAD
 ```
-
-もし`.github/PULL_REQUEST_TEMPLATE.md`が存在しない場合は、このステップはスキップしてください。
 
 # 手本PRの内容確認
 

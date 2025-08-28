@@ -1,5 +1,5 @@
 ---
-allowed-tools: Bash(cat:*),Bash(gh:*), Bash(git:*)
+allowed-tools: Bash(gh:*), Bash(git:*), Read(CLAUDE.md)
 description: "Review a Pull Request (PR Number Required)"
 ---
 
@@ -19,11 +19,7 @@ gh pr diff $ARGUMENT
 
 # プロンプトファイルの内容確認
 
-以下のコマンドを使用して、プロンプトファイル`CLAUDE.md`の内容を確認します。
-
-```bash
-cat CLAUDE.md
-```
+プロンプトファイル`CLAUDE.md`の内容を確認します。
 
 # コミット内容のレビュー
 

@@ -1,5 +1,5 @@
 ---
-allowed-tools: Bash(gh:*), Bash(git:*)
+allowed-tools: Bash(gh:*), Bash(git:*), Read(CLAUDE.md), Edit(CLAUDE.md)
 description: "Update Prompt Markdown based on PR review comments (PR Number Required)"
 ---
 
