@@ -4,15 +4,11 @@
       "Bash(npm:*)",
       "Bash(git:*)",
       "List(*)",
-      "Fetch(https://*)",
-      "Edit(*)",
+      "Read(**)",
       "Bash(ls:*)",
       "Bash(cat:*)",
-      "Bash(mkdir:*)",
-      "Bash(mv:*)",
       "Bash(ripgrep:*)",
-      "Bash(tree:*)",
-      "Bash(gh:*)"
+      "Bash(tree:*)"
     ],
     "deny": []
   }
