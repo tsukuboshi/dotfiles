@@ -1,0 +1,19 @@
+{
+  "permissions": {
+    "allow": [
+      "Bash(npm:*)",
+      "Bash(git:*)",
+      "List(*)",
+      "Fetch(https://*)",
+      "Edit(*)",
+      "Bash(ls:*)",
+      "Bash(cat:*)",
+      "Bash(mkdir:*)",
+      "Bash(mv:*)",
+      "Bash(ripgrep:*)",
+      "Bash(tree:*)",
+      "Bash(gh:*)"
+    ],
+    "deny": []
+  }
+}
