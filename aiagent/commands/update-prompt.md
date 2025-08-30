@@ -15,7 +15,6 @@ description: "Update Prompt Markdown based on PR review comments (PR Number Requ
 
 ```bash
 gh pr view $ARGUMENT --comments
-
 ```
 
 # PRコード内レビューコメントの内容確認
