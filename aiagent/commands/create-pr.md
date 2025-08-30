@@ -1,5 +1,5 @@
 ---
-allowed-tools: Bash(gh:*), Bash(git:*), Read(.github/PULL_REQUEST_TEMPLATE.md)
+allowed-tools: Bash(gh:*), Bash(git:*), Read(.github/*)
 description: "Push a Pull Request Draft (PR Number Optional)"
 ---
 
