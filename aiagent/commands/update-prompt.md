@@ -22,20 +22,7 @@ gh pr view $ARGUMENT --comments
 以下コマンドでPRのコード内レビューコメントの内容を確認してください。`ARGUMENT`にはPRの番号を入力します。  
 
 ```bash
-REPO_URL=$(git config --get remote.origin.url)
-if [[ $REPO_URL == git@github.com:* ]]; then
-  # SSH形式: git@github.com:owner/repo.git
-  GITHUB_PATH=${REPO_URL#git@github.com:}
-  GITHUB_PATH=${GITHUB_PATH%.git}
-else
-  # HTTPS形式: https://github.com/owner/repo.git
-  GITHUB_PATH=${REPO_URL#https://github.com/}
-  GITHUB_PATH=${GITHUB_PATH%.git}
-fi
-GITHUB_OWNER=$(echo $GITHUB_PATH | cut -d'/' -f1)
-GITHUB_REPO=$(echo $GITHUB_PATH | cut -d'/' -f2)
-
-gh api "/repos/${GITHUB_OWNER}/${GITHUB_REPO}/pulls/$ARGUMENT/comments"
+gh api "repos/{owner}/{repo}/pulls/$ARGUMENT/comments"
 ```
 
 # プロンプトファイルの更新
