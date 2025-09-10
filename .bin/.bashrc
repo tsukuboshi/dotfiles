@@ -137,12 +137,20 @@ alias gsu='git stash save -u'
 alias gsl='git stash list'
 alias gsc='git stash clear'
 
+alias ghw='gh pr list --search "involves:@me" --web'
+alias ghr='gh run view $(gh run list --branch $(git branch --show-current) --limit 1 --json databaseId --jq ".[0].databaseId")'
+alias ghrl='gh run view $(gh run list --branch $(git branch --show-current) --limit 1 --json databaseId --jq ".[0].databaseId") --log'
+function ghch (){
+  local PR_NUMBER=$1
+  gh pr checkout "${PR_NUMBER}"
+}
+
 alias pci='pre-commit install'
 alias pcr='pre-commit run -a'
 alias pcu='pre-commit autoupdate'
 
-alias al='mise list'
-alias au='mise upgrade'
+alias mil='mise list'
+alias miu='mise upgrade'
 
 alias nrb='npm run build'
 alias nrw='npm run watch'
