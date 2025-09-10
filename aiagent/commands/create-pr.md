@@ -50,12 +50,15 @@ gh pr view $ARGUMENT
 # 変数の設定
 PR_BASE_BRANCH="main"
 PR_TEMPLATE=".github/PULL_REQUEST_TEMPLATE.md"
+PR_COMMON_TEMPLATE="${HOME}/dotfiles/.github/PULL_REQUEST_TEMPLATE.md"
 PR_TITLE="<直前コミット/手本PRを参考にPRタイトルを作成してください>"
 PR_BODY="<直前コミット/手本PRを参考にPR内容を作成してください>"
 
 # PR作成
 if [ -f "$PR_TEMPLATE" ]; then
   gh pr create --draft --assignee @me --base "$PR_BASE_BRANCH" --template "$PR_TEMPLATE" --title "$PR_TITLE" --body "$PR_BODY"
+elif [ -f "$PR_COMMON_TEMPLATE" ]; then
+  gh pr create --draft --assignee @me --base "$PR_BASE_BRANCH" --template "$PR_COMMON_TEMPLATE" --title "$PR_TITLE" --body "$PR_BODY"
 else
   gh pr create --draft --assignee @me --base "$PR_BASE_BRANCH" --title "$PR_TITLE" --body "$PR_BODY"
 fi
