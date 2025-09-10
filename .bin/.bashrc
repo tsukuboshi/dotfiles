@@ -144,8 +144,8 @@ alias ghpv='gh pr view'
 alias ghpvw='gh pr view --web'
 alias ghpl='gh pr list --search "involves:@me"'
 alias ghplw='gh pr list --search "involves:@me" --web'
-alias ghr='gh run view $(gh run list --branch $(git branch --show-current) --limit 1 --json databaseId --jq ".[0].databaseId")'
-alias ghrw='gh run view $(gh run list --branch $(git branch --show-current) --limit 1 --json databaseId --jq ".[0].databaseId") --web'
+alias ghrv='gh run view $(gh run list --branch $(git branch --show-current) --limit 1 --json databaseId --jq ".[0].databaseId")'
+alias ghrvw='gh run view $(gh run list --branch $(git branch --show-current) --limit 1 --json databaseId --jq ".[0].databaseId") --web'
 function ghch (){
   local PR_NUMBER=$1
   gh pr checkout "${PR_NUMBER}"
