@@ -137,9 +137,10 @@ alias gsu='git stash save -u'
 alias gsl='git stash list'
 alias gsc='git stash clear'
 
-alias ghw='gh pr list --search "involves:@me" --web'
+alias ghp='gh pr list --search "involves:@me"'
+alias ghpw='gh pr list --search "involves:@me" --web'
 alias ghr='gh run view $(gh run list --branch $(git branch --show-current) --limit 1 --json databaseId --jq ".[0].databaseId")'
-alias ghrl='gh run view $(gh run list --branch $(git branch --show-current) --limit 1 --json databaseId --jq ".[0].databaseId") --log'
+alias ghrw='gh run view $(gh run list --branch $(git branch --show-current) --limit 1 --json databaseId --jq ".[0].databaseId") --web'
 function ghch (){
   local PR_NUMBER=$1
   gh pr checkout "${PR_NUMBER}"
