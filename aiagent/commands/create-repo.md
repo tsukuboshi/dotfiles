@@ -57,13 +57,10 @@ git show HEAD
 # 新規リポジトリの作成
 
 初回コミットの内容を元に、以下のコマンドを使用して新規リポジトリを作成し、リモートリポジトリとして追加します。
+なおリポジトリの説明文については、初回コミットを参考に検討し一文で作成してください。
 
 ```bash
-# 変数の設定
-REPO_DESCRIPTION="<初回コミットを参考にリポジトリ説明文を一文で作成してください>"
-
-# リポジトリの作成
-pwd | xargs basename | xargs gh repo create --private --source=. --description="$REPO_DESCRIPTION"
+pwd | xargs basename | xargs gh repo create --private --source=. --description="<初回コミットを参考にリポジトリ説明文を一文で作成してください>"
 ```
 
 # リモートリポジトリへのプッシュ
