@@ -28,26 +28,18 @@ gh pr view $ARGUMENT
 
 もし`ARGUMENT`が空の場合は、このステップはスキップしてください。
 
+# PRテンプレートファイルの内容確認
+
+`.github/PULL_REQUEST_TEMPLATE.md`または`${HOME}/dotfiles/.github/PULL_REQUEST_TEMPLATE.md`が存在する場合のみファイルを読み取り、PRテンプレートファイルの内容を確認します。
+
+もし両方のファイルが存在しない場合は、このステップはスキップしてください。
+
 # 新規PRの作成
 
-直前コミット及び手本PRの内容を元に、以下のコマンドを使用して新規PRを作成します。
+直前コミット、手本PR、PRテンプレートファイルの内容を元に、以下のコマンドを使用して新規PRを作成します。
 
 ```bash
-# 変数の設定
-PR_BASE_BRANCH="main"
-PR_TEMPLATE=".github/PULL_REQUEST_TEMPLATE.md"
-PR_COMMON_TEMPLATE="${HOME}/dotfiles/.github/PULL_REQUEST_TEMPLATE.md"
-PR_TITLE="<直前コミット/手本PRを参考にPRタイトルを作成してください>"
-PR_BODY="<直前コミット/手本PRを参考にPR内容を作成してください>"
-
-# PR作成
-if [ -f "$PR_TEMPLATE" ]; then
-  gh pr create --draft --assignee @me --base "$PR_BASE_BRANCH" --template "$PR_TEMPLATE" --title "$PR_TITLE" --body "$PR_BODY"
-elif [ -f "$PR_COMMON_TEMPLATE" ]; then
-  gh pr create --draft --assignee @me --base "$PR_BASE_BRANCH" --template "$PR_COMMON_TEMPLATE" --title "$PR_TITLE" --body "$PR_BODY"
-else
-  gh pr create --draft --assignee @me --base "$PR_BASE_BRANCH" --title "$PR_TITLE" --body "$PR_BODY"
-fi
+gh pr create --draft --assignee @me --base main --title "<直前コミット/手本PRを参考にPRタイトルを作成してください>" --body "<直前コミット/手本PR/PRテンプレートファイルを参考にPR内容を作成してください>"
 ```
 
 ## 新規PRのブラウザ確認
