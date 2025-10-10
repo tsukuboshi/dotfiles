@@ -4,4 +4,8 @@
 
 ## Install
 
-[eval "$\(mise activate bash\)"](https://mise.jdx.dev/getting-started.html#homebrew)
+1. Execute runtime sync script.
+
+```bash
+./runtime/sync.sh
+```
