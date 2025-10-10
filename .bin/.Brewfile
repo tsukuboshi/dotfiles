@@ -1,5 +1,7 @@
 cask_args appdir: "/Applications"
 
+tap "domt4/autoupdate"
+
 # brew "mise"
 # brew "awsume"
 # brew "awscli"
@@ -18,6 +20,7 @@ brew "gzip"
 # brew "hadolint"
 brew "jq"
 brew "mas"
+brew "pinentry-mac"
 brew "ripgrep"
 brew "shellcheck"
 brew "sleepwatcher"
@@ -31,7 +34,6 @@ brew "wget"
 
 cask "appcleaner"
 # cask "aws-vault"
-# cask "cursor"
 # cask "dbeaver-community"
 # cask "discord"
 cask "firefox"
