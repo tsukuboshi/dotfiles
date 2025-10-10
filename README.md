@@ -30,18 +30,19 @@ make
 
 4. Additional setup required:
 
-- Editor: Follow instructions in `editor/README.md`
-- Runtime Management: Follow instructions in `runtime/README.md`
-- Launcher: Follow instructions in `launcher/README.md`
 - AI Agent: Follow instructions in `aiagent/README.md`
+- Editor: Follow instructions in `editor/README.md`
+- Launcher: Follow instructions in `launcher/README.md`
+- Runtime Management: Follow instructions in `runtime/README.md`
+- SleepWatcher: Follow instructions in `sleepwatcher/README.md`
 
 ## Repository Structure
 
 - `.bin/`: Setup scripts
 - `aiagent/`: AI agent configurations
 - `editor/`: Editor configurations
-- `runtime/`: Runtime Management configurations (Python, Node.js, etc.)
 - `launcher/`: Launcher configurations
+- `runtime/`: Runtime Management configurations (Python, Node.js, etc.)
 - `sleepwatcher/`: Sleep mode configurations
 
 ## References
