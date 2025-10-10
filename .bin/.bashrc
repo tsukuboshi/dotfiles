@@ -22,6 +22,7 @@ alias delds='find . -name ".DS_Store" -type f -ls -delete'
 alias bl='brew list --formula'
 alias bo='brew upgrade --dry-run'
 alias bg='brew upgrade'
+alias bc='brew cleanup'
 
 alias cl='brew list --cask'
 alias co='brew upgrade --cask --greedy --dry-run'
@@ -35,7 +36,10 @@ alias al='printf "\n\033[1;36m=== Homebrew Formulae List ===\033[0m\n"; brew lis
 
 alias ao='printf "\n\033[1;33m=== Homebrew Formulae Outdated===\033[0m\n"; brew upgrade --dry-run; printf "\n\033[1;33m=== Homebrew Casks Outdated ===\033[0m\n"; brew upgrade --cask --greedy --dry-run; printf "\n\033[1;33m=== App Store Apps Outdated ===\033[0m\n"; mas outdated'
 
-alias ag='printf "\n\033[1;32m=== Homebrew Formulae Upgrade ===\033[0m\n"; brew upgrade; printf "\n\033[1;32m=== Homebrew Casks Upgrade ===\033[0m\n"; brew upgrade --cask --greedy; printf "\n\033[1;32m=== App Store Apps Upgrade ===\033[0m\n"; mas upgrade'
+alias ag='printf "\n\033[1;32m=== Homebrew Formulae Upgrade ===\033[0m\n"; brew upgrade; printf "\n\033[1;32m=== Homebrew Casks Upgrade ===\033[0m\n"; brew upgrade --cask --greedy; printf "\n\033[1;32m=== App Store Apps Upgrade ===\033[0m\n"; mas upgrade; printf "\n\033[1;32m=== Homebrew Cleanup ===\033[0m\n"; brew cleanup'
+
+alias as='brew autoupdate start --upgrade --greedy --cleanup --sudo'
+alias ad='brew autoupdate delete'
 
 alias bbl='brew bundle list --global --all'
 alias bbc='brew bundle check --global --formula'
