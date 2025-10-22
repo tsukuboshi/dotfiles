@@ -1,6 +1,6 @@
 #!/bin/bash
 
-# sleepwatcherの設定を取得する関数
+# Get sleepwatcher configuration
 get_sleepwatcher_config() {
     local blueutil_path
     blueutil_path=$(which blueutil)
@@ -12,27 +12,27 @@ get_sleepwatcher_config() {
     fi
 }
 
-# 使用方法の表示
+# Show usage information
 show_usage() {
     echo "Usage: $0 [OPTIONS]"
     echo ""
     echo "OPTIONS:"
-    echo "  -s, --create-sleep-only    スリープスクリプト(~/.sleep)のみ作成"
-    echo "  -w, --create-wakeup-only   起動スクリプト(~/.wakeup)のみ作成"
-    echo "  -r, --restart-service-only sleepwatcherサービスの再起動のみ実行"
-    echo "  (no option)                全て実行 (default)"
+    echo "  -s, --create-sleep-only    Create sleep script (~/.sleep) only"
+    echo "  -w, --create-wakeup-only   Create wakeup script (~/.wakeup) only"
+    echo "  -r, --restart-service-only Restart sleepwatcher service only"
+    echo "  (no option)                Execute all (default)"
     echo ""
     echo "Examples:"
-    echo "  $0                         # 全てのセットアップを実行"
-    echo "  $0 --create-sleep-only     # スリープスクリプトのみ作成"
-    echo "  $0 --create-wakeup-only    # 起動スクリプトのみ作成"
-    echo "  $0 --restart-service-only  # サービスの再起動のみ実行"
-    echo "  $0 -s                      # スリープスクリプトのみ作成(短縮)"
-    echo "  $0 -w                      # 起動スクリプトのみ作成(短縮)"
-    echo "  $0 -r                      # サービスの再起動のみ実行(短縮)"
+    echo "  $0                         # Execute all setup"
+    echo "  $0 --create-sleep-only     # Create sleep script only"
+    echo "  $0 --create-wakeup-only    # Create wakeup script only"
+    echo "  $0 --restart-service-only  # Restart service only"
+    echo "  $0 -s                      # Create sleep script only (short)"
+    echo "  $0 -w                      # Create wakeup script only (short)"
+    echo "  $0 -r                      # Restart service only (short)"
 }
 
-# スリープスクリプトの作成
+# Create sleep script
 create_sleep_script() {
     local blueutil_path
     blueutil_path=$(get_sleepwatcher_config)
@@ -48,7 +48,7 @@ create_sleep_script() {
     echo "Sleep script created successfully."
 }
 
-# 起動スクリプトの作成
+# Create wakeup script
 create_wakeup_script() {
     local blueutil_path
     blueutil_path=$(get_sleepwatcher_config)
@@ -64,7 +64,7 @@ create_wakeup_script() {
     echo "Wakeup script created successfully."
 }
 
-# sleepwatcherサービスの再起動
+# Restart sleepwatcher service
 restart_service() {
     if brew services info sleepwatcher &> /dev/null; then
         echo "Restarting sleepwatcher service..."
@@ -76,7 +76,7 @@ restart_service() {
     fi
 }
 
-# 引数の解析
+# Parse arguments
 MODE="all"
 
 while [[ $# -gt 0 ]]; do
@@ -105,7 +105,7 @@ while [[ $# -gt 0 ]]; do
     esac
 done
 
-# セットアップ実行
+# Execute setup
 echo "Setting up sleepwatcher..."
 
 case "$MODE" in

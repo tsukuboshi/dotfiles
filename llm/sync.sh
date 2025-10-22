@@ -2,32 +2,32 @@
 
 SCRIPT_DIR="$(cd "$(dirname "$0")" && pwd)"
 
-# LLMの設定を取得する関数
+# Get LLM configuration
 get_llm_config() {
     echo "${HOME}/.claude"
 }
 
-# 使用方法の表示
+# Show usage information
 show_usage() {
     echo "Usage: $0 [OPTIONS]"
     echo ""
     echo "OPTIONS:"
-    echo "  -m, --link-markdown-only   CLAUDE.mdのリンクのみ実行"
-    echo "  -s, --link-settings-only   settings.jsonのリンクのみ実行"
-    echo "  -c, --link-commands-only   commandsのリンクのみ実行"
-    echo "  (no option)                全て実行 (default)"
+    echo "  -m, --link-markdown-only   Link CLAUDE.md only"
+    echo "  -s, --link-settings-only   Link settings.json only"
+    echo "  -c, --link-commands-only   Link commands only"
+    echo "  (no option)                Execute all (default)"
     echo ""
     echo "Examples:"
-    echo "  $0                         # 全てのリンクを実行"
-    echo "  $0 --link-markdown-only    # CLAUDE.mdのみリンク"
-    echo "  $0 --link-settings-only    # settings.jsonのみリンク"
-    echo "  $0 --link-commands-only    # commandsのみリンク"
-    echo "  $0 -m                      # CLAUDE.mdのみリンク(短縮)"
-    echo "  $0 -s                      # settings.jsonのみリンク(短縮)"
-    echo "  $0 -c                      # commandsのみリンク(短縮)"
+    echo "  $0                         # Execute all links"
+    echo "  $0 --link-markdown-only    # Link CLAUDE.md only"
+    echo "  $0 --link-settings-only    # Link settings.json only"
+    echo "  $0 --link-commands-only    # Link commands only"
+    echo "  $0 -m                      # Link CLAUDE.md only (short)"
+    echo "  $0 -s                      # Link settings.json only (short)"
+    echo "  $0 -c                      # Link commands only (short)"
 }
 
-# CLAUDE.mdのリンク
+# Link CLAUDE.md
 link_markdown() {
     local claude_setting_path
     claude_setting_path=$(get_llm_config)
@@ -42,7 +42,7 @@ link_markdown() {
     echo "CLAUDE.md linked successfully."
 }
 
-# settings.jsonのリンク
+# Link settings.json
 link_settings() {
     local claude_setting_path
     claude_setting_path=$(get_llm_config)
@@ -57,7 +57,7 @@ link_settings() {
     echo "settings.json linked successfully."
 }
 
-# commandsのリンク
+# Link commands
 link_commands() {
     local claude_setting_path
     claude_setting_path=$(get_llm_config)
@@ -81,7 +81,7 @@ link_commands() {
     echo "Commands linked successfully."
 }
 
-# 引数の解析
+# Parse arguments
 MODE="all"
 
 while [[ $# -gt 0 ]]; do
@@ -110,7 +110,7 @@ while [[ $# -gt 0 ]]; do
     esac
 done
 
-# セットアップ実行
+# Execute setup
 if command -v claude &> /dev/null; then
     echo "Setting up claude CLI..."
 
