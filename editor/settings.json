@@ -1,7 +1,5 @@
 {
-  "accessibility.signals.chatRequestSent": {
-    "sound": "off"
-  },
+  "accessibility.signals.chatRequestSent": { "sound": "off" },
   "accessibility.signals.clear": { "sound": "off" },
   "accessibility.signals.lineHasFoldedArea": { "sound": "off" },
   "accessibility.signals.lineHasInlineSuggestion": { "sound": "off" },
@@ -87,11 +85,12 @@
   },
   "python.defaultInterpreterPath": "/usr/bin/python3",
   "python.languageServer": "Default",
-  "terminal.integrated.fontSize": 12,
   "terminal.integrated.copyOnSelection": true,
   "terminal.integrated.defaultLocation": "editor",
   "terminal.integrated.defaultProfile.osx": "bash",
-  "terminal.integrated.enableMultiLinePasteWarning": false,
+  "terminal.integrated.enableMultiLinePasteWarning": "never",
+  "terminal.integrated.fontSize": 12,
+  "terminal.integrated.ignoreBracketedPasteMode": true,
   "terminal.integrated.rightClickBehavior": "paste",
   "shellcheck.ignorePatterns": {
     "**/.bash_profile": true,
@@ -100,7 +99,6 @@
   "vsintellicode.modify.editor.suggestSelection": "automaticallyOverrodeDefaultValue",
   "window.title": "${dirty}${activeEditorMedium}${separator}${rootName}",
   "window.zoomLevel": 0,
-  "workbench.activityBar.orientation": "vertical",
   "workbench.iconTheme": "material-icon-theme",
   "workbench.startupEditor": "none",
   "yaml.customTags": [
@@ -134,6 +132,20 @@
   ],
   "yaml.schemaStore.enable": false,
   "yaml.validate": false,
+  "[dockercompose]": {
+    "editor.insertSpaces": true,
+    "editor.tabSize": 2,
+    "editor.autoIndent": "advanced",
+    "editor.quickSuggestions": {
+      "other": true,
+      "comments": false,
+      "strings": true
+    },
+    "editor.defaultFormatter": "redhat.vscode-yaml"
+  },
+  "[github-actions-workflow]": {
+    "editor.defaultFormatter": "redhat.vscode-yaml"
+  },
   "[javascript]": {
     "editor.defaultFormatter": "esbenp.prettier-vscode",
     "editor.tabSize": 2
