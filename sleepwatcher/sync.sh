@@ -38,14 +38,14 @@ create_sleep_script() {
     blueutil_path=$(get_sleepwatcher_config)
 
     if [ -z "$blueutil_path" ]; then
-        echo "blueutil command not found. Please install blueutil first."
+        printf "\033[1;31m✗ blueutil command not found. Please install blueutil first\033[0m\n"
         return 1
     fi
 
-    echo "Creating sleep script (~/.sleep)..."
+    printf "\033[1;36m=== Creating sleep script (~/.sleep) ===\033[0m\n"
     echo "$blueutil_path -p 0" > ~/.sleep
     chmod 755 ~/.sleep
-    echo "Sleep script created successfully."
+    printf "\033[1;32m✓ Sleep script created successfully\033[0m\n"
 }
 
 # Create wakeup script
@@ -54,24 +54,24 @@ create_wakeup_script() {
     blueutil_path=$(get_sleepwatcher_config)
 
     if [ -z "$blueutil_path" ]; then
-        echo "blueutil command not found. Please install blueutil first."
+        printf "\033[1;31m✗ blueutil command not found. Please install blueutil first\033[0m\n"
         return 1
     fi
 
-    echo "Creating wakeup script (~/.wakeup)..."
+    printf "\033[1;36m=== Creating wakeup script (~/.wakeup) ===\033[0m\n"
     echo "$blueutil_path -p 1" > ~/.wakeup
     chmod 755 ~/.wakeup
-    echo "Wakeup script created successfully."
+    printf "\033[1;32m✓ Wakeup script created successfully\033[0m\n"
 }
 
 # Restart sleepwatcher service
 restart_service() {
     if brew services info sleepwatcher &> /dev/null; then
-        echo "Restarting sleepwatcher service..."
+        printf "\033[1;36m=== Restarting sleepwatcher service ===\033[0m\n"
         brew services restart sleepwatcher
-        echo "Sleepwatcher service restarted successfully."
+        printf "\033[1;32m✓ Sleepwatcher service restarted successfully\033[0m\n"
     else
-        echo "sleepwatcher not installed. Please install sleepwatcher using: brew install sleepwatcher"
+        printf "\033[1;31m✗ sleepwatcher not installed. Please install sleepwatcher using: brew install sleepwatcher\033[0m\n"
         return 1
     fi
 }
@@ -106,7 +106,9 @@ while [[ $# -gt 0 ]]; do
 done
 
 # Execute setup
-echo "Setting up sleepwatcher..."
+printf "\n\033[1;34m========================================\033[0m\n"
+printf "\033[1;34m  Setting up sleepwatcher\033[0m\n"
+printf "\033[1;34m========================================\033[0m\n\n"
 
 case "$MODE" in
     sleep)
