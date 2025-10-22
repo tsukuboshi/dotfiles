@@ -4,8 +4,8 @@
 
 ## Install
 
-1. Execute aiagent sync script.
+1. Execute llm sync script.
 
 ```bash
-./aiagent/sync.sh
+./llm/sync.sh
 ```

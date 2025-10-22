@@ -30,7 +30,7 @@ make
 
 4. Additional setup required:
 
-- AI Agent: Follow instructions in `aiagent/README.md`
+- AI Agent: Follow instructions in `llm/README.md`
 - Editor: Follow instructions in `editor/README.md`
 - Launcher: Follow instructions in `launcher/README.md`
 - Runtime Management: Follow instructions in `runtime/README.md`
@@ -38,8 +38,8 @@ make
 
 ## Repository Structure
 
-- `.bin/`: Setup scripts
-- `aiagent/`: AI agent configurations
+- `common/`: Setup scripts
+- `llm/`: AI agent configurations
 - `editor/`: Editor configurations
 - `launcher/`: Launcher configurations
 - `runtime/`: Runtime Management configurations (Python, Node.js, etc.)
