@@ -2,7 +2,7 @@
 
 SCRIPT_DIR="$(cd "$(dirname "$0")" && pwd)"
 
-# エディタの設定を取得する関数
+# Get editor configuration
 get_editor_config() {
     local editor_name=$1
     case "$editor_name" in
@@ -18,26 +18,26 @@ get_editor_config() {
     esac
 }
 
-# 使用方法の表示
+# Show usage information
 show_usage() {
     echo "Usage: $0 [OPTIONS]"
     echo ""
     echo "OPTIONS:"
-    echo "  -e, --editor EDITOR                エディタを指定 (vscode|cursor, default: vscode)"
-    echo "  -l, --link-settings-only           settings.jsonのリンクのみ実行"
-    echo "  -i, --install-extensions-only      拡張機能のインストールのみ実行"
-    echo "  (no option)                        両方実行 (default)"
+    echo "  -e, --editor EDITOR                Specify editor (vscode|cursor, default: vscode)"
+    echo "  -l, --link-settings-only           Link settings.json only"
+    echo "  -i, --install-extensions-only      Install extensions only"
+    echo "  (no option)                        Execute both (default)"
     echo ""
     echo "Examples:"
-    echo "  $0                                  # VSCodeの設定と拡張機能を両方セットアップ"
-    echo "  $0 --editor cursor                  # Cursorの設定と拡張機能を両方セットアップ"
-    echo "  $0 -e vscode --link-settings-only   # VSCodeのsettings.jsonのみリンク"
-    echo "  $0 -e cursor --install-extensions-only # Cursorの拡張機能のみインストール"
-    echo "  $0 -l                               # VSCodeのsettings.jsonのみリンク(短縮)"
-    echo "  $0 -e cursor -i                     # Cursorの拡張機能のみインストール(短縮)"
+    echo "  $0                                  # Setup VSCode settings and extensions"
+    echo "  $0 --editor cursor                  # Setup Cursor settings and extensions"
+    echo "  $0 -e vscode --link-settings-only   # Link VSCode settings.json only"
+    echo "  $0 -e cursor --install-extensions-only # Install Cursor extensions only"
+    echo "  $0 -l                               # Link VSCode settings.json only (short)"
+    echo "  $0 -e cursor -i                     # Install Cursor extensions only (short)"
 }
 
-# settings.jsonのリンク
+# Link settings.json
 link_settings() {
     local editor_name=$1
     local settings_path=$2
@@ -50,7 +50,7 @@ link_settings() {
     fi
 }
 
-# 拡張機能のインストール
+# Install extensions
 install_extensions() {
     local editor_name=$1
     local command_name=$2
@@ -66,7 +66,7 @@ install_extensions() {
     fi
 }
 
-# エディタのセットアップ
+# Setup editor
 setup_editor() {
     local editor_name=$1
     local mode=$2
@@ -100,7 +100,7 @@ setup_editor() {
     esac
 }
 
-# 引数の解析
+# Parse arguments
 EDITOR="vscode"
 MODE="all"
 
@@ -135,5 +135,5 @@ while [[ $# -gt 0 ]]; do
     esac
 done
 
-# セットアップ実行
+# Execute setup
 setup_editor "$EDITOR" "$MODE"
