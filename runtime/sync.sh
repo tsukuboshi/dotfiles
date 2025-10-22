@@ -29,21 +29,19 @@ link_config() {
     local runtime_config_path
     runtime_config_path=$(get_runtime_config)
 
-    if [ ! -L "$runtime_config_path" ]; then
-        echo "Linking config.toml to mise..."
-        ln -fsvn "${SCRIPT_DIR}/config.toml" "$runtime_config_path"
-    else
-        echo "mise config.toml already linked."
-    fi
+    printf "\033[1;36m=== Linking config.toml to mise ===\033[0m\n"
+    ln -fsvn "${SCRIPT_DIR}/config.toml" "$runtime_config_path"
+    printf "\033[1;32m✓ config.toml linked successfully\033[0m\n"
 }
 
 # Install mise plugins
 install_plugins() {
     if command -v mise &> /dev/null; then
-        echo "Installing mise plugins..."
+        printf "\033[1;36m=== Installing mise plugins ===\033[0m\n"
         mise install
+        printf "\033[1;32m✓ mise plugins installed successfully\033[0m\n"
     else
-        echo "mise command not found. Skipping plugins installation."
+        printf "\033[1;31m✗ mise command not found. Skipping plugins installation\033[0m\n"
     fi
 }
 
@@ -73,7 +71,9 @@ while [[ $# -gt 0 ]]; do
 done
 
 # Execute setup
-echo "Setting up mise runtime..."
+printf "\n\033[1;34m========================================\033[0m\n"
+printf "\033[1;34m  Setting up mise runtime\033[0m\n"
+printf "\033[1;34m========================================\033[0m\n\n"
 
 case "$MODE" in
     link)

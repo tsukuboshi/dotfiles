@@ -43,10 +43,11 @@ link_settings() {
     local settings_path=$2
 
     if [ ! -L "$settings_path" ]; then
-        echo "Linking settings.json to ${editor_name}..."
+        printf "\033[1;36m=== Linking settings.json to %s ===\033[0m\n" "${editor_name}"
         ln -fsvn "${SCRIPT_DIR}/settings.json" "$settings_path"
+        printf "\033[1;32m✓ settings.json linked successfully\033[0m\n"
     else
-        echo "${editor_name} settings.json already linked."
+        printf "\033[1;33m⚠ %s settings.json already linked\033[0m\n" "${editor_name}"
     fi
 }
 
@@ -56,13 +57,14 @@ install_extensions() {
     local command_name=$2
 
     if command -v "$command_name" &> /dev/null; then
-        echo "Installing extensions to ${editor_name}..."
+        printf "\033[1;36m=== Installing extensions to %s ===\033[0m\n" "${editor_name}"
         while read -r line; do
             [ -z "$line" ] && continue
             "$command_name" --install-extension "$line"
         done < "${SCRIPT_DIR}/extensions"
+        printf "\033[1;32m✓ Extensions installed successfully\033[0m\n"
     else
-        echo "${command_name} command not found. Skipping extensions."
+        printf "\033[1;31m✗ %s command not found. Skipping extensions\033[0m\n" "${command_name}"
     fi
 }
 
@@ -74,8 +76,8 @@ setup_editor() {
     config=$(get_editor_config "$editor_name")
 
     if [ -z "$config" ]; then
-        echo "Unknown editor: ${editor_name}"
-        echo "Available editors: vscode cursor"
+        printf "\033[1;31m✗ Unknown editor: %s\033[0m\n" "${editor_name}"
+        printf "\033[1;33mAvailable editors: vscode cursor\033[0m\n"
         return 1
     fi
 
@@ -84,7 +86,9 @@ setup_editor() {
     settings_path=$(echo "$config" | cut -d: -f1)
     command_name=$(echo "$config" | cut -d: -f2)
 
-    echo "Setting up ${editor_name}..."
+    printf "\n\033[1;34m========================================\033[0m\n"
+    printf "\033[1;34m  Setting up %s\033[0m\n" "${editor_name}"
+    printf "\033[1;34m========================================\033[0m\n\n"
 
     case "$mode" in
         settings)
