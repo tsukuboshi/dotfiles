@@ -12,17 +12,17 @@ show_usage() {
     echo "Usage: $0 [OPTIONS]"
     echo ""
     echo "OPTIONS:"
-    echo "  -l, --link FILE            Link specific file (agents|settings|commands)"
+    echo "  -l, --link FILE            Link specific file (settings|commands|mcp)"
     echo "  (no option)                Link all files (default)"
     echo ""
     echo "Examples:"
     echo "  $0                         # Link all files"
-    echo "  $0 --link agents           # Link CLAUDE.md only"
-    echo "  $0 --link settings         # Link settings.json only"
+    echo "  $0 --link settings         # Link settings files (CLAUDE.md, settings.json)"
     echo "  $0 --link commands         # Link commands only"
-    echo "  $0 -l agents               # Link CLAUDE.md only (short)"
-    echo "  $0 -l settings             # Link settings.json only (short)"
+    echo "  $0 --link mcp              # Link .mcp.json only"
+    echo "  $0 -l settings             # Link settings files (short)"
     echo "  $0 -l commands             # Link commands only (short)"
+    echo "  $0 -l mcp                  # Link .mcp.json only (short)"
 }
 
 # Link specific file
@@ -37,15 +37,11 @@ link_file() {
     fi
 
     case "$file_type" in
-        agents)
-            printf "\033[1;36m=== Linking CLAUDE.md to claude ===\033[0m\n"
-            ln -fsvn "${SCRIPT_DIR}/CLAUDE.md" "${claude_setting_path}/CLAUDE.md"
-            printf "\033[1;32m✓ CLAUDE.md linked successfully\033[0m\n"
-            ;;
         settings)
-            printf "\033[1;36m=== Linking settings.json to claude ===\033[0m\n"
+            printf "\033[1;36m=== Linking settings files to claude ===\033[0m\n"
+            ln -fsvn "${SCRIPT_DIR}/CLAUDE.md" "${claude_setting_path}/CLAUDE.md"
             ln -fsvn "${SCRIPT_DIR}/settings.json" "${claude_setting_path}/settings.json"
-            printf "\033[1;32m✓ settings.json linked successfully\033[0m\n"
+            printf "\033[1;32m✓ Settings files linked successfully\033[0m\n"
             ;;
         commands)
             if [ ! -d "${SCRIPT_DIR}/commands" ]; then
@@ -60,9 +56,14 @@ link_file() {
             done
             printf "\033[1;32m✓ Commands linked successfully\033[0m\n"
             ;;
+        mcp)
+            printf "\033[1;36m=== Linking .mcp.json to claude ===\033[0m\n"
+            ln -fsvn "${SCRIPT_DIR}/.mcp.json" "${claude_setting_path}/.mcp.json"
+            printf "\033[1;32m✓ .mcp.json linked successfully\033[0m\n"
+            ;;
         *)
             printf "\033[1;31m✗ Unknown file type: %s\033[0m\n" "${file_type}"
-            printf "\033[1;33mAvailable types: agents, settings, commands\033[0m\n"
+            printf "\033[1;33mAvailable types: settings, commands, mcp\033[0m\n"
             return 1
             ;;
     esac
@@ -70,9 +71,9 @@ link_file() {
 
 # Link all files
 link_all() {
-    link_file "agents"
     link_file "settings"
     link_file "commands"
+    link_file "mcp"
 }
 
 # Parse arguments
@@ -86,7 +87,7 @@ while [[ $# -gt 0 ]]; do
             ;;
         --link|-l)
             if [[ -z "$2" || "$2" == -* ]]; then
-                echo "Error: --link requires an argument (agents|settings|commands)"
+                echo "Error: --link requires an argument (settings|commands|mcp)"
                 show_usage
                 exit 1
             fi
