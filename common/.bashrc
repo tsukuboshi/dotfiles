@@ -293,6 +293,8 @@ alias dsp='docker system prune'
 alias dcu='docker compose up -d'
 alias dcd='docker compose down'
 
+alias claudem='claude --mcp-config=${HOME}/.claude/.mcp.json'
+
 alias lvsj='ln -fsvn ${HOME}/dotfiles/vscode/settings.json ${HOME}/Library/Application\ Support/Code/User/settings.json'
 alias lcsj='ln -fsvn ${HOME}/dotfiles/vscode/settings.json ${HOME}/Library/Application\ Support/Cursor/User/settings.json'
 alias vle='code --list-extensions'
