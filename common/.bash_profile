@@ -5,11 +5,15 @@ fi
 
 # Set the prompt
 function parse_git_branch {
-  git branch --no-color 2> /dev/null | sed -e '/^[^*]/d' -e 's/* \(.*\)/\1/'
+  git symbolic-ref --short HEAD 2>/dev/null
 }
 
 function parse_aws_profile {
-  aws sts get-caller-identity --query 'Arn' --output text 2>/dev/null | awk -F '/' '{print $3}'
+  if [ -n "$AWS_PROFILE" ]; then
+    echo "$AWS_PROFILE"
+  elif [ -n "$AWS_DEFAULT_PROFILE" ]; then
+    echo "$AWS_DEFAULT_PROFILE"
+  fi
 }
 
 export PS1="\n\[\e[1;31m\]\u \[\e[1;32m\]\W \[\e[1;34m\]\$(parse_git_branch) \[\e[1;33m\]$(parse_aws_profile) \[\e[1;35m\]\$ \[\e[0m\]"
@@ -28,47 +32,37 @@ export PATH="/opt/homebrew/bin:$PATH"
 export PATH="$PATH:$HOME/.local/bin"
 
 # Set brew
-if [ "$(which brew)" == "" ]; then
+if ! command -v brew &>/dev/null; then
   eval "$(/opt/homebrew/bin/brew shellenv)"
 fi
 
 # Set rancher desktop
-if [ "$(which rdctl)" == "" ]; then
+if ! command -v rdctl &>/dev/null; then
   export PATH="$HOME/.rd/bin:$PATH"
 fi
 
 # Set vscode
-if [ "$(which code)" == "" ]; then
-  export PATH="/Applications/Visual\ Studio\ Code.app/Contents/Resources/app/bin:$PATH"
+if ! command -v code &>/dev/null; then
+  export PATH="/Applications/Visual Studio Code.app/Contents/Resources/app/bin:$PATH"
 fi
 
 # Set mise
-if [ "$(which mise)" != "" ]; then
+if command -v mise &>/dev/null; then
   eval "$(mise activate bash)"
 fi
 
 # Set aws-completion
-if [ "$(which aws_completer)" != "" ]; then
+if command -v aws_completer &>/dev/null; then
   complete -C aws_completer aws
 fi
 
-# Set git-completion
-if [ -r "/usr/local/etc/bash_completion.d/git-completion.sh" ]; then
-  source /usr/local/etc/bash_completion.d/git-completion.sh
-fi
-
-# Set git-prompt
-if [ -r "/usr/local/etc/bash_completion.d/git-prompt.sh" ]; then
-  source /usr/local/etc/bash_completion.d/git-prompt.sh
-fi
-
 # Set bash-completion
-if [ -r "/usr/local/etc/profile.d/bash_completion.sh" ]; then
-  source /usr/local/etc/profile.d/bash_completion.sh
+if [ -r "/opt/homebrew/etc/profile.d/bash_completion.sh" ]; then
+  source "/opt/homebrew/etc/profile.d/bash_completion.sh"
 fi
 
 # Set Typescript Compiler
-if [ "$(which tsc)" == "" ] && [ "$(which npm)" != "" ]; then
+if ! command -v tsc &>/dev/null && command -v npm &>/dev/null; then
   export PATH="$(npm bin -g):$PATH"
 fi
 
