@@ -13,11 +13,13 @@ function relogin (){
   exec "${SHELL_TYPE}" -l
 }
 
-alias checkip='curl inet-ip.info'
+alias myip='curl inet-ip.info'
 
-alias rmtrash='rm -rf ${HOME}/.Trash/*'
+alias mysh='echo $0'
 
-alias delds='find . -name ".DS_Store" -type f -ls -delete'
+alias rmtr='rm -rf ${HOME}/.Trash/*'
+
+alias rmds='find . -name ".DS_Store" -type f -ls -delete'
 
 alias bl='brew list --formula'
 alias bo='brew upgrade --dry-run'
@@ -310,6 +312,3 @@ alias lvsj='ln -fsvn ${HOME}/dotfiles/vscode/settings.json ${HOME}/Library/Appli
 alias lcsj='ln -fsvn ${HOME}/dotfiles/vscode/settings.json ${HOME}/Library/Application\ Support/Cursor/User/settings.json'
 alias vle='code --list-extensions'
 alias cle='cursor --list-extensions'
-
-# Created by `pipx` on 2025-08-09 04:48:59
-export PATH="$PATH:/Users/tsukuboshi/.local/bin"
