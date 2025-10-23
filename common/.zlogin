@@ -49,13 +49,7 @@ alias bbi='brew bundle install --global'
 
 function otp (){
   local ITEMID=${1:-AWS}
-  if [ "$(which op)" != "" ]; then
-    op item get ${ITEMID} --otp
-  elif [ "$(which bw)" != "" ]; then
-    bw get totp ${ITEMID}
-  else
-    echo  "Install the password manager command to get your totp."
-  fi
+  op item get ${ITEMID} --otp
 }
 
 alias gb='git branch --all'
@@ -180,23 +174,14 @@ alias enap='export -n AWS_PROFILE'
 
 function aup (){
   local PROFILE=${1:-tsukuboshi}
-  if [ "$(which pyenv)" = "" ]; then
-    source awsume ${PROFILE}
-
-  else
-    source $(pyenv which awsume) ${PROFILE}
-  fi
-  exec $SHELL -l
+  source awsume ${PROFILE}
+  exec /bin/zsh -l
 }
 
 function aupo (){
   local PROFILE=${1:-tsukuboshi}
-  if [ "$(which pyenv)" = "" ]; then
-    source awsume ${PROFILE} --mfa-token `otp`
-  else
-    source $(pyenv which awsume) ${PROFILE} --mfa-token `otp`
-  fi
-  exec $SHELL -l
+  source awsume ${PROFILE} --mfa-token `otp`
+  exec /bin/zsh -l
 }
 
 alias asg='aws sts get-caller-identity'
