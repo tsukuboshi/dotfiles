@@ -87,7 +87,7 @@
   "python.languageServer": "Default",
   "terminal.integrated.copyOnSelection": true,
   "terminal.integrated.defaultLocation": "editor",
-  "terminal.integrated.defaultProfile.osx": "bash",
+  "terminal.integrated.defaultProfile.osx": "zsh",
   "terminal.integrated.enableMultiLinePasteWarning": "never",
   "terminal.integrated.fontSize": 12,
   "terminal.integrated.ignoreBracketedPasteMode": true,
