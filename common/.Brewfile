@@ -31,6 +31,7 @@ brew "tree"
 # brew "uv"
 brew "watch"
 brew "wget"
+brew "zsh-completion"
 
 cask "appcleaner"
 # cask "aws-vault"
