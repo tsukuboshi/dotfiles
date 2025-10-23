@@ -14,6 +14,7 @@ function parse_aws_profile {
 
 export PS1="\n\[\e[1;31m\]\u \[\e[1;32m\]\W \[\e[1;34m\]\$(parse_git_branch) \[\e[1;33m\]$(parse_aws_profile) \[\e[1;35m\]\$ \[\e[0m\]"
 
+
 # Set the language
 export LANG="ja_JP.UTF-8"
 
