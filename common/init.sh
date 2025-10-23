@@ -5,9 +5,6 @@ if [ "$(uname)" != "Darwin" ] ; then
 	exit 1
 fi
 
-# Set bash
-chsh -s /bin/bash
-
 # Install xcode
 xcode-select --install > /dev/null
 
