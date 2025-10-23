@@ -1,6 +1,6 @@
 # Set the prompt
 function parse_git_branch {
-  git symbolic-ref --short HEAD 2>/dev/null
+  git branch --show-current 2>/dev/null
 }
 
 function parse_aws_profile {
