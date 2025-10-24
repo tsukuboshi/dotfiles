@@ -5,18 +5,66 @@ fi
 
 # Set the prompt
 function parse_git_branch {
-  git branch --show-current 2>/dev/null
-}
-
-function parse_aws_profile {
-  if [ -n "$AWS_PROFILE" ]; then
-    echo "$AWS_PROFILE"
-  elif [ -n "$AWS_DEFAULT_PROFILE" ]; then
-    echo "$AWS_DEFAULT_PROFILE"
+  local branch=$(git branch --show-current 2>/dev/null)
+  if [ -n "$branch" ]; then
+    echo "\[\e[1;34m\]${branch}\[\e[0m\]"
   fi
 }
 
-export PS1="\n\[\e[1;31m\]\u \[\e[1;32m\]\W \[\e[1;34m\]\$(parse_git_branch) \[\e[1;33m\]$(parse_aws_profile) \[\e[1;35m\]\$ \[\e[0m\]"
+function parse_aws_profile {
+  local profile=""
+  if [ -n "$AWS_PROFILE" ]; then
+    profile="$AWS_PROFILE"
+  elif [ -n "$AWS_DEFAULT_PROFILE" ]; then
+    profile="$AWS_DEFAULT_PROFILE"
+  fi
+
+  if [ -n "$profile" ]; then
+    echo "\[\e[1;35m\]${profile}\[\e[0m\]"
+  fi
+}
+
+function parse_git_status {
+  local git_status
+  git_status=$(git status --porcelain 2>/dev/null)
+  local git_exit_code=$?
+
+  if [ $git_exit_code -ne 0 ]; then
+    echo "\[\e[1;30m\]#\[\e[0m\]"  # not a git repo
+    return
+  fi
+
+  if [ -z "$git_status" ]; then
+    echo "\[\e[1;32m\]✓\[\e[0m\]"  # clean
+    return
+  fi
+
+  local status_symbols=""
+
+  # Staged files (M, A, D, R, C in first column)
+  if echo "$git_status" | grep -q '^[MADRC]'; then
+    status_symbols="${status_symbols}\[\e[1;37m\]●\[\e[0m\]"
+  fi
+
+  # Modified files (M in second column)
+  if echo "$git_status" | grep -q '^.M'; then
+    status_symbols="${status_symbols}\[\e[0;33m\]+\[\e[0m\]"
+  fi
+
+  # Deleted files (D in either column)
+  if echo "$git_status" | grep -q '^.D\|^D'; then
+    status_symbols="${status_symbols}\[\e[0;31m\]✖\[\e[0m\]"
+  fi
+
+  # Untracked files (?? at start)
+  if echo "$git_status" | grep -q '^??'; then
+    status_symbols="${status_symbols}\[\e[0;36m\]…\[\e[0m\]"
+  fi
+
+  echo "${status_symbols}"
+}
+
+export PS1="\n\[\e[1;31m\]\u\[\e[0m\] \[\e[1;32m\]\W\[\e[0m\] \$(parse_git_branch) \$(parse_aws_profile) \$(parse_git_status) "
 
 
 # Set the language

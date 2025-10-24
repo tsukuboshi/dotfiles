@@ -1,18 +1,66 @@
 # Set the prompt
 function parse_git_branch {
-  git branch --show-current 2>/dev/null
-}
-
-function parse_aws_profile {
-  if [ -n "$AWS_PROFILE" ]; then
-    echo "$AWS_PROFILE"
-  elif [ -n "$AWS_DEFAULT_PROFILE" ]; then
-    echo "$AWS_DEFAULT_PROFILE"
+  local branch=$(git branch --show-current 2>/dev/null)
+  if [ -n "$branch" ]; then
+    echo "%F{blue}%B${branch}%b%f"
   fi
 }
 
+function parse_aws_profile {
+  local profile=""
+  if [ -n "$AWS_PROFILE" ]; then
+    profile="$AWS_PROFILE"
+  elif [ -n "$AWS_DEFAULT_PROFILE" ]; then
+    profile="$AWS_DEFAULT_PROFILE"
+  fi
+
+  if [ -n "$profile" ]; then
+    echo "%F{magenta}%B${profile}%b%f"
+  fi
+}
+
+function parse_git_status {
+  local git_status
+  git_status=$(git status --porcelain 2>/dev/null)
+  local git_exit_code=$?
+
+  if [ $git_exit_code -ne 0 ]; then
+    echo "%F{black}%B%#%b%f"  # not a git repo
+    return
+  fi
+
+  if [ -z "$git_status" ]; then
+    echo "%F{green}%B✓%b%f"  # clean
+    return
+  fi
+
+  local status_symbols=""
+
+  # Staged files (M, A, D, R, C in first column)
+  if echo "$git_status" | grep -q '^[MADRC]'; then
+    status_symbols="${status_symbols}%F{white}●%f"
+  fi
+
+  # Modified files (M in second column)
+  if echo "$git_status" | grep -q '^.M'; then
+    status_symbols="${status_symbols}%F{yellow}+%f"
+  fi
+
+  # Deleted files (D in either column)
+  if echo "$git_status" | grep -q '^.D\|^D'; then
+    status_symbols="${status_symbols}%F{red}✖%f"
+  fi
+
+  # Untracked files (?? at start)
+  if echo "$git_status" | grep -q '^??'; then
+    status_symbols="${status_symbols}%F{cyan}…%f"
+  fi
+
+  echo "%B${status_symbols}%b"
+}
+
 setopt PROMPT_SUBST
-PROMPT=$'\n%F{red}%B%n%b %F{green}%B%1~%b %F{blue}%B$(parse_git_branch)%b %F{yellow}%B$(parse_aws_profile)%b %F{magenta}%B%#%b %f'
+PROMPT=$'\n%F{red}%B%n%b%f %F{green}%B%1~%b%f $(parse_git_branch) $(parse_aws_profile) $(parse_git_status) '
 
 # Set the language
 export LANG="ja_JP.UTF-8"
