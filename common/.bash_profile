@@ -78,7 +78,17 @@ _parse_git_status() {
   echo "${status_symbols}"
 }
 
-export PS1="\n\$(_parse_username) \$(_parse_current_dir) \$(_parse_git_branch) \$(_parse_aws_profile) \$(_parse_git_status) "
+_build_prompt() {
+  local result=""
+  for func in "$@"; do
+    local output=$($func)
+    [ -n "$output" ] && result+="${result:+ }${output}"
+  done
+  echo "\n$result "
+}
+
+PROMPT_PARTS=(_parse_username _parse_current_dir _parse_git_branch _parse_aws_profile _parse_git_status)
+export PS1="\$(_build_prompt \"\${PROMPT_PARTS[@]}\")"
 
 
 # Set the language

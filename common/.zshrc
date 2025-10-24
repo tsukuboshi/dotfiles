@@ -74,7 +74,18 @@ _parse_git_status() {
 }
 
 setopt PROMPT_SUBST
-PROMPT=$'\n$(_parse_username) $(_parse_current_dir) $(_parse_git_branch) $(_parse_aws_profile) $(_parse_git_status) '
+
+_build_prompt() {
+  local result=""
+  for func in "$@"; do
+    local output=$($func)
+    [ -n "$output" ] && result+="${result:+ }${output}"
+  done
+  echo "\n$result "
+}
+
+PROMPT_PARTS=(_parse_username _parse_current_dir _parse_git_branch _parse_aws_profile _parse_git_status)
+PROMPT='$(_build_prompt "${PROMPT_PARTS[@]}")'
 
 # Set the language
 export LANG="ja_JP.UTF-8"
