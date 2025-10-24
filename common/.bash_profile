@@ -4,28 +4,28 @@ if [ -r ~/.bashrc ]; then
 fi
 
 # Set the prompt
-function _colorize_text {
+_colorize_text() {
   local color=$1
   local text=$2
   echo "\[\e[${color}\]${text}\[\e[0m\]"
 }
 
-function _parse_username {
+_parse_username() {
   _colorize_text "1;31" "\u"
 }
 
-function _parse_current_dir {
+_parse_current_dir() {
   _colorize_text "1;32" "\W"
 }
 
-function _parse_git_branch {
+_parse_git_branch() {
   local branch=$(git branch --show-current 2>/dev/null)
   if [ -n "$branch" ]; then
     _colorize_text "1;34" "${branch}"
   fi
 }
 
-function _parse_aws_profile {
+_parse_aws_profile() {
   local profile=""
   if [ -n "$AWS_PROFILE" ]; then
     profile="$AWS_PROFILE"
@@ -38,7 +38,7 @@ function _parse_aws_profile {
   fi
 }
 
-function _parse_git_status {
+_parse_git_status() {
   local git_status
   git_status=$(git status --porcelain 2>/dev/null)
   local git_exit_code=$?
