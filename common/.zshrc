@@ -44,7 +44,7 @@ _parse_git_status() {
   fi
 
   if [ -z "$git_status" ]; then
-    _colorize_text "green" "✓"  # clean
+    _colorize_text "white" "✓"  # clean
     return
   fi
 
@@ -52,7 +52,7 @@ _parse_git_status() {
 
   # Staged files (M, A, D, R, C in first column)
   if echo "$git_status" | grep -q '^[MADRC]'; then
-    status_symbols="${status_symbols}$(_colorize_text "white" "●")"
+    status_symbols="${status_symbols}$(_colorize_text "green" "●")"
   fi
 
   # Modified files (M in second column)
