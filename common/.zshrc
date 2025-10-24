@@ -1,12 +1,26 @@
 # Set the prompt
-function parse_git_branch {
+function _colorize_text {
+  local color=$1
+  local text=$2
+  echo "%F{${color}}%B${text}%b%f"
+}
+
+function _parse_username {
+  _colorize_text "red" "%n"
+}
+
+function _parse_current_dir {
+  _colorize_text "green" "%1~"
+}
+
+function _parse_git_branch {
   local branch=$(git branch --show-current 2>/dev/null)
   if [ -n "$branch" ]; then
-    echo "%F{blue}%B${branch}%b%f"
+    _colorize_text "blue" "${branch}"
   fi
 }
 
-function parse_aws_profile {
+function _parse_aws_profile {
   local profile=""
   if [ -n "$AWS_PROFILE" ]; then
     profile="$AWS_PROFILE"
@@ -15,22 +29,22 @@ function parse_aws_profile {
   fi
 
   if [ -n "$profile" ]; then
-    echo "%F{magenta}%B${profile}%b%f"
+    _colorize_text "magenta" "${profile}"
   fi
 }
 
-function parse_git_status {
+function _parse_git_status {
   local git_status
   git_status=$(git status --porcelain 2>/dev/null)
   local git_exit_code=$?
 
   if [ $git_exit_code -ne 0 ]; then
-    echo "%F{black}%B%#%b%f"  # not a git repo
+    _colorize_text "black" "%#"  # not a git repo
     return
   fi
 
   if [ -z "$git_status" ]; then
-    echo "%F{green}%B✓%b%f"  # clean
+    _colorize_text "green" "✓"  # clean
     return
   fi
 
@@ -38,29 +52,29 @@ function parse_git_status {
 
   # Staged files (M, A, D, R, C in first column)
   if echo "$git_status" | grep -q '^[MADRC]'; then
-    status_symbols="${status_symbols}%F{white}●%f"
+    status_symbols="${status_symbols}$(_colorize_text "white" "●")"
   fi
 
   # Modified files (M in second column)
   if echo "$git_status" | grep -q '^.M'; then
-    status_symbols="${status_symbols}%F{yellow}+%f"
+    status_symbols="${status_symbols}$(_colorize_text "yellow" "+")"
   fi
 
   # Deleted files (D in either column)
   if echo "$git_status" | grep -q '^.D\|^D'; then
-    status_symbols="${status_symbols}%F{red}✖%f"
+    status_symbols="${status_symbols}$(_colorize_text "red" "✖")"
   fi
 
   # Untracked files (?? at start)
   if echo "$git_status" | grep -q '^??'; then
-    status_symbols="${status_symbols}%F{cyan}…%f"
+    status_symbols="${status_symbols}$(_colorize_text "cyan" "…")"
   fi
 
-  echo "%B${status_symbols}%b"
+  echo "${status_symbols}"
 }
 
 setopt PROMPT_SUBST
-PROMPT=$'\n%F{red}%B%n%b%f %F{green}%B%1~%b%f $(parse_git_branch) $(parse_aws_profile) $(parse_git_status) '
+PROMPT=$'\n$(_parse_username) $(_parse_current_dir) $(_parse_git_branch) $(_parse_aws_profile) $(_parse_git_status) '
 
 # Set the language
 export LANG="ja_JP.UTF-8"

@@ -4,14 +4,28 @@ if [ -r ~/.bashrc ]; then
 fi
 
 # Set the prompt
-function parse_git_branch {
+function _colorize_text {
+  local color=$1
+  local text=$2
+  echo "\[\e[${color}\]${text}\[\e[0m\]"
+}
+
+function _parse_username {
+  _colorize_text "1;31" "\u"
+}
+
+function _parse_current_dir {
+  _colorize_text "1;32" "\W"
+}
+
+function _parse_git_branch {
   local branch=$(git branch --show-current 2>/dev/null)
   if [ -n "$branch" ]; then
-    echo "\[\e[1;34m\]${branch}\[\e[0m\]"
+    _colorize_text "1;34" "${branch}"
   fi
 }
 
-function parse_aws_profile {
+function _parse_aws_profile {
   local profile=""
   if [ -n "$AWS_PROFILE" ]; then
     profile="$AWS_PROFILE"
@@ -20,22 +34,22 @@ function parse_aws_profile {
   fi
 
   if [ -n "$profile" ]; then
-    echo "\[\e[1;35m\]${profile}\[\e[0m\]"
+    _colorize_text "1;35" "${profile}"
   fi
 }
 
-function parse_git_status {
+function _parse_git_status {
   local git_status
   git_status=$(git status --porcelain 2>/dev/null)
   local git_exit_code=$?
 
   if [ $git_exit_code -ne 0 ]; then
-    echo "\[\e[1;30m\]#\[\e[0m\]"  # not a git repo
+    _colorize_text "1;30" "#"  # not a git repo
     return
   fi
 
   if [ -z "$git_status" ]; then
-    echo "\[\e[1;32m\]✓\[\e[0m\]"  # clean
+    _colorize_text "1;32" "✓"  # clean
     return
   fi
 
@@ -43,28 +57,28 @@ function parse_git_status {
 
   # Staged files (M, A, D, R, C in first column)
   if echo "$git_status" | grep -q '^[MADRC]'; then
-    status_symbols="${status_symbols}\[\e[1;37m\]●\[\e[0m\]"
+    status_symbols="${status_symbols}$(_colorize_text "1;37" "●")"
   fi
 
   # Modified files (M in second column)
   if echo "$git_status" | grep -q '^.M'; then
-    status_symbols="${status_symbols}\[\e[0;33m\]+\[\e[0m\]"
+    status_symbols="${status_symbols}$(_colorize_text "0;33" "+")"
   fi
 
   # Deleted files (D in either column)
   if echo "$git_status" | grep -q '^.D\|^D'; then
-    status_symbols="${status_symbols}\[\e[0;31m\]✖\[\e[0m\]"
+    status_symbols="${status_symbols}$(_colorize_text "0;31" "✖")"
   fi
 
   # Untracked files (?? at start)
   if echo "$git_status" | grep -q '^??'; then
-    status_symbols="${status_symbols}\[\e[0;36m\]…\[\e[0m\]"
+    status_symbols="${status_symbols}$(_colorize_text "0;36" "…")"
   fi
 
   echo "${status_symbols}"
 }
 
-export PS1="\n\[\e[1;31m\]\u\[\e[0m\] \[\e[1;32m\]\W\[\e[0m\] \$(parse_git_branch) \$(parse_aws_profile) \$(parse_git_status) "
+export PS1="\n\$(_parse_username) \$(_parse_current_dir) \$(_parse_git_branch) \$(_parse_aws_profile) \$(_parse_git_status) "
 
 
 # Set the language
