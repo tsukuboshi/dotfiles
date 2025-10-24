@@ -29,8 +29,8 @@ _parse_aws_profile() {
   local profile=""
   if [ -n "$AWS_PROFILE" ]; then
     profile="$AWS_PROFILE"
-  elif [ -n "$AWS_DEFAULT_PROFILE" ]; then
-    profile="$AWS_DEFAULT_PROFILE"
+  elif [ -n "$AWSUME_PROFILE" ]; then
+    profile="$AWSUME_PROFILE"
   fi
 
   if [ -n "$profile" ]; then
