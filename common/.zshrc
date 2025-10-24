@@ -24,8 +24,8 @@ _parse_aws_profile() {
   local profile=""
   if [ -n "$AWS_PROFILE" ]; then
     profile="$AWS_PROFILE"
-  elif [ -n "$AWS_DEFAULT_PROFILE" ]; then
-    profile="$AWS_DEFAULT_PROFILE"
+  elif [ -n "$AWSUME_PROFILE" ]; then
+    profile="$AWSUME_PROFILE"
   fi
 
   if [ -n "$profile" ]; then
@@ -126,14 +126,5 @@ if command -v aws_completer &>/dev/null; then
   complete -C aws_completer aws
 fi
 
-#Auto-Complete function for awsume
-_awsume() {
-    local cur prev opts
-    COMPREPLY=()
-    cur="${COMP_WORDS[COMP_CWORD]}"
-    prev="${COMP_WORDS[COMP_CWORD-1]}"
-    opts=$(awsume-autocomplete)
-    COMPREPLY=( $(compgen -W "${opts}" -- ${cur}) )
-    return 0
-}
-complete -F _awsume awsume
+#Auto-Complete function for AWSume
+fpath=(~/.awsume/zsh-autocomplete/ $fpath)
