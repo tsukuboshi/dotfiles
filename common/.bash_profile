@@ -57,7 +57,7 @@ _parse_git_status() {
 
   # Staged files (M, A, D, R, C in first column)
   if echo "$git_status" | grep -q '^[MADRC]'; then
-    status_symbols="${status_symbols}$(_colorize_text "1;32" "●")"
+    status_symbols="${status_symbols}$(_colorize_text "0;36" "●")"
   fi
 
   # Modified files (M in second column)
@@ -72,7 +72,7 @@ _parse_git_status() {
 
   # Untracked files (?? at start)
   if echo "$git_status" | grep -q '^??'; then
-    status_symbols="${status_symbols}$(_colorize_text "0;36" "…")"
+    status_symbols="${status_symbols}$(_colorize_text "1;32" "…")"
   fi
 
   echo "${status_symbols}"
