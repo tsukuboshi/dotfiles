@@ -1,4 +1,7 @@
-# Set specific aliases and functions
+# ============================================================================
+# System
+# ============================================================================
+
 alias ..='cd ..'
 alias ...='cd ../..'
 alias ....='cd ../../..'
@@ -6,26 +9,40 @@ alias ....='cd ../../..'
 alias ll='ls -lF'
 alias la='ls -lAF'
 
-alias sudo='sudo '
+alias rmtr='rm -rf ${HOME}/.Trash/*'
+alias rmds='find . -name ".DS_Store" -type f -ls -delete'
 
 function relogin (){
   local SHELL_TYPE=${1:-/bin/zsh}
   exec "${SHELL_TYPE}" -l
 }
-
 alias myip='curl inet-ip.info'
-
 alias mysh='echo $0'
 
-alias rmtr='rm -rf ${HOME}/.Trash/*'
+alias sudo='sudo '
 
-alias rmds='find . -name ".DS_Store" -type f -ls -delete'
+function otp (){
+  local ITEMID=${1:-AWS}
+  op item get ${ITEMID} --otp
+}
+
+function claude (){
+  local MCP_CONFIG="${HOME}/.claude/.mcp.json"
+  if [[ -f "${MCP_CONFIG}" ]]; then
+    command claude --mcp-config="${MCP_CONFIG}" "$@"
+  else
+    command claude "$@"
+  fi
+}
+
+# ============================================================================
+# Brew
+# ============================================================================
 
 alias bl='brew list --formula'
 alias bo='brew upgrade --dry-run'
 alias bg='brew upgrade'
 alias bc='brew cleanup'
-
 alias cl='brew list --cask'
 alias co='brew upgrade --cask --greedy --dry-run'
 alias cg='brew upgrade --cask --greedy'
@@ -47,10 +64,9 @@ alias bbl='brew bundle list --global --all'
 alias bbc='brew bundle check --global --formula'
 alias bbi='brew bundle install --global'
 
-function otp (){
-  local ITEMID=${1:-AWS}
-  op item get ${ITEMID} --otp
-}
+# ============================================================================
+# Git
+# ============================================================================
 
 alias gb='git branch --all'
 alias gbl='git branch'
@@ -137,6 +153,10 @@ alias gsu='git stash save -u'
 alias gsl='git stash list'
 alias gsc='git stash clear'
 
+# ============================================================================
+# GitHub
+# ============================================================================
+
 alias ghc='gh repo create $(basename $(pwd)) --private --push --source .'
 alias ghv='gh repo view'
 alias ghvw='gh repo view --web'
@@ -151,20 +171,16 @@ function ghch (){
   gh pr checkout "${PR_NUMBER}"
 }
 
-alias pci='pre-commit install'
-alias pcr='pre-commit run -a'
-alias pcu='pre-commit autoupdate'
+# ============================================================================
+# Mise
+# ============================================================================
 
 alias mil='mise list'
 alias miu='mise upgrade'
 
-alias nrb='npm run build'
-alias nrw='npm run watch'
-alias nrt='npm run test'
-alias nig='npm install -g'
-alias nid='npm install -D'
-alias ncu='npx -p npm-check-updates  -c "ncu"'
-alias ncuu='npx -p npm-check-updates  -c "ncu -u"'
+# ============================================================================
+# AWS
+# ============================================================================
 
 function eap (){
   local PROFILE=${1:-tsukuboshi}
@@ -201,10 +217,18 @@ function ecsexec (){
   aws ecs execute-command --cluster ${CLUSTER_NAME} --task ${TASK_ID} --container ${CONTAINER_NAME} --interactive --command "/bin/sh"
 }
 
+# ============================================================================
+# SAM
+# ============================================================================
+
 alias samv='sam validate'
 alias samb='sam build'
 alias samp='sam deploy'
 alias samd='sam destroy'
+
+# ============================================================================
+# CDK
+# ============================================================================
 
 function cdkin (){
   local LANGUAGE=${1:-typescript}
@@ -215,6 +239,10 @@ alias cdki='cdk diff'
 alias cdkp='cdk deploy'
 alias cdkl='cdk list'
 alias cdkd='cdk destroy'
+
+# ============================================================================
+# Terraform
+# ============================================================================
 
 function tin (){
   local PROFILE=${1:-tsukuboshi}
@@ -261,6 +289,10 @@ function tdoc (){
   terraform-docs markdown table --output-file README.md --output-mode inject ${MODULE_PATH}
 }
 
+# ============================================================================
+# Docker
+# ============================================================================
+
 function dib (){
   local IMAGE=${1:-itest}
   docker image build --platform linux/x86_64 -t ${IMAGE} .
@@ -293,16 +325,11 @@ alias dsp='docker system prune'
 alias dcu='docker compose up -d'
 alias dcd='docker compose down'
 
-function claude (){
-  local MCP_CONFIG="${HOME}/.claude/.mcp.json"
-  if [[ -f "${MCP_CONFIG}" ]]; then
-    command claude --mcp-config="${MCP_CONFIG}" "$@"
-  else
-    command claude "$@"
-  fi
-}
+# ============================================================================
+# Code
+# ============================================================================
 
 alias lvsj='ln -fsvn ${HOME}/dotfiles/vscode/settings.json ${HOME}/Library/Application\ Support/Code/User/settings.json'
-alias lcsj='ln -fsvn ${HOME}/dotfiles/vscode/settings.json ${HOME}/Library/Application\ Support/Cursor/User/settings.json'
 alias vle='code --list-extensions'
+alias lcsj='ln -fsvn ${HOME}/dotfiles/vscode/settings.json ${HOME}/Library/Application\ Support/Cursor/User/settings.json'
 alias cle='cursor --list-extensions'
