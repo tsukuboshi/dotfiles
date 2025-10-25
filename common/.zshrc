@@ -142,7 +142,7 @@ fpath=(~/.awsume/zsh-autocomplete/ $fpath)
 
 # Show aliases by category
 function aliases() {
-  local ZLOGIN_FILE="${HOME}/dotfiles/common/.zlogin"
+  local ZLOGIN_FILE="${HOME}/.zlogin"
   [ ! -f "${ZLOGIN_FILE}" ] && echo "Error: ${ZLOGIN_FILE} not found" && return 1
 
   _list_categories() { grep "^# [A-Z]" "${ZLOGIN_FILE}" | grep -v "^# ====" | sed 's/^# /  - /'; }
