@@ -31,7 +31,6 @@ link_config() {
     local runtime_config_dir
     runtime_config_dir=$(dirname "$runtime_config_path")
 
-    # Create directory if it doesn't exist
     if [ ! -d "$runtime_config_dir" ]; then
         printf "\033[1;33m⚠ Directory does not exist. Creating: %s\033[0m\n" "$runtime_config_dir"
         mkdir -p "$runtime_config_dir"
@@ -39,7 +38,6 @@ link_config() {
 
     printf "\033[1;36m=== Linking config.toml to mise ===\033[0m\n"
     ln -fsvn "${SCRIPT_DIR}/config.toml" "$runtime_config_path"
-    printf "\033[1;32m✓ config.toml linked successfully\033[0m\n"
 }
 
 # Install mise plugins
@@ -47,7 +45,6 @@ install_plugins() {
     if command -v mise &> /dev/null; then
         printf "\033[1;36m=== Installing mise plugins ===\033[0m\n"
         mise install
-        printf "\033[1;32m✓ mise plugins installed successfully\033[0m\n"
     else
         printf "\033[1;31m✗ mise command not found. Skipping plugins installation\033[0m\n"
     fi
@@ -79,10 +76,6 @@ while [[ $# -gt 0 ]]; do
 done
 
 # Execute setup
-printf "\n\033[1;34m========================================\033[0m\n"
-printf "\033[1;34m  Setting up mise runtime\033[0m\n"
-printf "\033[1;34m========================================\033[0m\n\n"
-
 case "$MODE" in
     link)
         link_config

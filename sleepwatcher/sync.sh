@@ -45,7 +45,8 @@ create_sleep_script() {
     printf "\033[1;36m=== Creating sleep script (~/.sleep) ===\033[0m\n"
     echo "$blueutil_path -p 0" > ~/.sleep
     chmod 755 ~/.sleep
-    printf "\033[1;32m✓ Sleep script created successfully\033[0m\n"
+    printf "\033[1;32m✓ Content: \033[0m"
+    cat ~/.sleep
 }
 
 # Create wakeup script
@@ -61,7 +62,8 @@ create_wakeup_script() {
     printf "\033[1;36m=== Creating wakeup script (~/.wakeup) ===\033[0m\n"
     echo "$blueutil_path -p 1" > ~/.wakeup
     chmod 755 ~/.wakeup
-    printf "\033[1;32m✓ Wakeup script created successfully\033[0m\n"
+    printf "\033[1;32m✓ Content: \033[0m"
+    cat ~/.wakeup
 }
 
 # Restart sleepwatcher service
@@ -69,7 +71,6 @@ restart_service() {
     if brew services info sleepwatcher &> /dev/null; then
         printf "\033[1;36m=== Restarting sleepwatcher service ===\033[0m\n"
         brew services restart sleepwatcher
-        printf "\033[1;32m✓ Sleepwatcher service restarted successfully\033[0m\n"
     else
         printf "\033[1;31m✗ sleepwatcher not installed. Please install sleepwatcher using: brew install sleepwatcher\033[0m\n"
         return 1
@@ -106,10 +107,6 @@ while [[ $# -gt 0 ]]; do
 done
 
 # Execute setup
-printf "\n\033[1;34m========================================\033[0m\n"
-printf "\033[1;34m  Setting up sleepwatcher\033[0m\n"
-printf "\033[1;34m========================================\033[0m\n\n"
-
 case "$MODE" in
     sleep)
         create_sleep_script

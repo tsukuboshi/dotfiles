@@ -45,18 +45,12 @@ link_agent_files() {
         return 1
     fi
 
-    printf "\n\033[1;34m========================================\033[0m\n"
-    printf "\033[1;34m  Setting up %s\033[0m\n" "${agent_name}"
-    printf "\033[1;34m========================================\033[0m\n\n"
-
     case "$agent_name" in
         claude)
             printf "\033[1;36m=== Linking setting files ===\033[0m\n"
             ln -fsvn "${SCRIPT_DIR}/AGENTS.md" "${config_path}/CLAUDE.md"
             ln -fsvn "${SCRIPT_DIR}/settings.json" "${config_path}/settings.json"
             ln -fsvn "${SCRIPT_DIR}/mcp.json" "${config_path}/.mcp.json"
-
-            printf "\033[1;32m✓ Setting files linked successfully\033[0m\n"
 
             if [ -d "${SCRIPT_DIR}/commands" ]; then
             printf "\033[1;36m=== Linking command files ===\033[0m\n"
@@ -65,7 +59,6 @@ link_agent_files() {
                         ln -fsvn "$file" "${config_path}/commands"
                     fi
                 done
-                printf "\033[1;32m✓ Commands linked successfully\033[0m\n"
             else
                 printf "\033[1;33m⚠ Commands directory not found, skipping commands\033[0m\n"
             fi
