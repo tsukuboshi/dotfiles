@@ -1,13 +1,13 @@
 # Do everything.
-all: init link defaults brew
+all: xcode link defaults brew
 
-# Set initial preference.
-init:
-	@echo "\033[0;34mRun init.sh\033[0m"
-	@common/init.sh
+# Set Xcode preference.
+xcode:
+	@echo "\033[0;34mRun xcode.sh\033[0m"
+	@common/xcode.sh
 	@echo "\033[0;34mDone.\033[0m"
 
-# Link dotfiles.
+# Link common dotfiles.
 link:
 	@echo "\033[0;34mRun link.sh\033[0m"
 	@common/link.sh
