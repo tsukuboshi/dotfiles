@@ -42,7 +42,7 @@ link_settings() {
     local editor_name=$1
     local settings_path=$2
 
-    printf "\033[1;36m=== Linking settings.json to %s ===\033[0m\n" "${editor_name}"
+    printf "\n\033[1;36m=== Linking settings.json to %s ===\033[0m\n" "${editor_name}"
     ln -fsvn "${SCRIPT_DIR}/settings.json" "$settings_path"
 }
 
@@ -52,7 +52,7 @@ install_extensions() {
     local command_name=$2
 
     if command -v "$command_name" &> /dev/null; then
-        printf "\033[1;36m=== Installing extensions to %s ===\033[0m\n" "${editor_name}"
+        printf "\n\033[1;36m=== Installing extensions to %s ===\033[0m\n" "${editor_name}"
         while read -r line; do
             [ -z "$line" ] && continue
             "$command_name" --install-extension "$line"

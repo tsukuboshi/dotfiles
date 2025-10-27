@@ -36,14 +36,14 @@ link_config() {
         mkdir -p "$runtime_config_dir"
     fi
 
-    printf "\033[1;36m=== Linking config.toml to mise ===\033[0m\n"
+    printf "\n\033[1;36m=== Linking config.toml to mise ===\033[0m\n"
     ln -fsvn "${SCRIPT_DIR}/config.toml" "$runtime_config_path"
 }
 
 # Install mise plugins
 install_plugins() {
     if command -v mise &> /dev/null; then
-        printf "\033[1;36m=== Installing mise plugins ===\033[0m\n"
+        printf "\n\033[1;36m=== Installing mise plugins ===\033[0m\n"
         mise install
     else
         printf "\033[1;31m✗ mise command not found. Skipping plugins installation\033[0m\n"

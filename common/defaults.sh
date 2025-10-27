@@ -1,6 +1,6 @@
 #!/bin/bash
 
-printf "\033[1;36m=== Applying system defaults ===\033[0m\n"
+printf "\n\033[1;36m=== Applying system defaults ===\033[0m\n"
 
 _apply_default() {
 	local description="$1"
@@ -48,7 +48,7 @@ _apply_default "Increase trackpad speed" -g com.apple.trackpad.scaling 3
 
 _apply_default "Show files with all extensions" -g AppleShowAllExtensions -bool true
 
-printf "\033[1;36m=== Restarting affected applications ===\033[0m\n"
+printf "\n\033[1;36m=== Restarting affected applications ===\033[0m\n"
 for app in "Dock" \
 	"Finder" \
 	"SystemUIServer"; do
