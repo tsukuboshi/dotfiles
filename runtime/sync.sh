@@ -28,6 +28,14 @@ show_usage() {
 link_config() {
     local runtime_config_path
     runtime_config_path=$(get_runtime_config)
+    local runtime_config_dir
+    runtime_config_dir=$(dirname "$runtime_config_path")
+
+    # Create directory if it doesn't exist
+    if [ ! -d "$runtime_config_dir" ]; then
+        printf "\033[1;33m⚠ Directory does not exist. Creating: %s\033[0m\n" "$runtime_config_dir"
+        mkdir -p "$runtime_config_dir"
+    fi
 
     printf "\033[1;36m=== Linking config.toml to mise ===\033[0m\n"
     ln -fsvn "${SCRIPT_DIR}/config.toml" "$runtime_config_path"
