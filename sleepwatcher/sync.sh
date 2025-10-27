@@ -37,12 +37,13 @@ create_sleep_script() {
     local blueutil_path
     blueutil_path=$(get_sleepwatcher_config)
 
+    printf "\n\033[1;36m=== Creating sleep script (~/.sleep) ===\033[0m\n"
+
     if [ -z "$blueutil_path" ]; then
         printf "\033[1;31m✗ blueutil command not found. Please install blueutil first\033[0m\n"
         return 1
     fi
 
-    printf "\033[1;36m=== Creating sleep script (~/.sleep) ===\033[0m\n"
     echo "$blueutil_path -p 0" > ~/.sleep
     chmod 755 ~/.sleep
     printf "\033[1;32m✓ Content: \033[0m"
@@ -54,12 +55,13 @@ create_wakeup_script() {
     local blueutil_path
     blueutil_path=$(get_sleepwatcher_config)
 
+    printf "\n\033[1;36m=== Creating wakeup script (~/.wakeup) ===\033[0m\n"
+
     if [ -z "$blueutil_path" ]; then
         printf "\033[1;31m✗ blueutil command not found. Please install blueutil first\033[0m\n"
         return 1
     fi
 
-    printf "\033[1;36m=== Creating wakeup script (~/.wakeup) ===\033[0m\n"
     echo "$blueutil_path -p 1" > ~/.wakeup
     chmod 755 ~/.wakeup
     printf "\033[1;32m✓ Content: \033[0m"
@@ -69,7 +71,7 @@ create_wakeup_script() {
 # Restart sleepwatcher service
 restart_service() {
     if brew services info sleepwatcher &> /dev/null; then
-        printf "\033[1;36m=== Restarting sleepwatcher service ===\033[0m\n"
+        printf "\n\033[1;36m=== Restarting sleepwatcher service ===\033[0m\n"
         brew services restart sleepwatcher
     else
         printf "\033[1;31m✗ sleepwatcher not installed. Please install sleepwatcher using: brew install sleepwatcher\033[0m\n"

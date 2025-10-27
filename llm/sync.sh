@@ -47,13 +47,13 @@ link_agent_files() {
 
     case "$agent_name" in
         claude)
-            printf "\033[1;36m=== Linking setting files ===\033[0m\n"
+            printf "\n\033[1;36m=== Linking setting files ===\033[0m\n"
             ln -fsvn "${SCRIPT_DIR}/AGENTS.md" "${config_path}/CLAUDE.md"
             ln -fsvn "${SCRIPT_DIR}/settings.json" "${config_path}/settings.json"
             ln -fsvn "${SCRIPT_DIR}/mcp.json" "${config_path}/.mcp.json"
 
             if [ -d "${SCRIPT_DIR}/commands" ]; then
-            printf "\033[1;36m=== Linking command files ===\033[0m\n"
+            printf "\n\033[1;36m=== Linking command files ===\033[0m\n"
                 for file in "${SCRIPT_DIR}"/commands/*; do
                     if [ -f "$file" ]; then
                         ln -fsvn "$file" "${config_path}/commands"

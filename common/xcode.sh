@@ -1,6 +1,6 @@
 #!/bin/bash
 
-printf "\033[1;36m=== Checking Xcode Command Line Tools ===\033[0m\n"
+printf "\n\033[1;36m=== Checking Xcode Command Line Tools ===\033[0m\n"
 if xcode-select -p &>/dev/null; then
 	printf "\033[1;33m⚠ Xcode Command Line Tools is already installed\033[0m\n"
 else
