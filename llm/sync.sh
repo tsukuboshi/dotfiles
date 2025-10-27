@@ -2,9 +2,17 @@
 
 SCRIPT_DIR="$(cd "$(dirname "$0")" && pwd)"
 
-# Get LLM configuration
-get_llm_config() {
-    echo "${HOME}/.claude"
+# Get agent configuration
+get_agent_config() {
+    local agent_name=$1
+    case "$agent_name" in
+        claude)
+            echo "${HOME}/.claude"
+            ;;
+        *)
+            echo ""
+            ;;
+    esac
 }
 
 # Show usage information
@@ -12,72 +20,66 @@ show_usage() {
     echo "Usage: $0 [OPTIONS]"
     echo ""
     echo "OPTIONS:"
-    echo "  -l, --link FILE            Link specific file (settings|commands|mcp)"
-    echo "  (no option)                Link all files (default)"
+    echo "  -a, --agent AGENT          Specify agent (claude, default: claude)"
     echo ""
     echo "Examples:"
-    echo "  $0                         # Link all files"
-    echo "  $0 --link settings         # Link settings files (CLAUDE.md, settings.json)"
-    echo "  $0 --link commands         # Link commands only"
-    echo "  $0 --link mcp              # Link .mcp.json only"
-    echo "  $0 -l settings             # Link settings files (short)"
-    echo "  $0 -l commands             # Link commands only (short)"
-    echo "  $0 -l mcp                  # Link .mcp.json only (short)"
+    echo "  $0                         # Link Claude files (default)"
+    echo "  $0 --agent claude          # Link Claude files"
+    echo "  $0 -a claude               # Link Claude files (short)"
 }
 
-# Link specific file
-link_file() {
-    local file_type=$1
-    local claude_setting_path
-    claude_setting_path=$(get_llm_config)
+# Link agent files
+link_agent_files() {
+    local agent_name=$1
+    local config_path
+    config_path=$(get_agent_config "$agent_name")
 
-    if [ ! -d "$claude_setting_path" ]; then
-        printf "\033[1;31m✗ Claude settings directory not found. Please install claude CLI first\033[0m\n"
+    if [ -z "$config_path" ]; then
+        printf "\033[1;31m✗ Unknown agent: %s\033[0m\n" "${agent_name}"
+        printf "\033[1;33mAvailable agents: claude\033[0m\n"
         return 1
     fi
 
-    case "$file_type" in
-        settings)
-            printf "\033[1;36m=== Linking settings files to claude ===\033[0m\n"
-            ln -fsvn "${SCRIPT_DIR}/CLAUDE.md" "${claude_setting_path}/CLAUDE.md"
-            ln -fsvn "${SCRIPT_DIR}/settings.json" "${claude_setting_path}/settings.json"
-            printf "\033[1;32m✓ Settings files linked successfully\033[0m\n"
-            ;;
-        commands)
-            if [ ! -d "${SCRIPT_DIR}/commands" ]; then
-                printf "\033[1;31m✗ Commands directory not found in %s\033[0m\n" "${SCRIPT_DIR}"
-                return 1
+    if [ ! -d "$config_path" ]; then
+        printf "\033[1;31m✗ %s settings directory not found. Please install %s CLI first\033[0m\n" "${agent_name}" "${agent_name}"
+        return 1
+    fi
+
+    printf "\n\033[1;34m========================================\033[0m\n"
+    printf "\033[1;34m  Setting up %s\033[0m\n" "${agent_name}"
+    printf "\033[1;34m========================================\033[0m\n\n"
+
+    case "$agent_name" in
+        claude)
+            printf "\033[1;36m=== Linking setting files ===\033[0m\n"
+            ln -fsvn "${SCRIPT_DIR}/AGENTS.md" "${config_path}/CLAUDE.md"
+            ln -fsvn "${SCRIPT_DIR}/settings.json" "${config_path}/settings.json"
+            ln -fsvn "${SCRIPT_DIR}/mcp.json" "${config_path}/.mcp.json"
+
+            printf "\033[1;32m✓ Setting files linked successfully\033[0m\n"
+
+            if [ -d "${SCRIPT_DIR}/commands" ]; then
+            printf "\033[1;36m=== Linking command files ===\033[0m\n"
+                for file in "${SCRIPT_DIR}"/commands/*; do
+                    if [ -f "$file" ]; then
+                        ln -fsvn "$file" "${config_path}/commands"
+                    fi
+                done
+                printf "\033[1;32m✓ Commands linked successfully\033[0m\n"
+            else
+                printf "\033[1;33m⚠ Commands directory not found, skipping commands\033[0m\n"
             fi
-            printf "\033[1;36m=== Linking commands to claude ===\033[0m\n"
-            for file in "${SCRIPT_DIR}"/commands/*; do
-                if [ -f "$file" ]; then
-                    ln -fsvn "$file" "${claude_setting_path}/commands"
-                fi
-            done
-            printf "\033[1;32m✓ Commands linked successfully\033[0m\n"
-            ;;
-        mcp)
-            printf "\033[1;36m=== Linking .mcp.json to claude ===\033[0m\n"
-            ln -fsvn "${SCRIPT_DIR}/.mcp.json" "${claude_setting_path}/.mcp.json"
-            printf "\033[1;32m✓ .mcp.json linked successfully\033[0m\n"
+
             ;;
         *)
-            printf "\033[1;31m✗ Unknown file type: %s\033[0m\n" "${file_type}"
-            printf "\033[1;33mAvailable types: settings, commands, mcp\033[0m\n"
+            printf "\033[1;31m✗ Unsupported agent: %s\033[0m\n" "${agent_name}"
             return 1
             ;;
     esac
 }
 
-# Link all files
-link_all() {
-    link_file "settings"
-    link_file "commands"
-    link_file "mcp"
-}
-
 # Parse arguments
-LINK_TARGET=""
+AGENT="claude"
 
 while [[ $# -gt 0 ]]; do
     case "$1" in
@@ -85,13 +87,13 @@ while [[ $# -gt 0 ]]; do
             show_usage
             exit 0
             ;;
-        --link|-l)
+        --agent|-a)
             if [[ -z "$2" || "$2" == -* ]]; then
-                echo "Error: --link requires an argument (settings|commands|mcp)"
+                echo "Error: --agent requires an argument"
                 show_usage
                 exit 1
             fi
-            LINK_TARGET="$2"
+            AGENT="$2"
             shift 2
             ;;
         *)
@@ -103,17 +105,4 @@ while [[ $# -gt 0 ]]; do
 done
 
 # Execute setup
-if command -v claude &> /dev/null; then
-    printf "\n\033[1;34m========================================\033[0m\n"
-    printf "\033[1;34m  Setting up claude CLI\033[0m\n"
-    printf "\033[1;34m========================================\033[0m\n\n"
-
-    if [ -z "$LINK_TARGET" ]; then
-        link_all
-    else
-        link_file "$LINK_TARGET"
-    fi
-else
-    printf "\033[1;31m✗ claude command not found. Please install claude CLI first\033[0m\n"
-    exit 1
-fi
+link_agent_files "$AGENT"
