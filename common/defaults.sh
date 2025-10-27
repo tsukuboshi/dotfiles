@@ -1,9 +1,14 @@
 #!/bin/bash
 
+printf "\033[1;36m=== Checking OS ===\033[0m\n"
 if [ "$(uname)" != "Darwin" ] ; then
-	echo "Not macOS!"
+	printf "\033[1;31m✗ Not macOS!\033[0m\n"
 	exit 1
 fi
+printf "\033[1;32m✓ macOS detected\033[0m\n\n"
+
+# Apply system defaults
+printf "\033[1;36m=== Applying system defaults ===\033[0m\n"
 
 # Show bluetooth in the menu bar
 defaults write com.apple.controlcenter "NSStatusItem Visible Bluetooth" -bool true
@@ -60,10 +65,13 @@ defaults write -g com.apple.trackpad.scaling 3
 # Show files with all extensions
 defaults write -g AppleShowAllExtensions -bool true
 
+printf "\033[1;32m✓ System defaults applied successfully\033[0m\n\n"
 
-
+# Restart affected apps
+printf "\033[1;36m=== Restarting affected applications ===\033[0m\n"
 for app in "Dock" \
 	"Finder" \
 	"SystemUIServer"; do
 	killall "${app}" &> /dev/null
 done
+printf "\033[1;32m✓ Applications restarted successfully\033[0m\n"
