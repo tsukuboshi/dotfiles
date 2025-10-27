@@ -8,7 +8,7 @@ fi
 printf "\033[1;32m✓ macOS detected\033[0m\n\n"
 
 printf "\033[1;36m=== Installing Homebrew ===\033[0m\n"
-/bin/bash -c "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/HEAD/install.sh)" > /dev/null
+/bin/bash -c "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/HEAD/install.sh)"
 printf "\033[1;32m✓ Homebrew installed successfully\033[0m\n\n"
 
 printf "\033[1;36m=== Installing packages via brew bundle ===\033[0m\n"
