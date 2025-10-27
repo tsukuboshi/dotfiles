@@ -10,4 +10,3 @@ for dotfile in "${SCRIPT_DIR}"/.??* ; do
 
     ln -fnsv "$dotfile" "$HOME"
 done
-printf "\033[1;32m✓ Dotfiles linked successfully\033[0m\n"

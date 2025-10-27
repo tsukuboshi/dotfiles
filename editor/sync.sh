@@ -42,13 +42,8 @@ link_settings() {
     local editor_name=$1
     local settings_path=$2
 
-    if [ ! -L "$settings_path" ]; then
-        printf "\033[1;36m=== Linking settings.json to %s ===\033[0m\n" "${editor_name}"
-        ln -fsvn "${SCRIPT_DIR}/settings.json" "$settings_path"
-        printf "\033[1;32m✓ settings.json linked successfully\033[0m\n"
-    else
-        printf "\033[1;33m⚠ %s settings.json already linked\033[0m\n" "${editor_name}"
-    fi
+    printf "\033[1;36m=== Linking settings.json to %s ===\033[0m\n" "${editor_name}"
+    ln -fsvn "${SCRIPT_DIR}/settings.json" "$settings_path"
 }
 
 # Install extensions
@@ -62,7 +57,6 @@ install_extensions() {
             [ -z "$line" ] && continue
             "$command_name" --install-extension "$line"
         done < "${SCRIPT_DIR}/extensions"
-        printf "\033[1;32m✓ Extensions installed successfully\033[0m\n"
     else
         printf "\033[1;31m✗ %s command not found. Skipping extensions\033[0m\n" "${command_name}"
     fi
@@ -85,10 +79,6 @@ setup_editor() {
     local command_name
     settings_path=$(echo "$config" | cut -d: -f1)
     command_name=$(echo "$config" | cut -d: -f2)
-
-    printf "\n\033[1;34m========================================\033[0m\n"
-    printf "\033[1;34m  Setting up %s\033[0m\n" "${editor_name}"
-    printf "\033[1;34m========================================\033[0m\n\n"
 
     case "$mode" in
         settings)
