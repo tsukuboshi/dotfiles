@@ -7,7 +7,6 @@ if [ "$(uname)" != "Darwin" ] ; then
 fi
 printf "\033[1;32m✓ macOS detected\033[0m\n\n"
 
-# Apply system defaults
 printf "\033[1;36m=== Applying system defaults ===\033[0m\n"
 
 # Show bluetooth in the menu bar
