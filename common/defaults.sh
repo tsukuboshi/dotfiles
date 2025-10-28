@@ -12,9 +12,9 @@ apply_default() {
 	fi
 }
 
-apply_default "Set menu bar item spacing" -globalDomain NSStatusItemSpacing -int 12
+apply_default "Set menu bar to decrease item spacing" -globalDomain NSStatusItemSpacing -int 12
 
-apply_default "Set menu bar item selection padding" -globalDomain NSStatusItemSelectionPadding -int 8
+apply_default "Set menu bar to decrease item selection padding" -globalDomain NSStatusItemSelectionPadding -int 8
 
 apply_default "Set menu bar to show battery percentage" com.apple.controlcenter BatteryShowPercentage -bool true
 
@@ -56,9 +56,9 @@ apply_default "Set mouse to increase speed" -g com.apple.mouse.scaling 1.5
 
 apply_default "Set trackpad to increase speed" -g com.apple.trackpad.scaling 3
 
-apply_default "Disable application open confirmation dialog" com.apple.LaunchServices LSQuarantine -bool false
+apply_default "Set LaunchServices to disable application open confirmation dialog" com.apple.LaunchServices LSQuarantine -bool false
 
-apply_default "Disable live conversion" com.apple.inputmethod.Kotoeri JIMPrefLiveConversionKey -bool false
+apply_default "Set input method to disable live conversion" com.apple.inputmethod.Kotoeri JIMPrefLiveConversionKey -bool false
 
 printf "\n\033[1;36m=== Restarting affected applications ===\033[0m\n"
 for app in "Dock" \
