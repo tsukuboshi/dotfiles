@@ -2,24 +2,25 @@
 
 SCRIPT_DIR="$(cd "$(dirname "$0")" && pwd)"
 
-# Get editor configuration
 get_editor_config() {
     local editor_name=$1
     case "$editor_name" in
         vscode)
-            echo "${HOME}/Library/Application Support/Code/User/settings.json:code"
+            echo "${HOME}/Library/Application Support/Code/User/settings.json"
+            echo "code"
             ;;
         cursor)
-            echo "${HOME}/Library/Application Support/Cursor/User/settings.json:cursor"
+            echo "${HOME}/Library/Application Support/Cursor/User/settings.json"
+            echo "cursor"
             ;;
         *)
+            echo ""
             echo ""
             ;;
     esac
 }
 
-# Show usage information
-show_usage() {
+show_editor_usage() {
     echo "Usage: $0 [OPTIONS]"
     echo ""
     echo "OPTIONS:"
@@ -37,22 +38,20 @@ show_usage() {
     echo "  $0 -e cursor -i                     # Install Cursor extensions only (short)"
 }
 
-# Link settings.json
-link_settings() {
+link_editor_config() {
     local editor_name=$1
     local settings_path=$2
 
-    printf "\n\033[1;36m=== Linking settings.json to %s ===\033[0m\n" "${editor_name}"
+    printf "\n\033[1;36m=== Linking setting files to %s ===\033[0m\n" "${editor_name}"
     ln -fsvn "${SCRIPT_DIR}/settings.json" "$settings_path"
 }
 
-# Install extensions
-install_extensions() {
+install_editor_extensions() {
     local editor_name=$1
     local command_name=$2
 
+    printf "\n\033[1;36m=== Installing extensions to %s ===\033[0m\n" "${editor_name}"
     if command -v "$command_name" &> /dev/null; then
-        printf "\n\033[1;36m=== Installing extensions to %s ===\033[0m\n" "${editor_name}"
         while read -r line; do
             [ -z "$line" ] && continue
             "$command_name" --install-extension "$line"
@@ -62,52 +61,49 @@ install_extensions() {
     fi
 }
 
-# Setup editor
 setup_editor() {
     local editor_name=$1
     local mode=$2
-    local config
-    config=$(get_editor_config "$editor_name")
+    local settings_path
+    local command_name
+    {
+        read -r settings_path
+        read -r command_name
+    } < <(get_editor_config "$editor_name")
 
-    if [ -z "$config" ]; then
+    if [ -z "$settings_path" ]; then
         printf "\033[1;31m✗ Unknown editor: %s\033[0m\n" "${editor_name}"
         printf "\033[1;33mAvailable editors: vscode cursor\033[0m\n"
         return 1
     fi
 
-    local settings_path
-    local command_name
-    settings_path=$(echo "$config" | cut -d: -f1)
-    command_name=$(echo "$config" | cut -d: -f2)
-
     case "$mode" in
         settings)
-            link_settings "$editor_name" "$settings_path"
+            link_editor_config "$editor_name" "$settings_path"
             ;;
         extensions)
-            install_extensions "$editor_name" "$command_name"
+            install_editor_extensions "$editor_name" "$command_name"
             ;;
         *)
-            link_settings "$editor_name" "$settings_path"
-            install_extensions "$editor_name" "$command_name"
+            link_editor_config "$editor_name" "$settings_path"
+            install_editor_extensions "$editor_name" "$command_name"
             ;;
     esac
 }
 
-# Parse arguments
 EDITOR="vscode"
 MODE="all"
 
 while [[ $# -gt 0 ]]; do
     case "$1" in
         --help|-h)
-            show_usage
+            show_editor_usage
             exit 0
             ;;
         --editor|-e)
             if [[ -z "$2" || "$2" == -* ]]; then
                 echo "Error: --editor requires an argument (vscode|cursor)"
-                show_usage
+                show_editor_usage
                 exit 1
             fi
             EDITOR="$2"
@@ -123,11 +119,10 @@ while [[ $# -gt 0 ]]; do
             ;;
         *)
             echo "Unknown option: $1"
-            show_usage
+            show_editor_usage
             exit 1
             ;;
     esac
 done
 
-# Execute setup
 setup_editor "$EDITOR" "$MODE"
