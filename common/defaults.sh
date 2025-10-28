@@ -12,9 +12,7 @@ _apply_default() {
 	fi
 }
 
-_apply_default "Set menu bar to show bluetooth" com.apple.controlcenter "NSStatusItem Visible Bluetooth" -bool true
-
-_apply_default "Set menu bar to show battery percentage" com.apple.menuextra.battery ShowPercent -string "YES"
+_apply_default "Set menu bar to show battery percentage" com.apple.controlcenter BatteryShowPercentage -bool true
 
 _apply_default "Set menu bar to display date, day, and time" com.apple.menuextra.clock DateFormat -string 'EEE d MMM HH:mm'
 
