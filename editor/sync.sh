@@ -42,7 +42,7 @@ link_editor_config() {
     local editor_name=$1
     local settings_path=$2
 
-    printf "\n\033[1;36m=== Linking setting files to %s ===\033[0m\n" "${editor_name}"
+    printf "\n\033[1;36m=== Linking config to %s ===\033[0m\n" "${editor_name}"
     ln -fsvn "${SCRIPT_DIR}/settings.json" "$settings_path"
 }
 
