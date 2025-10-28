@@ -11,12 +11,6 @@
       "command": "npx",
       "args": ["-y", "@upstash/context7-mcp"],
       "env": {}
-    },
-    "playwright": {
-      "type": "stdio",
-      "command": "npx",
-      "args": ["-y", "@playwright/mcp@latest"],
-      "env": {}
     }
   }
 }
