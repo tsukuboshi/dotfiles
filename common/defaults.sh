@@ -12,9 +12,7 @@ _apply_default() {
 	fi
 }
 
-_apply_default "Set menu bar to show bluetooth" com.apple.controlcenter "NSStatusItem Visible Bluetooth" -bool true
-
-_apply_default "Set menu bar to show battery percentage" com.apple.menuextra.battery ShowPercent -string "YES"
+_apply_default "Set menu bar to show battery percentage" com.apple.controlcenter BatteryShowPercentage -bool true
 
 _apply_default "Set menu bar to display date, day, and time" com.apple.menuextra.clock DateFormat -string 'EEE d MMM HH:mm'
 
@@ -53,8 +51,6 @@ _apply_default "Set keyboard to use the Fn key as a standard function key" -g co
 _apply_default "Set mouse to increase speed" -g com.apple.mouse.scaling 1.5
 
 _apply_default "Set trackpad to increase speed" -g com.apple.trackpad.scaling 3
-
-_apply_default "Avoid creating .DS_Store files on network volumes" com.apple.desktopservices DSDontWriteNetworkStores -bool true
 
 _apply_default "Disable application open confirmation dialog" com.apple.LaunchServices LSQuarantine -bool false
 
