@@ -1,6 +1,5 @@
 #!/bin/bash
 
-# Get sleepwatcher configuration
 get_sleepwatcher_config() {
     local blueutil_path
     blueutil_path=$(which blueutil)
@@ -12,8 +11,7 @@ get_sleepwatcher_config() {
     fi
 }
 
-# Show usage information
-show_usage() {
+show_sleepwatcher_usage() {
     echo "Usage: $0 [OPTIONS]"
     echo ""
     echo "OPTIONS:"
@@ -32,7 +30,6 @@ show_usage() {
     echo "  $0 -r                      # Restart service only (short)"
 }
 
-# Create sleep script
 create_sleep_script() {
     local blueutil_path
     blueutil_path=$(get_sleepwatcher_config)
@@ -50,7 +47,6 @@ create_sleep_script() {
     cat ~/.sleep
 }
 
-# Create wakeup script
 create_wakeup_script() {
     local blueutil_path
     blueutil_path=$(get_sleepwatcher_config)
@@ -68,10 +64,9 @@ create_wakeup_script() {
     cat ~/.wakeup
 }
 
-# Restart sleepwatcher service
-restart_service() {
+restart_sleepwatcher_service() {
+    printf "\n\033[1;36m=== Restarting sleepwatcher service ===\033[0m\n"
     if brew services info sleepwatcher &> /dev/null; then
-        printf "\n\033[1;36m=== Restarting sleepwatcher service ===\033[0m\n"
         brew services restart sleepwatcher
     else
         printf "\033[1;31m✗ sleepwatcher not installed. Please install sleepwatcher using: brew install sleepwatcher\033[0m\n"
@@ -79,13 +74,12 @@ restart_service() {
     fi
 }
 
-# Parse arguments
 MODE="all"
 
 while [[ $# -gt 0 ]]; do
     case "$1" in
         --help|-h)
-            show_usage
+            show_sleepwatcher_usage
             exit 0
             ;;
         --create-sleep-only|-s)
@@ -102,13 +96,12 @@ while [[ $# -gt 0 ]]; do
             ;;
         *)
             echo "Unknown option: $1"
-            show_usage
+            show_sleepwatcher_usage
             exit 1
             ;;
     esac
 done
 
-# Execute setup
 case "$MODE" in
     sleep)
         create_sleep_script
@@ -117,11 +110,11 @@ case "$MODE" in
         create_wakeup_script
         ;;
     restart)
-        restart_service
+        restart_sleepwatcher_service
         ;;
     *)
         create_sleep_script
         create_wakeup_script
-        restart_service
+        restart_sleepwatcher_service
         ;;
 esac
