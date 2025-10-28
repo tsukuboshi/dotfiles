@@ -52,8 +52,6 @@ _apply_default "Set mouse to increase speed" -g com.apple.mouse.scaling 1.5
 
 _apply_default "Set trackpad to increase speed" -g com.apple.trackpad.scaling 3
 
-_apply_default "Avoid creating .DS_Store files on network volumes" com.apple.desktopservices DSDontWriteNetworkStores -bool true
-
 _apply_default "Disable application open confirmation dialog" com.apple.LaunchServices LSQuarantine -bool false
 
 _apply_default "Disable live conversion" com.apple.inputmethod.Kotoeri JIMPrefLiveConversionKey -bool false
