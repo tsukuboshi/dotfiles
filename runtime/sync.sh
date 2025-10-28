@@ -2,13 +2,11 @@
 
 SCRIPT_DIR="$(cd "$(dirname "$0")" && pwd)"
 
-# Get runtime configuration
 get_runtime_config() {
     echo "${HOME}/.config/mise/config.toml"
 }
 
-# Show usage information
-show_usage() {
+show_runtime_usage() {
     echo "Usage: $0 [OPTIONS]"
     echo ""
     echo "OPTIONS:"
@@ -24,39 +22,37 @@ show_usage() {
     echo "  $0 -i                      # Install mise plugins only (short)"
 }
 
-# Link config.toml
-link_config() {
+link_runtime_config() {
     local runtime_config_path
     runtime_config_path=$(get_runtime_config)
     local runtime_config_dir
     runtime_config_dir=$(dirname "$runtime_config_path")
+
+    printf "\n\033[1;36m=== Linking config to mise ===\033[0m\n"
 
     if [ ! -d "$runtime_config_dir" ]; then
         printf "\033[1;33m⚠ Directory does not exist. Creating: %s\033[0m\n" "$runtime_config_dir"
         mkdir -p "$runtime_config_dir"
     fi
 
-    printf "\n\033[1;36m=== Linking config.toml to mise ===\033[0m\n"
     ln -fsvn "${SCRIPT_DIR}/config.toml" "$runtime_config_path"
 }
 
-# Install mise plugins
-install_plugins() {
+install_runtime_plugins() {
+    printf "\n\033[1;36m=== Installing plugins to mise ===\033[0m\n"
     if command -v mise &> /dev/null; then
-        printf "\n\033[1;36m=== Installing mise plugins ===\033[0m\n"
         mise install
     else
         printf "\033[1;31m✗ mise command not found. Skipping plugins installation\033[0m\n"
     fi
 }
 
-# Parse arguments
 MODE="all"
 
 while [[ $# -gt 0 ]]; do
     case "$1" in
         --help|-h)
-            show_usage
+            show_runtime_usage
             exit 0
             ;;
         --link-config-only|-l)
@@ -69,22 +65,21 @@ while [[ $# -gt 0 ]]; do
             ;;
         *)
             echo "Unknown option: $1"
-            show_usage
+            show_runtime_usage
             exit 1
             ;;
     esac
 done
 
-# Execute setup
 case "$MODE" in
     link)
-        link_config
+        link_runtime_config
         ;;
     install)
-        install_plugins
+        install_runtime_plugins
         ;;
     *)
-        link_config
-        install_plugins
+        link_runtime_config
+        install_runtime_plugins
         ;;
 esac
