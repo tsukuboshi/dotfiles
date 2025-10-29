@@ -2,10 +2,10 @@
 
 - [Home \| mise\-en\-place](https://mise.jdx.dev/)
 
-## Install
+## Setup mise
 
-1. Execute runtime sync script.
+1. Execute runtime setup script with the runtime option set to mise.
 
 ```bash
-./runtime/sync.sh
+./runtime/setup.sh -r mise
 ```

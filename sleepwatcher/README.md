@@ -2,10 +2,10 @@
 
 - [sleepwatcher](https://www.bernhard-baehr.de/)
 
-## Install
+## Setup SleepWatcher
 
-1. Execute sleepwatcher sync script.
+1. Execute sleepwatcher setup script.
 
 ```bash
-./sleepwatcher/sync.sh
+./sleepwatcher/setup.sh
 ```
