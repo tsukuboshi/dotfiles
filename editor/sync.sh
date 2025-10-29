@@ -78,10 +78,10 @@ setup_editor() {
     fi
 
     case "$mode" in
-        settings)
+        link)
             link_editor_config "$editor_name" "$settings_path"
             ;;
-        extensions)
+        install)
             install_editor_extensions "$editor_name" "$command_name"
             ;;
         *)
@@ -110,11 +110,11 @@ while [[ $# -gt 0 ]]; do
             shift 2
             ;;
         --link-settings-only|-l)
-            MODE="settings"
+            MODE="link"
             shift
             ;;
         --install-extensions-only|-i)
-            MODE="extensions"
+            MODE="install"
             shift
             ;;
         *)
