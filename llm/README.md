@@ -2,10 +2,10 @@
 
 - [Claude Code \- Anthropic](https://docs.anthropic.com/ja/docs/claude-code)
 
-## Install
+## Setup Claude Code
 
-1. Execute llm sync script.
+1. Execute llm setup script with the agent option set to claude.
 
 ```bash
-./llm/sync.sh
+./llm/setup.sh -a claude
 ```

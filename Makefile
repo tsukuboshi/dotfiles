@@ -34,27 +34,27 @@ brew:
 # Setup editor settings.
 editor:
 	@printf "\n\033[1;34m========================================\033[0m\n"
-	@printf "\033[1;34m  Run editor/sync.sh\033[0m\n"
+	@printf "\033[1;34m  Run editor/setup.sh\033[0m\n"
 	@printf "\033[1;34m========================================\033[0m\n"
-	@editor/sync.sh
+	@editor/setup.sh
 
 # Setup LLM agent settings.
 llm:
 	@printf "\n\033[1;34m========================================\033[0m\n"
-	@printf "\033[1;34m  Run llm/sync.sh\033[0m\n"
+	@printf "\033[1;34m  Run llm/setup.sh\033[0m\n"
 	@printf "\033[1;34m========================================\033[0m\n"
-	@llm/sync.sh
+	@llm/setup.sh
 
 # Setup runtime environment.
 runtime:
 	@printf "\n\033[1;34m========================================\033[0m\n"
-	@printf "\033[1;34m  Run runtime/sync.sh\033[0m\n"
+	@printf "\033[1;34m  Run runtime/setup.sh\033[0m\n"
 	@printf "\033[1;34m========================================\033[0m\n"
-	@runtime/sync.sh
+	@runtime/setup.sh
 
 # Setup sleepwatcher scripts.
 sleepwatcher:
 	@printf "\n\033[1;34m========================================\033[0m\n"
-	@printf "\033[1;34m  Run sleepwatcher/sync.sh\033[0m\n"
+	@printf "\033[1;34m  Run sleepwatcher/setup.sh\033[0m\n"
 	@printf "\033[1;34m========================================\033[0m\n"
-	@sleepwatcher/sync.sh
+	@sleepwatcher/setup.sh

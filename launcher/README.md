@@ -2,7 +2,7 @@
 
 - [Raycast](https://www.raycast.com/)
 
-## Install
+## Setup Raycast
 
 1. Press "command + ," on raycast.
 2. Click "Advanced" tab.
