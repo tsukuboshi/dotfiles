@@ -6,8 +6,8 @@ get_runtime_config() {
     local runtime_name=$1
     case "$runtime_name" in
         mise)
-            echo "${HOME}/.config/mise/config.toml"
             echo "mise"
+            echo "${HOME}/.config/mise"
             ;;
         *)
             echo ""
@@ -49,7 +49,7 @@ link_runtime_config() {
         mkdir -p "$runtime_config_dir"
     fi
 
-    ln -fsvn "${SCRIPT_DIR}/config.toml" "$config_path"
+    ln -fsvn "${SCRIPT_DIR}/config.toml" "${config_path}/config.toml"
 }
 
 install_runtime_plugins() {
@@ -67,11 +67,11 @@ install_runtime_plugins() {
 setup_runtime() {
     local runtime_name=$1
     local mode=$2
-    local config_path
     local command_name
+    local config_path
     {
-        read -r config_path
         read -r command_name
+        read -r config_path
     } < <(get_runtime_config "$runtime_name")
 
     if [ -z "$config_path" ]; then

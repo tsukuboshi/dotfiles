@@ -6,12 +6,12 @@ get_editor_config() {
     local editor_name=$1
     case "$editor_name" in
         vscode)
-            echo "${HOME}/Library/Application Support/Code/User/settings.json"
             echo "code"
+            echo "${HOME}/Library/Application Support/Code/User"
             ;;
         cursor)
-            echo "${HOME}/Library/Application Support/Cursor/User/settings.json"
             echo "cursor"
+            echo "${HOME}/Library/Application Support/Cursor/User"
             ;;
         *)
             echo ""
@@ -25,16 +25,16 @@ show_editor_usage() {
     echo ""
     echo "OPTIONS:"
     echo "  -e, --editor EDITOR                Specify editor (vscode|cursor, default: vscode)"
-    echo "  -l, --link-settings-only           Link settings.json only"
+    echo "  -l, --link-settings-only           Link setting files only"
     echo "  -i, --install-extensions-only      Install extensions only"
     echo "  (no option)                        Execute both (default)"
     echo ""
     echo "Examples:"
     echo "  $0                                  # Setup VSCode settings and extensions"
     echo "  $0 --editor cursor                  # Setup Cursor settings and extensions"
-    echo "  $0 -e vscode --link-settings-only   # Link VSCode settings.json only"
+    echo "  $0 -e vscode --link-settings-only   # Link VSCode setting files only"
     echo "  $0 -e cursor --install-extensions-only # Install Cursor extensions only"
-    echo "  $0 -l                               # Link VSCode settings.json only (short)"
+    echo "  $0 -l                               # Link VSCode setting files only (short)"
     echo "  $0 -e cursor -i                     # Install Cursor extensions only (short)"
 }
 
@@ -43,7 +43,7 @@ link_editor_config() {
     local settings_path=$2
 
     printf "\n\033[1;36m=== Linking config to %s ===\033[0m\n" "${editor_name}"
-    ln -fsvn "${SCRIPT_DIR}/settings.json" "$settings_path"
+    ln -fsvn "${SCRIPT_DIR}/settings.json" "${settings_path}/settings.json"
 }
 
 install_editor_extensions() {
@@ -64,11 +64,11 @@ install_editor_extensions() {
 setup_editor() {
     local editor_name=$1
     local mode=$2
-    local settings_path
     local command_name
+    local settings_path
     {
-        read -r settings_path
         read -r command_name
+        read -r settings_path
     } < <(get_editor_config "$editor_name")
 
     if [ -z "$settings_path" ]; then
