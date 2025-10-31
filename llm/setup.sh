@@ -56,12 +56,12 @@ link_agent_config() {
     ln -fsvn "${SCRIPT_DIR}/settings.json" "${config_path}/settings.json"
     for file in "${SCRIPT_DIR}"/commands/*; do
         if [ -f "$file" ]; then
-            ln -fsvn "$file" "$commands_path/$(basename "$file")"
+            ln -fsvn "$file" "$commands_path"
         fi
     done
     for file in "${SCRIPT_DIR}"/mcps/*; do
         if [ -f "$file" ]; then
-            ln -fsvn "$file" "$mcps_path/$(basename "$file")"
+            ln -fsvn "$file" "$mcps_path"
         fi
     done
 }
