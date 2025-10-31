@@ -26,8 +26,36 @@ function otp (){
   op item get ${ITEMID} --otp
 }
 
-function claude (){
-  local MCP_CONFIG="${HOME}/.claude/.mcp.json"
+function agent (){
+  local MCP_CONFIG="${HOME}/.claude/mcps/default.json"
+  if [[ -f "${MCP_CONFIG}" ]]; then
+    command claude --mcp-config="${MCP_CONFIG}" "$@"
+  else
+    command claude "$@"
+  fi
+}
+
+function agentb (){
+  local MCP_CONFIG="${HOME}/.claude/mcps/browser.json"
+  if [[ -f "${MCP_CONFIG}" ]]; then
+    command claude --mcp-config="${MCP_CONFIG}" "$@"
+  else
+    command claude "$@"
+  fi
+}
+
+
+function agentc (){
+  local MCP_CONFIG="${HOME}/.claude/mcps/coding.json"
+  if [[ -f "${MCP_CONFIG}" ]]; then
+    command claude --mcp-config="${MCP_CONFIG}" "$@"
+  else
+    command claude "$@"
+  fi
+}
+
+function agenti (){
+  local MCP_CONFIG="${HOME}/.claude/mcps/infra.json"
   if [[ -f "${MCP_CONFIG}" ]]; then
     command claude --mcp-config="${MCP_CONFIG}" "$@"
   else
