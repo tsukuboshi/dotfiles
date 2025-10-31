@@ -6,11 +6,13 @@ get_agent_config() {
     local agent_name=$1
     case "$agent_name" in
         claude)
+            echo "claude"
             echo "${HOME}/.claude"
             echo "commands"
             echo "mcps"
             ;;
         *)
+            echo ""
             echo ""
             echo ""
             echo ""
@@ -36,9 +38,10 @@ show_agent_usage() {
 
 link_agent_config() {
     local agent_name=$1
-    local config_path=$2
-    local commands_path="${config_path}/$3"
-    local mcps_path="${config_path}/$4"
+    local command_name=$2
+    local config_path=$3
+    local commands_path="${config_path}/$4"
+    local mcps_path="${config_path}/$5"
 
     printf "\n\033[1;36m=== Linking config to %s ===\033[0m\n" "${agent_name}"
 
@@ -69,10 +72,12 @@ link_agent_config() {
 setup_agent() {
     local agent_name=$1
     local mode=$2
+    local command_name
     local config_path
     local commands_path
     local mcps_path
     {
+        read -r command_name
         read -r config_path
         read -r commands_path
         read -r mcps_path
@@ -86,10 +91,10 @@ setup_agent() {
 
     case "$mode" in
         link)
-            link_agent_config "$agent_name" "$config_path" "$commands_path" "$mcps_path"
+            link_agent_config "$agent_name" "$command_name" "$config_path" "$commands_path" "$mcps_path"
             ;;
         *)
-            link_agent_config "$agent_name" "$config_path" "$commands_path" "$mcps_path"
+            link_agent_config "$agent_name" "$command_name" "$config_path" "$commands_path" "$mcps_path"
             ;;
     esac
 }
