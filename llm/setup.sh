@@ -8,8 +8,10 @@ get_agent_config() {
         claude)
             echo "${HOME}/.claude"
             echo "${HOME}/.claude/commands"
+            echo "${HOME}/.claude/mcps"
             ;;
         *)
+            echo ""
             echo ""
             echo ""
             ;;
@@ -36,6 +38,7 @@ link_agent_config() {
     local agent_name=$1
     local config_path=$2
     local commands_path=$3
+    local mcps_path=$4
 
     printf "\n\033[1;36m=== Linking config to %s ===\033[0m\n" "${agent_name}"
 
@@ -44,12 +47,21 @@ link_agent_config() {
         mkdir -p "$commands_path"
     fi
 
+    if [ ! -d "$mcps_path" ]; then
+        printf "\033[1;33m⚠ Directory does not exist. Creating: %s\033[0m\n" "$mcps_path"
+        mkdir -p "$mcps_path"
+    fi
+
     ln -fsvn "${SCRIPT_DIR}/AGENTS.md" "${config_path}/CLAUDE.md"
     ln -fsvn "${SCRIPT_DIR}/settings.json" "${config_path}/settings.json"
-    ln -fsvn "${SCRIPT_DIR}/mcp.json" "${config_path}/.mcp.json"
     for file in "${SCRIPT_DIR}"/commands/*; do
         if [ -f "$file" ]; then
             ln -fsvn "$file" "$commands_path"
+        fi
+    done
+    for file in "${SCRIPT_DIR}"/mcps/*; do
+        if [ -f "$file" ]; then
+            ln -fsvn "$file" "$mcps_path"
         fi
     done
 }
@@ -59,9 +71,11 @@ setup_agent() {
     local mode=$2
     local config_path
     local commands_path
+    local mcps_path
     {
         read -r config_path
         read -r commands_path
+        read -r mcps_path
     } < <(get_agent_config "$agent_name")
 
     if [ -z "$config_path" ]; then
@@ -72,10 +86,10 @@ setup_agent() {
 
     case "$mode" in
         link)
-            link_agent_config "$agent_name" "$config_path" "$commands_path"
+            link_agent_config "$agent_name" "$config_path" "$commands_path" "$mcps_path"
             ;;
         *)
-            link_agent_config "$agent_name" "$config_path" "$commands_path"
+            link_agent_config "$agent_name" "$config_path" "$commands_path" "$mcps_path"
             ;;
     esac
 }
