@@ -7,8 +7,8 @@ get_agent_config() {
     case "$agent_name" in
         claude)
             echo "${HOME}/.claude"
-            echo "${HOME}/.claude/commands"
-            echo "${HOME}/.claude/mcps"
+            echo "commands"
+            echo "mcps"
             ;;
         *)
             echo ""
@@ -37,8 +37,8 @@ show_agent_usage() {
 link_agent_config() {
     local agent_name=$1
     local config_path=$2
-    local commands_path=$3
-    local mcps_path=$4
+    local commands_path="${config_path}/$3"
+    local mcps_path="${config_path}/$4"
 
     printf "\n\033[1;36m=== Linking config to %s ===\033[0m\n" "${agent_name}"
 
@@ -56,12 +56,12 @@ link_agent_config() {
     ln -fsvn "${SCRIPT_DIR}/settings.json" "${config_path}/settings.json"
     for file in "${SCRIPT_DIR}"/commands/*; do
         if [ -f "$file" ]; then
-            ln -fsvn "$file" "$commands_path"
+            ln -fsvn "$file" "$commands_path/$(basename "$file")"
         fi
     done
     for file in "${SCRIPT_DIR}"/mcps/*; do
         if [ -f "$file" ]; then
-            ln -fsvn "$file" "$mcps_path"
+            ln -fsvn "$file" "$mcps_path/$(basename "$file")"
         fi
     done
 }
