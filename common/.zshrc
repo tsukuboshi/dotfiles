@@ -118,7 +118,7 @@ fi
 
 # Set Typescript Compiler
 if ! command -v tsc &>/dev/null && command -v npm &>/dev/null; then
-  export PATH="$(npm bin -g):$PATH"
+  export PATH="$(npm prefix -g):$PATH"
 fi
 
 # Set zsh-completions
