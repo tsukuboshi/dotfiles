@@ -19,6 +19,7 @@
   "accessibility.signals.diffLineInserted": { "sound": "off" },
   "accessibility.signals.diffLineDeleted": { "sound": "off" },
   "accessibility.signals.progress": { "sound": "off" },
+  "docker.extension.enableComposeLanguageServer": false,
   "editor.acceptSuggestionOnEnter": "on",
   "editor.copyWithSyntaxHighlighting": true,
   "editor.defaultFormatter": "esbenp.prettier-vscode",
