@@ -46,7 +46,7 @@
   },
   "explorer.confirmDelete": false,
   "explorer.confirmDragAndDrop": false,
-  "extensions.autoUpdate": true,
+  "extensions.autoUpdate": false,
   "extensions.ignoreRecommendations": false,
   "files.insertFinalNewline": true,
   "files.trimFinalNewlines": true,
