@@ -361,3 +361,6 @@ alias lvsj='ln -fsvn ${HOME}/dotfiles/vscode/settings.json ${HOME}/Library/Appli
 alias vle='code --list-extensions'
 alias lcsj='ln -fsvn ${HOME}/dotfiles/vscode/settings.json ${HOME}/Library/Application\ Support/Cursor/User/settings.json'
 alias cle='cursor --list-extensions'
+
+alias npx='echo "WARNING: npx は実行しないでください" && false'
+alias npm='echo "WARNING: npm は実行しないでください" && false'
