@@ -17,7 +17,7 @@
 5. If you want to output the current extensions, execute code list extensions command.
 
 ```bash
-code --list-extensions > ~/dotfiles/editor/extensions`.
+code --list-extensions > ~/dotfiles/editor/extensions
 ```
 
 ## Set up Cursor
