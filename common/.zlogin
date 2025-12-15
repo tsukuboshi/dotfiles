@@ -216,16 +216,40 @@ function eap (){
 }
 alias enap='export -n AWS_PROFILE'
 
-function aup (){
-  local PROFILE=${1:-tsukuboshi}
-  source awsume ${PROFILE}
-  exec /bin/zsh -l
-}
+# function aup() {
+#   local PROFILE="tsukuboshi"
+#   local USE_MFA=false
+#   while getopts "p:m" opt; do
+#     case $opt in
+#       p) PROFILE="$OPTARG" ;;
+#       m) USE_MFA=true ;;
+#     esac
+#   done
+#   shift $((OPTIND - 1))
+#   if $USE_MFA; then
+#     source awsume ${PROFILE} --mfa-token `otp`
+#   else
+#     source awsume ${PROFILE}
+#   fi
+#   exec /bin/zsh -l
+# }
 
-function aupo (){
-  local PROFILE=${1:-tsukuboshi}
-  source awsume ${PROFILE} --mfa-token `otp`
-  exec /bin/zsh -l
+function ave() {
+  local PROFILE="tsukuboshi"
+  while getopts "p:" opt; do
+    case $opt in
+      p) PROFILE="$OPTARG" ;;
+    esac
+  done
+  shift $((OPTIND - 1))
+
+  local cmd=$1
+  shift 2>/dev/null
+  if [[ -n "${aliases[$cmd]}" ]]; then
+    aws-vault exec ${PROFILE} -- ${=aliases[$cmd]} "$@"
+  else
+    aws-vault exec ${PROFILE} -- $cmd "$@"
+  fi
 }
 
 alias asg='aws sts get-caller-identity'
@@ -272,46 +296,14 @@ alias cdkd='cdk destroy'
 # Terraform
 # ============================================================================
 
-function tin (){
-  local PROFILE=${1:-tsukuboshi}
-  aws-vault exec ${PROFILE} -- terraform init
-}
-function tf (){
-  local PROFILE=${1:-tsukuboshi}
-  aws-vault exec ${PROFILE} -- terraform fmt -recursive
-}
-function tg (){
-  local PROFILE=${1:-tsukuboshi}
-  aws-vault exec ${PROFILE} -- terraform get
-}
-function tc (){
-  local PROFILE=${1:-tsukuboshi}
-  aws-vault exec ${PROFILE} -- terraform console
-}
-function tim (){
-  local PROFILE=${1:-tsukuboshi}
-  aws-vault exec ${PROFILE} -- terraform import
-}
-function tv (){
-  local PROFILE=${1:-tsukuboshi}
-  aws-vault exec ${PROFILE} -- terraform validate
-}
-function tp (){
-  local PROFILE=${1:-tsukuboshi}
-  aws-vault exec ${PROFILE} -- terraform plan
-}
-function ta (){
-  local PROFILE=${1:-tsukuboshi}
-  aws-vault exec ${PROFILE} -- terraform apply
-}
-function ts (){
-  local PROFILE=${1:-tsukuboshi}
-  aws-vault exec ${PROFILE} -- terraform state
-}
-function td (){
-  local PROFILE=${1:-tsukuboshi}
-  aws-vault exec ${PROFILE} -- terraform destroy
-}
+alias tin='terraform init'
+alias tf='terraform fmt -recursive'
+alias tv='terraform validate'
+alias tp='terraform plan'
+alias ta='terraform apply'
+alias ts='terraform state'
+alias td='terraform destroy'
+
 function tdoc (){
   local MODULE_PATH=${1:-.}
   terraform-docs markdown table --output-file README.md --output-mode inject ${MODULE_PATH}
