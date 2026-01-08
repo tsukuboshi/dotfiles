@@ -1,6 +1,7 @@
 ---
 allowed-tools: Bash(gh:*), Bash(git:*), Read(CLAUDE.md), Edit(CLAUDE.md)
 description: "Update Prompt Markdown based on PR review comments (PR Number Required)"
+argument-hint: [PR Number]
 ---
 
 以下の手順でPull request(PR)のレビューコメントを確認し、対象のプロンプトファイル(CLAUDE.md)を更新してください。
