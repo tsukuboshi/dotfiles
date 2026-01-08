@@ -210,11 +210,11 @@ alias miu='mise upgrade'
 # AWS
 # ============================================================================
 
-function eap (){
+function aps (){
   local PROFILE=${1:-tsukuboshi}
   export AWS_PROFILE=${PROFILE}
 }
-alias enap='export -n AWS_PROFILE'
+alias apu='unset AWS_PROFILE'
 
 # function aup() {
 #   local PROFILE="tsukuboshi"
