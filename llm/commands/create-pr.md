@@ -1,6 +1,7 @@
 ---
 allowed-tools: Bash(gh:*), Bash(git:*), Read(.github/*)
 description: "Push a Pull Request Draft (PR Number Optional)"
+argument-hint: [PR Number]
 ---
 
 以下の手順で新しいPull request(PR)を作成してください。

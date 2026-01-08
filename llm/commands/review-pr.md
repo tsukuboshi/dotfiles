@@ -1,6 +1,7 @@
 ---
 allowed-tools: Bash(gh:*), Bash(git:*), Read(CLAUDE.md)
 description: "Review a Pull Request (PR Number Required)"
+argument-hint: [PR Number]
 ---
 
 以下の手順でPull request(PR)をレビューしてください。
