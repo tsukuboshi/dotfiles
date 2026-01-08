@@ -235,7 +235,7 @@ alias enap='export -n AWS_PROFILE'
 # }
 
 function ave() {
-  local PROFILE="tsukuboshi"
+  local PROFILE="${AWS_PROFILE}"
   while getopts "p:" opt; do
     case $opt in
       p) PROFILE="$OPTARG" ;;
