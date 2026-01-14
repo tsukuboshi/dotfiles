@@ -4,8 +4,8 @@ idiomatic_version_file_enable_tools = ["node"]
 [tools]
 python = "3.12.10"
 uv = "0.9.5"
-node = "24.10.0"
+node = "24.13.0"
 pnpm = "10.19.0"
-ruby = "3.3.5"
+ruby = "3.3.10"
 go = "1.24.9"
 terraform = "1.10.5"
