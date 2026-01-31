@@ -67,23 +67,41 @@ function agenti (){
 # Brew
 # ============================================================================
 
-alias bl='brew list --formula'
-alias bo='brew upgrade --dry-run'
-alias bg='brew upgrade'
-alias bc='brew cleanup'
-alias cl='brew list --cask'
-alias co='brew upgrade --cask --greedy --dry-run'
-alias cg='brew upgrade --cask --greedy'
+_pkg_header() { print -P "\n%F{$1}%B=== $2 ===%b%f" }
 
-alias ml='mas list'
-alias mo='mas outdated'
-alias mg='mas upgrade'
+_brew_list()     { _pkg_header cyan "Homebrew Formulae List"; brew list --formula }
+_cask_list()     { _pkg_header cyan "Homebrew Casks List"; brew list --cask }
+_mas_list()      { _pkg_header cyan "App Store Apps List"; mas list }
 
-alias al='printf "\n\033[1;36m=== Homebrew Formulae List ===\033[0m\n"; brew list --formula; printf "\n\033[1;36m=== Homebrew Casks List ===\033[0m\n"; brew list --cask; printf "\n\033[1;36m=== App Store Apps List ===\033[0m\n"; mas list'
+_brew_outdated() { _pkg_header yellow "Homebrew Formulae Outdated"; brew upgrade --dry-run }
+_cask_outdated() { _pkg_header yellow "Homebrew Casks Outdated"; brew upgrade --cask --greedy --dry-run }
+_mas_outdated()  { _pkg_header yellow "App Store Apps Outdated"; mas outdated }
 
-alias ao='printf "\n\033[1;33m=== Homebrew Formulae Outdated===\033[0m\n"; brew upgrade --dry-run; printf "\n\033[1;33m=== Homebrew Casks Outdated ===\033[0m\n"; brew upgrade --cask --greedy --dry-run; printf "\n\033[1;33m=== App Store Apps Outdated ===\033[0m\n"; mas outdated'
+_brew_upgrade()  { _pkg_header green "Homebrew Formulae Upgrade"; brew upgrade }
+_cask_upgrade()  { _pkg_header green "Homebrew Casks Upgrade"; brew upgrade --cask --greedy }
+_mas_upgrade()   { _pkg_header green "App Store Apps Upgrade"; mas upgrade }
 
-alias ag='printf "\n\033[1;32m=== Homebrew Formulae Upgrade ===\033[0m\n"; brew upgrade; printf "\n\033[1;32m=== Homebrew Casks Upgrade ===\033[0m\n"; brew upgrade --cask --greedy; printf "\n\033[1;32m=== App Store Apps Upgrade ===\033[0m\n"; mas upgrade; printf "\n\033[1;32m=== Homebrew Cleanup ===\033[0m\n"; brew cleanup'
+_brew_cleanup()  { _pkg_header green "Homebrew Cleanup"; brew cleanup }
+
+alias bl='_brew_list'
+alias bo='_brew_outdated'
+alias bg='_brew_upgrade'
+alias bc='_brew_cleanup'
+
+alias cl='_cask_list'
+alias co='_cask_outdated'
+alias cg='_cask_upgrade'
+
+alias ml='_mas_list'
+alias mo='_mas_outdated'
+alias mg='_mas_upgrade'
+
+alias bcl='_brew_list; _cask_list'
+alias bco='_brew_outdated; _cask_outdated'
+alias bcg='_brew_upgrade; _cask_upgrade; _brew_cleanup'
+alias bcml='_brew_list; _cask_list; _mas_list'
+alias bcmo='_brew_outdated; _cask_outdated; _mas_outdated'
+alias bcmg='_brew_upgrade; _cask_upgrade; _mas_upgrade; _brew_cleanup'
 
 alias as='brew autoupdate start --upgrade --greedy --cleanup --sudo'
 alias ad='brew autoupdate delete'
@@ -244,7 +262,7 @@ function ave() {
   shift $((OPTIND - 1))
 
   local cmd=$1
-  shift 2>/dev/null
+  shift 2>/dev/nullp
   if [[ -n "${aliases[$cmd]}" ]]; then
     aws-vault exec ${PROFILE} -- ${=aliases[$cmd]} "$@"
   else
