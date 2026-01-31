@@ -36,6 +36,7 @@ brew "zsh-completion"
 
 cask "appcleaner"
 # cask "aws-vault"
+cask "coteditor"
 # cask "dbeaver-community"
 # cask "discord"
 cask "firefox"
