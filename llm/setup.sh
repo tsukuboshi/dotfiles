@@ -10,8 +10,10 @@ get_agent_config() {
             echo "${HOME}/.claude"
             echo "commands"
             echo "mcps"
+            echo "skills"
             ;;
         *)
+            echo ""
             echo ""
             echo ""
             echo ""
@@ -42,18 +44,16 @@ link_agent_config() {
     local config_path=$3
     local commands_path="${config_path}/$4"
     local mcps_path="${config_path}/$5"
+    local skills_path="${config_path}/$6"
 
     printf "\n\033[1;36m=== Linking config to %s ===\033[0m\n" "${agent_name}"
 
-    if [ ! -d "$commands_path" ]; then
-        printf "\033[1;33m⚠ Directory does not exist. Creating: %s\033[0m\n" "$commands_path"
-        mkdir -p "$commands_path"
-    fi
-
-    if [ ! -d "$mcps_path" ]; then
-        printf "\033[1;33m⚠ Directory does not exist. Creating: %s\033[0m\n" "$mcps_path"
-        mkdir -p "$mcps_path"
-    fi
+    for dir_path in "$commands_path" "$mcps_path" "$skills_path"; do
+        if [ ! -d "$dir_path" ]; then
+            printf "\033[1;33m⚠ Directory does not exist. Creating: %s\033[0m\n" "$dir_path"
+            mkdir -p "$dir_path"
+        fi
+    done
 
     ln -fsvn "${SCRIPT_DIR}/AGENTS.md" "${config_path}/CLAUDE.md"
     ln -fsvn "${SCRIPT_DIR}/settings.json" "${config_path}/settings.json"
@@ -67,6 +67,11 @@ link_agent_config() {
             ln -fsvn "$file" "$mcps_path"
         fi
     done
+    for dir in "${SCRIPT_DIR}"/skills/*/; do
+        if [ -d "$dir" ]; then
+            ln -fsvn "$dir" "$skills_path"
+        fi
+    done
 }
 
 setup_agent() {
@@ -76,11 +81,13 @@ setup_agent() {
     local config_path
     local commands_path
     local mcps_path
+    local skills_path
     {
         read -r command_name
         read -r config_path
         read -r commands_path
         read -r mcps_path
+        read -r skills_path
     } < <(get_agent_config "$agent_name")
 
     if [ -z "$config_path" ]; then
@@ -91,10 +98,10 @@ setup_agent() {
 
     case "$mode" in
         link)
-            link_agent_config "$agent_name" "$command_name" "$config_path" "$commands_path" "$mcps_path"
+            link_agent_config "$agent_name" "$command_name" "$config_path" "$commands_path" "$mcps_path" "$skills_path"
             ;;
         *)
-            link_agent_config "$agent_name" "$command_name" "$config_path" "$commands_path" "$mcps_path"
+            link_agent_config "$agent_name" "$command_name" "$config_path" "$commands_path" "$mcps_path" "$skills_path"
             ;;
     esac
 }
