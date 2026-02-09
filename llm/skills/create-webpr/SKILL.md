@@ -1,7 +1,7 @@
 ---
 allowed-tools: Bash(git:*), Bash(open:*), Bash(printf:*), Bash(xxd:*), Bash(sed:*), Read(.github/*), Read(${HOME}/dotfiles/.github/*)
 description: "Create PR via GitHub Web UI without gh CLI (Base Branch Optional)"
-argument-hint: [Base Branch]
+argument-hint: "[Base Branch]"
 ---
 
 以下の手順で新しいPull Request(PR)をGitHub Web UI経由で作成してください。
