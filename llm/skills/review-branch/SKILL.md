@@ -1,7 +1,7 @@
 ---
 allowed-tools: Bash(git:*), Read(CLAUDE.md)
 description: "Review branch diff without gh CLI (Default: main)"
-argument-hint: [Review Branch]
+argument-hint: "[Review Branch]"
 ---
 
 以下の手順でブランチの差分をレビューしてください。
