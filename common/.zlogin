@@ -198,6 +198,12 @@ function gss (){
 alias gsu='git stash save -u'
 alias gsl='git stash list'
 alias gsc='git stash clear'
+function gop (){
+  local REMOTE_URL=$(git remote get-url origin)
+  local WEB_URL="${REMOTE_URL%.git}"
+  WEB_URL="${WEB_URL/git@github.com:/https://github.com/}"
+  open "${WEB_URL}"
+}
 
 # ============================================================================
 # GitHub
