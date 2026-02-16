@@ -268,7 +268,7 @@ function ave() {
   shift $((OPTIND - 1))
 
   local cmd=$1
-  shift 2>/dev/nullp
+  shift 2>/dev/null
   if [[ -n "${aliases[$cmd]}" ]]; then
     aws-vault exec ${PROFILE} -- ${=aliases[$cmd]} "$@"
   else
