@@ -26,8 +26,9 @@ function otp (){
   op item get ${ITEMID} --otp
 }
 
-function agent (){
-  local MCP_CONFIG="${HOME}/.claude/mcps/default.json"
+_claude_with_mcp (){
+  local MCP_CONFIG="${HOME}/.claude/mcps/${1}.json"
+  shift
   if [[ -f "${MCP_CONFIG}" ]]; then
     command claude --mcp-config="${MCP_CONFIG}" "$@"
   else
@@ -35,33 +36,8 @@ function agent (){
   fi
 }
 
-function agentb (){
-  local MCP_CONFIG="${HOME}/.claude/mcps/browser.json"
-  if [[ -f "${MCP_CONFIG}" ]]; then
-    command claude --mcp-config="${MCP_CONFIG}" "$@"
-  else
-    command claude "$@"
-  fi
-}
-
-
-function agentc (){
-  local MCP_CONFIG="${HOME}/.claude/mcps/coding.json"
-  if [[ -f "${MCP_CONFIG}" ]]; then
-    command claude --mcp-config="${MCP_CONFIG}" "$@"
-  else
-    command claude "$@"
-  fi
-}
-
-function agenti (){
-  local MCP_CONFIG="${HOME}/.claude/mcps/infra.json"
-  if [[ -f "${MCP_CONFIG}" ]]; then
-    command claude --mcp-config="${MCP_CONFIG}" "$@"
-  else
-    command claude "$@"
-  fi
-}
+alias claudeb='_claude_with_mcp browser'
+alias claudei='_claude_with_mcp infra'
 
 # ============================================================================
 # Brew
