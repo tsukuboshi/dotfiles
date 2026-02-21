@@ -26,8 +26,9 @@ function otp (){
   op item get ${ITEMID} --otp
 }
 
-function agent (){
-  local MCP_CONFIG="${HOME}/.claude/mcps/default.json"
+_claude_with_mcp (){
+  local MCP_CONFIG="${HOME}/.claude/mcps/${1}.json"
+  shift
   if [[ -f "${MCP_CONFIG}" ]]; then
     command claude --mcp-config="${MCP_CONFIG}" "$@"
   else
@@ -35,33 +36,8 @@ function agent (){
   fi
 }
 
-function agentb (){
-  local MCP_CONFIG="${HOME}/.claude/mcps/browser.json"
-  if [[ -f "${MCP_CONFIG}" ]]; then
-    command claude --mcp-config="${MCP_CONFIG}" "$@"
-  else
-    command claude "$@"
-  fi
-}
-
-
-function agentc (){
-  local MCP_CONFIG="${HOME}/.claude/mcps/coding.json"
-  if [[ -f "${MCP_CONFIG}" ]]; then
-    command claude --mcp-config="${MCP_CONFIG}" "$@"
-  else
-    command claude "$@"
-  fi
-}
-
-function agenti (){
-  local MCP_CONFIG="${HOME}/.claude/mcps/infra.json"
-  if [[ -f "${MCP_CONFIG}" ]]; then
-    command claude --mcp-config="${MCP_CONFIG}" "$@"
-  else
-    command claude "$@"
-  fi
-}
+alias claudeb='_claude_with_mcp browser'
+alias claudei='_claude_with_mcp infra'
 
 # ============================================================================
 # Brew
@@ -199,10 +175,11 @@ alias gsu='git stash save -u'
 alias gsl='git stash list'
 alias gsc='git stash clear'
 function gop (){
-  local REMOTE_URL=$(git remote get-url origin)
-  local WEB_URL="${REMOTE_URL%.git}"
+  local WEB_URL=$(git remote get-url origin)
+  WEB_URL="${WEB_URL%.git}"
   WEB_URL="${WEB_URL/git@github.com:/https://github.com/}"
-  open "${WEB_URL}"
+  local BRANCH=$(git branch --show-current)
+  open "${WEB_URL}/tree/${BRANCH}"
 }
 
 # ============================================================================
