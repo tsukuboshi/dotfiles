@@ -21,6 +21,37 @@ alias mysh='echo $0'
 
 alias sudo='sudo '
 
+_BREW_ASKPASS="${XDG_DATA_HOME:-$HOME/.local/share}/homebrew/brew_askpass"
+
+_ensure_askpass() {
+  [[ -x "$_BREW_ASKPASS" ]] && return 0
+  if ! command -v pinentry-mac &>/dev/null; then
+    print -P "%F{red}pinentry-mac not found.%f" >&2
+    return 1
+  fi
+  mkdir -p "${_BREW_ASKPASS:h}"
+  cat > "$_BREW_ASKPASS" <<'ASKPASS'
+#!/bin/sh
+printf "%s\n" \
+  "OPTION allow-external-cache" \
+  "SETOK OK" "SETCANCEL Cancel" \
+  "SETDESC Homebrew needs your admin password to complete the upgrade" \
+  "SETPROMPT Enter Password:" \
+  "SETTITLE Homebrew Password Request" \
+  "GETPIN" | pinentry-mac --no-global-grab --timeout 60 \
+  | /usr/bin/awk '/^D / {print substr($0, index($0, $2))}'
+ASKPASS
+  chmod 0555 "$_BREW_ASKPASS"
+}
+
+_with_sudo_gui() {
+  if _ensure_askpass; then
+    SUDO_ASKPASS="$_BREW_ASKPASS" "$@"
+  else
+    "$@"
+  fi
+}
+
 function otp (){
   local ITEMID=${1:-AWS}
   op item get ${ITEMID} --otp
@@ -74,10 +105,11 @@ alias mg='_mas_upgrade'
 
 alias bcl='_brew_list; _cask_list'
 alias bco='_brew_outdated; _cask_outdated'
-alias bcg='_brew_upgrade; _cask_upgrade; _brew_cleanup'
+alias bcg='_with_sudo_gui sudo -A -v; _brew_upgrade; _cask_upgrade; _brew_cleanup; sudo -k'
+
 alias bcml='_brew_list; _cask_list; _mas_list'
 alias bcmo='_brew_outdated; _cask_outdated; _mas_outdated'
-alias bcmg='_brew_upgrade; _cask_upgrade; _mas_upgrade; _brew_cleanup'
+alias bcmg='_with_sudo_gui sudo -A -v; _brew_upgrade; _cask_upgrade; _mas_upgrade; _brew_cleanup; sudo -k'
 
 alias as='brew autoupdate start --upgrade --greedy --cleanup --sudo'
 alias ad='brew autoupdate delete'
