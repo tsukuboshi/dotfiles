@@ -21,6 +21,30 @@ alias mysh='echo $0'
 
 alias sudo='sudo '
 
+function otp (){
+  local ITEMID=${1:-AWS}
+  op item get ${ITEMID} --otp
+}
+
+_claude_with_mcp (){
+  local MCP_CONFIG="${HOME}/.claude/mcps/${1}.json"
+  shift
+  if [[ -f "${MCP_CONFIG}" ]]; then
+    command claude --mcp-config="${MCP_CONFIG}" "$@"
+  else
+    command claude "$@"
+  fi
+}
+
+alias claudeb='_claude_with_mcp browser'
+alias claudei='_claude_with_mcp infra'
+
+# ============================================================================
+# Brew
+# ============================================================================
+
+_pkg_header() { print -P "\n%F{$1}%B=== $2 ===%b%f" }
+
 _BREW_ASKPASS="${XDG_DATA_HOME:-$HOME/.local/share}/homebrew/brew_askpass"
 
 _ensure_askpass() {
@@ -52,29 +76,15 @@ _with_sudo_gui() {
   fi
 }
 
-function otp (){
-  local ITEMID=${1:-AWS}
-  op item get ${ITEMID} --otp
+_acquire_sudo() {
+  _pkg_header magenta "Sudo Acquire"
+  _with_sudo_gui sudo -A -v; sudo -n true
 }
 
-_claude_with_mcp (){
-  local MCP_CONFIG="${HOME}/.claude/mcps/${1}.json"
-  shift
-  if [[ -f "${MCP_CONFIG}" ]]; then
-    command claude --mcp-config="${MCP_CONFIG}" "$@"
-  else
-    command claude "$@"
-  fi
+_release_sudo() {
+  _pkg_header magenta "Sudo Release"
+  sudo -k; ! sudo -n true
 }
-
-alias claudeb='_claude_with_mcp browser'
-alias claudei='_claude_with_mcp infra'
-
-# ============================================================================
-# Brew
-# ============================================================================
-
-_pkg_header() { print -P "\n%F{$1}%B=== $2 ===%b%f" }
 
 _brew_list()     { _pkg_header cyan "Homebrew Formulae List"; brew list --formula }
 _cask_list()     { _pkg_header cyan "Homebrew Casks List"; brew list --cask }
@@ -105,11 +115,11 @@ alias mg='_mas_upgrade'
 
 alias bcl='_brew_list; _cask_list'
 alias bco='_brew_outdated; _cask_outdated'
-alias bcg='_with_sudo_gui sudo -A -v; _brew_upgrade; _cask_upgrade; _brew_cleanup; sudo -k'
+alias bcg='_acquire_sudo && { _brew_upgrade; _cask_upgrade; _brew_cleanup; _release_sudo; }'
 
 alias bcml='_brew_list; _cask_list; _mas_list'
 alias bcmo='_brew_outdated; _cask_outdated; _mas_outdated'
-alias bcmg='_with_sudo_gui sudo -A -v; _brew_upgrade; _cask_upgrade; _mas_upgrade; _brew_cleanup; sudo -k'
+alias bcmg='_acquire_sudo && { _brew_upgrade; _cask_upgrade; _mas_upgrade; _brew_cleanup; _release_sudo; }'
 
 alias as='brew autoupdate start --upgrade --greedy --cleanup --sudo'
 alias ad='brew autoupdate delete'
