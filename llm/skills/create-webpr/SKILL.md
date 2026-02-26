@@ -1,5 +1,5 @@
 ---
-allowed-tools: Bash(git:*), Bash(open:*), Bash(printf:*), Bash(xxd:*), Bash(sed:*), Read(.github/*), Read(${HOME}/dotfiles/.github/*)
+allowed-tools: Bash(git:*), Bash(open:*), Bash(printf:*), Bash(xxd:*), Bash(sed:*), Bash(tr:*), Glob(.github/*), Glob(${HOME}/dotfiles/.github/*), Read(.github/*), Read(${HOME}/dotfiles/.github/*)
 description: "Create PR via GitHub Web UI without gh CLI (Base Branch Optional)"
 argument-hint: "[Base Branch]"
 ---
@@ -22,6 +22,8 @@ argument-hint: "[Base Branch]"
 git branch --show-current
 ```
 
+現在のブランチがベースブランチ（`ARGUMENT` または `main`）と同じ場合は、PRを作成できないため処理を中断し、ユーザーに通知してください。
+
 # リモートへのプッシュ
 
 以下のコマンドを使用して、現在のブランチをリモートにプッシュします。
@@ -30,12 +32,12 @@ git branch --show-current
 git push -u origin HEAD
 ```
 
-# 直前コミットの内容確認
+# コミット履歴の確認
 
-以下のコマンドを使用して、現在のブランチにおける直前のコミットの内容を確認します。
+以下のコマンドを使用して、ベースブランチから現在のブランチまでの全コミットを確認します。`ARGUMENT`にはベースブランチ名を入力します。指定がない場合は`main`を使用します。
 
 ```bash
-git show HEAD
+git log --oneline ${ARGUMENT:-main}...HEAD
 ```
 
 # ベースブランチとの差分確認
@@ -48,12 +50,12 @@ git diff ${ARGUMENT:-main}...HEAD
 
 # PRテンプレートファイルの内容確認
 
-以下の優先順位でPRテンプレートファイルを確認します：
+以下の優先順位でGlobを使用してPRテンプレートファイルを検索します：
 
-1. `.github/PULL_REQUEST_TEMPLATE.md`（優先）
-2. `${HOME}/dotfiles/.github/PULL_REQUEST_TEMPLATE.md`（フォールバック）
+1. `.github/` 配下で `[Pp][Uu][Ll][Ll]_[Rr][Ee][Qq][Uu][Ee][Ss][Tt]_[Tt][Ee][Mm][Pp][Ll][Aa][Tt][Ee]*` に一致するファイル（優先）
+2. `${HOME}/dotfiles/.github/` 配下で同パターンに一致するファイル（フォールバック）
 
-優先度の高いファイルが存在する場合はそちらのみを使用し、存在しない場合のみフォールバックを確認してください。両方存在しない場合は、このステップをスキップしてください。
+優先度の高いパスでファイルが見つかった場合はそちらのみを使用し、見つからない場合のみフォールバックを確認してください。両方で見つからない場合は、このステップをスキップしてください。
 
 # PRタイトルとボディの生成
 
