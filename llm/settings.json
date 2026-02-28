@@ -20,5 +20,9 @@
     "aws-operations-toolkit@consulting-team-plugins": true,
     "meeting-notes-processor@consulting-team-plugins": true,
     "terraform-quality-suite@consulting-team-plugins": true
+  },
+  "statusLine": {
+    "type": "command",
+    "command": "bash ~/dotfiles/llm/statusline.sh"
   }
 }
