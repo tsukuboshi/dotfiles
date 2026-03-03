@@ -1,46 +1,37 @@
 ---
-allowed-tools: Bash(git:*), Read(CLAUDE.md)
+allowed-tools: Bash(git:*)
 description: "Review branch diff without gh CLI (Default: main)"
-argument-hint: "[Review Branch]"
+argument-hint: "<Compare Branch> [Base Branch]"
 ---
 
 以下の手順でブランチの差分をレビューしてください。
 
-1. レビュー対象ブランチへの切り替え
+`ARGUMENT`はスペース区切りで2つの引数を受け取ります。
+- 第一引数: Compare Branch名（比較対象ブランチ、必須）
+- 第二引数: Base Branch名（未指定の場合は`main`をデフォルトとして使用）
+
+1. ブランチのフェッチ
 2. ブランチ変更ファイル一覧の取得
 3. ブランチ差分の取得
-4. プロンプトファイルの内容確認
-5. 差分内容のレビュー
+4. 差分内容のレビュー
 
-# レビュー対象ブランチへの切り替え
+# ブランチのフェッチ
 
-`ARGUMENT`が指定されていない場合は、このステップをスキップして現在のブランチでレビューを行います。
+`ARGUMENT`の第一引数（Compare Branch）が指定されていない場合は、エラーとしてユーザーにCompare Branchの指定を求めてください。
 
-`ARGUMENT`でレビュー対象のブランチ名が指定された場合、リモートからフェッチしてそのブランチに切り替えます。
-
-```bash
-git fetch origin ${ARGUMENT}
-git branch --list ${ARGUMENT}
-```
-
-ローカルにブランチが存在しない場合：
+Base Branch（第二引数、未指定の場合は`main`）とCompare Branch（第一引数）をリモートからフェッチして最新の状態にします。
+フェッチに失敗した場合は、リモートにブランチが存在しない可能性があるため、ユーザーにブランチ名の確認を求めてください。
 
 ```bash
-git switch -c ${ARGUMENT} origin/${ARGUMENT}
-```
-
-ローカルにブランチが存在する場合：
-
-```bash
-git switch ${ARGUMENT}
+git fetch origin ${Base Branch or main} ${Compare Branch}
 ```
 
 # ブランチ変更ファイル一覧の取得
 
-以下のコマンドを使用して、`main`ブランチと現在のブランチ間の変更ファイル一覧を取得します。
+以下のコマンドを使用して、Base BranchとCompare Branch間の変更ファイル一覧を取得します。
 
 ```bash
-git diff --name-status main...HEAD
+git diff --name-status origin/${Base Branch or main}...origin/${Compare Branch}
 ```
 
 # ブランチ差分の取得
@@ -48,14 +39,9 @@ git diff --name-status main...HEAD
 以下のコマンドを使用して、詳細な差分を取得します。
 
 ```bash
-git diff main...HEAD
+git diff origin/${Base Branch or main}...origin/${Compare Branch}
 ```
-
-# プロンプトファイルの内容確認
-
-プロンプトファイル`CLAUDE.md`の内容を確認します。
 
 # 差分内容のレビュー
 
 取得した差分についてレビューを実施し、必要に応じて修正計画を立ててください。
-レビューの観点についてはプロンプトファイルの内容を踏まえて確認してください。
