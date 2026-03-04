@@ -1,25 +1,27 @@
 ---
 allowed-tools: Bash(git:*)
-description: "Review branch diff without gh CLI (Default: main)"
-argument-hint: "<Compare Branch> [Base Branch]"
+description: "Review branch diff without gh CLI (Compare Default: current branch, Base Default: main)"
+argument-hint: "[Compare Branch] [Base Branch]"
 ---
 
 以下の手順でブランチの差分をレビューしてください。
 
-`ARGUMENT`はスペース区切りで2つの引数を受け取ります。
-- 第一引数: Compare Branch名（比較対象ブランチ、必須）
-- 第二引数: Base Branch名（未指定の場合は`main`をデフォルトとして使用）
+1. 引数の解決
+2. ブランチのフェッチ
+3. ブランチ変更ファイル一覧の取得
+4. ブランチ差分の取得
+5. 差分内容のレビュー
 
-1. ブランチのフェッチ
-2. ブランチ変更ファイル一覧の取得
-3. ブランチ差分の取得
-4. 差分内容のレビュー
+# 引数の解決
+
+`ARGUMENT`はスペース区切りで2つの引数を受け取ります。未指定の場合はデフォルト値を使用します。
+
+- 第一引数: Compare Branch名（未指定の場合は`git branch --show-current`で現在のブランチ名を取得して使用）
+- 第二引数: Base Branch名（未指定の場合は`main`を使用）
 
 # ブランチのフェッチ
 
-`ARGUMENT`の第一引数（Compare Branch）が指定されていない場合は、エラーとしてユーザーにCompare Branchの指定を求めてください。
-
-Base Branch（第二引数、未指定の場合は`main`）とCompare Branch（第一引数）をリモートからフェッチして最新の状態にします。
+Base BranchとCompare Branchをリモートからフェッチして最新の状態にします。
 フェッチに失敗した場合は、リモートにブランチが存在しない可能性があるため、ユーザーにブランチ名の確認を求めてください。
 
 ```bash
