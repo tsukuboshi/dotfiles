@@ -13,20 +13,6 @@
     "deny": []
   },
   "model": "opus",
-  "hooks": {
-    "SessionEnd": [
-      {
-        "matcher": "",
-        "hooks": [
-          {
-            "type": "command",
-            "command": "bash ~/dotfiles/llm/scripts/sessionendhook.sh",
-            "timeout": 10000
-          }
-        ]
-      }
-    ]
-  },
   "statusLine": {
     "type": "command",
     "command": "bash ~/dotfiles/llm/scripts/statusline.sh"
