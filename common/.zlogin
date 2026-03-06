@@ -26,19 +26,6 @@ function otp (){
   op item get ${ITEMID} --otp
 }
 
-_claude_with_mcp (){
-  local MCP_CONFIG="${HOME}/.claude/mcps/${1}.json"
-  shift
-  if [[ -f "${MCP_CONFIG}" ]]; then
-    command claude --mcp-config="${MCP_CONFIG}" "$@"
-  else
-    command claude "$@"
-  fi
-}
-
-alias claudeb='_claude_with_mcp browser'
-alias claudei='_claude_with_mcp infra'
-
 # ============================================================================
 # Brew
 # ============================================================================
@@ -396,10 +383,3 @@ alias lvsj='ln -fsvn ${HOME}/dotfiles/vscode/settings.json ${HOME}/Library/Appli
 alias vle='code --list-extensions'
 alias lcsj='ln -fsvn ${HOME}/dotfiles/vscode/settings.json ${HOME}/Library/Application\ Support/Cursor/User/settings.json'
 alias cle='cursor --list-extensions'
-
-function npx (){
-  sudo -v && command npx "$@"
-}
-function npm (){
-  sudo -v && command npm "$@"
-}
