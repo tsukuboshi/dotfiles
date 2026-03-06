@@ -13,16 +13,29 @@
     "deny": []
   },
   "model": "opus",
-  "enabledPlugins": {
-    "code-review@claude-plugins-official": true,
-    "context7@claude-plugins-official": true,
-    "frontend-design@claude-plugins-official": true,
-    "aws-operations-toolkit@consulting-team-plugins": true,
-    "meeting-notes-processor@consulting-team-plugins": true,
-    "terraform-quality-suite@consulting-team-plugins": true
+  "hooks": {
+    "SessionEnd": [
+      {
+        "matcher": "",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "bash ~/dotfiles/llm/scripts/sessionendhook.sh",
+            "timeout": 10000
+          }
+        ]
+      }
+    ]
   },
   "statusLine": {
     "type": "command",
-    "command": "bash ~/dotfiles/llm/statusline.sh"
+    "command": "bash ~/dotfiles/llm/scripts/statusline.sh"
+  },
+  "enabledPlugins": {
+    "claude-md-management@claude-plugins-official": true,
+    "context7@claude-plugins-official": true,
+    "frontend-design@claude-plugins-official": true,
+    "playwright@claude-plugins-official": true,
+    "slack@claude-plugins-official": true
   }
 }
