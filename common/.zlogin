@@ -63,16 +63,6 @@ _with_sudo_gui() {
   fi
 }
 
-_acquire_sudo() {
-  _pkg_header magenta "Sudo Acquire"
-  _with_sudo_gui sudo -A -v; sudo -n true
-}
-
-_release_sudo() {
-  _pkg_header magenta "Sudo Release"
-  sudo -k; ! sudo -n true
-}
-
 _brew_list()     { _pkg_header cyan "Homebrew Formulae List"; brew list --formula }
 _cask_list()     { _pkg_header cyan "Homebrew Casks List"; brew list --cask }
 _mas_list()      { _pkg_header cyan "App Store Apps List"; mas list }
@@ -82,31 +72,30 @@ _cask_outdated() { _pkg_header yellow "Homebrew Casks Outdated"; brew upgrade --
 _mas_outdated()  { _pkg_header yellow "App Store Apps Outdated"; mas outdated }
 
 _brew_upgrade()  { _pkg_header green "Homebrew Formulae Upgrade"; brew upgrade }
-_cask_upgrade()  { _pkg_header green "Homebrew Casks Upgrade"; brew upgrade --cask --greedy }
+_cask_upgrade()  { _pkg_header green "Homebrew Casks Upgrade"; _with_sudo_gui brew upgrade --cask --greedy }
 _mas_upgrade()   { _pkg_header green "App Store Apps Upgrade"; mas upgrade }
 
 _brew_cleanup()  { _pkg_header green "Homebrew Cleanup"; brew cleanup }
-
-alias bl='_brew_list'
-alias bo='_brew_outdated'
-alias bg='_brew_upgrade'
-alias bc='_brew_cleanup'
 
 alias cl='_cask_list'
 alias co='_cask_outdated'
 alias cg='_cask_upgrade'
 
+alias bl='_brew_list'
+alias bo='_brew_outdated'
+alias bg='_brew_upgrade'
+
 alias ml='_mas_list'
 alias mo='_mas_outdated'
 alias mg='_mas_upgrade'
 
-alias bcl='_brew_list; _cask_list'
-alias bco='_brew_outdated; _cask_outdated'
-alias bcg='_acquire_sudo && { _brew_upgrade; _cask_upgrade; _brew_cleanup; _release_sudo; }'
+alias cbl='_cask_list; _brew_list'
+alias cbo='_cask_outdated; _brew_outdated'
+alias cbg='_cask_upgrade; _brew_upgrade; _brew_cleanup'
 
-alias bcml='_brew_list; _cask_list; _mas_list'
-alias bcmo='_brew_outdated; _cask_outdated; _mas_outdated'
-alias bcmg='_acquire_sudo && { _brew_upgrade; _cask_upgrade; _mas_upgrade; _brew_cleanup; _release_sudo; }'
+alias cbml='_cask_list; _brew_list; _mas_list'
+alias cbmo='_cask_outdated; _brew_outdated; _mas_outdated'
+alias cbmg='_cask_upgrade; _brew_upgrade; _mas_upgrade; _brew_cleanup'
 
 alias as='brew autoupdate start --upgrade --greedy --cleanup --sudo'
 alias ad='brew autoupdate delete'
