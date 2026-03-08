@@ -1,13 +1,13 @@
 ---
 allowed-tools: Bash(git:*)
 description: "Generate commit message from staged changes and repository history, then commit"
-argument-hint: "[--branch | --no-branch (default)]"
+argument-hint: "[--switch | --no-switch (default)]"
 ---
 
 以下の手順でコミットメッセージを生成し、`git commit`を実行してください。
 
 1. ステージング内容の確認
-2. ブランチの作成（`--branch` 指定時のみ）
+2. ブランチの作成（`--switch` 指定時のみ）
 3. コミット履歴のスタイル確認
 4. コミットメッセージの生成
 5. コミットの実行
@@ -17,8 +17,8 @@ argument-hint: "[--branch | --no-branch (default)]"
 
 `ARGUMENT`は以下の引数を受け取ります。未指定の場合はデフォルト値を使用します。
 
-- `--branch`: ブランチの作成を行います
-- `--no-branch`: ブランチの作成をスキップします（デフォルト。未指定の場合もこの動作になります）
+- `--switch`: ブランチの作成を行います
+- `--no-switch`: ブランチの作成をスキップします（デフォルト。未指定の場合もこの動作になります）
 
 # ステージング内容の確認
 
@@ -32,7 +32,7 @@ git diff --cached
 
 # ブランチの作成
 
-`--branch` が指定されていない場合、このステップをスキップしてください。
+`--switch` が指定されていない場合、このステップをスキップしてください。
 
 1. 既存のブランチ名を確認して命名規則を把握します。
 
