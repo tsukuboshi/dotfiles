@@ -8,32 +8,57 @@ argument-hint: "[Compare Branch] [Base Branch]"
 
 1. 引数の解決
 2. ブランチのフェッチ
-3. ブランチ変更ファイル一覧の取得
-4. ブランチ差分の取得
-5. 差分内容のレビュー
+3. コミットログの取得
+4. ブランチ変更概要の取得
+5. ブランチ差分の取得
+6. 差分内容のレビュー
 
 # 引数の解決
 
 `ARGUMENT`はスペース区切りで2つの引数を受け取ります。未指定の場合はデフォルト値を使用します。
 
-- 第一引数: Compare Branch名（未指定の場合は`git branch --show-current`で現在のブランチ名を取得して使用）
+- 第一引数: Compare Branch名（未指定の場合は現在のブランチ名を使用）
 - 第二引数: Base Branch名（未指定の場合は`main`を使用）
+
+以降のステップで使用する環境変数を設定します。
+
+```bash
+BASE_BRANCH="origin/${第二引数:-main}"
+if [[ -n "${第一引数}" ]]; then
+  COMPARE_BRANCH="origin/${第一引数}"
+else
+  COMPARE_BRANCH="$(git branch --show-current)"
+fi
+```
 
 # ブランチのフェッチ
 
-Base BranchとCompare Branchをリモートからフェッチして最新の状態にします。
-フェッチに失敗した場合は、リモートにブランチが存在しない可能性があるため、ユーザーにブランチ名の確認を求めてください。
+`COMPARE_BRANCH`がリモートブランチ（`origin/`始まり）の場合はBase BranchとCompare Branchの両方を、ローカルブランチの場合はBase Branchのみをリモートからフェッチします。
 
 ```bash
-git fetch origin ${Base Branch or main} ${Compare Branch}
+if [[ "${COMPARE_BRANCH}" == origin/* ]]; then
+  git fetch origin "${BASE_BRANCH}" "${COMPARE_BRANCH}"
+else
+  git fetch origin "${BASE_BRANCH}"
+fi
 ```
 
-# ブランチ変更ファイル一覧の取得
+フェッチに失敗した場合は、リモートにブランチが存在しない可能性があるため、ユーザーにブランチ名の確認を求めてください。
 
-以下のコマンドを使用して、Base BranchとCompare Branch間の変更ファイル一覧を取得します。
+# コミットログの取得
+
+以下のコマンドを使用して、コミット履歴を取得します。
 
 ```bash
-git diff --name-status origin/${Base Branch or main}...origin/${Compare Branch}
+git log --oneline ${BASE_BRANCH}...${COMPARE_BRANCH}
+```
+
+# ブランチ変更概要の取得
+
+以下のコマンドを使用して、Base BranchとCompare Branch間の変更概要を取得します。
+
+```bash
+git diff --stat ${BASE_BRANCH}...${COMPARE_BRANCH}
 ```
 
 # ブランチ差分の取得
@@ -41,7 +66,7 @@ git diff --name-status origin/${Base Branch or main}...origin/${Compare Branch}
 以下のコマンドを使用して、詳細な差分を取得します。
 
 ```bash
-git diff origin/${Base Branch or main}...origin/${Compare Branch}
+git diff ${BASE_BRANCH}...${COMPARE_BRANCH}
 ```
 
 # 差分内容のレビュー
