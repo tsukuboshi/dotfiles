@@ -1,14 +1,18 @@
 {
   "permissions": {
     "allow": [
-      "Bash(npm:*)",
-      "Bash(git:*)",
+      "Glob(*)",
       "List(*)",
       "Read(**)",
-      "Bash(ls:*)",
       "Bash(cat:*)",
-      "Bash(ripgrep:*)",
-      "Bash(tree:*)"
+      "Bash(git:*)",
+      "Bash(ls:*)",
+      "Bash(open:*)",
+      "Bash(printf:*)",
+      "Bash(sed:*)",
+      "Bash(tr:*)",
+      "Bash(tree:*)",
+      "Bash(xxd:*)"
     ],
     "deny": []
   },
