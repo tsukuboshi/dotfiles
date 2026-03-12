@@ -21,6 +21,19 @@
     "type": "command",
     "command": "bash ~/dotfiles/llm/scripts/statusline.sh"
   },
+  "hooks": {
+    "PostToolUse": [
+      {
+        "matcher": "Edit|Write",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "bash ~/dotfiles/llm/scripts/edit-hook.sh"
+          }
+        ]
+      }
+    ]
+  },
   "enabledPlugins": {
     "claude-md-management@claude-plugins-official": true,
     "context7@claude-plugins-official": true,
