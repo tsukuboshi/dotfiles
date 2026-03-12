@@ -54,15 +54,22 @@ git diff "${BASE_BRANCH}...${COMPARE_BRANCH}"
 
 # PR作成ページをブラウザでオープン
 
-PRタイトルとボディをURLエンコードしてPR作成ページを開きます。
+PRタイトルとPRボディをURLエンコードしてPR作成ページを開きます。
+
+PRタイトルとPRボディは変数に格納してからエンコードしてください。
+`eval`内でのヒアドキュメントやインライン複数行文字列はパースエラーの原因になるため使用しないでください。
 
 ```bash
 REMOTE_URL=$(git remote get-url origin)
 REPO_URL="${REMOTE_URL/#git@github.com:/https://github.com/}"
 REPO_URL="${REPO_URL%.git}"
-urlencode() { printf '%s' "$1" | xxd -p | tr -d '\n' | sed 's/\(..\)/%\1/g'; }
 GITHUB_USER=$(git config user.name)
-ENCODED_TITLE=$(urlencode "PRタイトル")
-ENCODED_BODY=$(urlencode "PRボディ")
+
+PR_TITLE="PRタイトル"
+PR_BODY="PRボディ"
+
+ENCODED_TITLE=$(printf '%s' "${PR_TITLE}" | xxd -p | tr -d '\n' | sed 's/\(..\)/%\1/g')
+ENCODED_BODY=$(printf '%s' "${PR_BODY}" | xxd -p | tr -d '\n' | sed 's/\(..\)/%\1/g')
+
 open "${REPO_URL}/compare/${BASE_BRANCH}...${COMPARE_BRANCH}?expand=1&title=${ENCODED_TITLE}&body=${ENCODED_BODY}&assignees=${GITHUB_USER}"
 ```
