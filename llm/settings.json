@@ -17,6 +17,7 @@
     "deny": ["Bash(rm -rf:*)"]
   },
   "model": "opus",
+  "language": "Japanese",
   "hooks": {
     "PostToolUse": [
       {
