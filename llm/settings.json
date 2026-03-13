@@ -14,7 +14,7 @@
       "Bash(tree:*)",
       "Bash(xxd:*)"
     ],
-    "deny": []
+    "deny": ["Bash(rm -rf:*)"]
   },
   "model": "opus",
   "hooks": {
