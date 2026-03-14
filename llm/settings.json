@@ -14,13 +14,10 @@
       "Bash(tree:*)",
       "Bash(xxd:*)"
     ],
-    "deny": []
+    "deny": ["Bash(rm -rf:*)"]
   },
   "model": "opus",
-  "statusLine": {
-    "type": "command",
-    "command": "bash ~/dotfiles/llm/scripts/statusline.sh"
-  },
+  "language": "Japanese",
   "hooks": {
     "PostToolUse": [
       {
@@ -34,11 +31,17 @@
       }
     ]
   },
+  "statusLine": {
+    "type": "command",
+    "command": "bash ~/dotfiles/llm/scripts/statusline.sh"
+  },
   "enabledPlugins": {
     "claude-md-management@claude-plugins-official": true,
     "context7@claude-plugins-official": true,
     "frontend-design@claude-plugins-official": true,
     "playwright@claude-plugins-official": true,
-    "slack@claude-plugins-official": true
+    "pyright-lsp@claude-plugins-official": true,
+    "slack@claude-plugins-official": true,
+    "typescript-lsp@claude-plugins-official": true
   }
 }
