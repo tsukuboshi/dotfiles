@@ -58,28 +58,30 @@ _mas_upgrade()   { _pkg_header green "App Store Apps Upgrade"; mas upgrade }
 
 _brew_cleanup()  { _pkg_header green "Homebrew Cleanup"; brew cleanup }
 
-alias cl='_cask_list'
-alias co='_cask_outdated'
-alias cg='_cask_upgrade'
+p() {
+  local input="$1"
+  local op="${input: -1}"
+  local targets="${input:0:${#input}-1}"
 
-alias bl='_brew_list'
-alias bo='_brew_outdated'
-alias bg='_brew_upgrade'
+  for t in $(echo "$targets" | fold -w1); do
+    case "${t}${op}" in
+      cl) _cask_list ;;
+      co) _cask_outdated ;;
+      cu) _cask_upgrade ;;
+      bl) _brew_list ;;
+      bo) _brew_outdated ;;
+      bu) _brew_upgrade ;;
+      ml) _mas_list ;;
+      mo) _mas_outdated ;;
+      mu) _mas_upgrade ;;
+      *) echo "Unknown: ${t}${op}" ;;
+    esac
+  done
 
-alias ml='_mas_list'
-alias mo='_mas_outdated'
-alias mg='_mas_upgrade'
-
-alias cbl='_cask_list; _brew_list'
-alias cbo='_cask_outdated; _brew_outdated'
-alias cbg='_cask_upgrade; _brew_upgrade; _brew_cleanup'
-
-alias cbml='_cask_list; _brew_list; _mas_list'
-alias cbmo='_cask_outdated; _brew_outdated; _mas_outdated'
-alias cbmg='_cask_upgrade; _brew_upgrade; _mas_upgrade; _brew_cleanup'
-
-alias as='brew autoupdate start --upgrade --greedy --cleanup --sudo'
-alias ad='brew autoupdate delete'
+  if [[ "$op" == "u" ]]; then
+    _brew_cleanup
+  fi
+}
 
 alias bbl='brew bundle list --global --all'
 alias bbc='brew bundle check --global --formula'
