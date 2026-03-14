@@ -1,6 +1,6 @@
 cask_args appdir: "/Applications"
 
-tap "domt4/autoupdate"
+# tap "domt4/autoupdate"
 
 # brew "awsume"
 # brew "awscli"
