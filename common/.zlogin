@@ -32,35 +32,16 @@ function otp (){
 
 _pkg_header() { print -P "\n%F{$1}%B=== $2 ===%b%f" }
 
-_BREW_ASKPASS="${XDG_DATA_HOME:-$HOME/.local/share}/homebrew/brew_askpass"
-
-_ensure_askpass() {
-  [[ -x "$_BREW_ASKPASS" ]] && return 0
-  if ! command -v pinentry-mac &>/dev/null; then
-    print -P "%F{red}pinentry-mac not found.%f" >&2
-    return 1
-  fi
-  mkdir -p "${_BREW_ASKPASS:h}"
-  cat > "$_BREW_ASKPASS" <<'ASKPASS'
-#!/bin/sh
-printf "%s\n" \
-  "OPTION allow-external-cache" \
-  "SETOK OK" "SETCANCEL Cancel" \
-  "SETDESC Homebrew needs your admin password to complete the upgrade" \
-  "SETPROMPT Enter Password:" \
-  "SETTITLE Homebrew Password Request" \
-  "GETPIN" | pinentry-mac --no-global-grab --timeout 60 \
-  | /usr/bin/awk '/^D / {print substr($0, index($0, $2))}'
-ASKPASS
-  chmod 0555 "$_BREW_ASKPASS"
-}
-
-_with_sudo_gui() {
-  if _ensure_askpass; then
-    SUDO_ASKPASS="$_BREW_ASKPASS" "$@"
-  else
-    "$@"
-  fi
+_with_sudo() {
+  read -rs "?Password: " _pw; echo
+  local askpass="$(mktemp)"
+  trap 'rm -f "$askpass"; unset _pw' EXIT INT TERM
+  printf '#!/bin/sh\necho "%s"\n' "$_pw" > "$askpass"
+  chmod 700 "$askpass"
+  SUDO_ASKPASS="$askpass" "$@"
+  rm -f "$askpass"
+  unset _pw
+  trap - EXIT INT TERM
 }
 
 _brew_list()     { _pkg_header cyan "Homebrew Formulae List"; brew list --formula }
@@ -72,7 +53,7 @@ _cask_outdated() { _pkg_header yellow "Homebrew Casks Outdated"; brew upgrade --
 _mas_outdated()  { _pkg_header yellow "App Store Apps Outdated"; mas outdated }
 
 _brew_upgrade()  { _pkg_header green "Homebrew Formulae Upgrade"; brew upgrade }
-_cask_upgrade()  { _pkg_header green "Homebrew Casks Upgrade"; _with_sudo_gui brew upgrade --cask --greedy }
+_cask_upgrade()  { _pkg_header green "Homebrew Casks Upgrade"; _with_sudo brew upgrade --cask --greedy }
 _mas_upgrade()   { _pkg_header green "App Store Apps Upgrade"; mas upgrade }
 
 _brew_cleanup()  { _pkg_header green "Homebrew Cleanup"; brew cleanup }
