@@ -14,10 +14,10 @@
       "Bash(tree:*)",
       "Bash(xxd:*)"
     ],
-    "deny": ["Bash(rm -rf:*)"]
+    "deny": [
+      "Bash(rm -rf:*)"
+    ]
   },
-  "model": "opus",
-  "language": "Japanese",
   "hooks": {
     "PostToolUse": [
       {
@@ -43,5 +43,6 @@
     "pyright-lsp@claude-plugins-official": true,
     "slack@claude-plugins-official": true,
     "typescript-lsp@claude-plugins-official": true
-  }
+  },
+  "language": "Japanese"
 }
