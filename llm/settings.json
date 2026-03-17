@@ -15,17 +15,31 @@
       "Bash(xxd:*)"
     ],
     "deny": [
-      "Bash(rm -rf:*)"
+      "Bash(rm -rf:*)",
+      "Bash(git push --force:*)",
+      "Bash(git push -f:*)",
+      "Bash(git reset --hard:*)"
     ]
   },
   "hooks": {
+    "PreToolUse": [
+      {
+        "matcher": "Bash",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "bash ~/dotfiles/llm/scripts/pre-commit-hook.sh"
+          }
+        ]
+      }
+    ],
     "PostToolUse": [
       {
         "matcher": "Edit|Write",
         "hooks": [
           {
             "type": "command",
-            "command": "bash ~/dotfiles/llm/scripts/edit-hook.sh"
+            "command": "bash ~/dotfiles/llm/scripts/post-edit-hook.sh"
           }
         ]
       }
