@@ -68,8 +68,8 @@ GITHUB_USER=$(git config user.name)
 PR_TITLE="PRタイトル"
 PR_BODY="PRボディ"
 
-ENCODED_TITLE=$(printf '%s' "${PR_TITLE}" | xxd -p | tr -d '\n' | sed 's/\(..\)/%\1/g')
-ENCODED_BODY=$(printf '%s' "${PR_BODY}" | xxd -p | tr -d '\n' | sed 's/\(..\)/%\1/g')
+ENCODED_TITLE=$(printf '%s' "${PR_TITLE}" | od -An -tx1 | tr -d ' \n' | sed 's/\(..\)/%\1/g')
+ENCODED_BODY=$(printf '%s' "${PR_BODY}" | od -An -tx1 | tr -d ' \n' | sed 's/\(..\)/%\1/g')
 
 open "${REPO_URL}/compare/${BASE_BRANCH}...${COMPARE_BRANCH}?expand=1&title=${ENCODED_TITLE}&body=${ENCODED_BODY}&assignees=${GITHUB_USER}"
 ```
