@@ -38,8 +38,24 @@ fi
 # Terraform files
 TF_FILES=$(echo "$STAGED_FILES" | grep '\.tf$' || true)
 if [[ -n "$TF_FILES" ]]; then
-  terraform fmt -recursive "$(git rev-parse --show-toplevel)" 2>/dev/null
+  echo "$TF_FILES" | xargs terraform fmt 2>/dev/null
   echo "$TF_FILES" | xargs git add
+  REFORMATTED=true
+fi
+
+# Shell files
+SH_FILES=$(echo "$STAGED_FILES" | grep '\.sh$' || true)
+if [[ -n "$SH_FILES" ]]; then
+  echo "$SH_FILES" | xargs shfmt -w 2>/dev/null
+  echo "$SH_FILES" | xargs git add
+  REFORMATTED=true
+fi
+
+# Markdown files
+MD_FILES=$(echo "$STAGED_FILES" | grep '\.md$' || true)
+if [[ -n "$MD_FILES" ]]; then
+  echo "$MD_FILES" | xargs markdownlint --fix 2>/dev/null
+  echo "$MD_FILES" | xargs git add
   REFORMATTED=true
 fi
 

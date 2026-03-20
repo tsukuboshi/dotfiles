@@ -10,7 +10,7 @@ fi
 
 case "$FILE_PATH" in
   *.tf)
-    cd "$(dirname "$FILE_PATH")" && terraform fmt -recursive
+    terraform fmt "$FILE_PATH"
     ;;
   *.py)
     ruff check --fix "$FILE_PATH"
@@ -23,6 +23,7 @@ case "$FILE_PATH" in
     markdownlint --fix "$FILE_PATH"
     ;;
   *.sh)
+    shfmt -w "$FILE_PATH"
     shellcheck "$FILE_PATH"
     ;;
 esac
