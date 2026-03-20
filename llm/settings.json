@@ -71,6 +71,17 @@
           }
         ]
       }
+    ],
+    "Stop": [
+      {
+        "matcher": "",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "bash ~/dotfiles/llm/scripts/stop-notify.sh"
+          }
+        ]
+      }
     ]
   },
   "statusLine": {
