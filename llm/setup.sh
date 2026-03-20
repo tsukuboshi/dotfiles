@@ -11,8 +11,10 @@ get_agent_config() {
             echo "commands"
             echo "mcps"
             echo "skills"
+            echo "rules"
             ;;
         *)
+            echo ""
             echo ""
             echo ""
             echo ""
@@ -45,10 +47,11 @@ link_agent_config() {
     local commands_path="${config_path}/$4"
     local mcps_path="${config_path}/$5"
     local skills_path="${config_path}/$6"
+    local rules_path="${config_path}/$7"
 
     printf "\n\033[1;36m=== Linking config to %s ===\033[0m\n" "${agent_name}"
 
-    for dir_path in "$commands_path" "$mcps_path" "$skills_path"; do
+    for dir_path in "$commands_path" "$mcps_path" "$skills_path" "$rules_path"; do
         if [ ! -d "$dir_path" ]; then
             printf "\033[1;33m⚠ Directory does not exist. Creating: %s\033[0m\n" "$dir_path"
             mkdir -p "$dir_path"
@@ -72,6 +75,11 @@ link_agent_config() {
             ln -fsvn "$dir" "$skills_path"
         fi
     done
+    for file in "${SCRIPT_DIR}"/rules/*; do
+        if [ -f "$file" ]; then
+            ln -fsvn "$file" "$rules_path"
+        fi
+    done
 }
 
 setup_agent() {
@@ -82,12 +90,14 @@ setup_agent() {
     local commands_path
     local mcps_path
     local skills_path
+    local rules_path
     {
         read -r command_name
         read -r config_path
         read -r commands_path
         read -r mcps_path
         read -r skills_path
+        read -r rules_path
     } < <(get_agent_config "$agent_name")
 
     if [ -z "$config_path" ]; then
@@ -98,10 +108,10 @@ setup_agent() {
 
     case "$mode" in
         link)
-            link_agent_config "$agent_name" "$command_name" "$config_path" "$commands_path" "$mcps_path" "$skills_path"
+            link_agent_config "$agent_name" "$command_name" "$config_path" "$commands_path" "$mcps_path" "$skills_path" "$rules_path"
             ;;
         *)
-            link_agent_config "$agent_name" "$command_name" "$config_path" "$commands_path" "$mcps_path" "$skills_path"
+            link_agent_config "$agent_name" "$command_name" "$config_path" "$commands_path" "$mcps_path" "$skills_path" "$rules_path"
             ;;
     esac
 }
