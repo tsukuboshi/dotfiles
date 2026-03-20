@@ -146,6 +146,16 @@ ctx_color=$(color_for_pct "$pct_int")
 ctx_bar=$(fine_bar "$pct_int" 8)
 out+=" │ 📊context:${ctx_color}${ctx_bar} ${pct_int}%${RST}"
 
+# Compression bar (max 3)
+cmp_level=$compress_count
+[ "$cmp_level" -gt 3 ] && cmp_level=3
+cmp_pct=$((cmp_level * 100 / 3))
+cmp_color=$(color_for_pct "$cmp_pct")
+cmp_bar=""
+for ((i = 0; i < cmp_level; i++)); do cmp_bar+="█"; done
+for ((i = cmp_level; i < 3; i++)); do cmp_bar+="░"; done
+out+=" │ 🔄compress:${cmp_color}${cmp_bar} ${compress_count}x${RST}"
+
 # 5h rate limit
 if [ "${five_hour_pct%.*}" -ge 0 ] 2>/dev/null; then
 	fh_int=${five_hour_pct%%.*}
@@ -162,13 +172,6 @@ if [ "${seven_day_pct%.*}" -ge 0 ] 2>/dev/null; then
 	sd_bar=$(fine_bar "$sd_int" 5)
 	sd_reset=$(fmt_reset "$seven_day_reset") && sd_reset=" ${sd_reset}" || sd_reset=""
 	out+=" │ 📅7d-limit:${sd_color}${sd_bar} ${sd_int}%${RST}${sd_reset}"
-fi
-
-# Compression (highlight when > 0)
-if [ "$compress_count" -gt 0 ]; then
-	out+=" │ 🔄compress:\033[38;2;255;165;0m${compress_count}times${RST}"
-else
-	out+=" │ 🔄compress:${compress_count}times"
 fi
 
 printf '%b' "$out"
