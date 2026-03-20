@@ -1,5 +1,5 @@
 ---
-description: "Create PR via GitHub Web UI without gh CLI (Compare Default: current branch, Base Default: main)"
+description: "Create PR via GitHub Web UI without gh CLI (Compare Default: current branch, Base Default: reflog origin)"
 argument-hint: "[Compare Branch] [Base Branch]"
 ---
 
@@ -11,14 +11,23 @@ argument-hint: "[Compare Branch] [Base Branch]"
 
 ```bash
 # 第一引数: Compare Branch名（未指定時は現在のブランチ）
-# 第二引数: Base Branch名（未指定時はmain）
-BASE_BRANCH="${第二引数:-main}"
 if [[ -n "${第一引数}" ]]; then
   COMPARE_BRANCH="${第一引数}"
 else
   COMPARE_BRANCH="$(git branch --show-current)"
 fi
+
+# 第二引数: Base Branch名（未指定時はgit reflogから自動検出）
+if [[ -n "${第二引数}" ]]; then
+  BASE_BRANCH="${第二引数}"
+else
+  BASE_BRANCH=$(git reflog show "${COMPARE_BRANCH}" --format='%gs' | tail -1 | sed 's/.*Created from //')
+fi
 ```
+
+`BASE_BRANCH`が空、またはローカル・リモートに存在しないブランチ名だった場合は、ユーザーにベースブランチを確認してから続行してください。
+
+引数の解決後、`COMPARE_BRANCH`と`BASE_BRANCH`をユーザーに表示してください。
 
 # リモートへのプッシュ
 
