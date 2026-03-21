@@ -48,25 +48,13 @@ color_for_pct() {
 	printf '\033[38;2;%d;%d;0m' "$r" "$g"
 }
 
-# Fine-grained progress bar using block elements
-fine_bar() {
-	local pct=$1 width=${2:-8}
-	local chars=('' '▏' '▎' '▍' '▌' '▋' '▊' '▉')
-	local total_steps=$((width * 8))
-	local filled_steps=$((pct * total_steps / 100))
-	[ "$filled_steps" -gt "$total_steps" ] && filled_steps=$total_steps
-	local full=$((filled_steps / 8))
-	local partial=$((filled_steps % 8))
-	local has_partial=0
-	[ "$partial" -gt 0 ] && has_partial=1
-	local empty=$((width - full - has_partial))
-	local bar=""
-	for ((i = 0; i < full; i++)); do bar+="█"; done
-	if [ "$has_partial" -eq 1 ]; then
-		bar+="${chars[$partial]}"
-	fi
-	for ((i = 0; i < empty; i++)); do bar+="░"; done
-	printf '%s' "$bar"
+# Pie chart using circle characters: ○◔◑◕●
+pie_char() {
+	local pct=$1
+	local chars=('○' '◔' '◑' '◕' '●')
+	local idx=$(((pct + 12) * 4 / 100))
+	[ "$idx" -gt 4 ] && idx=4
+	printf '%s' "${chars[$idx]}"
 }
 
 # Format remaining time from ISO 8601 reset timestamp
@@ -139,39 +127,37 @@ printf '{"sid":"%s","tok":%d}\n' "$session_id" "$current_used" >"$LAST_STATE_FIL
 out=""
 
 # Model
-out+="🤖model:${model}"
+out+="🤖${model}"
 
 # Context usage with colored bar
 ctx_color=$(color_for_pct "$pct_int")
-ctx_bar=$(fine_bar "$pct_int" 8)
-out+=" │ 📊context:${ctx_color}${ctx_bar} ${pct_int}%${RST}"
+ctx_pie=$(pie_char "$pct_int")
+out+=" │ 📊ctx ${ctx_color}${ctx_pie} ${pct_int}%${RST}"
 
-# Compression bar (max 3)
+# Compression pie (max 3)
 cmp_level=$compress_count
 [ "$cmp_level" -gt 3 ] && cmp_level=3
 cmp_pct=$((cmp_level * 100 / 3))
 cmp_color=$(color_for_pct "$cmp_pct")
-cmp_bar=""
-for ((i = 0; i < cmp_level; i++)); do cmp_bar+="█"; done
-for ((i = cmp_level; i < 3; i++)); do cmp_bar+="░"; done
-out+=" │ 🔄compress:${cmp_color}${cmp_bar} ${compress_count}x${RST}"
+cmp_pie=$(pie_char "$cmp_pct")
+out+=" │ 🔄cmp ${cmp_color}${cmp_pie} ${compress_count}x${RST}"
 
 # 5h rate limit
 if [ "${five_hour_pct%.*}" -ge 0 ] 2>/dev/null; then
 	fh_int=${five_hour_pct%%.*}
 	fh_color=$(color_for_pct "$fh_int")
-	fh_bar=$(fine_bar "$fh_int" 5)
+	fh_pie=$(pie_char "$fh_int")
 	fh_reset=$(fmt_reset "$five_hour_reset") && fh_reset=" ${fh_reset}" || fh_reset=""
-	out+=" │ ⏱️5h-limit:${fh_color}${fh_bar} ${fh_int}%${RST}${fh_reset}"
+	out+=" │ ⏱️5h ${fh_color}${fh_pie} ${fh_int}%${RST}${fh_reset}"
 fi
 
 # 7d rate limit
 if [ "${seven_day_pct%.*}" -ge 0 ] 2>/dev/null; then
 	sd_int=${seven_day_pct%%.*}
 	sd_color=$(color_for_pct "$sd_int")
-	sd_bar=$(fine_bar "$sd_int" 5)
+	sd_pie=$(pie_char "$sd_int")
 	sd_reset=$(fmt_reset "$seven_day_reset") && sd_reset=" ${sd_reset}" || sd_reset=""
-	out+=" │ 📅7d-limit:${sd_color}${sd_bar} ${sd_int}%${RST}${sd_reset}"
+	out+=" │ 📅7d ${sd_color}${sd_pie} ${sd_int}%${RST}${sd_reset}"
 fi
 
 printf '%b' "$out"
