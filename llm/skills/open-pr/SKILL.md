@@ -21,7 +21,7 @@ fi
 if [[ -n "${第二引数}" ]]; then
   BASE_BRANCH="${第二引数}"
 else
-  BASE_BRANCH=$(git reflog show "${COMPARE_BRANCH}" --format='%gs' | tail -1 | sed 's/.*Created from //')
+  BASE_BRANCH=$(git branch --contains "$(git reflog show "${COMPARE_BRANCH}" --format='%H' | tail -1)" | grep -v "${COMPARE_BRANCH}" | sed 's/^ *//' | head -1)
 fi
 ```
 
