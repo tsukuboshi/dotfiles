@@ -1,6 +1,6 @@
 ---
 paths:
-  - "**/*.tf"
+  - "**/*.{tf,tfvars}"
 ---
 
 # Terraform
