@@ -33,6 +33,8 @@ brew "zsh-completion"
 
 cask "appcleaner"
 # cask "aws-vault"
+cask "claude"
+cask "claude-code"
 cask "coteditor"
 # cask "discord"
 cask "firefox"
