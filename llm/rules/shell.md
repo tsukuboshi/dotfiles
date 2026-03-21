@@ -1,9 +1,9 @@
 ---
 paths:
-  - "**/*.sh"
+  - "**/*.{sh,bash,zsh}"
 ---
 
 # Shell Script
 
 - リンタ: `shellcheck`
-- フォーマッタ: `shfmt`
+- フォーマッタ: `shfmt -w`

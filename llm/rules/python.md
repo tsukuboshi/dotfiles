@@ -5,5 +5,5 @@ paths:
 
 # Python
 
-- フォーマッタ: `ruff format`
 - リンタ: `ruff check --fix`
+- フォーマッタ: `ruff format`
