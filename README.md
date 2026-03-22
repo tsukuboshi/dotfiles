@@ -31,8 +31,8 @@ make
 1. Additional setup required:
 
 - Editor: Follow instructions in `editor/README.md`
-- Launcher: Follow instructions in `launcher/README.md`
 - GenAI Agent: Follow instructions in `genai/README.md`
+- Launcher: Follow instructions in `launcher/README.md`
 - Runtime Management: Follow instructions in `runtime/README.md`
 - SleepWatcher: Follow instructions in `sleepwatcher/README.md`
 
@@ -40,8 +40,8 @@ make
 
 - `common/`: Setup scripts
 - `editor/`: Editor configurations
+- `genai/`: GenAI Agent configurations
 - `launcher/`: Launcher configurations
-- `genai/`:  GenAI Agent configurations
 - `runtime/`: Programming Language Runtime Management configurations
 - `sleepwatcher/`: Sleep mode configurations
 
