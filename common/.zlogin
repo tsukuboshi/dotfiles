@@ -152,7 +152,7 @@ function gcom (){
 }
 function gcoma (){
   local MESSAGE=${1:-fix}
-  git commit -m --amend "${MESSAGE}"
+  git commit --amend -m "${MESSAGE}"
 }
 function gch () {
   local FILE_NAME=${1:-.}
@@ -255,7 +255,6 @@ function ave() {
 }
 
 alias asg='aws sts get-caller-identity'
-alias asl='aws sso login'
 function asl (){
   local PROFILE=$1
   aws sso login --profile ${PROFILE}
