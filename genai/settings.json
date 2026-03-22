@@ -56,7 +56,7 @@
         "hooks": [
           {
             "type": "command",
-            "command": "bash ~/dotfiles/llm/scripts/pre-commit-hook.sh"
+            "command": "bash ~/dotfiles/genai/scripts/pre-commit-hook.sh"
           }
         ]
       }
@@ -67,7 +67,7 @@
         "hooks": [
           {
             "type": "command",
-            "command": "bash ~/dotfiles/llm/scripts/post-edit-hook.sh"
+            "command": "bash ~/dotfiles/genai/scripts/post-edit-hook.sh"
           }
         ]
       }
@@ -78,7 +78,7 @@
         "hooks": [
           {
             "type": "command",
-            "command": "bash ~/dotfiles/llm/scripts/stop-notify.sh"
+            "command": "bash ~/dotfiles/genai/scripts/stop-notify.sh"
           }
         ]
       }
@@ -86,7 +86,7 @@
   },
   "statusLine": {
     "type": "command",
-    "command": "bash ~/dotfiles/llm/scripts/statusline.sh"
+    "command": "bash ~/dotfiles/genai/scripts/statusline.sh"
   },
   "enabledPlugins": {
     "claude-md-management@claude-plugins-official": true,

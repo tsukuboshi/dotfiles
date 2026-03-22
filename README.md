@@ -16,23 +16,23 @@ This repository contains scripts to set macOS.
 git clone https://github.com/tsukuboshi/dotfiles
 ```
 
-2. Move to target repository.
+1. Move to target repository.
 
 ```shell
 cd dotfiles
 ```
 
-3. Build macOS from Makefile.
+1. Build macOS from Makefile.
 
 ```shell
 make
 ```
 
-4. Additional setup required:
+1. Additional setup required:
 
 - Editor: Follow instructions in `editor/README.md`
 - Launcher: Follow instructions in `launcher/README.md`
-- LLM Agent: Follow instructions in `llm/README.md`
+- GenAI Agent: Follow instructions in `genai/README.md`
 - Runtime Management: Follow instructions in `runtime/README.md`
 - SleepWatcher: Follow instructions in `sleepwatcher/README.md`
 
@@ -41,7 +41,7 @@ make
 - `common/`: Setup scripts
 - `editor/`: Editor configurations
 - `launcher/`: Launcher configurations
-- `llm/`:  LLM Agent configurations
+- `genai/`:  GenAI Agent configurations
 - `runtime/`: Programming Language Runtime Management configurations
 - `sleepwatcher/`: Sleep mode configurations
 

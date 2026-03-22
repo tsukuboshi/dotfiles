@@ -1,4 +1,4 @@
-.PHONY: all xcode link defaults brew editor llm runtime sleepwatcher
+.PHONY: all xcode link defaults brew editor genai runtime sleepwatcher
 
 # Initialize macOS.
 all: xcode link defaults brew
@@ -38,12 +38,12 @@ editor:
 	@printf "\033[1;34m========================================\033[0m\n"
 	@editor/setup.sh
 
-# Setup LLM agent settings.
-llm:
+# Setup GenAI agent settings.
+genai:
 	@printf "\n\033[1;34m========================================\033[0m\n"
-	@printf "\033[1;34m  Run llm/setup.sh\033[0m\n"
+	@printf "\033[1;34m  Run genai/setup.sh\033[0m\n"
 	@printf "\033[1;34m========================================\033[0m\n"
-	@llm/setup.sh
+	@genai/setup.sh
 
 # Setup runtime environment.
 runtime:

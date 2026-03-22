@@ -4,8 +4,8 @@
 
 ## Setup Claude Code
 
-1. Execute llm setup script with the agent option set to claude.
+1. Execute genai setup script with the agent option set to claude.
 
 ```bash
-./llm/setup.sh -a claude
+./genai/setup.sh -a claude
 ```
