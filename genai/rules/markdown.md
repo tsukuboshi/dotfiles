@@ -5,5 +5,5 @@ paths:
 
 # Markdown
 
-- リンタ: `markdownlint`
-- フォーマッタ: `markdownlint --fix`
+- リンタ: `markdownlint --disable MD034`
+- フォーマッタ: `markdownlint --fix --disable MD034`

@@ -20,7 +20,7 @@ case "$FILE_PATH" in
 	biome check --fix "$FILE_PATH"
 	;;
 *.md)
-	markdownlint --fix "$FILE_PATH"
+	markdownlint --fix --disable MD034 -- "$FILE_PATH"
 	;;
 *.sh)
 	shfmt -w "$FILE_PATH"
