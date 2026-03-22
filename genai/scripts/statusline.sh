@@ -161,3 +161,5 @@ if [ "${seven_day_pct%.*}" -ge 0 ] 2>/dev/null; then
 fi
 
 printf '%b' "$out"
+
+exit 0
