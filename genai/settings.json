@@ -12,6 +12,7 @@
       "Bash(diff:*)",
       "Bash(dirname:*)",
       "Bash(echo:*)",
+      "Bash(export:*)",
       "Bash(file:*)",
       "Bash(find:*)",
       "Bash(git:*)",

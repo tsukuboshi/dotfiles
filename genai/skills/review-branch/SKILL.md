@@ -12,11 +12,11 @@ argument-hint: "[Compare Branch] [Base Branch]"
 ```bash
 # 第一引数: Compare Branch名（未指定時は現在のブランチ）
 # 第二引数: Base Branch名（未指定時はmain）
-BASE_BRANCH="origin/${第二引数:-main}"
+export BASE_BRANCH="origin/${第二引数:-main}"
 if [[ -n "${第一引数}" ]]; then
-  COMPARE_BRANCH="origin/${第一引数}"
+  export COMPARE_BRANCH="origin/${第一引数}"
 else
-  COMPARE_BRANCH="$(git branch --show-current)"
+  export COMPARE_BRANCH="$(git branch --show-current)"
 fi
 ```
 
