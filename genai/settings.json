@@ -85,7 +85,7 @@
   },
   "statusLine": {
     "type": "command",
-    "command": "bash ~/dotfiles/genai/scripts/statusline.sh"
+    "command": "zsh ~/dotfiles/genai/scripts/statusline.sh"
   },
   "enabledPlugins": {
     "claude-md-management@claude-plugins-official": true,
