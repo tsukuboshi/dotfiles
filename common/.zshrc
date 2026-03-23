@@ -48,12 +48,12 @@ _parse_git_status() {
 
   # Untracked files (?? at start)
   if echo "$git_status" | grep -q '^??'; then
-    status_symbols="${status_symbols}$(_colorize_prompt "2" "…")"  # green
+    status_symbols="${status_symbols}$(_colorize_prompt "2" "?")"  # green
   fi
 
   # Modified files (M in second column)
   if echo "$git_status" | grep -q '^.M'; then
-    status_symbols="${status_symbols}$(_colorize_prompt "3" "+")"  # yellow
+    status_symbols="${status_symbols}$(_colorize_prompt "3" "!")"  # yellow
   fi
 
   # Deleted files (D in second column)
