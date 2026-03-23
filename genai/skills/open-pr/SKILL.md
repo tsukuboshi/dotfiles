@@ -12,16 +12,16 @@ argument-hint: "[Compare Branch] [Base Branch]"
 ```bash
 # 第一引数: Compare Branch名（未指定時は現在のブランチ）
 if [[ -n "${第一引数}" ]]; then
-  COMPARE_BRANCH="${第一引数}"
+  export COMPARE_BRANCH="${第一引数}"
 else
-  COMPARE_BRANCH="$(git branch --show-current)"
+  export COMPARE_BRANCH="$(git branch --show-current)"
 fi
 
 # 第二引数: Base Branch名（未指定時はgit reflogから自動検出）
 if [[ -n "${第二引数}" ]]; then
-  BASE_BRANCH="${第二引数}"
+  export BASE_BRANCH="${第二引数}"
 else
-  BASE_BRANCH=$(git branch --contains "$(git reflog show "${COMPARE_BRANCH}" --format='%H' | tail -1)" | grep -v "${COMPARE_BRANCH}" | sed 's/^ *//' | head -1)
+  export BASE_BRANCH=$(git branch --contains "$(git reflog show "${COMPARE_BRANCH}" --format='%H' | tail -1)" | grep -v "${COMPARE_BRANCH}" | sed 's/^ *//' | head -1)
 fi
 ```
 
