@@ -97,5 +97,12 @@
     "slack@claude-plugins-official": true,
     "typescript-lsp@claude-plugins-official": true
   },
-  "language": "Japanese"
+  "language": "Japanese",
+  "sandbox": {
+    "enabled": true,
+    "filesystem": {
+      "denyRead": ["~/.ssh", "~/.aws/credentials", "~/.gnupg", "~/.config/gh"],
+      "denyWrite": ["~/.bashrc", "~/.zshrc", "~/.ssh", "~/.aws", "~/.gnupg"]
+    }
+  }
 }
