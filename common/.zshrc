@@ -29,7 +29,7 @@ _parse_aws_profile() {
   fi
 
   if [ -n "$profile" ]; then
-    _colorize_prompt "3" "${profile}"  # yellow
+    _colorize_prompt "208" "${profile}"  # orange
   fi
 }
 
@@ -48,12 +48,12 @@ _parse_git_status() {
 
   # Untracked files (?? at start)
   if echo "$git_status" | grep -q '^??'; then
-    status_symbols="${status_symbols}$(_colorize_prompt "208" "?")"  # orange
+    status_symbols="${status_symbols}$(_colorize_prompt "46" "?")"  # bright green
   fi
 
   # Modified files (M in second column)
   if echo "$git_status" | grep -q '^.M'; then
-    status_symbols="${status_symbols}$(_colorize_prompt "180" "!")"  # tan
+    status_symbols="${status_symbols}$(_colorize_prompt "3" "!")"  # yellow
   fi
 
   # Deleted files (D in second column)
