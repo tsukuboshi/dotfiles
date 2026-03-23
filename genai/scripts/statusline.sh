@@ -1,12 +1,25 @@
-#!/bin/bash
+#!/bin/zsh
 # Claude Code Enhanced Status Line
-# Model | Context % | 5h Rate | 7d Rate | Compression
+# Prompt | Model | Context % | 5h Rate | 7d Rate | Compression
 
 CLAUDE_DIR="$HOME/.claude"
 LAST_STATE_FILE="$CLAUDE_DIR/.sl_last_state.json"
 COMPRESS_FILE="$CLAUDE_DIR/.sl_compress.json"
 
 RST='\033[0m'
+
+# Source .zshrc for prompt functions
+source ~/dotfiles/common/.zshrc
+
+# Build prompt string using print -P to expand zsh prompt escapes
+_build_statusline_prompt() {
+	local result=""
+	for func in "${PROMPT_PARTS[@]}"; do
+		local output=$($func)
+		[ -n "$output" ] && result+="${result:+ }${output}"
+	done
+	print -Pn "$result"
+}
 
 IFS= read -r -d '' input
 
@@ -52,8 +65,8 @@ color_for_pct() {
 pie_char() {
 	local pct=$1
 	local chars=('○' '◔' '◑' '◕' '●')
-	local idx=$(((pct + 12) * 4 / 100))
-	[ "$idx" -gt 4 ] && idx=4
+	local idx=$(((pct + 12) * 4 / 100 + 1))
+	[ "$idx" -gt 5 ] && idx=5
 	printf '%s' "${chars[$idx]}"
 }
 
@@ -125,6 +138,10 @@ printf '{"sid":"%s","tok":%d}\n' "$session_id" "$current_used" >"$LAST_STATE_FIL
 
 # --- Build output ---
 out=""
+
+# Zsh prompt
+prompt_str=$(_build_statusline_prompt)
+[ -n "$prompt_str" ] && out+="${prompt_str} │ "
 
 # Model
 out+="🤖${model}"
