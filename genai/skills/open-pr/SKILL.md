@@ -29,11 +29,19 @@ fi
 
 引数の解決後、`COMPARE_BRANCH`と`BASE_BRANCH`をユーザーに表示してください。
 
-# リモートへのプッシュ
+# リモートへのプッシュ確認
+
+`COMPARE_BRANCH`がリモートにプッシュ済みかつ最新であることを確認してください。
 
 ```bash
-git push -u origin "${COMPARE_BRANCH}"
+git fetch origin "${COMPARE_BRANCH}" 2>/dev/null
+export LOCAL=$(git rev-parse "${COMPARE_BRANCH}")
+export REMOTE=$(git rev-parse "origin/${COMPARE_BRANCH}" 2>/dev/null)
 ```
+
+- リモートブランチが存在しない場合: ユーザーに `git push -u origin ${COMPARE_BRANCH}` の実行を促して中断
+- `LOCAL` ≠ `REMOTE` の場合: ローカルに未プッシュのコミットがある旨を伝え、`git push` の実行を促して中断
+- `LOCAL` = `REMOTE` の場合: そのまま続行
 
 # コミット履歴の確認
 
