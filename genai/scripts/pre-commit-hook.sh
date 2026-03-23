@@ -59,9 +59,14 @@ if [[ -n "$MD_FILES" ]]; then
 	while IFS= read -r f; do FORMATTED_FILES+=("$f"); done <<<"$MD_FILES"
 fi
 
+# Output result as JSON for Claude Code
 if [[ ${#FORMATTED_FILES[@]} -gt 0 ]]; then
-	echo "Pre-commit: formatted ${#FORMATTED_FILES[@]} file(s):"
-	printf "  %s\n" "${FORMATTED_FILES[@]}"
+	FILE_LIST=$(printf ", %s" "${FORMATTED_FILES[@]}")
+	FILE_LIST=${FILE_LIST:2}
+	printf '{"continue":true,"suppressOutput":false,"systemMessage":"Pre-commit: formatted %d file(s): %s"}\n' \
+		"${#FORMATTED_FILES[@]}" "${FILE_LIST}"
+else
+	printf '{"continue":true,"suppressOutput":false,"systemMessage":"Pre-commit: no files matched formatting targets"}\n'
 fi
 
 exit 0
