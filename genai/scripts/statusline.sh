@@ -48,17 +48,19 @@ pct_int=${pct_int:-0}
 current_used=$((pct_int * context_size / 100))
 current_time=$(date +%s)
 
-# ANSI true color gradient: green(0%) -> yellow(50%) -> red(100%)
+# ANSI color matching pie chart stages and zsh prompt palette
+# ○(0-12%):white ◔(13-37%):green ◑(38-62%):yellow ◕(63-87%):magenta ●(88-100%):red
 color_for_pct() {
-	local pct=$1 r g
-	if [ "$pct" -le 50 ]; then
-		r=$((pct * 255 / 50))
-		g=255
-	else
-		r=255
-		g=$(((100 - pct) * 255 / 50))
-	fi
-	printf '\033[38;2;%d;%d;0m' "$r" "$g"
+	local pct=$1
+	local idx=$(((pct + 12) * 4 / 100 + 1))
+	[ "$idx" -gt 5 ] && idx=5
+	case $idx in
+	1) printf '\033[37m' ;; # white
+	2) printf '\033[32m' ;; # green
+	3) printf '\033[33m' ;; # yellow
+	4) printf '\033[35m' ;; # magenta
+	5) printf '\033[31m' ;; # red
+	esac
 }
 
 # Pie chart using circle characters: ○◔◑◕●
