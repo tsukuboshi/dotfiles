@@ -6,17 +6,17 @@ _colorize_prompt() {
 }
 
 _parse_username() {
-  _colorize_prompt "red" "%n"
+  _colorize_prompt "1" "%n"  # red
 }
 
 _parse_current_dir() {
-  _colorize_prompt "green" "%1~"
+  _colorize_prompt "2" "%1~"  # green
 }
 
 _parse_git_branch() {
   local branch=$(git branch --show-current 2>/dev/null)
   if [ -n "$branch" ]; then
-    _colorize_prompt "blue" "${branch}"
+    _colorize_prompt "4" "${branch}"  # blue
   fi
 }
 
@@ -29,7 +29,7 @@ _parse_aws_profile() {
   fi
 
   if [ -n "$profile" ]; then
-    _colorize_prompt "magenta" "${profile}"
+    _colorize_prompt "5" "${profile}"  # magenta
   fi
 }
 
@@ -38,36 +38,44 @@ _parse_git_status() {
   git_status=$(git status --porcelain 2>/dev/null)
   local git_exit_code=$?
 
+  # Not a git repository
   if [ $git_exit_code -ne 0 ]; then
-    _colorize_prompt "black" "%#"  # not a git repo
-    return
-  fi
-
-  if [ -z "$git_status" ]; then
-    _colorize_prompt "white" "✓"  # clean
+    _colorize_prompt "0" "%#"  # black
     return
   fi
 
   local status_symbols=""
 
-  # Staged files (M, A, D, R, C in first column)
-  if echo "$git_status" | grep -q '^[MADRC]'; then
-    status_symbols="${status_symbols}$(_colorize_prompt "cyan" "●")"
+  # Untracked files (?? at start)
+  if echo "$git_status" | grep -q '^??'; then
+    status_symbols="${status_symbols}$(_colorize_prompt "2" "…")"  # green
   fi
 
   # Modified files (M in second column)
   if echo "$git_status" | grep -q '^.M'; then
-    status_symbols="${status_symbols}$(_colorize_prompt "yellow" "+")"
+    status_symbols="${status_symbols}$(_colorize_prompt "3" "+")"  # yellow
   fi
 
-  # Deleted files (D in either column)
-  if echo "$git_status" | grep -q '^.D\|^D'; then
-    status_symbols="${status_symbols}$(_colorize_prompt "red" "✖")"
+  # Deleted files (D in second column)
+  if echo "$git_status" | grep -q '^.D'; then
+    status_symbols="${status_symbols}$(_colorize_prompt "1" "✖")"  # red
   fi
 
-  # Untracked files (?? at start)
-  if echo "$git_status" | grep -q '^??'; then
-    status_symbols="${status_symbols}$(_colorize_prompt "green" "…")"
+  # Staged files (M, A, D, R, C in first column)
+  if echo "$git_status" | grep -q '^[MADRC]'; then
+    status_symbols="${status_symbols}$(_colorize_prompt "6" "●")"  # cyan
+  fi
+
+  # Unpushed commits (ahead of upstream)
+  local unpushed
+  unpushed=$(git rev-list @{upstream}..HEAD --count 2>/dev/null)
+  if [ -n "$unpushed" ] && [ "$unpushed" -gt 0 ]; then
+    status_symbols="${status_symbols}$(_colorize_prompt "208" "↑")"  # orange
+  fi
+
+  # Fully synced
+  if [ -z "$status_symbols" ]; then
+    status_symbols="$(_colorize_prompt "7" "✓")"  # white
   fi
 
   echo "${status_symbols}"
