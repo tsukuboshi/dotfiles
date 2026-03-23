@@ -108,6 +108,7 @@
     "slack@claude-plugins-official": true,
     "typescript-lsp@claude-plugins-official": true
   },
+  "outputStyle": "explanatory",
   "language": "Japanese",
   "sandbox": {
     "enabled": true,
