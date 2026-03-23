@@ -49,27 +49,36 @@ current_used=$((pct_int * context_size / 100))
 current_time=$(date +%s)
 
 # ANSI color matching pie chart stages and zsh prompt palette
-# ○(0-12%):white ◔(13-37%):green ◑(38-62%):yellow ◕(63-87%):magenta ●(88-100%):red
+# ○(0-19%):white ◔(20-39%):green ◑(40-59%):yellow ◕(60-79%):magenta ●(80-100%):red
 color_for_pct() {
 	local pct=$1
-	local idx=$(((pct + 12) * 4 / 100 + 1))
-	[ "$idx" -gt 5 ] && idx=5
-	case $idx in
-	1) printf '\033[37m' ;; # white
-	2) printf '\033[32m' ;; # green
-	3) printf '\033[33m' ;; # yellow
-	4) printf '\033[35m' ;; # magenta
-	5) printf '\033[31m' ;; # red
-	esac
+	if [ "$pct" -lt 20 ]; then
+		printf '\033[37m' # white
+	elif [ "$pct" -lt 40 ]; then
+		printf '\033[32m' # green
+	elif [ "$pct" -lt 60 ]; then
+		printf '\033[33m' # yellow
+	elif [ "$pct" -lt 80 ]; then
+		printf '\033[35m' # magenta
+	else
+		printf '\033[31m' # red
+	fi
 }
 
 # Pie chart using circle characters: ○◔◑◕●
 pie_char() {
 	local pct=$1
-	local chars=('○' '◔' '◑' '◕' '●')
-	local idx=$(((pct + 12) * 4 / 100 + 1))
-	[ "$idx" -gt 5 ] && idx=5
-	printf '%s' "${chars[$idx]}"
+	if [ "$pct" -lt 20 ]; then
+		printf '○'
+	elif [ "$pct" -lt 40 ]; then
+		printf '◔'
+	elif [ "$pct" -lt 60 ]; then
+		printf '◑'
+	elif [ "$pct" -lt 80 ]; then
+		printf '◕'
+	else
+		printf '●'
+	fi
 }
 
 # Format remaining time from ISO 8601 reset timestamp
@@ -153,10 +162,10 @@ ctx_color=$(color_for_pct "$pct_int")
 ctx_pie=$(pie_char "$pct_int")
 out+=" │ 📊ctx ${ctx_color}${ctx_pie} ${pct_int}%${RST}"
 
-# Compression pie (max 3)
+# Compression pie (max 4)
 cmp_level=$compress_count
-[ "$cmp_level" -gt 3 ] && cmp_level=3
-cmp_pct=$((cmp_level * 100 / 3))
+[ "$cmp_level" -gt 4 ] && cmp_level=4
+cmp_pct=$((cmp_level * 25))
 cmp_color=$(color_for_pct "$cmp_pct")
 cmp_pie=$(pie_char "$cmp_pct")
 out+=" │ 🔄cmp ${cmp_color}${cmp_pie} ${compress_count}x${RST}"
