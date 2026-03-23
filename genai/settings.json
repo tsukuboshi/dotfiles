@@ -82,6 +82,17 @@
           }
         ]
       }
+    ],
+    "ConfigChange": [
+      {
+        "matcher": "",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "bash ~/dotfiles/genai/scripts/config-change-hook.sh"
+          }
+        ]
+      }
     ]
   },
   "statusLine": {
