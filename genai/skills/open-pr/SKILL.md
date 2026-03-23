@@ -9,50 +9,63 @@ argument-hint: "[Compare Branch] [Base Branch]"
 
 `ARGUMENT`はスペース区切りで2つの引数を受け取ります。
 
-```bash
-# 第一引数: Compare Branch名（未指定時は現在のブランチ）
-if [[ -n "${第一引数}" ]]; then
-  export COMPARE_BRANCH="${第一引数}"
-else
-  export COMPARE_BRANCH="$(git branch --show-current)"
-fi
+- 第一引数: Compare Branch名（未指定時は現在のブランチ）
+- 第二引数: Base Branch名（未指定時はreflogから自動検出）
 
-# 第二引数: Base Branch名（未指定時はgit reflogから自動検出）
-if [[ -n "${第二引数}" ]]; then
-  export BASE_BRANCH="${第二引数}"
-else
-  export BASE_BRANCH=$(git branch --contains "$(git reflog show "${COMPARE_BRANCH}" --format='%H' | tail -1)" | grep -v "${COMPARE_BRANCH}" | sed 's/^ *//' | head -1)
-fi
+第一引数が未指定の場合、以下のコマンドで現在のブランチ名を取得してください。
+
+```bash
+git branch --show-current
 ```
+
+第二引数が未指定の場合、以下のコマンドでベースブランチを検出してください。
+
+```bash
+git reflog show COMPARE_BRANCH --format='%H' | tail -1
+```
+
+```bash
+git branch --contains 上記で取得したハッシュ
+```
+
+出力から`COMPARE_BRANCH`自身を除いた最初のブランチ名を`BASE_BRANCH`としてください。
 
 `BASE_BRANCH`が空、またはローカル・リモートに存在しないブランチ名だった場合は、ユーザーにベースブランチを確認してから続行してください。
 
 引数の解決後、`COMPARE_BRANCH`と`BASE_BRANCH`をユーザーに表示してください。
+
+以降の手順では`${COMPARE_BRANCH}`と`${BASE_BRANCH}`を解決した値に置き換えて実行してください。
 
 # リモートへのプッシュ確認
 
 `COMPARE_BRANCH`がリモートにプッシュ済みかつ最新であることを確認してください。
 
 ```bash
-git fetch origin "${COMPARE_BRANCH}" 2>/dev/null
-export LOCAL=$(git rev-parse "${COMPARE_BRANCH}")
-export REMOTE=$(git rev-parse "origin/${COMPARE_BRANCH}" 2>/dev/null)
+git fetch origin COMPARE_BRANCH 2>/dev/null
 ```
 
-- リモートブランチが存在しない場合: ユーザーに `git push -u origin ${COMPARE_BRANCH}` の実行を促して中断
-- `LOCAL` ≠ `REMOTE` の場合: ローカルに未プッシュのコミットがある旨を伝え、`git push` の実行を促して中断
-- `LOCAL` = `REMOTE` の場合: そのまま続行
+```bash
+git rev-parse COMPARE_BRANCH
+```
+
+```bash
+git rev-parse origin/COMPARE_BRANCH 2>/dev/null
+```
+
+- リモートブランチが存在しない場合: ユーザーに `git push -u origin COMPARE_BRANCH` の実行を促して中断
+- LOCAL ≠ REMOTE の場合: ローカルに未プッシュのコミットがある旨を伝え、`git push` の実行を促して中断
+- LOCAL = REMOTE の場合: そのまま続行
 
 # コミット履歴の確認
 
 ```bash
-git log --oneline "${BASE_BRANCH}...${COMPARE_BRANCH}"
+git log --oneline BASE_BRANCH...COMPARE_BRANCH
 ```
 
 # ベースブランチとの差分確認
 
 ```bash
-git diff "${BASE_BRANCH}...${COMPARE_BRANCH}"
+git diff BASE_BRANCH...COMPARE_BRANCH
 ```
 
 # PRテンプレートファイルの内容確認
@@ -73,20 +86,32 @@ git diff "${BASE_BRANCH}...${COMPARE_BRANCH}"
 
 PRタイトルとPRボディをURLエンコードしてPR作成ページを開きます。
 
-PRタイトルとPRボディは変数に格納してからエンコードしてください。
 `eval`内でのヒアドキュメントやインライン複数行文字列はパースエラーの原因になるため使用しないでください。
 
+まず、リポジトリURLとユーザー名を取得してください。
+
 ```bash
-REMOTE_URL=$(git remote get-url origin)
-REPO_URL="${REMOTE_URL/#git@github.com:/https://github.com/}"
-REPO_URL="${REPO_URL%.git}"
-GITHUB_USER=$(git config user.name)
+git remote get-url origin
+```
 
-PR_TITLE="PRタイトル"
-PR_BODY="PRボディ"
+```bash
+git config user.name
+```
 
-ENCODED_TITLE=$(printf '%s' "${PR_TITLE}" | od -An -tx1 | tr -d ' \n' | sed 's/\(..\)/%\1/g')
-ENCODED_BODY=$(printf '%s' "${PR_BODY}" | od -An -tx1 | tr -d ' \n' | sed 's/\(..\)/%\1/g')
+取得したリモートURLから`git@github.com:`を`https://github.com/`に、末尾の`.git`を除去してリポジトリURLを構成してください。
 
-open "${REPO_URL}/compare/${BASE_BRANCH}...${COMPARE_BRANCH}?expand=1&title=${ENCODED_TITLE}&body=${ENCODED_BODY}&assignees=${GITHUB_USER}"
+次に、PRタイトルとPRボディをURLエンコードしてください。
+
+```bash
+printf '%s' "PRタイトル" | od -An -tx1 | tr -d ' \n' | sed 's/\(..\)/%\1/g'
+```
+
+```bash
+printf '%s' "PRボディ" | od -An -tx1 | tr -d ' \n' | sed 's/\(..\)/%\1/g'
+```
+
+最後に、PR作成ページを開いてください。
+
+```bash
+open "REPO_URL/compare/BASE_BRANCH...COMPARE_BRANCH?quick_pull=1&title=ENCODED_TITLE&body=ENCODED_BODY&assignees=GITHUB_USER"
 ```

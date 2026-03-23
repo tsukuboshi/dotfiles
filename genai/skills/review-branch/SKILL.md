@@ -9,45 +9,52 @@ argument-hint: "[Compare Branch] [Base Branch]"
 
 `ARGUMENT`はスペース区切りで2つの引数を受け取ります。
 
+- 第一引数: Compare Branch名（未指定時は現在のブランチ）
+- 第二引数: Base Branch名（未指定時は`main`）
+
+第一引数が未指定の場合、以下のコマンドで現在のブランチ名を取得してください。
+
 ```bash
-# 第一引数: Compare Branch名（未指定時は現在のブランチ）
-# 第二引数: Base Branch名（未指定時はmain）
-export BASE_BRANCH="origin/${第二引数:-main}"
-if [[ -n "${第一引数}" ]]; then
-  export COMPARE_BRANCH="origin/${第一引数}"
-else
-  export COMPARE_BRANCH="$(git branch --show-current)"
-fi
+git branch --show-current
 ```
+
+第一引数が指定された場合は`COMPARE_BRANCH`を`origin/第一引数`、未指定時は上記の出力をそのまま使用してください。
+`BASE_BRANCH`は`origin/第二引数`（デフォルト: `origin/main`）としてください。
+
+以降の手順では`${COMPARE_BRANCH}`と`${BASE_BRANCH}`を解決した値に置き換えて実行してください。
 
 # ブランチのフェッチ
 
 `COMPARE_BRANCH`がリモートブランチ（`origin/`始まり）の場合は両方を、ローカルブランチの場合はBase Branchのみフェッチします。失敗時はユーザーにブランチ名の確認を求めてください。
 
+`COMPARE_BRANCH`が`origin/`始まりの場合:
+
 ```bash
-if [[ "${COMPARE_BRANCH}" == origin/* ]]; then
-  git fetch origin "${BASE_BRANCH}" "${COMPARE_BRANCH}"
-else
-  git fetch origin "${BASE_BRANCH}"
-fi
+git fetch origin BASE_BRANCHのブランチ名 COMPARE_BRANCHのブランチ名
+```
+
+`COMPARE_BRANCH`がローカルブランチの場合:
+
+```bash
+git fetch origin BASE_BRANCHのブランチ名
 ```
 
 # コミットログの取得
 
 ```bash
-git log --oneline ${BASE_BRANCH}...${COMPARE_BRANCH}
+git log --oneline BASE_BRANCH...COMPARE_BRANCH
 ```
 
 # ブランチ変更概要の取得
 
 ```bash
-git diff --stat ${BASE_BRANCH}...${COMPARE_BRANCH}
+git diff --stat BASE_BRANCH...COMPARE_BRANCH
 ```
 
 # ブランチ差分の取得
 
 ```bash
-git diff ${BASE_BRANCH}...${COMPARE_BRANCH}
+git diff BASE_BRANCH...COMPARE_BRANCH
 ```
 
 # 差分内容のレビュー
