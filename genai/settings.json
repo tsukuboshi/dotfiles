@@ -32,15 +32,7 @@
       "Bash(uniq:*)",
       "Bash(wc:*)",
       "Bash(which:*)",
-      "Bash(xargs:*)",
-      "WebFetch(domain:github.com)",
-      "WebFetch(domain:code.claude.com)",
-      "WebFetch(domain:developer.mozilla.org)",
-      "WebFetch(domain:registry.npmjs.org)",
-      "WebFetch(domain:pypi.org)",
-      "WebFetch(domain:docs.aws.amazon.com)",
-      "WebFetch(domain:registry.terraform.io)",
-      "WebFetch(domain:context7.com)"
+      "Bash(xargs:*)"
     ],
     "deny": [
       "Bash(rm -rf:*)",
