@@ -126,9 +126,19 @@
   "language": "Japanese",
   "sandbox": {
     "enabled": true,
+    "allowUnsandboxedCommands": false,
     "filesystem": {
-      "denyRead": ["~/.ssh", "~/.aws/credentials", "~/.gnupg", "~/.config/gh"],
-      "denyWrite": ["~/.bashrc", "~/.zshrc", "~/.ssh", "~/.aws", "~/.gnupg"]
+      "denyRead": ["~/.ssh", "~/.aws/credentials"],
+      "denyWrite": ["~/.bashrc", "~/.zshrc", "~/.ssh"]
+    },
+    "network": {
+      "allowedDomains": [
+        "github.com",
+        "api.github.com",
+        "registry.npmjs.org",
+        "pypi.org",
+        "files.pythonhosted.org"
+      ]
     }
   }
 }
