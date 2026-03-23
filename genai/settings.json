@@ -66,22 +66,11 @@
   "hooks": {
     "PreToolUse": [
       {
-        "matcher": "Bash",
+        "matcher": "Bash(git commit*)",
         "hooks": [
           {
             "type": "command",
             "command": "bash ~/dotfiles/genai/scripts/pre-commit-hook.sh"
-          }
-        ]
-      }
-    ],
-    "PostToolUse": [
-      {
-        "matcher": "Edit|Write|MultiEdit",
-        "hooks": [
-          {
-            "type": "command",
-            "command": "bash ~/dotfiles/genai/scripts/post-edit-hook.sh"
           }
         ]
       }
