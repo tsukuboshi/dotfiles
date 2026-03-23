@@ -29,7 +29,7 @@ _parse_aws_profile() {
   fi
 
   if [ -n "$profile" ]; then
-    _colorize_prompt "5" "${profile}"  # magenta
+    _colorize_prompt "3" "${profile}"  # yellow
   fi
 }
 
@@ -48,17 +48,17 @@ _parse_git_status() {
 
   # Untracked files (?? at start)
   if echo "$git_status" | grep -q '^??'; then
-    status_symbols="${status_symbols}$(_colorize_prompt "2" "?")"  # green
+    status_symbols="${status_symbols}$(_colorize_prompt "208" "?")"  # orange
   fi
 
   # Modified files (M in second column)
   if echo "$git_status" | grep -q '^.M'; then
-    status_symbols="${status_symbols}$(_colorize_prompt "3" "!")"  # yellow
+    status_symbols="${status_symbols}$(_colorize_prompt "180" "!")"  # tan
   fi
 
   # Deleted files (D in second column)
   if echo "$git_status" | grep -q '^.D'; then
-    status_symbols="${status_symbols}$(_colorize_prompt "1" "✖")"  # red
+    status_symbols="${status_symbols}$(_colorize_prompt "5" "✖")"  # magenta
   fi
 
   # Staged files (M, A, D, R, C in first column)
@@ -70,7 +70,7 @@ _parse_git_status() {
   local unpushed
   unpushed=$(git rev-list @{upstream}..HEAD --count 2>/dev/null)
   if [ -n "$unpushed" ] && [ "$unpushed" -gt 0 ]; then
-    status_symbols="${status_symbols}$(_colorize_prompt "208" "↑")"  # orange
+    status_symbols="${status_symbols}$(_colorize_prompt "135" "↑")"  # purple
   fi
 
   # Fully synced
