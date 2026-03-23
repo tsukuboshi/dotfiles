@@ -34,9 +34,9 @@ _data=$(jq -r '[
   (.context_window.context_window_size // 200000 | tostring),
   (.context_window.used_percentage // 0 | tostring),
   (.session_id // "unknown"),
-  (.rate_limits.five_hour.used_percentage // -1 | tostring),
+  (.rate_limits.five_hour.used_percentage // 0 | tostring),
   (.rate_limits.five_hour.resets_at // ""),
-  (.rate_limits.seven_day.used_percentage // -1 | tostring),
+  (.rate_limits.seven_day.used_percentage // 0 | tostring),
   (.rate_limits.seven_day.resets_at // "")
 ] | join("\t")' <<<"$input" 2>/dev/null)
 
@@ -171,22 +171,20 @@ cmp_pie=$(pie_char "$cmp_pct")
 out+=" │ 🔄cmp ${cmp_color}${cmp_pie} ${compress_count}x${RST}"
 
 # 5h rate limit
-if [ "${five_hour_pct%.*}" -ge 0 ] 2>/dev/null; then
-	fh_int=${five_hour_pct%%.*}
-	fh_color=$(color_for_pct "$fh_int")
-	fh_pie=$(pie_char "$fh_int")
-	fh_reset=$(fmt_reset "$five_hour_reset") && fh_reset=" ${fh_reset}" || fh_reset=""
-	out+=" │ ⏱️5h ${fh_color}${fh_pie} ${fh_int}%${RST}${fh_reset}"
-fi
+fh_int=${five_hour_pct%%.*}
+fh_int=${fh_int:-0}
+fh_color=$(color_for_pct "$fh_int")
+fh_pie=$(pie_char "$fh_int")
+fh_reset=$(fmt_reset "$five_hour_reset") && fh_reset=" ${fh_reset}" || fh_reset=""
+out+=" │ ⏱️5h ${fh_color}${fh_pie} ${fh_int}%${RST}${fh_reset}"
 
 # 7d rate limit
-if [ "${seven_day_pct%.*}" -ge 0 ] 2>/dev/null; then
-	sd_int=${seven_day_pct%%.*}
-	sd_color=$(color_for_pct "$sd_int")
-	sd_pie=$(pie_char "$sd_int")
-	sd_reset=$(fmt_reset "$seven_day_reset") && sd_reset=" ${sd_reset}" || sd_reset=""
-	out+=" │ 📅7d ${sd_color}${sd_pie} ${sd_int}%${RST}${sd_reset}"
-fi
+sd_int=${seven_day_pct%%.*}
+sd_int=${sd_int:-0}
+sd_color=$(color_for_pct "$sd_int")
+sd_pie=$(pie_char "$sd_int")
+sd_reset=$(fmt_reset "$seven_day_reset") && sd_reset=" ${sd_reset}" || sd_reset=""
+out+=" │ 📅7d ${sd_color}${sd_pie} ${sd_int}%${RST}${sd_reset}"
 
 printf '%b' "$out"
 
