@@ -32,7 +32,22 @@
       "Bash(uniq:*)",
       "Bash(wc:*)",
       "Bash(which:*)",
-      "Bash(xargs:*)"
+      "Bash(xargs:*)",
+      "WebFetch(https://code.claude.com/**)",
+      "WebFetch(https://docs.aws.amazon.com/**)",
+      "WebFetch(https://aws.amazon.com/**)",
+      "WebFetch(https://docs.opensearch.org/**)",
+      "WebFetch(https://nodejs.org/**)",
+      "WebFetch(https://docs.github.com/**)",
+      "WebFetch(https://docs.localstack.cloud/**)",
+      "WebFetch(https://docs.anthropic.com/**)",
+      "WebFetch(https://developer.hashicorp.com/**)",
+      "WebFetch(https://www.typescriptlang.org/**)",
+      "WebFetch(https://docs.python.org/**)",
+      "WebFetch(https://docs.pydantic.dev/**)",
+      "WebFetch(https://docs.docker.com/**)",
+      "WebFetch(https://fastapi.tiangolo.com/**)",
+      "WebFetch(https://react.dev/**)"
     ],
     "deny": [
       "Bash(rm -rf:*)",
