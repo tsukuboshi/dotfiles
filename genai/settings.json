@@ -59,15 +59,6 @@
             "command": "bash ~/dotfiles/genai/scripts/pre-commit-hook.sh"
           }
         ]
-      },
-      {
-        "matcher": "Bash",
-        "hooks": [
-          {
-            "type": "command",
-            "command": "bash ~/dotfiles/genai/scripts/safety-check-hook.sh"
-          }
-        ]
       }
     ],
     "PostToolUse": [
