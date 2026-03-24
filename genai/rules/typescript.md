@@ -1,9 +1,9 @@
 ---
 paths:
-  - "**/*.{ts,tsx,js,jsx}"
+  - "**/*.{ts,tsx,js,jsx,json}"
 ---
 
-# TypeScript / JavaScript
+# TypeScript / JavaScript / JSON
 
 - リンタ: `biome check --fix`
 - フォーマッタ: `biome format`

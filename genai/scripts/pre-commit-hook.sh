@@ -28,7 +28,7 @@ if [[ -n "$PY_FILES" ]]; then
 fi
 
 # TypeScript/JavaScript files
-JS_FILES=$(echo "$STAGED_FILES" | grep -E '\.(ts|tsx|js|jsx)$' || true)
+JS_FILES=$(echo "$STAGED_FILES" | grep -E '\.(ts|tsx|js|jsx|json)$' || true)
 if [[ -n "$JS_FILES" ]]; then
 	echo "$JS_FILES" | xargs biome check --fix 2>/dev/null
 	echo "$JS_FILES" | xargs git add
