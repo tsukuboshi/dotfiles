@@ -1,160 +1,152 @@
 {
-  "permissions": {
-    "allow": [
-      "Glob(*)",
-      "List(*)",
-      "Read(**)",
-      "Bash(awk:*)",
-      "Bash(basename:*)",
-      "Bash(cat:*)",
-      "Bash(cut:*)",
-      "Bash(date:*)",
-      "Bash(diff:*)",
-      "Bash(dirname:*)",
-      "Bash(echo:*)",
-      "Bash(export:*)",
-      "Bash(file:*)",
-      "Bash(find:*)",
-      "Bash(git:*)",
-      "Bash(grep:*)",
-      "Bash(head:*)",
-      "Bash(ls:*)",
-      "Bash(od:*)",
-      "Bash(open:*)",
-      "Bash(printf:*)",
-      "Bash(pwd:*)",
-      "Bash(sed:*)",
-      "Bash(sort:*)",
-      "Bash(tail:*)",
-      "Bash(tee:*)",
-      "Bash(tr:*)",
-      "Bash(tree:*)",
-      "Bash(uniq:*)",
-      "Bash(wc:*)",
-      "Bash(xargs:*)",
-      "WebFetch(domain:code.claude.com)",
-      "WebFetch(domain:docs.aws.amazon.com)",
-      "WebFetch(domain:aws.amazon.com)",
-      "WebFetch(domain:docs.opensearch.org)",
-      "WebFetch(domain:nodejs.org)",
-      "WebFetch(domain:docs.github.com)",
-      "WebFetch(domain:docs.localstack.cloud)",
-      "WebFetch(domain:docs.anthropic.com)",
-      "WebFetch(domain:developer.hashicorp.com)",
-      "WebFetch(domain:www.typescriptlang.org)",
-      "WebFetch(domain:docs.python.org)",
-      "WebFetch(domain:docs.pydantic.dev)",
-      "WebFetch(domain:docs.docker.com)",
-      "WebFetch(domain:fastapi.tiangolo.com)",
-      "WebFetch(domain:react.dev)",
-      "mcp__plugin_context7_context7"
-    ],
-    "deny": [
-      "Bash(rm -rf:*)",
-      "Bash(chmod -R:*)",
-      "Bash(git branch -D:*)",
-      "Bash(git checkout .:*)",
-      "Bash(git clean -f:*)",
-      "Bash(git reset --hard:*)",
-      "Bash(docker push:*)",
-      "Bash(git push:*)",
-      "Bash(cdk deploy:*)",
-      "Bash(kubectl apply:*)",
-      "Bash(terraform apply:*)",
-      "Bash(cdk destroy:*)",
-      "Bash(kubectl delete:*)",
-      "Bash(terraform destroy:*)",
-      "Read(./.env)",
-      "Read(./.env.*)",
-      "Read(./secrets/**)",
-      "Read(./config/credentials.json)",
-      "Read(./build)"
-    ]
-  },
-  "hooks": {
-    "PreToolUse": [
-      {
-        "matcher": "Bash",
-        "hooks": [
-          {
-            "type": "command",
-            "command": "bash ~/dotfiles/genai/scripts/pre-commit-hook.sh"
-          }
-        ]
-      }
-    ],
-    "PostToolUse": [
-      {
-        "matcher": "Edit|Write|MultiEdit",
-        "hooks": [
-          {
-            "type": "command",
-            "command": "bash ~/dotfiles/genai/scripts/post-edit-hook.sh"
-          }
-        ]
-      }
-    ],
-    "Stop": [
-      {
-        "matcher": "*",
-        "hooks": [
-          {
-            "type": "command",
-            "command": "bash ~/dotfiles/genai/scripts/stop-notify.sh"
-          }
-        ]
-      }
-    ],
-    "ConfigChange": [
-      {
-        "matcher": "*",
-        "hooks": [
-          {
-            "type": "command",
-            "command": "bash ~/dotfiles/genai/scripts/config-change-hook.sh"
-          }
-        ]
-      }
-    ]
-  },
-  "statusLine": {
-    "type": "command",
-    "command": "zsh ~/dotfiles/genai/scripts/statusline.sh"
-  },
-  "enabledPlugins": {
-    "claude-md-management@claude-plugins-official": true,
-    "context7@claude-plugins-official": true,
-    "frontend-design@claude-plugins-official": true,
-    "playwright@claude-plugins-official": true,
-    "pyright-lsp@claude-plugins-official": true,
-    "slack@claude-plugins-official": true,
-    "typescript-lsp@claude-plugins-official": true
-  },
-  "outputStyle": "explanatory",
-  "language": "Japanese",
-  "sandbox": {
-    "enabled": true,
-    "allowUnsandboxedCommands": false,
-    "filesystem": {
-      "denyRead": [
-        "./.env",
-        "./.env.*",
-        "./secrets",
-        "./config/credentials.json",
-        "./build",
-        "~/.ssh",
-        "~/.aws/credentials"
-      ],
-      "denyWrite": ["~/.bashrc", "~/.zshrc", "~/.ssh"]
-    },
-    "network": {
-      "allowedDomains": [
-        "github.com",
-        "api.github.com",
-        "registry.npmjs.org",
-        "pypi.org",
-        "files.pythonhosted.org"
-      ]
-    }
-  }
+	"permissions": {
+		"allow": [
+			"Glob(*)",
+			"Grep(*)",
+			"List(*)",
+			"Read(**)",
+			"WebSearch(*)",
+			"Bash(basename:*)",
+			"Bash(cut:*)",
+			"Bash(date:*)",
+			"Bash(diff:*)",
+			"Bash(dirname:*)",
+			"Bash(echo:*)",
+			"Bash(export:*)",
+			"Bash(file:*)",
+			"Bash(git:*)",
+			"Bash(od:*)",
+			"Bash(open:*)",
+			"Bash(printf:*)",
+			"Bash(sort:*)",
+			"Bash(tee:*)",
+			"Bash(tr:*)",
+			"Bash(uniq:*)",
+			"Bash(wc:*)",
+			"Bash(xargs:*)",
+			"WebFetch(domain:code.claude.com)",
+			"WebFetch(domain:docs.aws.amazon.com)",
+			"WebFetch(domain:aws.amazon.com)",
+			"WebFetch(domain:docs.opensearch.org)",
+			"WebFetch(domain:nodejs.org)",
+			"WebFetch(domain:docs.github.com)",
+			"WebFetch(domain:docs.localstack.cloud)",
+			"WebFetch(domain:docs.anthropic.com)",
+			"WebFetch(domain:developer.hashicorp.com)",
+			"WebFetch(domain:www.typescriptlang.org)",
+			"WebFetch(domain:docs.python.org)",
+			"WebFetch(domain:docs.pydantic.dev)",
+			"WebFetch(domain:docs.docker.com)",
+			"WebFetch(domain:fastapi.tiangolo.com)",
+			"WebFetch(domain:react.dev)",
+			"mcp__plugin_context7_context7"
+		],
+		"deny": [
+			"Bash(rm -rf:*)",
+			"Bash(chmod -R:*)",
+			"Bash(git branch -D:*)",
+			"Bash(git checkout .:*)",
+			"Bash(git clean -f:*)",
+			"Bash(git reset --hard:*)",
+			"Bash(docker push:*)",
+			"Bash(git push:*)",
+			"Bash(cdk deploy:*)",
+			"Bash(kubectl apply:*)",
+			"Bash(terraform apply:*)",
+			"Bash(cdk destroy:*)",
+			"Bash(kubectl delete:*)",
+			"Bash(terraform destroy:*)",
+			"Read(./.env)",
+			"Read(./.env.*)",
+			"Read(./secrets/**)",
+			"Read(./config/credentials.json)",
+			"Read(./build)"
+		]
+	},
+	"hooks": {
+		"PreToolUse": [
+			{
+				"matcher": "Bash",
+				"hooks": [
+					{
+						"type": "command",
+						"command": "bash ~/dotfiles/genai/scripts/pre-commit-hook.sh"
+					}
+				]
+			}
+		],
+		"PostToolUse": [
+			{
+				"matcher": "Edit|Write|MultiEdit",
+				"hooks": [
+					{
+						"type": "command",
+						"command": "bash ~/dotfiles/genai/scripts/post-edit-hook.sh"
+					}
+				]
+			}
+		],
+		"Stop": [
+			{
+				"matcher": "*",
+				"hooks": [
+					{
+						"type": "command",
+						"command": "bash ~/dotfiles/genai/scripts/stop-notify.sh"
+					}
+				]
+			}
+		],
+		"ConfigChange": [
+			{
+				"matcher": "*",
+				"hooks": [
+					{
+						"type": "command",
+						"command": "bash ~/dotfiles/genai/scripts/config-change-hook.sh"
+					}
+				]
+			}
+		]
+	},
+	"statusLine": {
+		"type": "command",
+		"command": "zsh ~/dotfiles/genai/scripts/statusline.sh"
+	},
+	"enabledPlugins": {
+		"claude-md-management@claude-plugins-official": true,
+		"context7@claude-plugins-official": true,
+		"frontend-design@claude-plugins-official": true,
+		"playwright@claude-plugins-official": true,
+		"pyright-lsp@claude-plugins-official": true,
+		"slack@claude-plugins-official": true,
+		"typescript-lsp@claude-plugins-official": true
+	},
+	"outputStyle": "explanatory",
+	"language": "Japanese",
+	"sandbox": {
+		"enabled": true,
+		"allowUnsandboxedCommands": false,
+		"filesystem": {
+			"denyRead": [
+				"./.env",
+				"./.env.*",
+				"./secrets",
+				"./config/credentials.json",
+				"./build",
+				"~/.ssh",
+				"~/.aws/credentials"
+			],
+			"denyWrite": ["~/.bashrc", "~/.zshrc", "~/.ssh"]
+		},
+		"network": {
+			"allowedDomains": [
+				"github.com",
+				"api.github.com",
+				"registry.npmjs.org",
+				"pypi.org",
+				"files.pythonhosted.org"
+			]
+		}
+	}
 }
