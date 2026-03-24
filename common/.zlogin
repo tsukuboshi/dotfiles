@@ -353,6 +353,8 @@ alias dcd='docker compose down'
 alias ccm='claude /commit-message'
 alias cop='claude /open-pr'
 alias crb='claude /review-branch'
+alias crc='tmux new-session -d -s claude "caffeinate -s claude remote-control --verbose" && echo "Started. Attach with: tmux attach -t claude"'
+alias crck='tmux kill-session -t claude'
 
 # ============================================================================
 # Code
