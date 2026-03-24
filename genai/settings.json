@@ -51,12 +51,19 @@
     ],
     "deny": [
       "Bash(rm -rf:*)",
-      "Bash(git push:*)",
+      "Bash(chmod -R:*)",
+      "Bash(git branch -D:*)",
+      "Bash(git checkout .:*)",
+      "Bash(git clean -f:*)",
       "Bash(git reset --hard:*)",
-      "Bash(cat .env:*)",
-      "Bash(cat .env.*:*)",
-      "Bash(cat secrets/**:*)",
-      "Bash(cat config/credentials.json:*)",
+      "Bash(docker push:*)",
+      "Bash(git push:*)",
+      "Bash(cdk deploy:*)",
+      "Bash(kubectl apply:*)",
+      "Bash(terraform apply:*)",
+      "Bash(cdk destroy:*)",
+      "Bash(kubectl delete:*)",
+      "Bash(terraform destroy:*)",
       "Read(./.env)",
       "Read(./.env.*)",
       "Read(./secrets/**)",
@@ -129,7 +136,15 @@
     "enabled": true,
     "allowUnsandboxedCommands": false,
     "filesystem": {
-      "denyRead": ["~/.ssh", "~/.aws/credentials"],
+      "denyRead": [
+        "./.env",
+        "./.env.*",
+        "./secrets",
+        "./config/credentials.json",
+        "./build",
+        "~/.ssh",
+        "~/.aws/credentials"
+      ],
       "denyWrite": ["~/.bashrc", "~/.zshrc", "~/.ssh"]
     },
     "network": {
