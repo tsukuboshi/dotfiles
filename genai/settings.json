@@ -122,11 +122,13 @@
 		"slack@claude-plugins-official": true,
 		"typescript-lsp@claude-plugins-official": true
 	},
+	"enableRemoteControl": true,
 	"outputStyle": "explanatory",
 	"language": "Japanese",
 	"sandbox": {
 		"enabled": true,
-		"allowUnsandboxedCommands": false,
+		"allowUnsandboxedCommands": true,
+		"excludedCommands": ["open"],
 		"filesystem": {
 			"denyRead": [
 				"./.env",
