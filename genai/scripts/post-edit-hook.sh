@@ -16,7 +16,7 @@ case "$FILE_PATH" in
 	ruff check --fix "$FILE_PATH"
 	ruff format "$FILE_PATH"
 	;;
-*.ts | *.tsx | *.js | *.jsx)
+*.ts | *.tsx | *.js | *.jsx | *.json)
 	biome check --fix "$FILE_PATH"
 	;;
 *.md)
