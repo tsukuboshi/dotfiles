@@ -122,7 +122,6 @@
 		"slack@claude-plugins-official": true,
 		"typescript-lsp@claude-plugins-official": true
 	},
-	"enableRemoteControl": true,
 	"outputStyle": "explanatory",
 	"language": "Japanese",
 	"sandbox": {
