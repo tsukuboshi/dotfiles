@@ -131,7 +131,6 @@
 		"filesystem": {
 			"denyRead": [
 				"./.env",
-				"./.env.*",
 				"./secrets",
 				"./config/credentials.json",
 				"./build",
