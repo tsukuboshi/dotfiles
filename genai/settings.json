@@ -57,7 +57,6 @@
 			"Bash(kubectl delete:*)",
 			"Bash(terraform destroy:*)",
 			"Read(./.env)",
-			"Read(./.env.*)",
 			"Read(./secrets/**)",
 			"Read(./config/credentials.json)",
 			"Read(./build)"
