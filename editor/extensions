@@ -1,10 +1,10 @@
 3w36zj6.textlint
 anthropic.claude-code
-aquasecurityofficial.trivy-vulnerability-scanner
 arjun.swagger-viewer
 aws-scripting-guy.cform
 bierner.markdown-mermaid
 biomejs.biome
+charliermarsh.ruff
 bpruitt-goddard.mermaid-markdown-syntax-highlighting
 chrmarti.regex
 davidanson.vscode-markdownlint
@@ -34,10 +34,7 @@ mosapride.zenkaku
 ms-azuretools.vscode-containers
 ms-azuretools.vscode-docker
 ms-ceintl.vscode-language-pack-ja
-ms-python.black-formatter
 ms-python.debugpy
-ms-python.flake8
-ms-python.isort
 ms-python.mypy-type-checker
 ms-python.python
 ms-python.vscode-pylance

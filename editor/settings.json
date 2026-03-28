@@ -89,10 +89,13 @@
   "terminal.integrated.copyOnSelection": true,
   "terminal.integrated.defaultLocation": "editor",
   "terminal.integrated.defaultProfile.osx": "zsh",
+  "terminal.integrated.enableFileLinks": "on",
   "terminal.integrated.enableMultiLinePasteWarning": "never",
   "terminal.integrated.fontSize": 12,
   "terminal.integrated.ignoreBracketedPasteMode": true,
   "terminal.integrated.rightClickBehavior": "paste",
+  "terminal.integrated.scrollback": 10000,
+  "terminal.integrated.wordSeparators": " `~!@#$%^&*()-=+[{]}\\|;:'\",.<>?",
   "shellcheck.ignorePatterns": {
     "**/.bash_profile": true,
     "**/.bashrc": true
@@ -152,7 +155,7 @@
     "editor.tabSize": 2
   },
   "[json]": {
-    "editor.defaultFormatter": "esbenp.prettier-vscode",
+    "editor.defaultFormatter": "biomejs.biome",
     "editor.tabSize": 4
   },
   "[markdown]": {
@@ -182,5 +185,15 @@
     "editor.codeActionsOnSave": {
       "source.addMissingImports.ts": "explicit"
     }
+  },
+  "json.schemaDownload.trustedDomains": {
+    "https://schemastore.azurewebsites.net/": true,
+    "https://raw.githubusercontent.com/microsoft/vscode/": true,
+    "https://raw.githubusercontent.com/devcontainers/spec/": true,
+    "https://www.schemastore.org/": true,
+    "https://json.schemastore.org/": true,
+    "https://json-schema.org/": true,
+    "https://developer.microsoft.com/json-schemas/": true,
+    "https://biomejs.dev": true
   }
 }
