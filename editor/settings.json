@@ -89,10 +89,13 @@
   "terminal.integrated.copyOnSelection": true,
   "terminal.integrated.defaultLocation": "editor",
   "terminal.integrated.defaultProfile.osx": "zsh",
+  "terminal.integrated.enableFileLinks": "on",
   "terminal.integrated.enableMultiLinePasteWarning": "never",
   "terminal.integrated.fontSize": 12,
   "terminal.integrated.ignoreBracketedPasteMode": true,
   "terminal.integrated.rightClickBehavior": "paste",
+  "terminal.integrated.scrollback": 10000,
+  "terminal.integrated.wordSeparators": " `~!@#$%^&*()-=+[{]}\\|;:'\",.<>?",
   "shellcheck.ignorePatterns": {
     "**/.bash_profile": true,
     "**/.bashrc": true
