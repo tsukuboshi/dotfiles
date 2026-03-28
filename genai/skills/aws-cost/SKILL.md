@@ -19,8 +19,8 @@ argument-hint: "<profile|env-vars> [YYYY-MM-DD]"
 
 例:
 
-- `tsukuboshi-admin` → tsukuboshi-adminプロファイルで当月1日〜今日のコスト分析
-- `tsukuboshi-admin 2026-02-15` → 2026-02-15〜今日のコスト分析
+- `tsukuboshi` → tsukuboshiプロファイルで当月1日〜今日のコスト分析
+- `tsukuboshi 2026-02-15` → 2026-02-15〜今日のコスト分析
 
 ## 方式B: 環境変数（export文）
 
