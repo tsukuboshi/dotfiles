@@ -1,6 +1,6 @@
 ---
 description: "Generate commit message from staged changes and repository history, then commit"
-argument-hint: "[--switch | --no-switch (default)]"
+argument-hint: "[file ...]"
 ---
 
 以下の手順でコミットメッセージを生成し、`git commit`を実行してください。
@@ -10,9 +10,19 @@ argument-hint: "[--switch | --no-switch (default)]"
 `ARGUMENT`は以下の引数を受け取ります。
 
 ```bash
-# --switch: ブランチの作成を行う
-# --no-switch: ブランチの作成をスキップ（デフォルト）
+# file ...: git add するファイルパス（複数指定可、省略可）
+# スペース区切りまたはクォートで囲まれたパスの連結（例: 'path1''path2'）の両方を受け付ける
 ```
+
+# ファイルのステージング
+
+引数にファイルパスが指定されている場合、それらを `git add` でステージングしてください。
+
+```bash
+git add ファイルパス1 ファイルパス2 ...
+```
+
+ファイルパスが指定されていない場合、このステップをスキップしてください。
 
 # ステージング内容の確認
 
@@ -21,22 +31,6 @@ git diff --cached
 ```
 
 ステージされた変更がない場合は、その旨をユーザーに伝えて処理を終了してください。
-
-# ブランチの作成
-
-`--switch` が指定されていない場合、このステップをスキップしてください。
-
-既存のブランチ名を確認して命名規則を把握します。
-
-```bash
-git branch -a
-```
-
-変更内容と命名規則を元に適切なブランチ名を生成し、新規ブランチを作成して切り替えます。
-
-```bash
-git switch -c 生成したブランチ名
-```
 
 # コミット履歴のスタイル確認
 
