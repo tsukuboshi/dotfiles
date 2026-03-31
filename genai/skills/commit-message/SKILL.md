@@ -1,4 +1,5 @@
 ---
+name: "commit-message"
 description: "Generate commit message from staged changes and repository history, then commit"
 argument-hint: "[file ...]"
 ---
@@ -38,19 +39,47 @@ git diff --cached
 git log --oneline -20
 ```
 
-取得したコミット履歴から、以下の観点でスタイルを分析してください：
+取得したコミット履歴から、以下の観点のみ分析してください：
 
 - 言語（日本語 / 英語 / その他）
-- プレフィックスの有無（例: `feat:`, `fix:` などの Conventional Commits 形式）
 - 文体（動詞始まり / 名詞始まり / 文章形式 など）
 - メッセージの長さの傾向（短文 / 詳細）
 
 # コミットメッセージの生成
 
-ステージされた差分と分析したスタイルを元に、コミットメッセージを生成してください。
+ステージされた差分を元に、Conventional Commits 形式でコミットメッセージを生成してください。
 
-- リポジトリの既存のコミットメッセージスタイルに合わせること
+## フォーマット
+
+```
+<type>[optional scope]: <description>
+
+[optional body]
+
+[optional footer(s)]
+```
+
+## type の選択基準
+
+| type | 用途 |
+|------|------|
+| `feat` | 新機能の追加 |
+| `fix` | バグ修正 |
+| `docs` | ドキュメントのみの変更 |
+| `style` | コードの意味に影響しない変更（空白、フォーマット、セミコロン等） |
+| `refactor` | バグ修正でも機能追加でもないコード変更 |
+| `perf` | パフォーマンス改善 |
+| `test` | テストの追加・修正 |
+| `build` | ビルドシステムや外部依存に関する変更 |
+| `ci` | CI 設定ファイルやスクリプトの変更 |
+| `chore` | 上記に当てはまらないその他の変更 |
+
+## ルール
+
+- description の言語・文体はコミット履歴の分析結果に合わせること
 - 変更内容を正確に反映すること
+- 破壊的変更がある場合は type/scope の後に `!` を付与し、footer に `BREAKING CHANGE: <説明>` を記述すること
+- scope は明確なモジュール構造を持つリポジトリでのみ使用し、基本的には省略すること
 
 # コミットの実行
 
