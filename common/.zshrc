@@ -22,10 +22,12 @@ _parse_git_branch() {
 
 _parse_aws_profile() {
   local profile=""
-  if [ -n "$AWS_PROFILE" ]; then
+  if [ -n "$AWS_VAULT" ]; then
+    profile="$AWS_VAULT"
+  elif [ -n "$AWS_PROFILE_DISPLAY" ]; then
+    profile="$AWS_PROFILE_DISPLAY"
+  elif [ -n "$AWS_PROFILE" ]; then
     profile="$AWS_PROFILE"
-  # elif [ -n "$AWSUME_PROFILE" ]; then
-  #   profile="$AWSUME_PROFILE"
   fi
 
   if [ -n "$profile" ]; then

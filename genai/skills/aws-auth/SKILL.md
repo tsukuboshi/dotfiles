@@ -1,6 +1,6 @@
 ---
 name: aws-auth
-description: "Authenticate to AWS and configure a named profile for the session (aws-vault or environment variables)"
+description: "Authenticate to AWS and configure a named profile for the session (aws-vault or environment variables). Use this skill whenever the user wants to run AWS CLI commands, needs AWS credentials, pastes export AWS_ environment variables, mentions an aws-vault profile, or says they need to switch AWS accounts."
 argument-hint: "<profile|env-vars>"
 ---
 
@@ -30,14 +30,20 @@ export AWS_REGION=ap-northeast-1
 export AWS_DEFAULT_REGION=ap-northeast-1
 ```
 
-引数に `export PS1=...` などAWS認証に無関係な行が含まれる場合は無視してください。
+引数に `export PS1=...` が含まれる場合、PS1の値からAWSプロファイル名を抽出してください。
+プロファイル名はPS1内の `(アカウントID プロファイル名)` 形式の括弧内にあります。
+
+例: `export PS1="\n(123456789012 my-profile-name)\n[\t \u@\h \W]$ "` → プロファイル名は `my-profile-name`
+
+それ以外のAWS認証に無関係な行は無視してください。
 
 環境変数から以下の値を抽出してください:
 
 - `AWS_ACCESS_KEY_ID`（必須）
 - `AWS_SECRET_ACCESS_KEY`（必須）
 - `AWS_SESSION_TOKEN`（任意）
-- `AWS_REGION` または `AWS_DEFAULT_REGION`（任意、デフォルト: ap-northeast-1）
+- `AWS_REGION` または `AWS_DEFAULT_REGION`（任意、デフォルト: `ap-northeast-1`）
+- PS1から抽出したプロファイル名（任意）
 
 # 前提条件
 
@@ -59,7 +65,7 @@ aws-vault exec <profile> -- env | grep '^AWS_'
 - `AWS_ACCESS_KEY_ID`
 - `AWS_SECRET_ACCESS_KEY`
 - `AWS_SESSION_TOKEN`
-- `AWS_REGION` または `AWS_DEFAULT_REGION`
+- `AWS_REGION` または `AWS_DEFAULT_REGION`（未取得の場合はデフォルト: `ap-northeast-1`）
 
 ## 方式B（環境変数）
 
@@ -70,7 +76,7 @@ aws-vault exec <profile> -- env | grep '^AWS_'
 取得したクレデンシャルで認証が有効か確認します。
 
 ```bash
-export AWS_ACCESS_KEY_ID=<value> AWS_SECRET_ACCESS_KEY=<value> AWS_SESSION_TOKEN=<value> AWS_REGION=<region> && aws sts get-caller-identity
+export AWS_ACCESS_KEY_ID=<value> && export AWS_SECRET_ACCESS_KEY=<value> && export AWS_SESSION_TOKEN=<value> && export AWS_REGION=<region> && aws sts get-caller-identity
 ```
 
 このコマンドが失敗した場合:
@@ -82,9 +88,19 @@ export AWS_ACCESS_KEY_ID=<value> AWS_SECRET_ACCESS_KEY=<value> AWS_SESSION_TOKEN
 
 認証成功後、以降のAWSコマンドで使用するプレフィックス `<AWS_CMD>` を確定してください。
 
+Bashツールはコマンド間でシェル状態（環境変数）が永続しないため、認証情報をローカルに保存せず、毎回のコマンド実行時にプレフィックスとして環境変数を設定します。`<AWS_CMD>` はシェル変数ではなく、以降のAWSコマンド実行時に毎回先頭に付与するプレフィックスパターンです。
+
 ```bash
-<AWS_CMD> = export AWS_ACCESS_KEY_ID=<value> && export AWS_SECRET_ACCESS_KEY=<value> && export AWS_SESSION_TOKEN=<value> && export AWS_REGION=<region> && aws
+<AWS_CMD> = export AWS_ACCESS_KEY_ID=<value> && export AWS_SECRET_ACCESS_KEY=<value> && export AWS_SESSION_TOKEN=<value> && export AWS_REGION=<region> && export AWS_PROFILE_DISPLAY=<profile_name> && aws
 ```
+
+`<profile_name>` は以下の優先順で決定してください:
+
+1. 方式A: aws-vaultのプロファイル名
+2. 方式B: PS1から抽出したプロファイル名（存在する場合）
+3. いずれも該当しない場合: `AWS_PROFILE_DISPLAY` のexportは省略
+
+`AWS_PROFILE_DISPLAY` はユーザーのシェルプロンプト（zshrc）でAWSプロファイル名を表示するために参照される環境変数です。
 
 # Step 4: 結果の表示
 
