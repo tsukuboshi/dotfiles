@@ -1,6 +1,6 @@
 ---
 name: "commit-message"
-description: "Generate commit message from staged changes and repository history, then commit"
+description: "Generate commit message from staged changes and repository history, then commit. Use this skill whenever the user wants to commit, save changes, or asks to generate a commit message — even casually like 'commit this' or 'save my changes'."
 argument-hint: "[file ...]"
 ---
 
@@ -25,19 +25,19 @@ git add ファイルパス1 ファイルパス2 ...
 
 ファイルパスが指定されていない場合、このステップをスキップしてください。
 
-# ステージング内容の確認
+# ステージング内容の確認とコミット履歴のスタイル確認
+
+以下の2つのコマンドは依存関係がないため、並列で実行してください。
 
 ```bash
 git diff --cached
 ```
 
-ステージされた変更がない場合は、その旨をユーザーに伝えて処理を終了してください。
-
-# コミット履歴のスタイル確認
-
 ```bash
 git log --oneline -20
 ```
+
+ステージされた変更がない場合は、その旨をユーザーに伝えて処理を終了してください。
 
 取得したコミット履歴から、以下の観点のみ分析してください：
 
@@ -83,15 +83,33 @@ git log --oneline -20
 
 # コミットの実行
 
+body や footer を含む複数行メッセージの場合、HEREDOCを使用してください。
+
 ```bash
-git commit -m "生成したコミットメッセージ"
+git commit -m "$(cat <<'EOF'
+<type>[optional scope]: <description>
+
+<body>
+
+<footer>
+EOF
+)"
+```
+
+1行メッセージの場合はそのまま `-m` で指定してください。
+
+```bash
+git commit -m "<type>[optional scope]: <description>"
 ```
 
 # ブランチ名とコミットメッセージの確認
 
-コミット実行後、現在のブランチ名と直近のコミットメッセージをユーザーに表示してください。
+コミット実行後、以下の2つのコマンドを並列で実行し、現在のブランチ名と直近のコミットメッセージをユーザーに表示してください。
 
 ```bash
 git branch --show-current
+```
+
+```bash
 git log --oneline -1
 ```

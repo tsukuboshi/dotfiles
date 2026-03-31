@@ -1,6 +1,6 @@
 ---
 name: "open-pr"
-description: "Create PR via GitHub Web UI without gh CLI (Compare Default: current branch, Base Default: reflog origin)"
+description: "Create PR via GitHub Web UI without gh CLI (Compare Default: current branch, Base Default: reflog origin). Use this skill whenever the user wants to create a pull request, open a PR, or submit changes for review. This skill intentionally avoids gh CLI because its OAuth token requires broader permissions than necessary — instead it opens the GitHub Web UI directly."
 argument-hint: "[Compare Branch] [Base Branch]"
 ---
 
@@ -57,13 +57,13 @@ git rev-parse origin/COMPARE_BRANCH 2>/dev/null
 - LOCAL ≠ REMOTE の場合: ローカルに未プッシュのコミットがある旨を伝え、`git push` の実行を促して中断
 - LOCAL = REMOTE の場合: そのまま続行
 
-# コミット履歴の確認
+# コミット履歴とベースブランチとの差分確認
+
+以下の2つのコマンドは依存関係がないため、並列で実行してください。
 
 ```bash
 git log --oneline BASE_BRANCH...COMPARE_BRANCH
 ```
-
-# ベースブランチとの差分確認
 
 ```bash
 git diff BASE_BRANCH...COMPARE_BRANCH
@@ -99,7 +99,12 @@ git remote get-url origin
 git config user.name
 ```
 
-取得したリモートURLから`git@github.com:`を`https://github.com/`に、末尾の`.git`を除去してリポジトリURLを構成してください。
+取得したリモートURLからリポジトリURLを構成してください。
+
+- SSH形式（`git@github.com:owner/repo.git`）: `git@github.com:` を `https://github.com/` に置換
+- HTTPS形式（`https://github.com/owner/repo.git`）: そのまま使用
+
+いずれの場合も末尾の `.git` は除去してください。
 
 次に、PRタイトルとPRボディをURLエンコードしてください。
 
