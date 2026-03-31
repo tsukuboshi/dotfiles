@@ -1,4 +1,5 @@
 ---
+name: "open-pr"
 description: "Create PR via GitHub Web UI without gh CLI (Compare Default: current branch, Base Default: reflog origin)"
 argument-hint: "[Compare Branch] [Base Branch]"
 ---
