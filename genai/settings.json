@@ -5,6 +5,7 @@
       "Grep(*)",
       "List(*)",
       "Read(**)",
+      "Read(/tmp/*)",
       "WebSearch(*)",
       "Bash(basename:*)",
       "Bash(cut:*)",
@@ -22,6 +23,7 @@
       "Bash(tee:*)",
       "Bash(tr:*)",
       "Bash(uniq:*)",
+      "Bash(aws sts get-caller-identity:*)",
       "Bash(wc:*)",
       "Bash(xargs:*)",
       "WebFetch(domain:aws.amazon.com)",
@@ -42,6 +44,8 @@
       "WebFetch(domain:react.dev)",
       "WebFetch(domain:www.anthropic.com)",
       "WebFetch(domain:www.typescriptlang.org)",
+      "Edit(/tmp/*)",
+      "Write(/tmp/*)",
       "mcp__plugin_context7_context7"
     ],
     "deny": [
@@ -129,7 +133,7 @@
   "outputStyle": "explanatory",
   "language": "Japanese",
   "sandbox": {
-    "enabled": true,
+    "enabled": false,
     "allowUnsandboxedCommands": true,
     "network": {
       "allowedDomains": [
@@ -141,11 +145,8 @@
       ]
     },
     "filesystem": {
-      "denyWrite": [
-        "~/.bashrc",
-        "~/.zshrc",
-        "~/.ssh"
-      ],
+      "allowWrite": ["/tmp"],
+      "denyWrite": ["~/.bashrc", "~/.zshrc", "~/.ssh"],
       "denyRead": [
         "./.env",
         "./secrets",
@@ -155,8 +156,6 @@
         "~/.aws/credentials"
       ]
     },
-    "excludedCommands": [
-      "open"
-    ]
+    "excludedCommands": ["open"]
   }
 }
