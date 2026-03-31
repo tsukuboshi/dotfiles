@@ -28,6 +28,12 @@ _parse_aws_profile() {
     profile="$AWS_PROFILE_DISPLAY"
   elif [ -n "$AWS_PROFILE" ]; then
     profile="$AWS_PROFILE"
+  elif [ -f /tmp/aws_profile_display ]; then
+    # Ignore if older than 12 hours (43200 seconds)
+    local file_age=$(( $(date +%s) - $(stat -f %m /tmp/aws_profile_display 2>/dev/null || echo 0) ))
+    if [ "$file_age" -lt 43200 ]; then
+      profile=$(cat /tmp/aws_profile_display 2>/dev/null)
+    fi
   fi
 
   if [ -n "$profile" ]; then
