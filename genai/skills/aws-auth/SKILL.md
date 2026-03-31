@@ -91,27 +91,38 @@ export AWS_ACCESS_KEY_ID=<value> && export AWS_SECRET_ACCESS_KEY=<value> && expo
 Bashツールはコマンド間でシェル状態（環境変数）が永続しないため、認証情報をローカルに保存せず、毎回のコマンド実行時にプレフィックスとして環境変数を設定します。`<AWS_CMD>` はシェル変数ではなく、以降のAWSコマンド実行時に毎回先頭に付与するプレフィックスパターンです。
 
 ```bash
-<AWS_CMD> = export AWS_ACCESS_KEY_ID=<value> && export AWS_SECRET_ACCESS_KEY=<value> && export AWS_SESSION_TOKEN=<value> && export AWS_REGION=<region> && export AWS_PROFILE_DISPLAY=<profile_name> && aws
+<AWS_CMD> = export AWS_ACCESS_KEY_ID=<value> && export AWS_SECRET_ACCESS_KEY=<value> && export AWS_SESSION_TOKEN=<value> && export AWS_REGION=<region> && aws
 ```
+
+# Step 4: プロファイル表示ファイルの読み取り
+
+Readツールで `/tmp/aws_profile_display` を読み取る。ファイルが存在しなくてもエラーになるだけなので問題ない。
+
+# Step 5: プロファイル名の永続化
 
 `<profile_name>` は以下の優先順で決定してください:
 
 1. 方式A: aws-vaultのプロファイル名
 2. 方式B: PS1から抽出したプロファイル名（存在する場合）
-3. いずれも該当しない場合: `AWS_PROFILE_DISPLAY` のexportは省略
+3. いずれも該当しない場合: このステップをスキップ
 
-`AWS_PROFILE_DISPLAY` はユーザーのシェルプロンプト（zshrc）でAWSプロファイル名を表示するために参照される環境変数です。
+プロファイル名が判明している場合、Writeツールを使って `/tmp/aws_profile_display` に `<profile_name>` を書き込んでください。
+このファイルはzshrcのプロンプト関数 `_parse_aws_profile()` が参照し、ステータスラインにプロファイル名を表示します。
+ファイルの更新時刻が12時間を超えると自動的に無視されます。
 
-# Step 4: 結果の表示
+# Step 6: 結果の表示
 
 認証成功時、以下の情報を表示してください。
 
 ```
 AWS認証が完了しました。
 
+- **プロファイル**: <profile_name>
 - **アカウント**: <account-id>
 - **ARN**: <arn>
 - **リージョン**: <region>
 
 以降のAWSコマンドでは確定した `<AWS_CMD>` プレフィックスを使用します。
 ```
+
+プロファイル名が不明な場合は「プロファイル」行を省略してください。
