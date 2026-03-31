@@ -1,4 +1,5 @@
 ---
+name: "review-branch"
 description: "Review branch diff without gh CLI (Compare Default: current branch, Base Default: main)"
 argument-hint: "[Compare Branch] [Base Branch]"
 ---
