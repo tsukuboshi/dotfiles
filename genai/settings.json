@@ -3,7 +3,6 @@
     "allow": [
       "Glob(*)",
       "Grep(*)",
-      "List(*)",
       "Read(**)",
       "Read(/tmp/*)",
       "WebSearch(*)",
@@ -16,6 +15,7 @@
       "Bash(export:*)",
       "Bash(file:*)",
       "Bash(git:*)",
+      "Bash(ls:*)",
       "Bash(od:*)",
       "Bash(open:*)",
       "Bash(printf:*)",
