@@ -131,6 +131,9 @@
     "typescript-lsp@claude-plugins-official": true,
     "skill-creator@claude-plugins-official": true
   },
+  "env": {
+    "DISABLE_AUTOUPDATER": "1"
+  },
   "outputStyle": "explanatory",
   "language": "Japanese",
   "sandbox": {
