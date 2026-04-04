@@ -1,4 +1,7 @@
 {
+  "env": {
+    "DISABLE_AUTOUPDATER": "1"
+  },
   "permissions": {
     "allow": [
       "Glob(*)",
@@ -130,9 +133,6 @@
     "typescript-lsp@claude-plugins-official": true,
     "skill-creator@claude-plugins-official": true
   },
-  "env": {
-    "DISABLE_AUTOUPDATER": "1"
-  },
   "outputStyle": "explanatory",
   "language": "Japanese",
   "sandbox": {
@@ -148,8 +148,14 @@
       ]
     },
     "filesystem": {
-      "allowWrite": ["/tmp"],
-      "denyWrite": ["~/.bashrc", "~/.zshrc", "~/.ssh"],
+      "allowWrite": [
+        "/tmp"
+      ],
+      "denyWrite": [
+        "~/.bashrc",
+        "~/.zshrc",
+        "~/.ssh"
+      ],
       "denyRead": [
         "./.env",
         "./secrets",
@@ -159,6 +165,9 @@
         "~/.aws/credentials"
       ]
     },
-    "excludedCommands": ["open"]
-  }
+    "excludedCommands": [
+      "open"
+    ]
+  },
+  "model": "opus[1m]"
 }
