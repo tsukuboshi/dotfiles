@@ -54,6 +54,7 @@
     ],
     "deny": [
       "Bash(rm -rf:*)",
+      "Bash(trash -e:*)",
       "Bash(chmod -R:*)",
       "Bash(git branch -D:*)",
       "Bash(git checkout .:*)",
@@ -73,6 +74,7 @@
       "Read(./build)"
     ]
   },
+  "model": "opus[1m]",
   "hooks": {
     "PreToolUse": [
       {
@@ -148,14 +150,8 @@
       ]
     },
     "filesystem": {
-      "allowWrite": [
-        "/tmp"
-      ],
-      "denyWrite": [
-        "~/.bashrc",
-        "~/.zshrc",
-        "~/.ssh"
-      ],
+      "allowWrite": ["/tmp"],
+      "denyWrite": ["~/.bashrc", "~/.zshrc", "~/.ssh"],
       "denyRead": [
         "./.env",
         "./secrets",
@@ -165,9 +161,6 @@
         "~/.aws/credentials"
       ]
     },
-    "excludedCommands": [
-      "open"
-    ]
-  },
-  "model": "opus[1m]"
+    "excludedCommands": ["open"]
+  }
 }
