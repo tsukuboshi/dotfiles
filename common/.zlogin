@@ -350,10 +350,9 @@ alias dcd='docker compose down'
 # Claude
 # ============================================================================
 
-ccm() { claude /commit-message "$@" }
-cop() { claude /open-pr "$@" }
-crb() { claude /review-branch "$@" }
-caa() { claude /aws-auth "$@" }
+alias ccm='claude /commit-message'
+alias cop='claude /open-pr'
+alias crb='claude /review-branch'
 alias crc='tmux has-session -t claude 2>/dev/null && echo "Already running. Attach: crca" || { tmux new-session -d -s claude "caffeinate -s claude remote-control --spawn=same-dir --verbose --plan" && echo "Started. Attach: crca" }'
 alias crca='tmux attach -t claude'
 alias crcs='tmux has-session -t claude 2>/dev/null && echo "Running" || echo "Not running"'
