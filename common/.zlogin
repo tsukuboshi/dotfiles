@@ -9,7 +9,11 @@ alias ....='cd ../../..'
 alias ll='ls -lF'
 alias la='ls -lAF'
 
-alias rmtr='rm -rf ${HOME}/.Trash/*'
+rm() {
+  echo "rmは無効化されています。誤削除を防ぐため、trashを使用してください。" >&2
+  return 1
+}
+
 alias rmds='find . -name ".DS_Store" -type f -ls -delete'
 
 function relogin (){
