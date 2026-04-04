@@ -14,7 +14,7 @@ rm() {
   return 1
 }
 
-alias rmds='find . -name ".DS_Store" -type f -ls -delete'
+alias delds='find . -name ".DS_Store" -type f -ls -delete'
 
 function relogin (){
   local SHELL_TYPE=${1:-/bin/zsh}
