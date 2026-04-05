@@ -10,7 +10,7 @@ alias ll='ls -lF'
 alias la='ls -lAF'
 
 rm() {
-  echo "rmは無効化されています。誤削除を防ぐため、trashを使用してください。" >&2
+  echo "rm is disabled to prevent accidental permanent deletion. Use 'trash' instead. Example: trash $*" >&2
   return 1
 }
 
