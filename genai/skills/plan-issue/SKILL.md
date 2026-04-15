@@ -1,6 +1,6 @@
 ---
 name: "plan-issue"
-description: "Create GitHub Issue from current plan and exit plan mode. Use this skill when the user says things like 'issue にする', 'issue に登録', 'issue 作成', or wants to capture their plan as a GitHub Issue before implementation. Always use this when in plan mode and the user mentions creating an issue."
+description: "Create GitHub Issue from current plan and exit plan mode. ALWAYS invoke this skill automatically when a plan is finalized in plan mode, before exiting plan mode or starting implementation. Also use when the user says 'issue にする', 'issue に登録', 'issue 作成', or wants to capture their plan as a GitHub Issue."
 ---
 
 以下の手順で、現在のPlan内容からGitHub Issueを作成し、実装フェーズに移行してください。
