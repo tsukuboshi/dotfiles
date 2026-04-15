@@ -135,6 +135,7 @@
     "typescript-lsp@claude-plugins-official": true,
     "skill-creator@claude-plugins-official": true
   },
+  "planMode": "plan",
   "outputStyle": "explanatory",
   "language": "Japanese",
   "sandbox": {
