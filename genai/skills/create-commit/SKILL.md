@@ -1,5 +1,5 @@
 ---
-name: "commit-message"
+name: "create-commit"
 description: "Generate commit message from staged changes and repository history, then commit. Use this skill whenever the user wants to commit, save changes, or asks to generate a commit message — even casually like 'commit this' or 'save my changes'."
 argument-hint: "[file ...]"
 ---
