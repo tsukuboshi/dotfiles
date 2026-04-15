@@ -3,6 +3,7 @@
     "DISABLE_AUTOUPDATER": "1"
   },
   "permissions": {
+    "defaultMode": "plan",
     "allow": [
       "Glob(*)",
       "Grep(*)",
@@ -135,7 +136,6 @@
     "typescript-lsp@claude-plugins-official": true,
     "skill-creator@claude-plugins-official": true
   },
-  "planMode": "plan",
   "outputStyle": "explanatory",
   "language": "Japanese",
   "sandbox": {
