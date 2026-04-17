@@ -54,12 +54,10 @@
       "mcp__plugin_context7_context7"
     ],
     "deny": [
-      "Bash(rm -rf:*)",
-      "Bash(trash -e:*)",
-      "Bash(chmod -R:*)",
-      "Bash(git branch -D:*)",
-      "Bash(git checkout .:*)",
-      "Bash(git clean -f:*)",
+      "Bash(rm:*)",
+      "Bash(git clean:*)",
+      "Bash(git checkout:*)",
+      "Bash(git restore:*)",
       "Bash(git reset --hard:*)",
       "Bash(docker push:*)",
       "Bash(git push:*)",
