@@ -1,7 +1,6 @@
 3w36zj6.textlint
 anthropic.claude-code
 arjun.swagger-viewer
-aws-scripting-guy.cform
 bierner.markdown-mermaid
 biomejs.biome
 charliermarsh.ruff
@@ -13,13 +12,10 @@ docker.docker
 donjayamanne.githistory
 dsznajder.es7-react-js-snippets
 eamodio.gitlens
-eastman.vscode-cfn-nag
 ecmel.vscode-html-css
 esbenp.prettier-vscode
 exiasr.hadolint
-formulahendry.auto-close-tag
 formulahendry.auto-complete-tag
-formulahendry.auto-rename-tag
 github.copilot
 github.copilot-chat
 hashicorp.terraform
@@ -30,9 +26,7 @@ janisdd.vscode-edit-csv
 kddejong.vscode-cfn-lint
 leetcode.vscode-leetcode
 mhutchie.git-graph
-mosapride.zenkaku
 ms-azuretools.vscode-containers
-ms-azuretools.vscode-docker
 ms-ceintl.vscode-language-pack-ja
 ms-python.debugpy
 ms-python.mypy-type-checker
@@ -54,6 +48,5 @@ stylelint.vscode-stylelint
 timonwong.shellcheck
 tomoki1207.pdf
 vincaslt.highlight-matching-tag
-xabikos.javascriptsnippets
 yzane.markdown-pdf
 yzhang.markdown-all-in-one
