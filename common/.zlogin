@@ -9,10 +9,10 @@ alias ....='cd ../../..'
 alias ll='ls -lF'
 alias la='ls -lAF'
 
-rm() {
-  echo "rm is disabled to prevent accidental permanent deletion. Use 'trash' instead. Example: trash $*" >&2
-  return 1
-}
+# rm() {
+#   echo "rm is disabled to prevent accidental permanent deletion. Use 'trash' instead. Example: trash $*" >&2
+#   return 1
+# }
 
 alias delds='find . -name ".DS_Store" -type f -ls -delete'
 
