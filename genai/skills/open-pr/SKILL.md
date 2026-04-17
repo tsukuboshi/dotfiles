@@ -111,18 +111,8 @@ git config user.name
 
 いずれの場合も末尾の `.git` は除去してください。
 
-次に、PRタイトルとPRボディをURLエンコードしてください。
+最後に、PR作成ページを開いてください。`open`コマンドはサンドボックス内ではブラウザを起動できないため、必ず`dangerouslyDisableSandbox: true`を指定して実行してください。PRタイトルとPRボディは`urlencode`関数でURLエンコードしてください。
 
 ```bash
-printf '%s' "PRタイトル" | od -An -tx1 | tr -d ' \n' | sed 's/\(..\)/%\1/g'
-```
-
-```bash
-printf '%s' "PRボディ" | od -An -tx1 | tr -d ' \n' | sed 's/\(..\)/%\1/g'
-```
-
-最後に、PR作成ページを開いてください。`open`コマンドはサンドボックス内ではブラウザを起動できないため、必ず`dangerouslyDisableSandbox: true`を指定して実行してください。
-
-```bash
-open "REPO_URL/compare/BASE_BRANCH...COMPARE_BRANCH?quick_pull=1&title=ENCODED_TITLE&body=ENCODED_BODY&assignees=GITHUB_USER"
+urlencode(){ printf '%s' "$1" | od -An -tx1 | tr -d ' \n' | sed 's/\(..\)/%\1/g'; }; open "REPO_URL/compare/BASE_BRANCH...COMPARE_BRANCH?quick_pull=1&title=$(urlencode "PRタイトル")&body=$(urlencode "PRボディ")&assignees=GITHUB_USER"
 ```
