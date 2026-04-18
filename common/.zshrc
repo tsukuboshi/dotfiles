@@ -1,5 +1,5 @@
 # Set aws tmp profile
-export SSO_PROFILE="/tmp/sso_profile"
+export SSO_PROFILE="${TMPDIR%/}/sso_profile"
 
 # Set the prompt
 _colorize_prompt() {
