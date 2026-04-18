@@ -1,3 +1,6 @@
+# Set aws tmp profile
+export SSO_PROFILE="/tmp/sso_profile"
+
 # Set the prompt
 _colorize_prompt() {
   local color=$1
@@ -28,11 +31,11 @@ _parse_aws_profile() {
     profile="$AWS_PROFILE_DISPLAY"
   elif [ -n "$AWS_PROFILE" ]; then
     profile="$AWS_PROFILE"
-  elif [ -f /tmp/aws_profile_display ]; then
+  elif [ -f $SSO_PROFILE ]; then
     # Ignore if older than 12 hours (43200 seconds)
-    local file_age=$(( $(date +%s) - $(stat -f %m /tmp/aws_profile_display 2>/dev/null || echo 0) ))
+    local file_age=$(( $(date +%s) - $(stat -f %m $SSO_PROFILE 2>/dev/null || echo 0) ))
     if [ "$file_age" -lt 43200 ]; then
-      profile=$(cat /tmp/aws_profile_display 2>/dev/null)
+      profile=$(grep '^export AWS_PROFILE_DISPLAY=' $SSO_PROFILE 2>/dev/null | sed 's/^export AWS_PROFILE_DISPLAY=//')
     fi
   fi
 
