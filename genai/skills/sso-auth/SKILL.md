@@ -34,7 +34,7 @@ export AWS_DEFAULT_REGION=ap-northeast-1
 
 # プロファイルファイルの書き込み
 
-まずBashツールで `echo $SSO_PROFILE` を実行し、書き込み先の絶対パスを取得してください。
+まずBashツールで `echo ${SSO_PROFILE:-${TMPDIR%/}/sso_profile}` を実行し、書き込み先の絶対パスを取得してください。
 抽出（および必要に応じて質問で取得）した値を使い、Writeツールでその絶対パスに以下の内容を書き込んでください。
 
 ```bash
@@ -53,7 +53,7 @@ export AWS_PROFILE_DISPLAY=<profile_name>
 書き込んだプロファイルファイルで認証が有効か確認します。
 
 ```bash
-source $SSO_PROFILE && aws sts get-caller-identity
+SSO_PROFILE=${SSO_PROFILE:-${TMPDIR%/}/sso_profile} && source $SSO_PROFILE && aws sts get-caller-identity
 ```
 
 このコマンドが失敗した場合、認証情報の有効期限切れの可能性を伝え、新しい認証情報の取得を促してください。
@@ -66,7 +66,7 @@ source $SSO_PROFILE && aws sts get-caller-identity
 Bashツールはコマンド間でシェル状態（環境変数）が永続しないため、毎回のコマンド実行時にプレフィックスとして環境変数を設定します。`<AWS_CMD>` はシェル変数ではなく、以降のAWSコマンド実行時に毎回先頭に付与するプレフィックスパターンです。
 
 ```bash
-<AWS_CMD> = source $SSO_PROFILE && aws
+<AWS_CMD> = SSO_PROFILE=${SSO_PROFILE:-${TMPDIR%/}/sso_profile} && source $SSO_PROFILE && aws
 ```
 
 ```text
