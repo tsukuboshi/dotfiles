@@ -1,13 +1,10 @@
 ---
 name: investigate-alarm
 description: "Investigate AWS CloudWatch Alarm notifications. Use this skill when the user pastes a CloudWatch Alarm notification (from Slack, email, SNS, etc.) containing alarm name, account ID, region, and state information. Also trigger when the user asks to investigate or troubleshoot an AWS alarm, or mentions a specific alarm name they want to look into."
+argument-hint: "<alarm-notification>"
 ---
 
-# 前提条件
-
-このスキルはAWS認証済みの状態で使用する。
-
-# アラーム情報の抽出
+## アラーム情報の抽出
 
 ユーザーが貼り付けた通知から以下の情報を抽出する:
 
@@ -18,9 +15,26 @@ description: "Investigate AWS CloudWatch Alarm notifications. Use this skill whe
 - `<REASON>`: 状態変更の理由（あれば）
 - `<TIMESTAMP>`: アラーム発生時刻
 
-# 調査フロー
+## AWS認証
+
+アラーム通知から抽出した `<ACCOUNT_ID>` を使い、`~/.aws/config` で `sso_account_id = <ACCOUNT_ID>` を含むプロファイルを検索する。
+
+```bash
+grep -B5 "sso_account_id\s*=\s*<ACCOUNT_ID>" ~/.aws/config | grep '\[profile ' | sed 's/\[profile //;s/\]//'
+```
+
+- プロファイルが1件見つかった場合: `<AWS_CMD> = aws --profile <PROFILE_NAME>`
+- 複数見つかった場合: ユーザーに選択を促す
+
+```bash
+<AWS_CMD> sts get-caller-identity
+```
+
+失敗した場合、認証情報の期限切れまたは未設定の可能性をユーザーに伝え、AWS認証を促す。成功するまで調査に進まない。
 
 ## アラーム詳細の取得
+
+以下の内容でアラーム詳細を取得する。
 
 ```bash
 <AWS_CMD> cloudwatch describe-alarms --alarm-names "<ALARM_NAME>" --region <REGION>
