@@ -53,7 +53,7 @@ export AWS_REGION=<region>
 export AWS_PROFILE_DISPLAY=<profile_name>
 ```
 
-# 認証の確認
+# 認証の確認とロールの取得
 
 書き込んだプロファイルファイルで認証が有効か確認します。
 
@@ -62,6 +62,28 @@ source <PROFILE_PATH> && aws sts get-caller-identity
 ```
 
 このコマンドが失敗した場合、認証情報の有効期限切れの可能性を伝え、新しい認証情報の取得を促してください。
+
+ARN が `assumed-role/` を含む場合、`assumed-role/` と次の `/` の間の文字列をロール名 `<ROLE_NAME>` として抽出してください。
+
+- 例: `arn:aws:sts::123456789012:assumed-role/AWSReservedSSO_AdministratorAccess_abc123/user` → `AWSReservedSSO_AdministratorAccess_abc123`
+
+ARN に `assumed-role/` が含まれない場合、このセクション全体をスキップし、`<POLICY_TYPE>` を `対象外（ロールではありません）` として「結果の表示」に進んでください。
+
+# ポリシーの取得と判定
+
+以下のコマンドを実行してください:
+
+```bash
+source <PROFILE_PATH> && aws iam list-attached-role-policies --role-name <ROLE_NAME>
+```
+
+出力の `AttachedPolicies[].PolicyArn` を確認し、`<POLICY_TYPE>` を以下のルールで決定してください:
+
+- いずれかの PolicyArn に `AdministratorAccess` を含む → `AdministratorAccess`
+- いずれかの PolicyArn に `ReadOnlyAccess` を含む → `ReadOnlyAccess`
+- 上記のいずれにも該当しない → `その他`（実際のポリシー名をカンマ区切りでリスト）
+
+このコマンドが失敗した場合（AccessDenied等）、認証フローをブロックしないでください。`<POLICY_TYPE>` を `不明（IAM権限不足のため取得できませんでした）` として「結果の表示」に進んでください。
 
 # 結果の表示
 
@@ -81,6 +103,7 @@ AWS認証が完了しました。
 - **アカウント**: <account-id>
 - **ARN**: <arn>
 - **リージョン**: <region>
+- **ポリシータイプ**: <POLICY_TYPE>
 
 以降のAWSコマンドでは確定した `<AWS_CMD>` プレフィックスを使用します。
 ```
