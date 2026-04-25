@@ -134,6 +134,10 @@
     "typescript-lsp@claude-plugins-official": true,
     "skill-creator@claude-plugins-official": true
   },
+  "attribution": {
+    "commit": "",
+    "pr": ""
+  },
   "outputStyle": "explanatory",
   "language": "Japanese",
   "sandbox": {
