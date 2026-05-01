@@ -111,8 +111,15 @@ git config user.name
 
 いずれの場合も末尾の `.git` は除去してください。
 
-最後に、PR作成ページを開いてください。`open`コマンドはサンドボックス内ではブラウザを起動できないため、必ず`dangerouslyDisableSandbox: true`を指定して実行してください。PRタイトルとPRボディは`urlencode`関数でURLエンコードしてください。
+最後に、PR作成ページを開いてください。ブラウザ起動コマンドはサンドボックス内では実行できないため、必ず`dangerouslyDisableSandbox: true`を指定して実行してください。PRタイトルとPRボディは`urlencode`関数でURLエンコードしてください。
+
+`opener`関数は実行環境を判定し、適切なブラウザ起動コマンドにディスパッチします。
+
+- macOS: `open`
+- WSL: `explorer.exe`（`/proc/version`に`microsoft`が含まれるかで判定）
+- その他Linux: `xdg-open`（存在する場合）
+- フォールバック: URLを標準出力に表示
 
 ```bash
-urlencode(){ printf '%s' "$1" | od -An -tx1 | tr -d ' \n' | sed 's/\(..\)/%\1/g'; }; open "REPO_URL/compare/BASE_BRANCH...COMPARE_BRANCH?quick_pull=1&title=$(urlencode "PRタイトル")&body=$(urlencode "PRボディ")&assignees=GITHUB_USER"
+urlencode(){ printf '%s' "$1" | od -An -tx1 | tr -d ' \n' | sed 's/\(..\)/%\1/g'; }; opener(){ case "$(uname -s)" in Darwin) open "$1";; Linux) if grep -qi microsoft /proc/version 2>/dev/null; then explorer.exe "$1"; elif command -v xdg-open >/dev/null 2>&1; then xdg-open "$1"; else printf 'Open this URL: %s\n' "$1"; fi;; *) printf 'Open this URL: %s\n' "$1";; esac; }; opener "REPO_URL/compare/BASE_BRANCH...COMPARE_BRANCH?quick_pull=1&title=$(urlencode "PRタイトル")&body=$(urlencode "PRボディ")&assignees=GITHUB_USER"
 ```
