@@ -2,8 +2,11 @@
   "env": {
     "DISABLE_AUTOUPDATER": "1"
   },
+  "attribution": {
+    "commit": "",
+    "pr": ""
+  },
   "permissions": {
-    "defaultMode": "plan",
     "allow": [
       "Glob(*)",
       "Grep(*)",
@@ -62,16 +65,21 @@
       "Bash(docker push:*)",
       "Bash(git push:*)",
       "Bash(cdk deploy:*)",
-      "Bash(kubectl apply:*)",
       "Bash(terraform apply:*)",
       "Bash(cdk destroy:*)",
-      "Bash(kubectl delete:*)",
       "Bash(terraform destroy:*)",
-      "Read(./.env)",
-      "Read(./secrets/**)",
-      "Read(./config/credentials.json)",
-      "Read(./build)"
-    ]
+      "Read(**/.env*)",
+      "Edit(**/.env*)",
+      "Read(**/secrets/**)",
+      "Edit(**/secrets/**)",
+      "Read(**/*credentials*)",
+      "Edit(**/*credentials*)",
+      "Read(**/*.pem)",
+      "Edit(**/*.pem)",
+      "Read(**/*.key)",
+      "Edit(**/*.key)"
+    ],
+    "defaultMode": "plan"
   },
   "model": "opus[1m]",
   "hooks": {
@@ -134,10 +142,6 @@
     "typescript-lsp@claude-plugins-official": true,
     "skill-creator@claude-plugins-official": true
   },
-  "attribution": {
-    "commit": "",
-    "pr": ""
-  },
   "outputStyle": "explanatory",
   "language": "Japanese",
   "sandbox": {
@@ -153,8 +157,14 @@
       ]
     },
     "filesystem": {
-      "allowWrite": ["/tmp"],
-      "denyWrite": ["~/.bashrc", "~/.zshrc", "~/.ssh"],
+      "allowWrite": [
+        "/tmp"
+      ],
+      "denyWrite": [
+        "~/.bashrc",
+        "~/.zshrc",
+        "~/.ssh"
+      ],
       "denyRead": [
         "./.env",
         "./secrets",
@@ -164,6 +174,10 @@
         "~/.aws/credentials"
       ]
     },
-    "excludedCommands": ["open"]
-  }
+    "excludedCommands": [
+      "open"
+    ]
+  },
+  "remoteControlAtStartup": true,
+  "skipAutoPermissionPrompt": true
 }
