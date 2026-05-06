@@ -1,0 +1,70 @@
+// Dev Container configuration
+// Reference: https://github.com/anthropics/claude-code/tree/main/.devcontainer
+//
+// Adjust together with the Dockerfile to match the project's tech stack.
+{
+  "name": "${localWorkspaceFolderBasename}",
+
+  // Build configuration — build the container image from the Dockerfile
+  "build": {
+    "dockerfile": "Dockerfile",
+    "args": {
+      "TZ": "${localEnv:TZ:Asia/Tokyo}"
+      // Add build args here as the project requires
+    }
+  },
+
+  // VS Code extensions and editor settings are applied dynamically by post-create.sh
+  // from editor/extensions and editor/settings.json so the dotfiles repo stays the single source of truth.
+
+  // Default user inside the container
+  "remoteUser": "dev",
+
+  // Volume mounts
+  // - Shell history, language caches, and the mise install dir are persisted via named volumes
+  // - The host dotfiles repo is read-only bind-mounted; postCreateCommand wires it up
+  "mounts": [
+    "source=claude-code-shellhistory-${devcontainerId},target=/commandhistory,type=volume",
+    "source=claude-code-npm-cache-${devcontainerId},target=/home/dev/.npm,type=volume",
+    "source=claude-code-pnpm-store-${devcontainerId},target=/home/dev/.local/share/pnpm/store,type=volume",
+    "source=claude-code-uv-cache-${devcontainerId},target=/home/dev/.cache/uv,type=volume",
+    "source=claude-code-pip-cache-${devcontainerId},target=/home/dev/.cache/pip,type=volume",
+    "source=claude-code-tf-plugin-cache-${devcontainerId},target=/home/dev/.terraform.d/plugin-cache,type=volume",
+    "source=claude-code-mise-data-${devcontainerId},target=/home/dev/.local/share/mise,type=volume",
+    "source=claude-code-mise-cache-${devcontainerId},target=/home/dev/.cache/mise,type=volume",
+    "source=${localEnv:HOME}/dotfiles,target=/home/dev/dotfiles,type=bind,readonly"
+  ],
+
+  // Container environment variables
+  "containerEnv": {
+    "CLAUDE_CONFIG_DIR": "/home/dev/.claude",
+    "TF_PLUGIN_CACHE_DIR": "/home/dev/.terraform.d/plugin-cache",
+    "PNPM_HOME": "/home/dev/.local/share/pnpm"
+  },
+
+  // Workspace
+  "workspaceMount": "source=${localWorkspaceFolder},target=/workspace,type=bind,consistency=delegated",
+  "workspaceFolder": "/workspace",
+
+  // Wire up dotfiles on first creation (mise install / Claude config symlinks / git-secrets / ...)
+  "postCreateCommand": "/usr/local/bin/post-create.sh",
+
+  // Initialize firewall on every start
+  "postStartCommand": "sudo /usr/local/bin/init-firewall.sh",
+  "waitFor": "postCreateCommand",
+
+  // Forward common dev ports (TS dev server / uvicorn / ...)
+  "forwardPorts": [3000, 5173, 8000, 8080],
+  "portsAttributes": {
+    "3000": {
+      "label": "frontend (Next.js / React)",
+      "onAutoForward": "notify"
+    },
+    "5173": { "label": "frontend (Vite)", "onAutoForward": "notify" },
+    "8000": {
+      "label": "backend (uvicorn / FastAPI)",
+      "onAutoForward": "notify"
+    },
+    "8080": { "label": "generic", "onAutoForward": "silent" }
+  }
+}
