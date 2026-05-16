@@ -7,7 +7,6 @@
     "pr": ""
   },
   "permissions": {
-    "disableBypassPermissionsMode": "disable",
     "allow": [
       "Glob(*)",
       "Grep(*)",
@@ -32,7 +31,6 @@
       "Bash(tee:*)",
       "Bash(tr:*)",
       "Bash(uniq:*)",
-      "Bash(aws sts get-caller-identity:*)",
       "Bash(wc:*)",
       "Bash(xargs:*)",
       "WebFetch(domain:aws.amazon.com)",
@@ -80,7 +78,8 @@
       "Read(**/*.key)",
       "Edit(**/*.key)"
     ],
-    "defaultMode": "plan"
+    "defaultMode": "plan",
+    "disableBypassPermissionsMode": "disable"
   },
   "model": "opus[1m]",
   "hooks": {
@@ -138,6 +137,7 @@
     "chrome-devtools-mcp@claude-plugins-official": true,
     "context7@claude-plugins-official": true,
     "frontend-design@claude-plugins-official": true,
+    "feature-dev@claude-plugins-official": true,
     "playwright@claude-plugins-official": true,
     "pyright-lsp@claude-plugins-official": true,
     "typescript-lsp@claude-plugins-official": true,
@@ -158,14 +158,8 @@
       ]
     },
     "filesystem": {
-      "allowWrite": [
-        "/tmp"
-      ],
-      "denyWrite": [
-        "~/.bashrc",
-        "~/.zshrc",
-        "~/.ssh"
-      ],
+      "allowWrite": ["/tmp"],
+      "denyWrite": ["~/.bashrc", "~/.zshrc", "~/.ssh"],
       "denyRead": [
         "./.env",
         "./secrets",
@@ -175,9 +169,7 @@
         "~/.aws/credentials"
       ]
     },
-    "excludedCommands": [
-      "open"
-    ]
+    "excludedCommands": ["open"]
   },
   "remoteControlAtStartup": true,
   "skipAutoPermissionPrompt": true

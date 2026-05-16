@@ -12,13 +12,14 @@
 | `git clean` | `git stash -u` | 未追跡ファイルも含めて退避する |
 | `git reset --hard` | `git reset`（`--hard` なし）+ `git stash` | `--hard` なしならワーキングツリーを破壊しない |
 
-## `grill-me` スキル発火時の開発ワークフロー
+## `grill-me` / `feature-dev` スキル発火時の開発ワークフロー
 
-`grill-me` スキルが発火された場合、以下のフローに沿って進めること。
+`grill-me` または `feature-dev` スキルが発火された場合、以下のフローに沿って進めること。
+なお、`feature-dev` スキルは独自に実装・レビューフェーズを内包するが、本フローでは Phase 1（設計詰め＆リサーチ）の手段としてのみ使用し、以降の実装・レビューは下記の `tdd` / `simplify` / `security-review` に委ねる。
 
 | # | フェーズ | ツール | アクション |
 |---|---|---|---|
-| 1 | 設計詰め＆リサーチ | `grill-me` スキル / context7 MCP（フォールバック: WebSearch / WebFetch） | インタビューで設計を詰めつつ、公式ドキュメント・参考実装・論文を収集 |
+| 1 | 設計詰め＆リサーチ | `grill-me` または `feature-dev` スキル / context7 MCP（フォールバック: WebSearch / WebFetch） | スキルに従い設計を詰めつつ（`grill-me` はインタビュー形式、`feature-dev` はコードベース探索＋アーキテクチャ設計）、公式ドキュメント・参考実装・論文を収集 |
 | 2 | プラン作成 | plan mode | プランファイルを書き起こす |
 | 3 | テスト駆動実装 | `tdd` スキル | プランファイルが承認された事を確認し、RED-GREEN-REFACTOR ループを回す |
 | 4 | リファクタリング | `simplify` スキル | 再利用・品質・効率性を改善 |
