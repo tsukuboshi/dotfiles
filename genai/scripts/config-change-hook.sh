@@ -3,8 +3,13 @@
 
 INPUT=$(cat)
 
-# Extract source
-SOURCE=$(echo "$INPUT" | jq -r '.source // "unknown"')
+# Extract source and file_path in one jq call
+IFS=$'\t' read -r SOURCE FILE_PATH < <(
+	jq -r '[
+    (.source // "unknown"),
+    (.file_path // "unknown")
+  ] | @tsv' <<<"$INPUT"
+)
 
 # policy_settings changes cannot be blocked per official docs
 if [[ "$SOURCE" == "policy_settings" ]]; then
@@ -13,7 +18,6 @@ if [[ "$SOURCE" == "policy_settings" ]]; then
 fi
 
 # Block dangerous configuration changes
-FILE_PATH=$(echo "$INPUT" | jq -r '.file_path // "unknown"')
 if [[ -f "$FILE_PATH" ]]; then
 	VIOLATION=$(jq -r '
 		if .defaultMode == "bypassPermissions" then "bypassPermissions"
