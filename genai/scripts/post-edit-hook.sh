@@ -2,11 +2,9 @@
 # PostToolUse hook: Run linter/formatter when supported files are edited
 
 INPUT=$(cat)
-FILE_PATH=$(echo "$INPUT" | jq -r '.tool_input.file_path // empty')
+FILE_PATH=$(jq -r '.tool_input.file_path // empty' <<<"$INPUT")
 
-if [[ -z "$FILE_PATH" ]]; then
-	exit 0
-fi
+[[ -z "$FILE_PATH" ]] && exit 0
 
 case "$FILE_PATH" in
 *.tf)

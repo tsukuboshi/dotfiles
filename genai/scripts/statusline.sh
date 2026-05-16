@@ -53,15 +53,15 @@ current_time=$(date +%s)
 color_for_pct() {
 	local pct=$1
 	if [ "$pct" -lt 20 ]; then
-		printf '\033[37m' # white
+		printf '\033[37m'
 	elif [ "$pct" -lt 40 ]; then
-		printf '\033[32m' # green
+		printf '\033[32m'
 	elif [ "$pct" -lt 60 ]; then
-		printf '\033[33m' # yellow
+		printf '\033[33m'
 	elif [ "$pct" -lt 80 ]; then
-		printf '\033[35m' # magenta
+		printf '\033[35m'
 	else
-		printf '\033[31m' # red
+		printf '\033[31m'
 	fi
 }
 
@@ -108,41 +108,69 @@ fmt_reset() {
 	fi
 }
 
+# Append one metric block to global $out: " │ <icon><label> <color><pie> <value><RST>[ <reset>]"
+# Color/pie are derived from $pct_for_color (integer 0-100);
+# $value_text is the user-visible suffix (e.g. "42%" or "3x").
+# Appends to $out directly to avoid one subshell per call on the statusline hot path.
+render_metric() {
+	local icon="$1" label="$2" pct_for_color="$3" value_text="$4" reset_iso="${5:-}"
+	local color pie reset_suffix=""
+	color=$(color_for_pct "$pct_for_color")
+	pie=$(pie_char "$pct_for_color")
+	if [ -n "$reset_iso" ]; then
+		local r
+		r=$(fmt_reset "$reset_iso") && reset_suffix=" $r"
+	fi
+	out+=" │ ${icon}${label} ${color}${pie} ${value_text}${RST}${reset_suffix}"
+}
+
+# Read {sid, count} from COMPRESS_FILE; returns stored count if session matches, else 0.
+read_compress_count() {
+	[ -f "$COMPRESS_FILE" ] || {
+		printf 0
+		return
+	}
+	local c_sid c_count
+	IFS=$'\t' read -r c_sid c_count < <(
+		jq -r '[(.sid // ""), (.count // 0 | tostring)] | @tsv' <"$COMPRESS_FILE" 2>/dev/null
+	)
+	if [ "$session_id" = "$c_sid" ]; then
+		printf '%d' "${c_count:-0}"
+	else
+		printf 0
+	fi
+}
+
+write_compress_count() {
+	printf '{"sid":"%s","count":%d}\n' "$session_id" "$1" >"$COMPRESS_FILE"
+}
+
 # --- Session & compression tracking ---
 compress_count=0
 
 if [ -f "$LAST_STATE_FILE" ]; then
-	_last=$(cat "$LAST_STATE_FILE" 2>/dev/null)
-	last_sid=$(jq -r '.sid // ""' <<<"$_last" 2>/dev/null)
-	last_tok=$(jq -r '.tok // 0' <<<"$_last" 2>/dev/null)
+	IFS=$'\t' read -r last_sid last_tok < <(
+		jq -r '[(.sid // ""), (.tok // 0 | tostring)] | @tsv' <"$LAST_STATE_FILE" 2>/dev/null
+	)
+	last_tok=${last_tok:-0}
 
 	if [ "$session_id" != "$last_sid" ]; then
-		printf '{"sid":"%s","count":0}\n' "$session_id" >"$COMPRESS_FILE"
-	elif [ "$current_used" -lt "${last_tok:-0}" ] 2>/dev/null; then
+		write_compress_count 0
+	elif [ "$current_used" -lt "$last_tok" ] 2>/dev/null; then
 		drop=$((last_tok - current_used))
 		threshold=$((last_tok / 5))
-		if [ -f "$COMPRESS_FILE" ]; then
-			_comp=$(cat "$COMPRESS_FILE" 2>/dev/null)
-			c_sid=$(jq -r '.sid // ""' <<<"$_comp" 2>/dev/null)
-			c_count=$(jq -r '.count // 0' <<<"$_comp" 2>/dev/null)
-			[ "$session_id" = "$c_sid" ] && compress_count=$c_count
-		fi
+		compress_count=$(read_compress_count)
 		if [ "$drop" -gt "$threshold" ] && [ "$drop" -gt 10000 ]; then
 			compress_count=$((compress_count + 1))
 		fi
-		printf '{"sid":"%s","count":%d}\n' "$session_id" "$compress_count" >"$COMPRESS_FILE"
+		write_compress_count "$compress_count"
 	fi
 else
-	printf '{"sid":"%s","count":0}\n' "$session_id" >"$COMPRESS_FILE"
+	write_compress_count 0
 fi
 
-# Load compress count if not yet set
-if [ "$compress_count" -eq 0 ] && [ -f "$COMPRESS_FILE" ]; then
-	_comp=$(cat "$COMPRESS_FILE" 2>/dev/null)
-	c_sid=$(jq -r '.sid // ""' <<<"$_comp" 2>/dev/null)
-	c_count=$(jq -r '.count // 0' <<<"$_comp" 2>/dev/null)
-	[ "$session_id" = "$c_sid" ] && compress_count=$c_count
-fi
+# Load compress count if not yet set (covers the no-drop / new-session paths)
+[ "$compress_count" -eq 0 ] && compress_count=$(read_compress_count)
 
 # Update last state
 printf '{"sid":"%s","tok":%d}\n' "$session_id" "$current_used" >"$LAST_STATE_FILE"
@@ -157,34 +185,23 @@ prompt_str=$(_build_statusline_prompt)
 # Model
 out+="🤖${model}"
 
-# Context usage with colored bar
-ctx_color=$(color_for_pct "$pct_int")
-ctx_pie=$(pie_char "$pct_int")
-out+=" │ 📊ctx ${ctx_color}${ctx_pie} ${pct_int}%${RST}"
+# Context usage
+render_metric "📊" "ctx" "$pct_int" "${pct_int}%"
 
-# Compression pie (max 4)
+# Compression (max 4 levels visualised; pct synthesized from count)
 cmp_level=$compress_count
 [ "$cmp_level" -gt 4 ] && cmp_level=4
-cmp_pct=$((cmp_level * 25))
-cmp_color=$(color_for_pct "$cmp_pct")
-cmp_pie=$(pie_char "$cmp_pct")
-out+=" │ 🔄cmp ${cmp_color}${cmp_pie} ${compress_count}x${RST}"
+render_metric "🔄" "cmp" "$((cmp_level * 25))" "${compress_count}x"
 
 # 5h rate limit
 fh_int=${five_hour_pct%%.*}
 fh_int=${fh_int:-0}
-fh_color=$(color_for_pct "$fh_int")
-fh_pie=$(pie_char "$fh_int")
-fh_reset=$(fmt_reset "$five_hour_reset") && fh_reset=" ${fh_reset}" || fh_reset=""
-out+=" │ ⏱️5h ${fh_color}${fh_pie} ${fh_int}%${RST}${fh_reset}"
+render_metric "⏱️" "5h" "$fh_int" "${fh_int}%" "$five_hour_reset"
 
 # 7d rate limit
 sd_int=${seven_day_pct%%.*}
 sd_int=${sd_int:-0}
-sd_color=$(color_for_pct "$sd_int")
-sd_pie=$(pie_char "$sd_int")
-sd_reset=$(fmt_reset "$seven_day_reset") && sd_reset=" ${sd_reset}" || sd_reset=""
-out+=" │ 📅7d ${sd_color}${sd_pie} ${sd_int}%${RST}${sd_reset}"
+render_metric "📅" "7d" "$sd_int" "${sd_int}%" "$seven_day_reset"
 
 printf '%b' "$out"
 

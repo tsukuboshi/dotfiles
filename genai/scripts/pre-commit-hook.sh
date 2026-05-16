@@ -1,67 +1,52 @@
 #!/bin/bash
 # PreToolUse hook: Run formatters on staged files before git commit
 
+# fmt_* helpers are dispatched indirectly via process_ext "$fmt".
+# shellcheck disable=SC2329
+
 INPUT=$(cat)
-COMMAND=$(echo "$INPUT" | jq -r '.tool_input.command // empty')
+COMMAND=$(jq -r '.tool_input.command // empty' <<<"$INPUT")
 
 # Only run for git commit commands
-if ! echo "$COMMAND" | grep -qE '^git\s+commit'; then
+if ! grep -qE '^git\s+commit' <<<"$COMMAND"; then
 	exit 0
 fi
 
-# Get staged files
 STAGED_FILES=$(git diff --cached --name-only --diff-filter=ACM)
-
 if [[ -z "$STAGED_FILES" ]]; then
 	exit 0
 fi
 
 FORMATTED_FILES=()
 
-# Python files
-PY_FILES=$(echo "$STAGED_FILES" | grep '\.py$' || true)
-if [[ -n "$PY_FILES" ]]; then
-	echo "$PY_FILES" | xargs ruff check --fix 2>/dev/null
-	echo "$PY_FILES" | xargs ruff format 2>/dev/null
-	echo "$PY_FILES" | xargs git add
-	while IFS= read -r f; do FORMATTED_FILES+=("$f"); done <<<"$PY_FILES"
-fi
+fmt_py() {
+	xargs ruff check --fix <<<"$1" 2>/dev/null
+	xargs ruff format <<<"$1" 2>/dev/null
+}
+fmt_js() { xargs biome check --fix <<<"$1" 2>/dev/null; }
+fmt_tf() { xargs terraform fmt <<<"$1" 2>/dev/null; }
+fmt_sh() { xargs shfmt -w <<<"$1" 2>/dev/null; }
+fmt_md() { xargs markdownlint --fix --disable MD034 -- <<<"$1" 2>/dev/null; }
 
-# TypeScript/JavaScript files
-JS_FILES=$(echo "$STAGED_FILES" | grep -E '\.(ts|tsx|js|jsx|json)$' || true)
-if [[ -n "$JS_FILES" ]]; then
-	echo "$JS_FILES" | xargs biome check --fix 2>/dev/null
-	echo "$JS_FILES" | xargs git add
-	while IFS= read -r f; do FORMATTED_FILES+=("$f"); done <<<"$JS_FILES"
-fi
+process_ext() {
+	local pattern="$1" fmt="$2"
+	local files
+	files=$(grep -E "$pattern" <<<"$STAGED_FILES" || true)
+	[[ -z "$files" ]] && return 0
+	"$fmt" "$files"
+	xargs git add <<<"$files"
+	while IFS= read -r f; do FORMATTED_FILES+=("$f"); done <<<"$files"
+}
 
-# Terraform files
-TF_FILES=$(echo "$STAGED_FILES" | grep '\.tf$' || true)
-if [[ -n "$TF_FILES" ]]; then
-	echo "$TF_FILES" | xargs terraform fmt 2>/dev/null
-	echo "$TF_FILES" | xargs git add
-	while IFS= read -r f; do FORMATTED_FILES+=("$f"); done <<<"$TF_FILES"
-fi
-
-# Shell files
-SH_FILES=$(echo "$STAGED_FILES" | grep '\.sh$' || true)
-if [[ -n "$SH_FILES" ]]; then
-	echo "$SH_FILES" | xargs shfmt -w 2>/dev/null
-	echo "$SH_FILES" | xargs git add
-	while IFS= read -r f; do FORMATTED_FILES+=("$f"); done <<<"$SH_FILES"
-fi
-
-# Markdown files
-MD_FILES=$(echo "$STAGED_FILES" | grep '\.md$' || true)
-if [[ -n "$MD_FILES" ]]; then
-	echo "$MD_FILES" | xargs markdownlint --fix --disable MD034 -- 2>/dev/null
-	echo "$MD_FILES" | xargs git add
-	while IFS= read -r f; do FORMATTED_FILES+=("$f"); done <<<"$MD_FILES"
-fi
+process_ext '\.py$' fmt_py
+process_ext '\.(ts|tsx|js|jsx|json)$' fmt_js
+process_ext '\.tf$' fmt_tf
+process_ext '\.sh$' fmt_sh
+process_ext '\.md$' fmt_md
 
 # Output result as JSON for Claude Code
 if [[ ${#FORMATTED_FILES[@]} -gt 0 ]]; then
-	FILE_LIST=$(printf ", %s" "${FORMATTED_FILES[@]}")
+	FILE_LIST=$(printf ', %s' "${FORMATTED_FILES[@]}")
 	FILE_LIST=${FILE_LIST:2}
 	printf '{"continue":true,"suppressOutput":false,"systemMessage":"Pre-commit: formatted %d file(s): %s"}\n' \
 		"${#FORMATTED_FILES[@]}" "${FILE_LIST}"
