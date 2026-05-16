@@ -418,3 +418,12 @@ terraform.rc
 packaged.yaml
 # samconfig.toml
 *.db
+
+# ====================
+#
+# apm (Agent Package Manager)
+#
+# ====================
+
+# Local module cache (re-fetched by `apm install`)
+apm_modules/
