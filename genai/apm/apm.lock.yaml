@@ -1,7 +1,18 @@
 lockfile_version: '1'
-generated_at: '2026-05-16T13:35:08.010425+00:00'
+generated_at: '2026-05-16T14:05:44.184946+00:00'
 apm_version: 0.13.0
 dependencies:
+- repo_url: mattpocock/skills
+  host: github.com
+  resolved_commit: e74f0061bb67222181640effa98c675bdb2fdaa7
+  resolved_ref: main
+  virtual_path: skills/engineering/tdd
+  is_virtual: true
+  package_type: claude_skill
+  deployed_files:
+  - .agents/skills/tdd
+  - .claude/skills/tdd
+  content_hash: sha256:e63cb1d7d5f6d90ad03f811299d40cc8e52c3d4bdaafd058ce2585ca249c234c
 - repo_url: mattpocock/skills
   host: github.com
   resolved_commit: e74f0061bb67222181640effa98c675bdb2fdaa7
