@@ -1,0 +1,10 @@
+name: tsukuboshi-dotfiles-genai
+version: 0.1.0
+description: External Claude Code skills managed by apm for dotfiles
+author: tsukuboshi
+dependencies:
+  apm:
+  - mattpocock/skills/skills/productivity/grill-me#main
+  mcp: []
+includes: []
+scripts: {}
