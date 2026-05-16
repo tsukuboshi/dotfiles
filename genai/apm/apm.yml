@@ -5,6 +5,7 @@ author: tsukuboshi
 dependencies:
   apm:
   - mattpocock/skills/skills/productivity/grill-me#main
+  - mattpocock/skills/skills/engineering/tdd#main
   mcp: []
 includes: []
 scripts: {}
