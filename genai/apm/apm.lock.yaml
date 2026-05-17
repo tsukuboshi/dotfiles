@@ -24,3 +24,14 @@ dependencies:
   - .agents/skills/grill-me
   - .claude/skills/grill-me
   content_hash: sha256:784f0dbb7403b0f00324bce9a112f715342777a0daee7bbb7385f9c6f0a170ea
+- repo_url: mattpocock/skills
+  host: github.com
+  resolved_commit: e74f0061bb67222181640effa98c675bdb2fdaa7
+  resolved_ref: main
+  virtual_path: skills/engineering/grill-with-docs
+  is_virtual: true
+  package_type: claude_skill
+  deployed_files:
+  - .agents/skills/grill-with-docs
+  - .claude/skills/grill-with-docs
+  content_hash: sha256:1adf321072f53cce3dcaf5357d91b8230d4aa647bb8a51756745337a6ee567b8
