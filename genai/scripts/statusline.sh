@@ -35,13 +35,17 @@ _data=$(jq -r '[
   (.context_window.used_percentage // 0 | tostring),
   (.session_id // "unknown"),
   (.rate_limits.five_hour.used_percentage // 0 | tostring),
-  (.rate_limits.five_hour.resets_at // ""),
+  (.rate_limits.five_hour.resets_at // "" | tostring),
   (.rate_limits.seven_day.used_percentage // 0 | tostring),
-  (.rate_limits.seven_day.resets_at // "")
-] | join("\t")' <<<"$input" 2>/dev/null)
+  (.rate_limits.seven_day.resets_at // "" | tostring),
+  (.effort.level // "")
+] | join("\u001f")' <<<"$input" 2>/dev/null)
 
-IFS=$'\t' read -r model context_size used_pct session_id \
-	five_hour_pct five_hour_reset seven_day_pct seven_day_reset <<<"$_data"
+# Use the ASCII Unit Separator (0x1f) so that empty fields (e.g. a missing
+# resets_at) are preserved; a whitespace IFS like tab collapses them and shifts
+# every subsequent value into the wrong variable.
+IFS=$'\x1f' read -r model context_size used_pct session_id \
+	five_hour_pct five_hour_reset seven_day_pct seven_day_reset effort <<<"$_data"
 
 pct_int=${used_pct%%.*}
 pct_int=${pct_int:-0}
@@ -81,17 +85,22 @@ pie_char() {
 	fi
 }
 
-# Format remaining time from ISO 8601 reset timestamp
+# Format remaining time from reset timestamp (Unix epoch seconds or ISO 8601)
 fmt_reset() {
 	local reset_at="$1"
 	[ -z "$reset_at" ] && return 1
 	local reset_ts
-	# Strip fractional seconds and trailing Z for macOS date
-	local clean="${reset_at%%.*}"
-	clean="${clean%Z}"
-	reset_ts=$(date -j -f "%Y-%m-%dT%H:%M:%S" "$clean" +%s 2>/dev/null) ||
-		reset_ts=$(date -d "$reset_at" +%s 2>/dev/null) ||
-		return 1
+	if [[ "$reset_at" =~ ^[0-9]+$ ]]; then
+		# Unix epoch seconds (current official schema)
+		reset_ts="$reset_at"
+	else
+		# ISO 8601 fallback: strip fractional seconds and trailing Z for macOS date
+		local clean="${reset_at%%.*}"
+		clean="${clean%Z}"
+		reset_ts=$(date -j -f "%Y-%m-%dT%H:%M:%S" "$clean" +%s 2>/dev/null) ||
+			reset_ts=$(date -d "$reset_at" +%s 2>/dev/null) ||
+			return 1
+	fi
 	local diff=$((reset_ts - current_time))
 	[ "$diff" -le 0 ] && {
 		printf 'now'
@@ -184,6 +193,9 @@ prompt_str=$(_build_statusline_prompt)
 
 # Model
 out+="🤖${model}"
+
+# Reasoning effort (only when present; plain text, no color/pie)
+[ -n "$effort" ] && out+=" │ 🧠${effort}"
 
 # Context usage
 render_metric "📊" "ctx" "$pct_int" "${pct_int}%"
