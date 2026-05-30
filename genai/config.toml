@@ -1,0 +1,48 @@
+# Codex CLI configuration
+# See: https://github.com/openai/codex
+
+approval_policy = "on-request"
+sandbox_mode = "workspace-write"
+
+[sandbox_workspace_write]
+network_access = true
+
+[[PreToolUse]]
+matcher = "^Bash$"
+
+[[PreToolUse.hooks]]
+type = "command"
+command = "bash ~/dotfiles/genai/scripts/pre-commit-hook.sh"
+timeout = 10
+
+[[PostToolUse]]
+matcher = "^(Edit|Write|MultiEdit)$"
+
+[[PostToolUse.hooks]]
+type = "command"
+command = "bash ~/dotfiles/genai/scripts/post-edit-hook.sh"
+timeout = 10
+
+[[Stop]]
+
+[[Stop.hooks]]
+type = "command"
+command = "bash ~/dotfiles/genai/scripts/stop-notify.sh"
+timeout = 10
+
+[tui]
+status_line = [
+  "model-with-reasoning",
+  "current-dir",
+  "git-branch",
+  "approval-mode",
+  "context-remaining",
+  "five-hour-limit",
+  "weekly-limit",
+]
+
+[tui.model_availability_nux]
+"gpt-5.5" = 1
+
+[projects."/Users/tsukuboshi/dotfiles"]
+trust_level = "trusted"

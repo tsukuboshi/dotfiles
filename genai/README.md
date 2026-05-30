@@ -1,6 +1,7 @@
 ## Required
 
 - [Claude Code \- Anthropic](https://docs.anthropic.com/en/docs/claude-code)
+- [Codex CLI \- OpenAI](https://developers.openai.com/codex/cli) (optional, only when using `-a codex`)
 - [apm \- Agent Package Manager](https://microsoft.github.io/apm/) (installed via `brew bundle --global`)
 
 ## Setup Claude Code
@@ -11,7 +12,31 @@
 ./genai/setup.sh -a claude
 ```
 
-`setup.sh` symlinks `~/.apm` to `genai/apm/`, then runs `apm install -g` to deploy external skills directly into `~/.claude/skills/`. Self-authored skills under `skills/` continue to be symlinked individually into `~/.claude/skills/`.
+This links:
+
+- `genai/AGENTS.md` → `~/.claude/CLAUDE.md` (global agent instructions)
+- `genai/settings.json` → `~/.claude/settings.json` (permissions, hooks, status line, plugins)
+- `genai/skills/*/` → `~/.claude/skills/<name>/` (self-authored skills)
+- `genai/rules/*` → `~/.claude/rules/*` (language/tooling rules)
+- apm-installed skills are deployed by `apm install -g` into `~/.claude/skills/` (per `targets:` pinned in `apm/apm.yml`)
+
+## Setup Codex CLI
+
+1. Execute genai setup script with the agent option set to codex.
+
+```bash
+./genai/setup.sh -a codex
+```
+
+This links:
+
+- `genai/AGENTS.md` → `~/.codex/AGENTS.md` (global agent instructions)
+- `genai/config.toml` → `~/.codex/config.toml` (sandbox, hooks, status line)
+- `genai/skills/*/` → `~/.codex/skills/<name>/` (self-authored skills)
+- `genai/rules/*` → `~/.codex/rules/*` (language/tooling rules)
+- apm-installed skills are deployed by `apm install -g` into `~/.agents/skills/` (cross-client location auto-discovered by Codex per [Codex skill discovery docs](https://developers.openai.com/codex/skills); per `targets:` pinned in `apm/apm.yml`)
+
+Note that Codex does not support custom status line commands (only the built-in items selected in `[tui]` are shown), so `scripts/statusline.sh` is intentionally not wired up for Codex.
 
 ## Managing external skills with apm
 
@@ -23,7 +48,7 @@ External skills are declared via [apm](https://microsoft.github.io/apm/). The ma
 apm install -g owner/repo/skill-name
 ```
 
-`genai/apm/apm.yml` and `genai/apm/apm.lock.yaml` are updated — commit both. The skill is deployed to `~/.claude/skills/<name>/` immediately.
+`genai/apm/apm.yml` and `genai/apm/apm.lock.yaml` are updated — commit both. The skill is deployed to all harnesses listed in `targets:` (currently `claude` and `codex`): `~/.claude/skills/<name>/` and `~/.agents/skills/<name>/`.
 
 ### Update
 
@@ -38,4 +63,5 @@ Delete the corresponding line from `genai/apm/apm.yml`, then:
 ```bash
 apm install -g
 trash ~/.claude/skills/<removed-skill-name>
+trash ~/.agents/skills/<removed-skill-name>
 ```

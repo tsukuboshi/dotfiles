@@ -1,10 +1,21 @@
 lockfile_version: '1'
-generated_at: '2026-05-16T14:05:44.184946+00:00'
-apm_version: 0.13.0
+generated_at: '2026-05-30T07:27:16.170618+00:00'
+apm_version: 0.16.0
 dependencies:
 - repo_url: mattpocock/skills
   host: github.com
-  resolved_commit: e74f0061bb67222181640effa98c675bdb2fdaa7
+  resolved_commit: e3b90b5238f38cdea5996e16861dcae28ef52eda
+  resolved_ref: main
+  virtual_path: skills/engineering/grill-with-docs
+  is_virtual: true
+  package_type: claude_skill
+  deployed_files:
+  - .agents/skills/grill-with-docs
+  - .claude/skills/grill-with-docs
+  content_hash: sha256:eb0e91e84277283dc2b23ed544399e53afd6b5287e5b6929f25fe8aa608e164b
+- repo_url: mattpocock/skills
+  host: github.com
+  resolved_commit: e3b90b5238f38cdea5996e16861dcae28ef52eda
   resolved_ref: main
   virtual_path: skills/engineering/tdd
   is_virtual: true
@@ -15,7 +26,7 @@ dependencies:
   content_hash: sha256:e63cb1d7d5f6d90ad03f811299d40cc8e52c3d4bdaafd058ce2585ca249c234c
 - repo_url: mattpocock/skills
   host: github.com
-  resolved_commit: e74f0061bb67222181640effa98c675bdb2fdaa7
+  resolved_commit: e3b90b5238f38cdea5996e16861dcae28ef52eda
   resolved_ref: main
   virtual_path: skills/productivity/grill-me
   is_virtual: true
@@ -24,14 +35,3 @@ dependencies:
   - .agents/skills/grill-me
   - .claude/skills/grill-me
   content_hash: sha256:784f0dbb7403b0f00324bce9a112f715342777a0daee7bbb7385f9c6f0a170ea
-- repo_url: mattpocock/skills
-  host: github.com
-  resolved_commit: e74f0061bb67222181640effa98c675bdb2fdaa7
-  resolved_ref: main
-  virtual_path: skills/engineering/grill-with-docs
-  is_virtual: true
-  package_type: claude_skill
-  deployed_files:
-  - .agents/skills/grill-with-docs
-  - .claude/skills/grill-with-docs
-  content_hash: sha256:1adf321072f53cce3dcaf5357d91b8230d4aa647bb8a51756745337a6ee567b8
