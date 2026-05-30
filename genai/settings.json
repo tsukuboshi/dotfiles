@@ -89,7 +89,7 @@
         "hooks": [
           {
             "type": "command",
-            "command": "bash ~/dotfiles/genai/scripts/pre-commit-hook.sh"
+            "command": "bash ~/dotfiles/genai/hooks/pre-commit-fmt.sh"
           }
         ]
       }
@@ -100,7 +100,7 @@
         "hooks": [
           {
             "type": "command",
-            "command": "bash ~/dotfiles/genai/scripts/post-edit-hook.sh"
+            "command": "bash ~/dotfiles/genai/hooks/post-edit-fmt.sh"
           }
         ]
       }
@@ -111,7 +111,7 @@
         "hooks": [
           {
             "type": "command",
-            "command": "bash ~/dotfiles/genai/scripts/stop-notify.sh"
+            "command": "bash ~/dotfiles/genai/hooks/stop-notify.sh"
           }
         ]
       }
@@ -122,7 +122,7 @@
         "hooks": [
           {
             "type": "command",
-            "command": "bash ~/dotfiles/genai/scripts/config-change-hook.sh"
+            "command": "bash ~/dotfiles/genai/hooks/config-change-guard.sh"
           }
         ]
       }

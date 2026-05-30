@@ -12,7 +12,7 @@ matcher = "^Bash$"
 
 [[PreToolUse.hooks]]
 type = "command"
-command = "bash ~/dotfiles/genai/scripts/pre-commit-hook.sh"
+command = "bash ~/dotfiles/genai/hooks/pre-commit-fmt.sh"
 timeout = 10
 
 [[PostToolUse]]
@@ -20,14 +20,14 @@ matcher = "^(Edit|Write|MultiEdit)$"
 
 [[PostToolUse.hooks]]
 type = "command"
-command = "bash ~/dotfiles/genai/scripts/post-edit-hook.sh"
+command = "bash ~/dotfiles/genai/hooks/post-edit-fmt.sh"
 timeout = 10
 
 [[Stop]]
 
 [[Stop.hooks]]
 type = "command"
-command = "bash ~/dotfiles/genai/scripts/stop-notify.sh"
+command = "bash ~/dotfiles/genai/hooks/stop-notify.sh"
 timeout = 10
 
 [tui]
