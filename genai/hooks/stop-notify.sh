@@ -1,5 +1,6 @@
 #!/bin/bash
-# Stop hook: Send toast notification when Claude Code finishes
+# Stop hook: Send toast notification when the agent finishes
+# Supports both Claude Code and Codex CLI
 
 INPUT=$(cat)
 
@@ -10,6 +11,15 @@ IFS=$'\t' read -r STOP_HOOK_ACTIVE AGENT_ID < <(
     (.agent_id // "")
   ] | @tsv' <<<"$INPUT"
 )
+
+# Detect caller: `turn_id` is a Codex-specific field
+if jq -e '.turn_id' <<<"$INPUT" >/dev/null 2>&1; then
+	TITLE="Codex"
+	GROUP="codex"
+else
+	TITLE="Claude Code"
+	GROUP="claude-code"
+fi
 
 # Prevent loop caused by stop hook
 [[ "$STOP_HOOK_ACTIVE" == "true" ]] && exit 0
@@ -38,9 +48,9 @@ ACTIVATE_OPTS=()
 [[ -n "$BUNDLE_ID" ]] && ACTIVATE_OPTS=(-activate "$BUNDLE_ID")
 
 terminal-notifier \
-	-title "Claude Code" \
+	-title "$TITLE" \
 	-message "$MESSAGE" \
-	-group "claude-code" \
+	-group "$GROUP" \
 	"${ACTIVATE_OPTS[@]}"
 
 exit 0

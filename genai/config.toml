@@ -7,25 +7,25 @@ sandbox_mode = "workspace-write"
 [sandbox_workspace_write]
 network_access = true
 
-[[PreToolUse]]
+[[hooks.PreToolUse]]
 matcher = "^Bash$"
 
-[[PreToolUse.hooks]]
+[[hooks.PreToolUse.hooks]]
 type = "command"
 command = "bash ~/dotfiles/genai/hooks/pre-commit-fmt.sh"
 timeout = 10
 
-[[PostToolUse]]
-matcher = "^(Edit|Write|MultiEdit)$"
+[[hooks.PostToolUse]]
+matcher = "^(apply_patch|Edit|Write)$"
 
-[[PostToolUse.hooks]]
+[[hooks.PostToolUse.hooks]]
 type = "command"
 command = "bash ~/dotfiles/genai/hooks/post-edit-fmt.sh"
 timeout = 10
 
-[[Stop]]
+[[hooks.Stop]]
 
-[[Stop.hooks]]
+[[hooks.Stop.hooks]]
 type = "command"
 command = "bash ~/dotfiles/genai/hooks/stop-notify.sh"
 timeout = 10
