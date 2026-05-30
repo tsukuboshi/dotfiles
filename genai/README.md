@@ -28,12 +28,14 @@ This links:
 ./genai/setup.sh -a codex
 ```
 
-This links:
+This installs:
 
-- `genai/AGENTS.md` → `~/.codex/AGENTS.md` (global agent instructions)
-- `genai/config.toml` → `~/.codex/config.toml` (sandbox, hooks, status line)
-- `genai/skills/*/` → `~/.codex/skills/<name>/` (self-authored skills)
-- `genai/rules/*` → `~/.codex/rules/*` (language/tooling rules)
+- `genai/AGENTS.md` → `~/.codex/AGENTS.md` (symlinked; global agent instructions)
+- `genai/config.toml` → `~/.codex/config.toml` (**copied**; sandbox, hooks, status line)
+- `genai/skills/*/` → `~/.codex/skills/<name>/` (symlinked; self-authored skills)
+- `genai/rules/*` → `~/.codex/rules/*` (symlinked; language/tooling rules)
 - apm-installed skills are deployed by `apm install -g` into `~/.agents/skills/` (cross-client location auto-discovered by Codex per [Codex skill discovery docs](https://developers.openai.com/codex/skills); per `targets:` pinned in `apm/apm.yml`)
+
+`config.toml` is copied rather than symlinked because Codex writes per-project trust entries (`[projects.*]`) and NUX tooltip counters (`[tui.model_availability_nux]`) back to `~/.codex/config.toml` at runtime. Copying keeps that user- / machine-local state out of the dotfiles source tree; re-running setup overwrites whatever has accumulated since the previous install.
 
 Note that Codex does not support custom status line commands (only the built-in items selected in `[tui]` are shown), so `scripts/statusline.sh` is intentionally not wired up for Codex.
