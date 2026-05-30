@@ -37,7 +37,8 @@ show_agent_usage() {
 	echo ""
 	echo "OPTIONS:"
 	echo "  -a, --agent AGENT          Specify agent (claude, codex, default: claude)"
-	echo "  -l, --link-files-only            Link configuration files only"
+	echo "  -l, --link-files-only      Link configuration files only (no apm install)"
+	echo "  -i, --install-apm-only     Install apm-managed skills only (no link)"
 	echo "  (no option)                Execute all operations (default)"
 	echo ""
 	echo "Examples:"
@@ -46,6 +47,8 @@ show_agent_usage() {
 	echo "  $0 -a codex                # Execute all operations for Codex"
 	echo "  $0 -l                      # Link Claude configuration files only"
 	echo "  $0 -a codex -l             # Link Codex configuration files only"
+	echo "  $0 -i                      # Install apm-managed skills only"
+	echo "  $0 -a codex -i             # Install apm-managed skills only (codex header)"
 }
 
 link_agent_config() {
@@ -68,7 +71,13 @@ link_agent_config() {
 	done
 
 	ln -fsvn "${SCRIPT_DIR}/AGENTS.md" "${config_path}/${agents_filename}"
-	ln -fsvn "${SCRIPT_DIR}/${main_settings_filename}" "${config_path}/${main_settings_filename}"
+	if [ "${agent_name}" = "codex" ]; then
+		# Detach a pre-existing symlink so cp does not follow it back into the source tree.
+		[ -L "${config_path}/${main_settings_filename}" ] && unlink "${config_path}/${main_settings_filename}"
+		cp -fv "${SCRIPT_DIR}/${main_settings_filename}" "${config_path}/${main_settings_filename}"
+	else
+		ln -fsvn "${SCRIPT_DIR}/${main_settings_filename}" "${config_path}/${main_settings_filename}"
+	fi
 	for dir in "${SCRIPT_DIR}"/skills/*/; do
 		if [ -d "$dir" ]; then
 			ln -fsvn "$dir" "$skills_path"
@@ -79,18 +88,22 @@ link_agent_config() {
 			ln -fsvn "$file" "$rules_path"
 		fi
 	done
+}
 
-	if command -v apm >/dev/null 2>&1; then
-		printf "\n\033[1;36m=== Installing apm-managed skills (global) ===\033[0m\n"
-		if [ -e "${HOME}/.apm" ] && [ ! -L "${HOME}/.apm" ]; then
-			printf "\033[1;33m⚠ %s exists as a non-symlink. Move it aside to enable dotfiles management.\033[0m\n" "${HOME}/.apm"
-		else
-			ln -fsvn "${SCRIPT_DIR}/apm" "${HOME}/.apm"
-		fi
-		(cd "${HOME}/.apm" && apm install -g)
-	else
+install_agent_apm() {
+	local agent_name=$1
+
+	printf "\n\033[1;36m=== Installing apm-managed skills (global) for %s ===\033[0m\n" "${agent_name}"
+	if ! command -v apm >/dev/null 2>&1; then
 		printf "\033[1;33m⚠ apm not installed — skipping external skills. Install via: brew bundle --global\033[0m\n"
+		return
 	fi
+	if [ -e "${HOME}/.apm" ] && [ ! -L "${HOME}/.apm" ]; then
+		printf "\033[1;33m⚠ %s exists as a non-symlink. Move it aside to enable dotfiles management.\033[0m\n" "${HOME}/.apm"
+	else
+		ln -fsvn "${SCRIPT_DIR}/apm" "${HOME}/.apm"
+	fi
+	(cd "${HOME}/.apm" && apm install -g)
 }
 
 setup_agent() {
@@ -121,8 +134,12 @@ setup_agent() {
 	link)
 		link_agent_config "$agent_name" "$command_name" "$config_path" "$agents_filename" "$main_settings_filename" "$skills_path" "$rules_path"
 		;;
+	install)
+		install_agent_apm "$agent_name"
+		;;
 	*)
 		link_agent_config "$agent_name" "$command_name" "$config_path" "$agents_filename" "$main_settings_filename" "$skills_path" "$rules_path"
+		install_agent_apm "$agent_name"
 		;;
 	esac
 }
@@ -147,6 +164,10 @@ while [[ $# -gt 0 ]]; do
 		;;
 	--link-files-only | -l)
 		MODE="link"
+		shift
+		;;
+	--install-apm-only | -i)
+		MODE="install"
 		shift
 		;;
 	*)

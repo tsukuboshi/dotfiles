@@ -40,9 +40,3 @@ status_line = [
   "five-hour-limit",
   "weekly-limit",
 ]
-
-[tui.model_availability_nux]
-"gpt-5.5" = 1
-
-[projects."/Users/tsukuboshi/dotfiles"]
-trust_level = "trusted"
