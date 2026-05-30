@@ -51,6 +51,7 @@ terminal-notifier \
 	-title "$TITLE" \
 	-message "$MESSAGE" \
 	-group "$GROUP" \
-	"${ACTIVATE_OPTS[@]}"
+	"${ACTIVATE_OPTS[@]}" >/dev/null 2>&1 &
+wait "$!" 2>/dev/null || true
 
 exit 0
