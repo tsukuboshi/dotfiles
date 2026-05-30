@@ -1,29 +1,49 @@
 #!/bin/bash
 # PostToolUse hook: Run linter/formatter when supported files are edited
+# Supports both Claude Code (Edit/Write/MultiEdit) and Codex (apply_patch)
 
 INPUT=$(cat)
-FILE_PATH=$(jq -r '.tool_input.file_path // empty' <<<"$INPUT")
+TOOL_NAME=$(jq -r '.tool_name // empty' <<<"$INPUT")
+TOOL_COMMAND=$(jq -r '.tool_input.command // empty' <<<"$INPUT")
 
-[[ -z "$FILE_PATH" ]] && exit 0
+format_file() {
+	local file_path="$1"
 
-case "$FILE_PATH" in
-*.tf)
-	terraform fmt "$FILE_PATH"
-	;;
-*.py)
-	ruff check --fix "$FILE_PATH"
-	ruff format "$FILE_PATH"
-	;;
-*.ts | *.tsx | *.js | *.jsx | *.json)
-	biome check --fix "$FILE_PATH"
-	;;
-*.md)
-	markdownlint --fix --disable MD034 -- "$FILE_PATH"
-	;;
-*.sh)
-	shfmt -w "$FILE_PATH"
-	shellcheck "$FILE_PATH"
-	;;
-esac
+	[[ -z "$file_path" || ! -f "$file_path" ]] && return 0
+
+	case "$file_path" in
+	*.tf)
+		terraform fmt "$file_path"
+		;;
+	*.py)
+		ruff check --fix "$file_path"
+		ruff format "$file_path"
+		;;
+	*.ts | *.tsx | *.js | *.jsx | *.json)
+		biome check --fix "$file_path"
+		;;
+	*.md)
+		markdownlint --fix --disable MD034 -- "$file_path"
+		;;
+	*.sh)
+		shfmt -w "$file_path"
+		shellcheck "$file_path"
+		;;
+	esac
+}
+
+if [[ "$TOOL_NAME" == "apply_patch" ]]; then
+	while IFS= read -r file_path; do
+		format_file "$file_path"
+	done < <(
+		awk '
+			/^\*\*\* (Add|Update) File: / { sub(/^\*\*\* (Add|Update) File: /, ""); print }
+			/^\*\*\* Move to: / { sub(/^\*\*\* Move to: /, ""); print }
+		' <<<"$TOOL_COMMAND" | sort -u
+	)
+else
+	FILE_PATH=$(jq -r '.tool_input.file_path // empty' <<<"$INPUT")
+	format_file "$FILE_PATH"
+fi
 
 exit 0

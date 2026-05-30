@@ -1,11 +1,19 @@
 #!/bin/bash
 # PreToolUse hook: Run formatters on staged files before git commit
+# Supports both Claude Code and Codex CLI
 
 # fmt_* helpers are dispatched indirectly via process_ext "$fmt".
 # shellcheck disable=SC2329
 
 INPUT=$(cat)
 COMMAND=$(jq -r '.tool_input.command // empty' <<<"$INPUT")
+
+# Detect caller: `turn_id` is a Codex-specific field
+if jq -e '.turn_id' <<<"$INPUT" >/dev/null 2>&1; then
+	CALLER="Codex"
+else
+	CALLER="Claude Code"
+fi
 
 # Only run for git commit commands
 if ! grep -qE '^git\s+commit' <<<"$COMMAND"; then
@@ -44,14 +52,15 @@ process_ext '\.tf$' fmt_tf
 process_ext '\.sh$' fmt_sh
 process_ext '\.md$' fmt_md
 
-# Output result as JSON for Claude Code
+# Output result as JSON (both Claude Code and Codex accept `systemMessage`)
 if [[ ${#FORMATTED_FILES[@]} -gt 0 ]]; then
 	FILE_LIST=$(printf ', %s' "${FORMATTED_FILES[@]}")
 	FILE_LIST=${FILE_LIST:2}
-	printf '{"continue":true,"suppressOutput":false,"systemMessage":"Pre-commit: formatted %d file(s): %s"}\n' \
-		"${#FORMATTED_FILES[@]}" "${FILE_LIST}"
+	printf '{"systemMessage":"Pre-commit (%s): formatted %d file(s): %s"}\n' \
+		"${CALLER}" "${#FORMATTED_FILES[@]}" "${FILE_LIST}"
 else
-	printf '{"continue":true,"suppressOutput":false,"systemMessage":"Pre-commit: no files matched formatting targets"}\n'
+	printf '{"systemMessage":"Pre-commit (%s): no files matched formatting targets"}\n' \
+		"${CALLER}"
 fi
 
 exit 0
