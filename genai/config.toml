@@ -7,6 +7,11 @@ sandbox_mode = "workspace-write"
 [sandbox_workspace_write]
 network_access = true
 
+[mcp_servers.context7]
+command = "npx"
+args = ["-y", "@upstash/context7-mcp"]
+startup_timeout_sec = 20
+
 [[hooks.PreToolUse]]
 matcher = "^Bash$"
 
