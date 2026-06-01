@@ -51,6 +51,47 @@ show_agent_usage() {
 	echo "  $0 -a codex -i             # Install apm-managed skills only (codex header)"
 }
 
+sync_codex_config() {
+	local source_file=$1
+	local target_file=$2
+	local marker="# --- dotfiles managed config end ---"
+	local next_file
+
+	if ! grep -Fxq "$marker" "$source_file"; then
+		printf "\033[1;31m✗ Marker not found in source config: %s\033[0m\n" "$source_file"
+		return 1
+	fi
+
+	# Detach a pre-existing symlink so writes do not follow it back into the source tree.
+	[ -L "$target_file" ] && unlink "$target_file"
+
+	if [ ! -f "$target_file" ]; then
+		cp -fv "$source_file" "$target_file"
+		return
+	fi
+
+	if ! grep -Fxq "$marker" "$target_file"; then
+		cp -fv "$source_file" "$target_file"
+		return
+	fi
+
+	if cmp -s \
+		<(awk -v marker="$marker" '$0 == marker { exit } { print }' "$source_file") \
+		<(awk -v marker="$marker" '$0 == marker { exit } { print }' "$target_file"); then
+		printf "%s is up to date above marker\n" "$target_file"
+		return
+	fi
+
+	next_file=$(mktemp "${target_file}.tmp.XXXXXX")
+	{
+		awk -v marker="$marker" '$0 == marker { exit } { print }' "$source_file"
+		printf "%s\n" "$marker"
+		awk -v marker="$marker" 'found { print } $0 == marker { found = 1 }' "$target_file"
+	} >"$next_file"
+	mv -f "$next_file" "$target_file"
+	printf "%s updated above marker\n" "$target_file"
+}
+
 link_agent_config() {
 	local agent_name=$1
 	local command_name=$2
@@ -72,9 +113,7 @@ link_agent_config() {
 
 	ln -fsvn "${SCRIPT_DIR}/AGENTS.md" "${config_path}/${agents_filename}"
 	if [ "${agent_name}" = "codex" ]; then
-		# Detach a pre-existing symlink so cp does not follow it back into the source tree.
-		[ -L "${config_path}/${main_settings_filename}" ] && unlink "${config_path}/${main_settings_filename}"
-		cp -fv "${SCRIPT_DIR}/${main_settings_filename}" "${config_path}/${main_settings_filename}"
+		sync_codex_config "${SCRIPT_DIR}/${main_settings_filename}" "${config_path}/${main_settings_filename}"
 	else
 		ln -fsvn "${SCRIPT_DIR}/${main_settings_filename}" "${config_path}/${main_settings_filename}"
 	fi
