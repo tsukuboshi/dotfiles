@@ -45,3 +45,5 @@ status_line = [
   "five-hour-limit",
   "weekly-limit",
 ]
+
+# --- dotfiles managed config end ---
