@@ -56,9 +56,9 @@ _brew_outdated() { _pkg_header yellow "Homebrew Formulae Outdated"; brew upgrade
 _cask_outdated() { _pkg_header yellow "Homebrew Casks Outdated"; brew upgrade --cask --greedy --dry-run }
 _mas_outdated()  { _pkg_header yellow "App Store Apps Outdated"; mas outdated }
 
-_brew_upgrade()  { _pkg_header green "Homebrew Formulae Upgrade"; brew upgrade }
-_cask_upgrade()  { _pkg_header green "Homebrew Casks Upgrade"; _with_sudo brew upgrade --cask --greedy }
-_mas_upgrade()   { _pkg_header green "App Store Apps Upgrade"; mas upgrade }
+_brew_upgrade()  { _pkg_header green "Homebrew Formulae Upgrade"; brew upgrade --no-ask }
+_cask_upgrade()  { _pkg_header green "Homebrew Casks Upgrade"; _with_sudo brew upgrade --cask --greedy --no-ask }
+_mas_upgrade()   { _pkg_header green "App Store Apps Upgrade"; mas upgrade --no-ask }
 
 _brew_cleanup()  { _pkg_header green "Homebrew Cleanup"; brew cleanup }
 
