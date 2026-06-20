@@ -34,9 +34,9 @@ _data=$(jq -r '[
   (.context_window.context_window_size // 200000 | tostring),
   (.context_window.used_percentage // 0 | tostring),
   (.session_id // "unknown"),
-  (.rate_limits.five_hour.used_percentage // 0 | tostring),
+  (.rate_limits.five_hour.used_percentage // "" | tostring),
   (.rate_limits.five_hour.resets_at // "" | tostring),
-  (.rate_limits.seven_day.used_percentage // 0 | tostring),
+  (.rate_limits.seven_day.used_percentage // "" | tostring),
   (.rate_limits.seven_day.resets_at // "" | tostring),
   (.effort.level // "")
 ] | join("\u001f")' <<<"$input" 2>/dev/null)
@@ -205,15 +205,19 @@ cmp_level=$compress_count
 [ "$cmp_level" -gt 4 ] && cmp_level=4
 render_metric "🔄" "cmp" "$((cmp_level * 25))" "${compress_count}x"
 
-# 5h rate limit
-fh_int=${five_hour_pct%%.*}
-fh_int=${fh_int:-0}
-render_metric "⏱️" "5h" "$fh_int" "${fh_int}%" "$five_hour_reset"
+# 5h rate limit (Pro/Max only; absent on Team/Enterprise)
+if [ -n "$five_hour_pct" ]; then
+	fh_int=${five_hour_pct%%.*}
+	fh_int=${fh_int:-0}
+	render_metric "⏱️" "5h" "$fh_int" "${fh_int}%" "$five_hour_reset"
+fi
 
-# 7d rate limit
-sd_int=${seven_day_pct%%.*}
-sd_int=${sd_int:-0}
-render_metric "📅" "7d" "$sd_int" "${sd_int}%" "$seven_day_reset"
+# 7d rate limit (Pro/Max only; absent on Team/Enterprise)
+if [ -n "$seven_day_pct" ]; then
+	sd_int=${seven_day_pct%%.*}
+	sd_int=${sd_int:-0}
+	render_metric "📅" "7d" "$sd_int" "${sd_int}%" "$seven_day_reset"
+fi
 
 printf '%b' "$out"
 
