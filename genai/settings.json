@@ -1,9 +1,5 @@
 {
-  "model": "claude-opus-4-6[1m]",
-  "language": "Japanese",
-  "outputStyle": "explanatory",
-  "remoteControlAtStartup": true,
-  "skipAutoPermissionPrompt": true,
+  "askUserQuestionTimeout": "10m",
   "cleanupPeriodDays": 365,
   "env": {
     "DISABLE_AUTOUPDATER": "1",
@@ -15,8 +11,6 @@
     "pr": ""
   },
   "permissions": {
-    "defaultMode": "plan",
-    "disableBypassPermissionsMode": "disable",
     "allow": [
       "Glob(*)",
       "Grep(*)",
@@ -24,6 +18,7 @@
       "Read(/tmp/*)",
       "WebSearch(*)",
       "Bash(basename:*)",
+      "Bash(cat:*)",
       "Bash(cut:*)",
       "Bash(date:*)",
       "Bash(diff:*)",
@@ -33,11 +28,15 @@
       "Bash(file:*)",
       "Bash(find:*)",
       "Bash(git:*)",
+      "Bash(grep:*)",
+      "Bash(head:*)",
+      "Bash(jq:*)",
       "Bash(ls:*)",
       "Bash(od:*)",
       "Bash(open:*)",
       "Bash(printf:*)",
       "Bash(sort:*)",
+      "Bash(tail:*)",
       "Bash(tee:*)",
       "Bash(tr:*)",
       "Bash(uniq:*)",
@@ -87,8 +86,11 @@
       "Edit(**/*.pem)",
       "Read(**/*.key)",
       "Edit(**/*.key)"
-    ]
+    ],
+    "defaultMode": "plan",
+    "disableBypassPermissionsMode": "disable"
   },
+  "model": "claude-opus-4-6[1m]",
   "hooks": {
     "PreToolUse": [
       {
@@ -150,6 +152,8 @@
     "typescript-lsp@claude-plugins-official": true,
     "skill-creator@claude-plugins-official": true
   },
+  "outputStyle": "explanatory",
+  "language": "Japanese",
   "sandbox": {
     "enabled": false,
     "allowUnsandboxedCommands": true,
@@ -175,5 +179,7 @@
       ]
     },
     "excludedCommands": ["open"]
-  }
+  },
+  "remoteControlAtStartup": true,
+  "skipAutoPermissionPrompt": true
 }
