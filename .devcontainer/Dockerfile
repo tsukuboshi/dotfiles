@@ -24,6 +24,8 @@ RUN apt-get update && apt-get install -y --no-install-recommends \
     unzip \
     jq \
     zsh \
+    less \
+    xdg-utils \
     # Lint/format CLIs invoked by genai/scripts/post-edit-hook.sh
     shellcheck \
     ripgrep \
