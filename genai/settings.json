@@ -1,4 +1,9 @@
 {
+  "model": "claude-opus-4-6[1m]",
+  "language": "Japanese",
+  "outputStyle": "explanatory",
+  "remoteControlAtStartup": true,
+  "skipAutoPermissionPrompt": true,
   "env": {
     "DISABLE_AUTOUPDATER": "1",
     "CLAUDE_CODE_NO_FLICKER": "1",
@@ -9,6 +14,8 @@
     "pr": ""
   },
   "permissions": {
+    "defaultMode": "plan",
+    "disableBypassPermissionsMode": "disable",
     "allow": [
       "Glob(*)",
       "Grep(*)",
@@ -79,11 +86,8 @@
       "Edit(**/*.pem)",
       "Read(**/*.key)",
       "Edit(**/*.key)"
-    ],
-    "defaultMode": "plan",
-    "disableBypassPermissionsMode": "disable"
+    ]
   },
-  "model": "claude-opus-4-6[1m]",
   "hooks": {
     "PreToolUse": [
       {
@@ -145,8 +149,6 @@
     "typescript-lsp@claude-plugins-official": true,
     "skill-creator@claude-plugins-official": true
   },
-  "outputStyle": "explanatory",
-  "language": "Japanese",
   "sandbox": {
     "enabled": false,
     "allowUnsandboxedCommands": true,
@@ -172,7 +174,5 @@
       ]
     },
     "excludedCommands": ["open"]
-  },
-  "remoteControlAtStartup": true,
-  "skipAutoPermissionPrompt": true
+  }
 }
