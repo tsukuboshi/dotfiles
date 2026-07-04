@@ -4,6 +4,7 @@
   "outputStyle": "explanatory",
   "remoteControlAtStartup": true,
   "skipAutoPermissionPrompt": true,
+  "cleanupPeriodDays": 365,
   "env": {
     "DISABLE_AUTOUPDATER": "1",
     "CLAUDE_CODE_NO_FLICKER": "1",
