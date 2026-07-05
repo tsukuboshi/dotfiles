@@ -15,7 +15,6 @@
       "Glob(*)",
       "Grep(*)",
       "Read(**)",
-      "Read(/tmp/*)",
       "WebSearch(*)",
       "Bash(basename:*)",
       "Bash(cat:*)",
@@ -60,8 +59,6 @@
       "WebFetch(domain:react.dev)",
       "WebFetch(domain:www.anthropic.com)",
       "WebFetch(domain:www.typescriptlang.org)",
-      "Edit(/tmp/*)",
-      "Write(/tmp/*)",
       "mcp__plugin_context7_context7"
     ],
     "deny": [
