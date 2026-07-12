@@ -2,10 +2,10 @@
 idiomatic_version_file_enable_tools = ["node"]
 
 [tools]
-python = "3.12.10"
-uv = "0.11.6"
-node = ["24.14.1", "22.22.0"]
+python = "3.12.13"
+uv = "0.11.28"
+node = ["24.17.0", "22.23.0"]
 pnpm = "10.26.2"
-ruby = "3.3.10"
-go = "1.24.9"
+ruby = "3.3.11"
+go = "1.26.5"
 terraform = "1.13.5"
