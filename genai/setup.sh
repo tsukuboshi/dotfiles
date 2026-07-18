@@ -21,6 +21,14 @@ get_agent_config() {
 		echo "skills"
 		echo "rules"
 		;;
+	kiro)
+		echo "kiro"
+		echo "${HOME}/.kiro"
+		echo "AGENTS.md"
+		echo "kiro_default.json"
+		echo "skills"
+		echo "rules"
+		;;
 	*)
 		echo ""
 		echo ""
@@ -36,7 +44,7 @@ show_agent_usage() {
 	echo "Usage: $0 [OPTIONS]"
 	echo ""
 	echo "OPTIONS:"
-	echo "  -a, --agent AGENT          Specify agent (claude, codex, default: claude)"
+	echo "  -a, --agent AGENT          Specify agent (claude, codex, kiro, default: claude)"
 	echo "  -l, --link-files-only      Link configuration files only (no apm install)"
 	echo "  -i, --install-apm-only     Install apm-managed skills only (no link)"
 	echo "  (no option)                Execute all operations (default)"
@@ -45,10 +53,13 @@ show_agent_usage() {
 	echo "  $0                         # Execute all operations for Claude (default)"
 	echo "  $0 --agent claude          # Execute all operations for Claude"
 	echo "  $0 -a codex                # Execute all operations for Codex"
+	echo "  $0 -a kiro                 # Execute all operations for Kiro"
 	echo "  $0 -l                      # Link Claude configuration files only"
 	echo "  $0 -a codex -l             # Link Codex configuration files only"
+	echo "  $0 -a kiro -l              # Link Kiro configuration files only"
 	echo "  $0 -i                      # Install apm-managed skills only"
 	echo "  $0 -a codex -i             # Install apm-managed skills only (codex header)"
+	echo "  $0 -a kiro -i              # Install apm-managed skills only (kiro header)"
 }
 
 sync_codex_config() {
@@ -114,6 +125,14 @@ link_agent_config() {
 	ln -fsvn "${SCRIPT_DIR}/AGENTS.md" "${config_path}/${agents_filename}"
 	if [ "${agent_name}" = "codex" ]; then
 		sync_codex_config "${SCRIPT_DIR}/${main_settings_filename}" "${config_path}/${main_settings_filename}"
+	elif [ "${agent_name}" = "kiro" ]; then
+		# Kiro agent config goes into ~/.kiro/agents/
+		local agents_dir="${config_path}/agents"
+		if [ ! -d "$agents_dir" ]; then
+			printf "\033[1;33m⚠ Directory does not exist. Creating: %s\033[0m\n" "$agents_dir"
+			mkdir -p "$agents_dir"
+		fi
+		ln -fsvn "${SCRIPT_DIR}/${main_settings_filename}" "${agents_dir}/${main_settings_filename}"
 	else
 		ln -fsvn "${SCRIPT_DIR}/${main_settings_filename}" "${config_path}/${main_settings_filename}"
 	fi
@@ -165,7 +184,7 @@ setup_agent() {
 
 	if [ -z "$config_path" ]; then
 		printf "\033[1;31m✗ Unknown agent: %s\033[0m\n" "${agent_name}"
-		printf "\033[1;33mAvailable agents: claude, codex\033[0m\n"
+		printf "\033[1;33mAvailable agents: claude, codex, kiro\033[0m\n"
 		return 1
 	fi
 
