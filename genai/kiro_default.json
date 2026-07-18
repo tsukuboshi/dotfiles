@@ -1,0 +1,119 @@
+{
+  "name": "kiro_default",
+  "description": "Default agent for Kiro CLI with hooks and tool settings",
+  "tools": [
+    "read",
+    "write",
+    "shell",
+    "use_aws",
+    "introspect",
+    "knowledge",
+    "grep",
+    "glob",
+    "code",
+    "subagent",
+    "todo_list",
+    "web_fetch",
+    "web_search"
+  ],
+  "allowedTools": [
+    "read",
+    "grep",
+    "glob",
+    "introspect",
+    "web_search"
+  ],
+  "toolsSettings": {
+    "shell": {
+      "allowedCommands": [
+        "basename.*",
+        "cat.*",
+        "cut.*",
+        "date.*",
+        "diff.*",
+        "dirname.*",
+        "echo.*",
+        "export.*",
+        "file.*",
+        "find.*",
+        "git (add|branch|checkout|cherry-pick|clone|commit|diff|fetch|log|merge|pull|push|rebase|remote|reset|revert|show|stash|status|tag).*",
+        "grep.*",
+        "head.*",
+        "jq.*",
+        "ls.*",
+        "od.*",
+        "open.*",
+        "printf.*",
+        "sort.*",
+        "tail.*",
+        "tee.*",
+        "tr.*",
+        "uniq.*",
+        "wc.*",
+        "xargs.*"
+      ],
+      "deniedCommands": [
+        "rm.*",
+        "git clean.*",
+        "git checkout.*",
+        "git restore.*",
+        "git reset --hard.*",
+        "docker push.*",
+        "git push.*",
+        "cdk deploy.*",
+        "terraform apply.*",
+        "cdk destroy.*",
+        "terraform destroy.*"
+      ],
+      "autoAllowReadonly": true
+    },
+    "web_fetch": {
+      "trusted": [
+        ".*aws\\.amazon\\.com.*",
+        ".*code\\.claude\\.com.*",
+        ".*dev\\.classmethod\\.jp.*",
+        ".*developer\\.hashicorp\\.com.*",
+        ".*docs\\.anthropic\\.com.*",
+        ".*docs\\.aws\\.amazon\\.com.*",
+        ".*docs\\.docker\\.com.*",
+        ".*docs\\.github\\.com.*",
+        ".*docs\\.localstack\\.cloud.*",
+        ".*docs\\.opensearch\\.org.*",
+        ".*docs\\.pydantic\\.dev.*",
+        ".*docs\\.python\\.org.*",
+        ".*fastapi\\.tiangolo\\.com.*",
+        ".*nodejs\\.org.*",
+        ".*openai\\.com.*",
+        ".*react\\.dev.*",
+        ".*www\\.anthropic\\.com.*",
+        ".*www\\.typescriptlang\\.org.*"
+      ]
+    }
+  },
+  "hooks": {
+    "preToolUse": [
+      {
+        "matcher": "shell",
+        "command": "bash ~/dotfiles/genai/hooks/pre-commit-fmt.sh"
+      }
+    ],
+    "postToolUse": [
+      {
+        "matcher": "write",
+        "command": "bash ~/dotfiles/genai/hooks/post-edit-fmt.sh"
+      }
+    ],
+    "stop": [
+      {
+        "command": "bash ~/dotfiles/genai/hooks/stop-notify.sh"
+      }
+    ]
+  },
+  "mcpServers": {
+    "context7": {
+      "command": "npx",
+      "args": ["-y", "@upstash/context7-mcp"],
+      "timeout": 20000
+    }
+  }
+}
