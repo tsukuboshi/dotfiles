@@ -24,7 +24,7 @@ get_agent_config() {
 	kiro)
 		echo "kiro"
 		echo "${HOME}/.kiro"
-		echo "AGENTS.md"
+		echo "steering/AGENTS.md"
 		echo "kiro_default.json"
 		echo "skills"
 		echo "steering"
