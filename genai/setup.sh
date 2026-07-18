@@ -27,7 +27,7 @@ get_agent_config() {
 		echo "AGENTS.md"
 		echo "kiro_default.json"
 		echo "skills"
-		echo "rules"
+		echo "steering"
 		;;
 	*)
 		echo ""
