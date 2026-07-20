@@ -50,7 +50,7 @@ show_agent_usage() {
 	echo "  (no option)                Execute all operations (default)"
 	echo ""
 	echo "Examples:"
-	echo "  $0                         # Execute all operations for Claude (default)"
+	echo "  $0                         # Execute all operations for Claude"
 	echo "  $0 --agent claude          # Execute all operations for Claude"
 	echo "  $0 -a codex                # Execute all operations for Codex"
 	echo "  $0 -a kiro                 # Execute all operations for Kiro"
@@ -58,8 +58,8 @@ show_agent_usage() {
 	echo "  $0 -a codex -l             # Link Codex configuration files only"
 	echo "  $0 -a kiro -l              # Link Kiro configuration files only"
 	echo "  $0 -i                      # Install apm-managed skills only"
-	echo "  $0 -a codex -i             # Install apm-managed skills only (codex header)"
-	echo "  $0 -a kiro -i              # Install apm-managed skills only (kiro header)"
+	echo "  $0 -a codex -i             # Install apm-managed skills only"
+	echo "  $0 -a kiro -i              # Install apm-managed skills only"
 }
 
 sync_codex_config() {
