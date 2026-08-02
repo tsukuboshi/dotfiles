@@ -1,7 +1,45 @@
 lockfile_version: '1'
-generated_at: '2026-07-20T07:29:36.413897+00:00'
+generated_at: '2026-08-02T05:37:58.492289+00:00'
 apm_version: 0.26.0
 dependencies:
+- repo_url: k16shikano/eb2929f13ed19c97188393d297be8432
+  name: cognitive-rhythm-writing
+  host: gist.github.com
+  resolved_commit: a3b1e26beced71d582e13314fb6f5b179b023c76
+  resolved_ref: a3b1e26beced71d582e13314fb6f5b179b023c76
+  version: unknown
+  package_type: claude_skill
+  deployed_files:
+  - .agents/skills/eb2929f13ed19c97188393d297be8432
+  - .agents/skills/eb2929f13ed19c97188393d297be8432/SKILL.md
+  - .claude/skills/eb2929f13ed19c97188393d297be8432
+  - .claude/skills/eb2929f13ed19c97188393d297be8432/SKILL.md
+  - .kiro/skills/eb2929f13ed19c97188393d297be8432
+  - .kiro/skills/eb2929f13ed19c97188393d297be8432/SKILL.md
+  deployed_file_hashes:
+    .agents/skills/eb2929f13ed19c97188393d297be8432/SKILL.md: sha256:65486e64f33ce2ab03c5db198b1f92e2838e71abfb1a80085d1b405340c11437
+    .claude/skills/eb2929f13ed19c97188393d297be8432/SKILL.md: sha256:65486e64f33ce2ab03c5db198b1f92e2838e71abfb1a80085d1b405340c11437
+    .kiro/skills/eb2929f13ed19c97188393d297be8432/SKILL.md: sha256:65486e64f33ce2ab03c5db198b1f92e2838e71abfb1a80085d1b405340c11437
+  content_hash: sha256:c9bc3d89d327689176561ef4d73135685c73d90eca03f70403e4e21af3c68a3b
+- repo_url: k16shikano/fd287c3133457c4fd8f5601d34aa817d
+  name: japanese-tech-writing
+  host: gist.github.com
+  resolved_commit: c7189cdc9c2520be50418209834145bdf3a46e97
+  resolved_ref: c7189cdc9c2520be50418209834145bdf3a46e97
+  version: unknown
+  package_type: claude_skill
+  deployed_files:
+  - .agents/skills/fd287c3133457c4fd8f5601d34aa817d
+  - .agents/skills/fd287c3133457c4fd8f5601d34aa817d/SKILL.md
+  - .claude/skills/fd287c3133457c4fd8f5601d34aa817d
+  - .claude/skills/fd287c3133457c4fd8f5601d34aa817d/SKILL.md
+  - .kiro/skills/fd287c3133457c4fd8f5601d34aa817d
+  - .kiro/skills/fd287c3133457c4fd8f5601d34aa817d/SKILL.md
+  deployed_file_hashes:
+    .agents/skills/fd287c3133457c4fd8f5601d34aa817d/SKILL.md: sha256:89e5e14385b1bfaa3c97631ca6a425f9ebbdbb8b18318fd881a79d0903b574ad
+    .claude/skills/fd287c3133457c4fd8f5601d34aa817d/SKILL.md: sha256:89e5e14385b1bfaa3c97631ca6a425f9ebbdbb8b18318fd881a79d0903b574ad
+    .kiro/skills/fd287c3133457c4fd8f5601d34aa817d/SKILL.md: sha256:89e5e14385b1bfaa3c97631ca6a425f9ebbdbb8b18318fd881a79d0903b574ad
+  content_hash: sha256:dd4b5495821a9ff455c6d9a3c021d87ebebbc1fbe4ada96cbce45170aa0dbab3
 - repo_url: mattpocock/skills
   name: grill-with-docs
   host: github.com
@@ -96,6 +134,42 @@ dependencies:
     .kiro/skills/grill-me/agents/openai.yaml: sha256:c061e39c3e0f9d865fb1b97556d485704af2a8a58f4b8221a8917a5c2074a32b
   content_hash: sha256:0ac1a28d5e7ab05c4a51046c9d74fd7bfc070ba6a3b9ec8451bd274e746d67b6
 deployments:
+- kind: project-relative
+  target: claude
+  value: .claude/skills/eb2929f13ed19c97188393d297be8432
+  runtime: null
+  scope: project
+  owners:
+  - gist.github.com/k16shikano/eb2929f13ed19c97188393d297be8432
+  active_owner: gist.github.com/k16shikano/eb2929f13ed19c97188393d297be8432
+  content_hash: null
+- kind: project-relative
+  target: claude
+  value: .claude/skills/eb2929f13ed19c97188393d297be8432/SKILL.md
+  runtime: null
+  scope: project
+  owners:
+  - gist.github.com/k16shikano/eb2929f13ed19c97188393d297be8432
+  active_owner: gist.github.com/k16shikano/eb2929f13ed19c97188393d297be8432
+  content_hash: sha256:65486e64f33ce2ab03c5db198b1f92e2838e71abfb1a80085d1b405340c11437
+- kind: project-relative
+  target: claude
+  value: .claude/skills/fd287c3133457c4fd8f5601d34aa817d
+  runtime: null
+  scope: project
+  owners:
+  - gist.github.com/k16shikano/fd287c3133457c4fd8f5601d34aa817d
+  active_owner: gist.github.com/k16shikano/fd287c3133457c4fd8f5601d34aa817d
+  content_hash: null
+- kind: project-relative
+  target: claude
+  value: .claude/skills/fd287c3133457c4fd8f5601d34aa817d/SKILL.md
+  runtime: null
+  scope: project
+  owners:
+  - gist.github.com/k16shikano/fd287c3133457c4fd8f5601d34aa817d
+  active_owner: gist.github.com/k16shikano/fd287c3133457c4fd8f5601d34aa817d
+  content_hash: sha256:89e5e14385b1bfaa3c97631ca6a425f9ebbdbb8b18318fd881a79d0903b574ad
 - kind: project-relative
   target: claude
   value: .claude/skills/grill-me
@@ -197,6 +271,42 @@ deployments:
   content_hash: sha256:859f9e592c188fda4fc7277dd180e4ce9c7a2e13f6efe1f6f29eccc9d28c106a
 - kind: project-relative
   target: codex
+  value: .agents/skills/eb2929f13ed19c97188393d297be8432
+  runtime: null
+  scope: project
+  owners:
+  - gist.github.com/k16shikano/eb2929f13ed19c97188393d297be8432
+  active_owner: gist.github.com/k16shikano/eb2929f13ed19c97188393d297be8432
+  content_hash: null
+- kind: project-relative
+  target: codex
+  value: .agents/skills/eb2929f13ed19c97188393d297be8432/SKILL.md
+  runtime: null
+  scope: project
+  owners:
+  - gist.github.com/k16shikano/eb2929f13ed19c97188393d297be8432
+  active_owner: gist.github.com/k16shikano/eb2929f13ed19c97188393d297be8432
+  content_hash: sha256:65486e64f33ce2ab03c5db198b1f92e2838e71abfb1a80085d1b405340c11437
+- kind: project-relative
+  target: codex
+  value: .agents/skills/fd287c3133457c4fd8f5601d34aa817d
+  runtime: null
+  scope: project
+  owners:
+  - gist.github.com/k16shikano/fd287c3133457c4fd8f5601d34aa817d
+  active_owner: gist.github.com/k16shikano/fd287c3133457c4fd8f5601d34aa817d
+  content_hash: null
+- kind: project-relative
+  target: codex
+  value: .agents/skills/fd287c3133457c4fd8f5601d34aa817d/SKILL.md
+  runtime: null
+  scope: project
+  owners:
+  - gist.github.com/k16shikano/fd287c3133457c4fd8f5601d34aa817d
+  active_owner: gist.github.com/k16shikano/fd287c3133457c4fd8f5601d34aa817d
+  content_hash: sha256:89e5e14385b1bfaa3c97631ca6a425f9ebbdbb8b18318fd881a79d0903b574ad
+- kind: project-relative
+  target: codex
   value: .agents/skills/grill-me
   runtime: null
   scope: project
@@ -294,6 +404,42 @@ deployments:
   - mattpocock/skills/skills/engineering/tdd
   active_owner: mattpocock/skills/skills/engineering/tdd
   content_hash: sha256:859f9e592c188fda4fc7277dd180e4ce9c7a2e13f6efe1f6f29eccc9d28c106a
+- kind: project-relative
+  target: kiro
+  value: .kiro/skills/eb2929f13ed19c97188393d297be8432
+  runtime: null
+  scope: project
+  owners:
+  - gist.github.com/k16shikano/eb2929f13ed19c97188393d297be8432
+  active_owner: gist.github.com/k16shikano/eb2929f13ed19c97188393d297be8432
+  content_hash: null
+- kind: project-relative
+  target: kiro
+  value: .kiro/skills/eb2929f13ed19c97188393d297be8432/SKILL.md
+  runtime: null
+  scope: project
+  owners:
+  - gist.github.com/k16shikano/eb2929f13ed19c97188393d297be8432
+  active_owner: gist.github.com/k16shikano/eb2929f13ed19c97188393d297be8432
+  content_hash: sha256:65486e64f33ce2ab03c5db198b1f92e2838e71abfb1a80085d1b405340c11437
+- kind: project-relative
+  target: kiro
+  value: .kiro/skills/fd287c3133457c4fd8f5601d34aa817d
+  runtime: null
+  scope: project
+  owners:
+  - gist.github.com/k16shikano/fd287c3133457c4fd8f5601d34aa817d
+  active_owner: gist.github.com/k16shikano/fd287c3133457c4fd8f5601d34aa817d
+  content_hash: null
+- kind: project-relative
+  target: kiro
+  value: .kiro/skills/fd287c3133457c4fd8f5601d34aa817d/SKILL.md
+  runtime: null
+  scope: project
+  owners:
+  - gist.github.com/k16shikano/fd287c3133457c4fd8f5601d34aa817d
+  active_owner: gist.github.com/k16shikano/fd287c3133457c4fd8f5601d34aa817d
+  content_hash: sha256:89e5e14385b1bfaa3c97631ca6a425f9ebbdbb8b18318fd881a79d0903b574ad
 - kind: project-relative
   target: kiro
   value: .kiro/skills/grill-me
