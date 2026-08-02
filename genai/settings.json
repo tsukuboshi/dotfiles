@@ -87,6 +87,7 @@
     "disableBypassPermissionsMode": "disable"
   },
   "model": "claude-opus-4-6[1m]",
+  "fallbackModel": ["claude-sonnet-5"],
   "hooks": {
     "PreToolUse": [
       {
