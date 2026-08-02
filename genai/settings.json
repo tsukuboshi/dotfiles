@@ -58,8 +58,7 @@
       "WebFetch(domain:openai.com)",
       "WebFetch(domain:react.dev)",
       "WebFetch(domain:www.anthropic.com)",
-      "WebFetch(domain:www.typescriptlang.org)",
-      "mcp__plugin_context7_context7"
+      "WebFetch(domain:www.typescriptlang.org)"
     ],
     "deny": [
       "Bash(rm:*)",
@@ -140,11 +139,8 @@
   },
   "enabledPlugins": {
     "claude-md-management@claude-plugins-official": true,
-    "chrome-devtools-mcp@claude-plugins-official": true,
-    "context7@claude-plugins-official": true,
     "frontend-design@claude-plugins-official": true,
     "feature-dev@claude-plugins-official": true,
-    "playwright@claude-plugins-official": true,
     "pyright-lsp@claude-plugins-official": true,
     "typescript-lsp@claude-plugins-official": true,
     "skill-creator@claude-plugins-official": true

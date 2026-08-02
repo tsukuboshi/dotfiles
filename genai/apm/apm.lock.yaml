@@ -1,5 +1,5 @@
 lockfile_version: '1'
-generated_at: '2026-08-02T05:37:58.492289+00:00'
+generated_at: '2026-08-02T05:52:53.281588+00:00'
 apm_version: 0.26.0
 dependencies:
 - repo_url: k16shikano/eb2929f13ed19c97188393d297be8432
@@ -539,3 +539,84 @@ deployments:
   - mattpocock/skills/skills/engineering/tdd
   active_owner: mattpocock/skills/skills/engineering/tdd
   content_hash: sha256:859f9e592c188fda4fc7277dd180e4ce9c7a2e13f6efe1f6f29eccc9d28c106a
+- kind: uri
+  target: mcp
+  value: aws-knowledge
+  runtime: claude
+  scope: project
+  owners:
+  - .
+  active_owner: .
+  content_hash: null
+- kind: uri
+  target: mcp
+  value: context7
+  runtime: claude
+  scope: project
+  owners:
+  - .
+  active_owner: .
+  content_hash: null
+- kind: uri
+  target: mcp
+  value: aws-knowledge
+  runtime: codex
+  scope: project
+  owners:
+  - .
+  active_owner: .
+  content_hash: null
+- kind: uri
+  target: mcp
+  value: context7
+  runtime: codex
+  scope: project
+  owners:
+  - .
+  active_owner: .
+  content_hash: null
+- kind: uri
+  target: mcp
+  value: aws-knowledge
+  runtime: kiro
+  scope: project
+  owners:
+  - .
+  active_owner: .
+  content_hash: null
+- kind: uri
+  target: mcp
+  value: context7
+  runtime: kiro
+  scope: project
+  owners:
+  - .
+  active_owner: .
+  content_hash: null
+mcp_servers:
+- aws-knowledge
+- context7
+mcp_configs:
+  aws-knowledge:
+    name: aws-knowledge
+    transport: http
+    registry: false
+    url: https://knowledge-mcp.global.api.aws
+  context7:
+    name: context7
+    transport: stdio
+    args:
+    - -y
+    - '@upstash/context7-mcp'
+    registry: false
+    command: npx
+mcp_target_servers:
+  claude:
+  - aws-knowledge
+  - context7
+  codex:
+  - aws-knowledge
+  - context7
+  kiro:
+  - aws-knowledge
+  - context7
