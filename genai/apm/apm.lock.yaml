@@ -1,5 +1,5 @@
 lockfile_version: '1'
-generated_at: '2026-08-02T05:52:53.281588+00:00'
+generated_at: '2026-08-02T06:06:20.252127+00:00'
 apm_version: 0.26.0
 dependencies:
 - repo_url: k16shikano/eb2929f13ed19c97188393d297be8432
@@ -133,6 +133,27 @@ dependencies:
     .kiro/skills/grill-me/SKILL.md: sha256:6189dfceb7304a6e5558f75d87e68fa3bc7fcf7ba120e44f21f8a61fe01eba54
     .kiro/skills/grill-me/agents/openai.yaml: sha256:c061e39c3e0f9d865fb1b97556d485704af2a8a58f4b8221a8917a5c2074a32b
   content_hash: sha256:0ac1a28d5e7ab05c4a51046c9d74fd7bfc070ba6a3b9ec8451bd274e746d67b6
+- repo_url: vercel-labs/skills
+  name: find-skills
+  host: github.com
+  resolved_commit: 1164afa5f0e21ebd01e6fc11249759353f494ad1
+  resolved_ref: main
+  version: unknown
+  virtual_path: skills/find-skills
+  is_virtual: true
+  package_type: claude_skill
+  deployed_files:
+  - .agents/skills/find-skills
+  - .agents/skills/find-skills/SKILL.md
+  - .claude/skills/find-skills
+  - .claude/skills/find-skills/SKILL.md
+  - .kiro/skills/find-skills
+  - .kiro/skills/find-skills/SKILL.md
+  deployed_file_hashes:
+    .agents/skills/find-skills/SKILL.md: sha256:c00eeea0e13e74fe4a9d84ba0a8542205a1b736d65f13134fe1a6647eb14976f
+    .claude/skills/find-skills/SKILL.md: sha256:c00eeea0e13e74fe4a9d84ba0a8542205a1b736d65f13134fe1a6647eb14976f
+    .kiro/skills/find-skills/SKILL.md: sha256:c00eeea0e13e74fe4a9d84ba0a8542205a1b736d65f13134fe1a6647eb14976f
+  content_hash: sha256:913b9d37d0d54047dd65222bb8c67b2bf04e3cb87dcad1729068d7a8b2c8c396
 deployments:
 - kind: project-relative
   target: claude
@@ -170,6 +191,24 @@ deployments:
   - gist.github.com/k16shikano/fd287c3133457c4fd8f5601d34aa817d
   active_owner: gist.github.com/k16shikano/fd287c3133457c4fd8f5601d34aa817d
   content_hash: sha256:89e5e14385b1bfaa3c97631ca6a425f9ebbdbb8b18318fd881a79d0903b574ad
+- kind: project-relative
+  target: claude
+  value: .claude/skills/find-skills
+  runtime: null
+  scope: project
+  owners:
+  - vercel-labs/skills/skills/find-skills
+  active_owner: vercel-labs/skills/skills/find-skills
+  content_hash: null
+- kind: project-relative
+  target: claude
+  value: .claude/skills/find-skills/SKILL.md
+  runtime: null
+  scope: project
+  owners:
+  - vercel-labs/skills/skills/find-skills
+  active_owner: vercel-labs/skills/skills/find-skills
+  content_hash: sha256:c00eeea0e13e74fe4a9d84ba0a8542205a1b736d65f13134fe1a6647eb14976f
 - kind: project-relative
   target: claude
   value: .claude/skills/grill-me
@@ -307,6 +346,24 @@ deployments:
   content_hash: sha256:89e5e14385b1bfaa3c97631ca6a425f9ebbdbb8b18318fd881a79d0903b574ad
 - kind: project-relative
   target: codex
+  value: .agents/skills/find-skills
+  runtime: null
+  scope: project
+  owners:
+  - vercel-labs/skills/skills/find-skills
+  active_owner: vercel-labs/skills/skills/find-skills
+  content_hash: null
+- kind: project-relative
+  target: codex
+  value: .agents/skills/find-skills/SKILL.md
+  runtime: null
+  scope: project
+  owners:
+  - vercel-labs/skills/skills/find-skills
+  active_owner: vercel-labs/skills/skills/find-skills
+  content_hash: sha256:c00eeea0e13e74fe4a9d84ba0a8542205a1b736d65f13134fe1a6647eb14976f
+- kind: project-relative
+  target: codex
   value: .agents/skills/grill-me
   runtime: null
   scope: project
@@ -440,6 +497,24 @@ deployments:
   - gist.github.com/k16shikano/fd287c3133457c4fd8f5601d34aa817d
   active_owner: gist.github.com/k16shikano/fd287c3133457c4fd8f5601d34aa817d
   content_hash: sha256:89e5e14385b1bfaa3c97631ca6a425f9ebbdbb8b18318fd881a79d0903b574ad
+- kind: project-relative
+  target: kiro
+  value: .kiro/skills/find-skills
+  runtime: null
+  scope: project
+  owners:
+  - vercel-labs/skills/skills/find-skills
+  active_owner: vercel-labs/skills/skills/find-skills
+  content_hash: null
+- kind: project-relative
+  target: kiro
+  value: .kiro/skills/find-skills/SKILL.md
+  runtime: null
+  scope: project
+  owners:
+  - vercel-labs/skills/skills/find-skills
+  active_owner: vercel-labs/skills/skills/find-skills
+  content_hash: sha256:c00eeea0e13e74fe4a9d84ba0a8542205a1b736d65f13134fe1a6647eb14976f
 - kind: project-relative
   target: kiro
   value: .kiro/skills/grill-me
