@@ -13,6 +13,15 @@ dependencies:
   - mattpocock/skills/skills/engineering/grill-with-docs#main
   - https://gist.github.com/k16shikano/fd287c3133457c4fd8f5601d34aa817d#c7189cdc9c2520be50418209834145bdf3a46e97
   - https://gist.github.com/k16shikano/eb2929f13ed19c97188393d297be8432#a3b1e26beced71d582e13314fb6f5b179b023c76
-  mcp: []
+  mcp:
+  - name: context7
+    registry: false
+    transport: stdio
+    command: npx
+    args: ["-y", "@upstash/context7-mcp"]
+  - name: aws-knowledge
+    registry: false
+    transport: http
+    url: https://knowledge-mcp.global.api.aws
 includes: auto
 scripts: {}

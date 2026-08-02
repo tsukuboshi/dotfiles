@@ -108,12 +108,5 @@
         "command": "bash ~/dotfiles/genai/hooks/stop-notify.sh"
       }
     ]
-  },
-  "mcpServers": {
-    "context7": {
-      "command": "npx",
-      "args": ["-y", "@upstash/context7-mcp"],
-      "timeout": 20000
-    }
   }
 }
