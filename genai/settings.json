@@ -4,7 +4,10 @@
   "env": {
     "DISABLE_AUTOUPDATER": "1",
     "CLAUDE_CODE_NO_FLICKER": "1",
-    "BASH_DEFAULT_TIMEOUT_MS": "300000"
+    "BASH_DEFAULT_TIMEOUT_MS": "300000",
+    "ANTHROPIC_DEFAULT_OPUS_MODEL": "claude-fable-5[1m]",
+    "ANTHROPIC_DEFAULT_SONNET_MODEL": "claude-sonnet-5[1m]",
+    "ANTHROPIC_MODEL": "opusplan"
   },
   "attribution": {
     "commit": "",
@@ -86,8 +89,6 @@
     "defaultMode": "plan",
     "disableBypassPermissionsMode": "disable"
   },
-  "model": "claude-opus-4-6[1m]",
-  "fallbackModel": ["claude-sonnet-5"],
   "hooks": {
     "PreToolUse": [
       {
