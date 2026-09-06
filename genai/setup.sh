@@ -160,12 +160,28 @@ install_agent_apm() {
 		printf "\033[1;33m⚠ apm not installed — skipping external skills. Install via: brew bundle --global\033[0m\n"
 		return
 	fi
-	if [ -e "${HOME}/.apm" ] && [ ! -L "${HOME}/.apm" ]; then
-		printf "\033[1;33m⚠ %s exists as a non-symlink. Move it aside to enable dotfiles management.\033[0m\n" "${HOME}/.apm"
-	else
-		ln -fsvn "${SCRIPT_DIR}/apm" "${HOME}/.apm"
+	# apm 0.29.1+ refuses to run when ~/.apm itself is a symlink (it writes a
+	# lifecycle lock there). Keep ~/.apm a real directory and symlink only the
+	# git-tracked config files back into dotfiles.
+	if [ -L "${HOME}/.apm" ]; then
+		unlink "${HOME}/.apm"
+	fi
+	mkdir -p "${HOME}/.apm"
+	for apm_file in .gitignore apm.yml config.json marketplaces.json; do
+		if [ -e "${SCRIPT_DIR}/apm/${apm_file}" ]; then
+			ln -fsvn "${SCRIPT_DIR}/apm/${apm_file}" "${HOME}/.apm/${apm_file}"
+		fi
+	done
+	# apm rewrites apm.lock.yaml in place, replacing a symlink with a regular
+	# file, so copy it in and back out instead of linking it.
+	if [ -f "${SCRIPT_DIR}/apm/apm.lock.yaml" ]; then
+		cp "${SCRIPT_DIR}/apm/apm.lock.yaml" "${HOME}/.apm/apm.lock.yaml"
 	fi
 	(cd "${HOME}/.apm" && apm install -g)
+	if [ -f "${HOME}/.apm/apm.lock.yaml" ]; then
+		cp "${HOME}/.apm/apm.lock.yaml" "${SCRIPT_DIR}/apm/apm.lock.yaml"
+		chmod 644 "${SCRIPT_DIR}/apm/apm.lock.yaml"
+	fi
 }
 
 setup_agent() {
