@@ -9,7 +9,13 @@ targets:
 dependencies:
   apm:
   - vercel-labs/skills/skills/find-skills#main
-  - mattpocock/skills/skills/productivity/grill-me#main
+  - mattpocock/skills/skills/productivity/grilling#main
+  - mattpocock/skills/skills/productivity/handoff#main
+  - mattpocock/skills/skills/productivity/teach#main
+  - mattpocock/skills/skills/productivity/to-questionnaire#main
+  - mattpocock/skills/skills/productivity/wait-what#main
+  - mattpocock/skills/skills/productivity/writing-for-agents#main
+  - mattpocock/skills/skills/engineering/domain-modeling#main
   - mattpocock/skills/skills/engineering/tdd#main
   - mattpocock/skills/skills/engineering/grill-with-docs#main
   - https://gist.github.com/k16shikano/fd287c3133457c4fd8f5601d34aa817d#c7189cdc9c2520be50418209834145bdf3a46e97
