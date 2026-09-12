@@ -35,8 +35,28 @@
 | `wait-what` | こちらの説明が伝わらなかったとき |
 | `teach` | 設計・実装の前提となる概念をユーザーが学びたいとき。起動したディレクトリを学習ワークスペースとして多数のファイルを生成するため、学習用の空ディレクトリで起動するよう促す |
 | `loop` | デプロイ・CI・PR など外部状態の変化を定期的に確認し続けたいとき。`/loop <間隔> <プロンプト>`（間隔を省略すると Claude が間隔を自動調整する）の形で起動するよう促す |
+| `ask-matt` | どのスキル・フローを使うべきか迷ったとき。mattpocock スキル群のルーターとして現状に合う経路を示す |
+| `wayfinder` | 1 セッションに収まらない規模で、決めるべきことがまだ霧の中のとき。決定チケットの地図を作り 1 セッション 1 枚ずつ解決する。地図が晴れたら `/to-spec` へ渡す |
+| `to-spec` | 詰め終えた会話を spec に起こすとき。インタビューせず会話を合成し、テストする seam を確認した上で Issue 化する |
+| `to-tickets` | spec を実装単位に割るとき。各チケットは依存関係を宣言した垂直スライスで、1 フレッシュコンテキストに収まるサイズにする |
+| `implement` | agent-ready なチケットを実装するとき。1 チケット = 1 セッションで、内部で `tdd` と `code-review` を駆動する。次のチケットに移る前に `/clear` を促す |
+| `triage` | 他者から届いた issue・PR を分類・検証して agent-ready にするとき。`to-tickets` が作ったチケットは既に agent-ready なので対象外 |
+| `improve-codebase-architecture` | コードベースの設計改善候補を洗い出したいとき。HTML レポートで候補を提示し、選ばれた候補を grilling で詰める |
 
-`domain-modeling`（`CONTEXT.md` / ADR の作成・更新）と `writing-for-agents`（スキル・`CLAUDE.md`・`AGENTS.md` の執筆）は自動発火するため、明示的な起動は不要。
+`to-spec` / `to-tickets` / `triage` / `wayfinder` が Issue を発行・操作するときは、`plan-issue` / `open-pr` と同様に GitHub Web UI（Issue 作成 URL をブラウザで開く）を使う。ラベル付与や blocking link の設定は Web UI 上の操作としてユーザーに依頼し、Web UI で表現しきれない依存関係はチケット本文に記載する。
+
+以下は自動発火するため、明示的な起動は不要。
+
+| スキル | 役割 |
+|---|---|
+| `domain-modeling` | `CONTEXT.md` / ADR の作成・更新 |
+| `writing-for-agents` | スキル・`CLAUDE.md`・`AGENTS.md` の執筆 |
+| `codebase-design` | deep module 設計の共有語彙（module / interface / seam / adapter）。`tdd` の seam 議論や `improve-codebase-architecture` から参照される |
+| `diagnosing-bugs` | 難しいバグ・性能劣化の診断。まずそのバグで red になる 1 コマンドを作る |
+| `prototype` | 設計上の問い 1 つに答える使い捨てコード |
+| `research` | 一次資料に当たる調査をバックグラウンドエージェントに任せ、出典付き Markdown に残す |
+| `resolving-merge-conflicts` | 進行中の merge / rebase コンフリクトの解決 |
+| `wizard` | 人間にしかできない手順を対話式 bash ウィザードにする |
 
 ## 公式ドキュメントの参照
 
