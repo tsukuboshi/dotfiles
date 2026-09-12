@@ -18,6 +18,19 @@ dependencies:
   - mattpocock/skills/skills/engineering/domain-modeling#main
   - mattpocock/skills/skills/engineering/tdd#main
   - mattpocock/skills/skills/engineering/grill-with-docs#main
+  - mattpocock/skills/skills/engineering/ask-matt#main
+  - mattpocock/skills/skills/engineering/codebase-design#main
+  - mattpocock/skills/skills/engineering/diagnosing-bugs#main
+  - mattpocock/skills/skills/engineering/implement#main
+  - mattpocock/skills/skills/engineering/improve-codebase-architecture#main
+  - mattpocock/skills/skills/engineering/prototype#main
+  - mattpocock/skills/skills/engineering/research#main
+  - mattpocock/skills/skills/engineering/resolving-merge-conflicts#main
+  - mattpocock/skills/skills/engineering/to-spec#main
+  - mattpocock/skills/skills/engineering/to-tickets#main
+  - mattpocock/skills/skills/engineering/triage#main
+  - mattpocock/skills/skills/engineering/wayfinder#main
+  - mattpocock/skills/skills/engineering/wizard#main
   - https://gist.github.com/k16shikano/fd287c3133457c4fd8f5601d34aa817d#c7189cdc9c2520be50418209834145bdf3a46e97
   - https://gist.github.com/k16shikano/eb2929f13ed19c97188393d297be8432#a3b1e26beced71d582e13314fb6f5b179b023c76
   mcp:
