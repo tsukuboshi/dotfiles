@@ -32,9 +32,9 @@ _parse_aws_profile() {
   elif [ -n "$AWS_PROFILE" ]; then
     profile="$AWS_PROFILE"
   elif [ -f $SSO_PROFILE ]; then
-    # Ignore if older than 12 hours (43200 seconds)
+    # Ignore if older than 1 hour (3600 seconds)
     local file_age=$(( $(date +%s) - $(stat -f %m $SSO_PROFILE 2>/dev/null || echo 0) ))
-    if [ "$file_age" -lt 43200 ]; then
+    if [ "$file_age" -lt 3600 ]; then
       profile=$(grep '^export AWS_PROFILE_DISPLAY=' $SSO_PROFILE 2>/dev/null | sed 's/^export AWS_PROFILE_DISPLAY=//')
     fi
   fi
