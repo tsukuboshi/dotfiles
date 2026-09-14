@@ -122,6 +122,24 @@ GitHub の PR 作成エンドポイントは URL 全体で約 8KB が上限（�
 
 生成後に本文が上記を超えていたら要約し直す。詳細が必要な情報は関連 Issue / コミットメッセージ / リンク先ドキュメントで参照させる。
 
+# ラベルの選択
+
+PRタイトルのConventional Commits typeと変更内容を基準に、以下からラベルを選んでください。通常は1つ、機能追加とドキュメント更新が主要な変更として並ぶ場合など、明確に複数該当するときのみ複数選びます。
+
+| type | ラベル |
+|---|---|
+| `fix` | `bug` |
+| `feat` | `enhancement` |
+| `docs` | `documentation` |
+| `build(deps)` / `chore(deps)` など依存関係の更新 | `dependencies` |
+| 上記以外（`refactor` / `test` / `style` / `ci` など） | 省略する |
+
+`bug` / `documentation` / `enhancement` はGitHubが全新規リポジトリに用意するデフォルトラベルのため、publicでもprivateでも利用できる。`dependencies` はDependabotが作成する慣例ラベルで、Dependabotを有効化したリポジトリに存在する。
+
+リポジトリに存在しないラベルを指定した場合は、そのラベルが無視されるだけでPR作成自体は成功する。
+
+選んだラベルは、後述のコマンドの `LABELS` 変数に設定してください。複数選んだ場合はカンマ区切りの1つの文字列にし、省略する場合は空文字のままにします。
+
 # PR作成ページをブラウザでオープン
 
 PRタイトルとPRボディをURLエンコードしてPR作成ページを開きます。
@@ -157,5 +175,5 @@ git config github.user
 - フォールバック: URLを標準出力に表示
 
 ```bash
-urlencode(){ printf '%s' "$1" | od -An -tx1 | tr -d ' \n' | sed 's/\(..\)/%\1/g'; }; opener(){ case "$(uname -s)" in Darwin) open "$1";; Linux) if grep -qi microsoft /proc/version 2>/dev/null; then explorer.exe "$1"; elif command -v xdg-open >/dev/null 2>&1; then xdg-open "$1"; else printf 'Open this URL: %s\n' "$1"; fi;; *) printf 'Open this URL: %s\n' "$1";; esac; }; GH_USER=$(git config github.user 2>/dev/null); QS_ASSIGNEES=""; [ -n "$GH_USER" ] && QS_ASSIGNEES="&assignees=$GH_USER"; opener "REPO_URL/compare/BASE_BRANCH...COMPARE_BRANCH?quick_pull=1&title=$(urlencode "PRタイトル")&body=$(urlencode "PRボディ")${QS_ASSIGNEES}"
+urlencode(){ printf '%s' "$1" | od -An -tx1 | tr -d ' \n' | sed 's/\(..\)/%\1/g'; }; opener(){ case "$(uname -s)" in Darwin) open "$1";; Linux) if grep -qi microsoft /proc/version 2>/dev/null; then explorer.exe "$1"; elif command -v xdg-open >/dev/null 2>&1; then xdg-open "$1"; else printf 'Open this URL: %s\n' "$1"; fi;; *) printf 'Open this URL: %s\n' "$1";; esac; }; GH_USER=$(git config github.user 2>/dev/null); QS_ASSIGNEES=""; [ -n "$GH_USER" ] && QS_ASSIGNEES="&assignees=$GH_USER"; LABELS="選択したラベル"; QS_LABELS=""; [ -n "$LABELS" ] && QS_LABELS="&labels=$(urlencode "$LABELS")"; opener "REPO_URL/compare/BASE_BRANCH...COMPARE_BRANCH?quick_pull=1&title=$(urlencode "PRタイトル")&body=$(urlencode "PRボディ")${QS_ASSIGNEES}${QS_LABELS}"
 ```
