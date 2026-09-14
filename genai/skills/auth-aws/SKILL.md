@@ -1,5 +1,5 @@
 ---
-name: sso-auth
+name: auth-aws
 description: "Authenticate to AWS using exported environment variables (e.g. from AWS SSO portal). Use this skill when the user pastes export AWS_ACCESS_KEY_ID=... environment variables or AWS SSO credentials."
 argument-hint: "<env-vars>"
 ---
