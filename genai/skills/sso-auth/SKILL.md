@@ -34,10 +34,18 @@ export AWS_DEFAULT_REGION=ap-northeast-1
 
 # プロファイルパスの確定
 
-プロファイルファイルの絶対パス `<PROFILE_PATH>` を以下の優先順で決定してください。
+Bashツールで以下を実行し、出力をプロファイルファイルの絶対パス `<PROFILE_PATH>` として使用してください。
 
-1. 現在のシェル環境に `SSO_PROFILE` が設定されている場合: その値を使用
-2. 未設定の場合: Bashツールで `echo "${TMPDIR%/}/sso_profile"` を実行し、出力をパスとして使用
+```bash
+if [ -n "$SSO_PROFILE" ]; then
+  echo "$SSO_PROFILE"
+else
+  tmp="${TMPDIR:-/tmp}"
+  echo "${tmp%/}/sso_profile"
+fi
+```
+
+フォールバックのパスは `common/.zshrc` の `SSO_PROFILE` 定義と一致させてください。zshプロンプトが同じファイルを読んでプロファイル名を表示するためです（書き込みから1時間で表示対象外になります）。
 
 以降のステップではこの確定パスを `<PROFILE_PATH>` として参照します。
 
@@ -52,6 +60,8 @@ export AWS_SESSION_TOKEN=<value>
 export AWS_REGION=<region>
 export AWS_PROFILE_DISPLAY=<profile_name>
 ```
+
+書き込み後、Bashツールで `chmod 600 <PROFILE_PATH>` を実行し、パーミッションを所有者のみに絞ってください。
 
 # 認証の確認とロールの取得
 
