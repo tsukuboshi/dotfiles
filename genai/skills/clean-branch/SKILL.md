@@ -1,5 +1,5 @@
 ---
-name: "clean-branches"
+name: "clean-branch"
 description: "Delete local branches that have been merged into the base branch and prune stale remote tracking references. Use this skill when the user wants to clean up old branches, remove merged branches, tidy up their local git state, or prune remote references — even casually like 'clean up branches' or 'delete merged branches'."
 argument-hint: "[Base Branch]"
 ---
