@@ -74,6 +74,26 @@ GitHub の Issue 作成エンドポイントは URL 全体で約 8KB が上限�
 
 生成後に本文が上記を超えていたら要約し直す。詳細が必要な情報は Plan ファイルや関連ドキュメントへのリンクで参照させる。
 
+# ラベルの選択
+
+ソース内容に最も適したラベルを以下から選んでください。通常は1つ、明確に複数該当する場合のみ複数選びます。どれにも当てはまらない場合はラベルを省略してください。
+
+| ラベル | 選ぶ基準 |
+|---|---|
+| `bug` | 予期しない問題・意図しない挙動の報告 |
+| `enhancement` | 新機能・改善の要望 |
+| `documentation` | ドキュメントの改善・追加 |
+| `question` | 情報や議論を必要とする問い |
+| `dependencies` | 依存パッケージの更新・追加・削除 |
+
+`bug` / `documentation` / `enhancement` / `question` はGitHubが全新規リポジトリに用意するデフォルトラベルのため、publicでもprivateでも利用できる。`dependencies` はDependabotが作成する慣例ラベルで、Dependabotを有効化したリポジトリに存在する。
+
+残りのデフォルトラベル（`accessibility` / `duplicate` / `invalid` / `wontfix` / `good first issue` / `help wanted`）は、トリアージ後やメンテナ判断で付与する性質のものなので、作成時の選択肢からは外している。
+
+リポジトリに存在しないラベルを指定した場合は、そのラベルが無視されるだけでIssue作成自体は成功する。
+
+選んだラベルは、後述のコマンドの `LABELS` 変数に設定してください。複数選んだ場合はカンマ区切りの1つの文字列にし、省略する場合は空文字のままにします。
+
 # Issue作成ページをブラウザでオープン
 
 `eval`内でのヒアドキュメントやインライン複数行文字列はパースエラーの原因になるため使用しないでください。
@@ -107,5 +127,5 @@ git config github.user
 - フォールバック: URLを標準出力に表示
 
 ```bash
-urlencode(){ printf '%s' "$1" | od -An -tx1 | tr -d ' \n' | sed 's/\(..\)/%\1/g'; }; opener(){ case "$(uname -s)" in Darwin) open "$1";; Linux) if grep -qi microsoft /proc/version 2>/dev/null; then explorer.exe "$1"; elif command -v xdg-open >/dev/null 2>&1; then xdg-open "$1"; else printf 'Open this URL: %s\n' "$1"; fi;; *) printf 'Open this URL: %s\n' "$1";; esac; }; GH_USER=$(git config github.user 2>/dev/null); QS_ASSIGNEES=""; [ -n "$GH_USER" ] && QS_ASSIGNEES="&assignees=$GH_USER"; opener "REPO_URL/issues/new?title=$(urlencode "Issueタイトル")&body=$(urlencode "Issueボディ")${QS_ASSIGNEES}"
+urlencode(){ printf '%s' "$1" | od -An -tx1 | tr -d ' \n' | sed 's/\(..\)/%\1/g'; }; opener(){ case "$(uname -s)" in Darwin) open "$1";; Linux) if grep -qi microsoft /proc/version 2>/dev/null; then explorer.exe "$1"; elif command -v xdg-open >/dev/null 2>&1; then xdg-open "$1"; else printf 'Open this URL: %s\n' "$1"; fi;; *) printf 'Open this URL: %s\n' "$1";; esac; }; GH_USER=$(git config github.user 2>/dev/null); QS_ASSIGNEES=""; [ -n "$GH_USER" ] && QS_ASSIGNEES="&assignees=$GH_USER"; LABELS="選択したラベル"; QS_LABELS=""; [ -n "$LABELS" ] && QS_LABELS="&labels=$(urlencode "$LABELS")"; opener "REPO_URL/issues/new?title=$(urlencode "Issueタイトル")&body=$(urlencode "Issueボディ")${QS_ASSIGNEES}${QS_LABELS}"
 ```
