@@ -1,18 +1,31 @@
 ---
-name: "plan-issue"
-description: "Create GitHub Issue from the current plan file so the plan is captured before implementation begins. ALWAYS invoke this skill automatically right after a plan in plan mode is approved (i.e., after ExitPlanMode), before any code is written. Also use when the user says 'issue にする', 'issue に登録', 'issue 作成', 'make this an issue', 'file an issue', 'create an issue from this plan', 'turn this plan into an issue', or otherwise wants to capture their plan as a GitHub Issue."
+name: "open-issue"
+description: "Create GitHub Issue via GitHub Web UI without gh CLI (Source Default: current plan file). ALWAYS invoke this skill automatically right after a plan in plan mode is approved (i.e., after ExitPlanMode), before any code is written. Also use when the user says 'issue にする', 'issue に登録', 'issue 作成', 'make this an issue', 'file an issue', 'create an issue from this plan', 'turn this plan into an issue', or otherwise wants to capture something — a plan, a bug report, a discussion in the conversation, or a file — as a GitHub Issue. This skill intentionally avoids gh CLI because its OAuth token requires broader permissions than necessary — instead it opens the GitHub Web UI directly."
+argument-hint: "[Issue Source]"
 ---
 
-以下の手順で、現在のPlan内容からGitHub Issueを作成し、実装フェーズに移行してください。
+以下の手順で、指定されたソース内容からGitHub Issueを作成し、次のフェーズに移行してください。
 
-# Plan内容の取得
+# Issueソースの取得
+
+Issue の元ネタとなる内容（以下「ソース内容」）を、次の優先順で確定してください。
+
+## 1. ユーザーがソースを指定した場合
+
+指定されたものをそのままソース内容として扱います。指定の形は次のいずれかです。
+
+- **インラインの内容**: スキル引数やメッセージ本文に直接書かれた要望・バグ報告など
+- **ファイルパス**: Read で読み込む（プランファイル以外の設計メモ・調査結果なども可）
+- **会話中の話題**: 「さっきの件を issue にして」のように直近の会話を指す場合、該当するやり取りを要約してソース内容とする。どのやり取りを指すか曖昧なときはユーザーに確認する
+
+## 2. 指定がない場合（デフォルト）
 
 Plan ファイルを Read で読み込んでください。
 
 - **plan mode 終了直後の場合**: 直前のシステムリマインダで提示されたパス（例: `${HOME}/.claude/plans/<workspace>.md`）をそのまま読む
 - **それ以外の場合**: `${HOME}/.claude/plans/` 内で最終更新時刻が最も新しいファイルを読む（`ls -t ${HOME}/.claude/plans/*.md | head -1`）
 
-Plan ファイルが存在しない、または空の場合は、ユーザーに「先にPlanを作成してください」と伝えて終了してください。
+ユーザー指定のソースがなく、Plan ファイルも存在しないか空の場合は、ユーザーに「Issue にする内容を指定するか、先にPlanを作成してください」と伝えて終了してください。
 
 # Issueテンプレートファイルの内容確認
 
@@ -21,11 +34,11 @@ Plan ファイルが存在しない、または空の場合は、ユーザーに
 1. `.github/ISSUE_TEMPLATE/*`
 2. `${HOME}/dotfiles/.github/ISSUE_TEMPLATE/*`
 
-複数テンプレートがある場合は、Plan内容に最も適したものを選択してください。
+複数テンプレートがある場合は、ソース内容に最も適したものを選択してください。
 
 # Issueタイトルとボディの生成
 
-Plan内容とIssueテンプレートを元に、以下を生成してください。
+ソース内容とIssueテンプレートを元に、以下を生成してください。
 
 ## Issueタイトル
 
@@ -51,7 +64,7 @@ Issueテンプレートがある場合はそのセクション構成に従いつ
 GitHub の Issue 作成エンドポイントは URL 全体で約 8KB が上限（超過すると `Whoa there! Your request URL is too long.` エラーになる）。日本語は URL エンコード後に 1 文字 = 9 バイトに膨らむため、本文は最初から簡潔に保つ。以下は Issue ではなく Plan / PR / リンク先ドキュメントに残す。
 
 - コードブロックの長大な貼り付け（差分・スタックトレース全文・ログ全文など）
-- Plan の章立てをそのまま転記すること
+- ソース文書の章立てをそのまま転記すること
 - 設計の詳細手順（ファイル単位の修正内容、関数シグネチャ、実装ステップなど）
 
 ### 文字数の目安

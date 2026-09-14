@@ -42,7 +42,7 @@
 | `triage` | 他者から届いた issue・PR を分類・検証して agent-ready にするとき。`to-tickets` が作ったチケットは既に agent-ready なので対象外 |
 | `improve-codebase-architecture` | コードベースの設計改善候補を洗い出したいとき。HTML レポートで候補を提示し、選ばれた候補を grilling で詰める |
 
-`to-spec` / `to-tickets` / `triage` / `wayfinder` が Issue を発行・操作するときは、`plan-issue` / `open-pr` と同様に GitHub Web UI（Issue 作成 URL をブラウザで開く）を使う。ラベル付与や blocking link の設定は Web UI 上の操作としてユーザーに依頼し、Web UI で表現しきれない依存関係はチケット本文に記載する。
+`to-spec` / `to-tickets` / `triage` / `wayfinder` が Issue を発行・操作するときは、`open-issue` / `open-pr` と同様に GitHub Web UI（Issue 作成 URL をブラウザで開く）を使う。ラベル付与や blocking link の設定は Web UI 上の操作としてユーザーに依頼し、Web UI で表現しきれない依存関係はチケット本文に記載する。
 
 以下は自動発火するため、明示的な起動は不要。
 
@@ -56,7 +56,7 @@
 | `research` | 一次資料に当たる調査をバックグラウンドエージェントに任せ、出典付き Markdown に残す |
 | `resolving-merge-conflicts` | 進行中の merge / rebase コンフリクトの解決 |
 | `wizard` | 人間にしかできない手順を対話式 bash ウィザードにする |
-| `plan-issue` | plan mode 承認直後、プランファイルの GitHub Issue 化 |
+| `open-issue` | plan mode 承認直後のプランファイル（デフォルト）や、ユーザーが指定した任意の内容の GitHub Issue 化 |
 
 ## 公式ドキュメントの参照
 
