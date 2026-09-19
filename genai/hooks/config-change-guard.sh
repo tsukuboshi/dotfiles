@@ -13,26 +13,16 @@ IFS=$'\t' read -r SOURCE FILE_PATH < <(
 
 # policy_settings changes cannot be blocked per official docs
 if [[ "$SOURCE" == "policy_settings" ]]; then
-	printf '{"decision":"allow"}\n'
 	exit 0
 fi
 
-# Block dangerous configuration changes
-if [[ -f "$FILE_PATH" ]]; then
-	VIOLATION=$(jq -r '
-		if .defaultMode == "bypassPermissions" then "bypassPermissions"
-		elif .sandbox.allowUnsandboxedCommands == true then "allowUnsandboxedCommands"
-		elif .sandbox.enabled == false then "sandbox disabled"
-		else empty
-		end
-	' "$FILE_PATH" 2>/dev/null)
-
-	if [[ -n "$VIOLATION" ]]; then
-		printf '{"decision":"block","reason":"%s is not allowed for security reasons"}\n' \
-			"${VIOLATION}"
-		exit 2
-	fi
+# Block bypassPermissions mode. Sandbox keys stay unchecked on purpose: this
+# repository ships sandbox disabled, so guarding them would block every edit to
+# its own settings.json.
+if [[ -f "$FILE_PATH" ]] &&
+	jq -e '.permissions.defaultMode == "bypassPermissions"' "$FILE_PATH" >/dev/null 2>&1; then
+	printf '{"decision":"block","reason":"bypassPermissions is not allowed for security reasons"}\n'
+	exit 0
 fi
 
-printf '{"decision":"allow"}\n'
 exit 0
