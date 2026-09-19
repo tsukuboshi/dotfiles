@@ -49,7 +49,7 @@ process_ext() {
 process_ext '\.py$' fmt_py
 process_ext '\.(ts|tsx|js|jsx|json)$' fmt_js
 process_ext '\.tf$' fmt_tf
-process_ext '\.sh$' fmt_sh
+process_ext '\.(sh|bash)$' fmt_sh
 process_ext '\.md$' fmt_md
 
 # Output result as JSON (both Claude Code and Codex accept `systemMessage`)

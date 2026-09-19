@@ -25,7 +25,7 @@ format_file() {
 	*.md)
 		markdownlint --fix --disable MD034 -- "$file_path"
 		;;
-	*.sh)
+	*.sh | *.bash)
 		shfmt -w "$file_path"
 		shellcheck "$file_path"
 		;;
