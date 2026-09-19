@@ -1,6 +1,6 @@
 ---
 name: genai-doctor
-description: "Tune the entire ~/dotfiles/genai configuration (settings.json, rules, skills, hooks, permissions) by cross-checking the latest official Claude Code documentation and analyzing recent conversation history for recurring request patterns. Use when the user wants to audit, check, or tune their Claude Code setup as a whole — e.g. 'genai をチューニング', '設定を最新化', '設定の棚卸し', 'settings.json をチェック', '会話履歴から改善点を探して', 'スキルを提案して'. For a single targeted settings change (e.g. adding one permission or env var), use update-config instead."
+description: "Tune the entire ~/dotfiles/genai configuration (settings.json, AGENTS.md, rules, skills, hooks, permissions) by cross-checking the latest official Claude Code documentation and analyzing recent conversation history for recurring request patterns. Use when the user wants to audit, check, or tune their Claude Code setup as a whole — e.g. 'genai をチューニング', '設定を最新化', '設定の棚卸し', 'settings.json をチェック', '会話履歴から改善点を探して', 'スキルを提案して'. For a single targeted settings change (e.g. adding one permission or env var), use update-config instead."
 argument-hint: "[days]"
 ---
 
@@ -23,7 +23,7 @@ argument-hint: "[days]"
    - `statusLine.command` が指すスクリプト（例: `scripts/statusline.sh`）
    - `hooks` の各エントリが指すスクリプト（例: `hooks/*.sh`）
 2. `rules/*.md`（全ルールファイル）
-3. `skills/*/SKILL.md`（frontmatter の name と description のみで十分）
+3. `skills/*/SKILL.md`（この時点では frontmatter の name と description のみ。Step 4 で改善候補に挙がったスキルに限り本文を読む。全スキルの本文を読むとコンテキストが溢れる）
 4. `apm/apm.yml`（外部スキルの導入状況）
 5. `AGENTS.md`（エージェント共通指示）
 
@@ -63,6 +63,8 @@ Step 2 と Step 3 は互いに独立しているため、それぞれのエー�
    - 毎回手動で指示している定型作業・方針
    - よく使われている / 全く使われていないスキル
    - 頻出する Bash コマンドの上位（permissions の allow 候補判断に使う）
+   - フック実行エラーの有無（`hook` を含む行からエラー文言を抽出する。hooks 診断に使う）
+   - スキル発火後にユーザーが言い直し・訂正しているケース（スキル本文・description の改善候補の材料にする）
 
 # Step 4: 診断レポート
 
@@ -73,7 +75,10 @@ Step 1〜3 の結果を突き合わせ、以下の観点で表形式のレポー
 | settings | 廃止・無効なキー / デフォルト値と同一の冗長なキー / 未導入の推奨設定 |
 | permissions | Step 3 で集計した頻出 Bash コマンドのうち allow 未登録のもの（allow 追加候補）/ 履歴に登場しない allow エントリ |
 | rules | 毎回口頭で指示している方針（rules/*.md への追記候補）/ 履歴と矛盾する既存ルール |
-| skills | 繰り返し依頼パターンから導く新スキル候補（自作の前に `find-skills` スキルに委譲して既存の公開スキルで代替できないか確認する）/ 期間内に一度も発火していないスキル |
+| skills | 繰り返し依頼パターンから導く新スキル候補（自作の前に `find-skills` スキルに委譲して既存の公開スキルで代替できないか確認する）/ 期間内に一度も発火していないスキル / 発火頻度が高い、または Step 3 で言い直しが観測されたスキルに限り `SKILL.md` 本文を読み、description の発火精度・手順の改善を提案する |
+| hooks | settings.json の hooks 登録と `hooks/*.sh` の実体の不整合 / Step 3 で検出したフック実行エラー / `post-edit-fmt.sh` の対応拡張子と `rules/*.md` のリンタ・フォーマッタ定義のずれ / 最新 hooks 仕様（新イベント・matcher）の活用余地 |
+| AGENTS.md | `rules/` へのリンク切れ・参照漏れ / 履歴上毎回口頭で指示している方針のうちエージェント共通指示へ昇格すべきもの / rules との内容重複 |
+| apm | `apm.yml` の dependencies のうち期間内に一度も発火していない外部スキル（削除候補） |
 
 診断時の注意:
 
@@ -85,8 +90,8 @@ Step 1〜3 の結果を突き合わせ、以下の観点で表形式のレポー
 
 # Step 5: 提案と適用
 
-1. 診断結果に基づく変更案を、変更理由付きで優先度順に提示する
+1. 診断結果に基づく変更案を、変更理由付きで優先度順に提示する。対象は `settings.json` ・`hooks/*.sh`・`AGENTS.md`・`rules/*.md`・既存の `skills/*/SKILL.md`・`apm/apm.yml` を含む
 2. ユーザーが選択した項目のみ適用する
-3. キーの削除・ルールの変更など既存動作に影響する変更は、項目ごとに個別確認を挟む
-4. 新スキルの作成など規模の大きい提案は、このスキル内では実装せず plan mode での別途着手を提案する。既存の公開スキルで代替する場合は `apm/apm.yml` の dependencies に追記して `apm install -g`（または `genai/setup.sh -i`）の実行を提案する。permissions の allow を大量追加する場合は、組み込みの `fewer-permission-prompts` スキルへの委譲も選択肢として案内する
+3. キーの削除・ルールの変更・hooks スクリプトの挙動変更・`apm.yml` の dependencies からの削除など既存動作に影響する変更は、項目ごとに個別確認を挟む
+4. 新スキルの作成や既存スキルの大幅な書き換えなど規模の大きい提案は、このスキル内では実装せず plan mode での別途着手を提案する（description の修正のような小さな変更はこのスキル内で適用してよい）。既存の公開スキルで代替する場合は `apm/apm.yml` の dependencies に追記して `apm install -g`（または `genai/setup.sh -i`）の実行を提案する。permissions の allow を大量追加する場合は、組み込みの `fewer-permission-prompts` スキルへの委譲も選択肢として案内する
 5. 適用後、変更内容のサマリ（変更前 → 変更後）を報告し、`genai/setup.sh` の再実行が必要な場合はその旨を案内する
