@@ -1,5 +1,4 @@
 {
-  "askUserQuestionTimeout": "10m",
   "cleanupPeriodDays": 365,
   "env": {
     "DISABLE_AUTOUPDATER": "1",
@@ -13,7 +12,8 @@
   },
   "attribution": {
     "commit": "",
-    "pr": ""
+    "pr": "",
+    "sessionUrl": false
   },
   "permissions": {
     "allow": [
@@ -23,6 +23,7 @@
       "WebSearch(*)",
       "Bash(basename:*)",
       "Bash(cat:*)",
+      "Bash(cd:*)",
       "Bash(cut:*)",
       "Bash(date:*)",
       "Bash(diff:*)",
@@ -36,6 +37,8 @@
       "Bash(head:*)",
       "Bash(jq:*)",
       "Bash(ls:*)",
+      "Bash(markdownlint:*)",
+      "Bash(mkdir:*)",
       "Bash(od:*)",
       "Bash(open:*)",
       "Bash(printf:*)",
@@ -43,8 +46,10 @@
       "Bash(tail:*)",
       "Bash(tee:*)",
       "Bash(tr:*)",
+      "Bash(trash:*)",
       "Bash(uniq:*)",
       "Bash(wc:*)",
+      "Bash(which:*)",
       "Bash(xargs:*)",
       "WebFetch(domain:aws.amazon.com)",
       "WebFetch(domain:code.claude.com)",
@@ -185,8 +190,14 @@
       ]
     },
     "filesystem": {
-      "allowWrite": ["/tmp"],
-      "denyWrite": ["~/.bashrc", "~/.zshrc", "~/.ssh"],
+      "allowWrite": [
+        "/tmp"
+      ],
+      "denyWrite": [
+        "~/.bashrc",
+        "~/.zshrc",
+        "~/.ssh"
+      ],
       "denyRead": [
         "./.env",
         "./secrets",
@@ -196,8 +207,12 @@
         "~/.aws/credentials"
       ]
     },
-    "excludedCommands": ["open"]
+    "excludedCommands": [
+      "open"
+    ]
   },
+  "askUserQuestionTimeout": "10m",
   "remoteControlAtStartup": true,
-  "skipAutoPermissionPrompt": true
+  "skipAutoPermissionPrompt": true,
+  "agentPushNotifEnabled": true
 }
