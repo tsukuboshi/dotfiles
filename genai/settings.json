@@ -80,7 +80,8 @@
       "mcp__claude-in-chrome__read_network_requests",
       "mcp__claude-in-chrome__list_connected_browsers",
       "mcp__claude-in-chrome__select_browser",
-      "mcp__claude-in-chrome__switch_browser"
+      "mcp__claude-in-chrome__switch_browser",
+      "mcp__claude-in-chrome__resize_window"
     ],
     "deny": [
       "Bash(rm:*)",
@@ -111,7 +112,6 @@
       "mcp__claude-in-chrome__file_upload",
       "mcp__claude-in-chrome__upload_image",
       "mcp__claude-in-chrome__browser_batch",
-      "mcp__claude-in-chrome__resize_window",
       "mcp__claude-in-chrome__gif_creator"
     ],
     "defaultMode": "plan",
