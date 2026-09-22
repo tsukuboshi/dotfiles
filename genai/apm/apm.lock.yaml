@@ -1,5 +1,5 @@
 lockfile_version: '1'
-apm_version: 0.30.0
+apm_version: 0.31.0
 dependencies:
 - repo_url: k16shikano/eb2929f13ed19c97188393d297be8432
   name: cognitive-rhythm-writing
