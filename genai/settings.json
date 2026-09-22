@@ -81,7 +81,11 @@
       "mcp__claude-in-chrome__list_connected_browsers",
       "mcp__claude-in-chrome__select_browser",
       "mcp__claude-in-chrome__switch_browser",
-      "mcp__claude-in-chrome__resize_window"
+      "mcp__claude-in-chrome__resize_window",
+      "mcp__aws-knowledge__aws___search_documentation",
+      "mcp__aws-knowledge__aws___read_documentation",
+      "mcp__context7__resolve-library-id",
+      "mcp__context7__query-docs"
     ],
     "deny": [
       "Bash(rm:*)",
