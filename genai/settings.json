@@ -168,11 +168,11 @@
     "command": "zsh ~/dotfiles/genai/scripts/statusline.sh"
   },
   "enabledPlugins": {
-    "claude-md-management@claude-plugins-official": true,
-    "frontend-design@claude-plugins-official": true,
+    "claude-md-management@claude-plugins-official": false,
+    "frontend-design@claude-plugins-official": false,
     "feature-dev@claude-plugins-official": true,
-    "pyright-lsp@claude-plugins-official": true,
-    "typescript-lsp@claude-plugins-official": true,
+    "pyright-lsp@claude-plugins-official": false,
+    "typescript-lsp@claude-plugins-official": false,
     "skill-creator@claude-plugins-official": true
   },
   "outputStyle": "explanatory",
