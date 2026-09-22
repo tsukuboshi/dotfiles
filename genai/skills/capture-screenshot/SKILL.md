@@ -1,6 +1,6 @@
 ---
 name: "capture-screenshot"
-description: "Capture a Chrome window on macOS and crop it into a publication-ready JPEG (Save Path Default: ask the user). Use this skill whenever a screenshot of a web page is needed for a blog post, document, or report — including 'スクショ撮って', '画面キャプチャして', 'この画面を記事用に撮って', 'ブラウザの画面を貼りたい', or when another skill delegates screenshot capture. It handles multi-window disambiguation, window resizing for readable aspect ratio, cropping away browser chrome, red-box annotation, and a visual check for confidential information."
+description: "Capture a Chrome window on macOS and crop it into a publication-ready JPEG (Save Path Default: ask the user). Use this skill whenever a screenshot of a web page is needed for a blog post, document, or report — including 'スクショ撮って', '画面キャプチャして', 'この画面を記事用に撮って', 'ブラウザの画面を貼りたい', or when another skill delegates screenshot capture. It handles multi-window disambiguation, window resizing for readable aspect ratio, cropping away browser chrome, red-box annotation, and a visual check for confidential information with black-box masking of anything that must not be published."
 argument-hint: "[撮影対象URL] [切り出しJPEGの保存先パス] [赤枠で強調する箇所]"
 ---
 
@@ -94,16 +94,27 @@ ffmpeg -loglevel error -y -i "<PNG パス>" -vf "crop=<w>:<h>:<x>:<y>" -q:v 2 "<
 -vf "crop=<w>:<h>:<x>:<y>,drawbox=x=<x>:y=<y>:w=<w>:h=<h>:color=red@1.0:t=5"
 ```
 
+機密情報を隠す場合は、同じ `drawbox` を `color=black:t=fill` にして塗りつぶします。赤枠と黒塗りが同居する場合は同じ `-vf` チェーンにカンマで並べます。
+
+```bash
+-vf "crop=<w>:<h>:<x>:<y>,drawbox=x=<x>:y=<y>:w=<w>:h=<h>:color=black:t=fill"
+```
+
 - 保存先パスとファイル名の規約は呼び出し元が決める。入力で受け取ったパスをそのまま使う
 - 赤枠は入力で指定された箇所だけに絞る
 - ブラウザのタブバー・ブックマークバー・拡張機能アイコン・通知バナーは切り落とし、ページ本文の領域だけを残す（タブのタイトルに業務情報が写るため）
 - 比較画像は左端・幅を揃え、同じ箇所を同じ大きさで切り出す
 - **変換後の JPEG を Read で目視し、排除対象が写っていないか確認する**。テキストの grep 照合は画像を見ないため、画像の機密チェックはこの目視が最後の砦になる
+- 排除対象が写っていた場合は、写っている場所で対処を分けて**元 PNG から変換をやり直す**（JPEG を再エンコードすると二重圧縮で画質が落ちるため、出力 JPEG に上書き加工はしない）
+  - 掲載領域の端にあり、切り落としても伝えたい内容が成立する場合は `crop` の座標を詰める
+  - 本文領域の中にあって切り落とせない場合は `drawbox` の黒塗りでマスクする
+- 黒塗り後は再度 Read で目視し、文字がマスクからはみ出していないか確認する。はみ出していたら座標・サイズを広げて変換し直し、排除対象が読めなくなるまで繰り返す
 
 # 4. 報告
 
 以下を呼び出し元へ報告して完了とします。
 
 - 切り出した JPEG のパス一覧
+- 黒塗りでマスクした画像と、マスクした箇所に何が写っていたか（公開前のマスク漏れ・過剰マスクをユーザーが判断できるようにするため）
 - 撮影した元 PNG（`${HOME}/Pictures/ScreenShot/` 配下）のパス一覧と、業務情報を含む画面全体が残っているため削除はユーザー判断である旨
 - ウィンドウ配置を元に戻した旨（他のウィンドウを動かした場合はそれも含む）
