@@ -118,7 +118,7 @@
       "mcp__claude-in-chrome__browser_batch",
       "mcp__claude-in-chrome__gif_creator"
     ],
-    "defaultMode": "plan",
+    "defaultMode": "auto",
     "disableBypassPermissionsMode": "disable"
   },
   "hooks": {
