@@ -177,7 +177,11 @@
     "feature-dev@claude-plugins-official": true,
     "pyright-lsp@claude-plugins-official": false,
     "typescript-lsp@claude-plugins-official": false,
-    "skill-creator@claude-plugins-official": true
+    "skill-creator@claude-plugins-official": true,
+    "chrome-devtools-mcp@claude-plugins-official": false,
+    "playwright@claude-plugins-official": false,
+    "aws-operations-toolkit@consulting-team-plugins": false,
+    "meeting-notes-processor@consulting-team-plugins": false
   },
   "outputStyle": "explanatory",
   "language": "Japanese",
