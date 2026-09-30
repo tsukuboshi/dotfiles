@@ -64,16 +64,17 @@ pct_int=${pct_int:-0}
 current_time=$(date +%s)
 
 # ANSI color matching pie chart stages and zsh prompt palette
-# ○(0-19%):white ◔(20-39%):green ◑(40-59%):yellow ◕(60-79%):magenta ●(80-100%):red
+# ○(0-24%):white ◔(25-49%):green ◑(50-74%):yellow ◕(75-99%):magenta ●(100%+):red
+# Red/● mean "used up", so they appear only once a metric reaches 100%.
 color_for_pct() {
 	local pct=$1
-	if [ "$pct" -lt 20 ]; then
+	if [ "$pct" -lt 25 ]; then
 		printf '\033[37m'
-	elif [ "$pct" -lt 40 ]; then
+	elif [ "$pct" -lt 50 ]; then
 		printf '\033[32m'
-	elif [ "$pct" -lt 60 ]; then
+	elif [ "$pct" -lt 75 ]; then
 		printf '\033[33m'
-	elif [ "$pct" -lt 80 ]; then
+	elif [ "$pct" -lt 100 ]; then
 		printf '\033[35m'
 	else
 		printf '\033[31m'
@@ -83,13 +84,13 @@ color_for_pct() {
 # Pie chart using circle characters: ○◔◑◕●
 pie_char() {
 	local pct=$1
-	if [ "$pct" -lt 20 ]; then
+	if [ "$pct" -lt 25 ]; then
 		printf '○'
-	elif [ "$pct" -lt 40 ]; then
+	elif [ "$pct" -lt 50 ]; then
 		printf '◔'
-	elif [ "$pct" -lt 60 ]; then
+	elif [ "$pct" -lt 75 ]; then
 		printf '◑'
-	elif [ "$pct" -lt 80 ]; then
+	elif [ "$pct" -lt 100 ]; then
 		printf '◕'
 	else
 		printf '●'
@@ -182,11 +183,10 @@ if [ "$cache_observed" = "true" ]; then
 		[ "$cache_ttl" = "5m" ] && ttl_sec=300 || ttl_sec=3600
 		elapsed_pct=$(((ttl_sec - cache_left) * 100 / ttl_sec))
 		[ "$elapsed_pct" -lt 0 ] && elapsed_pct=0
-		# Squeeze 0-99% into the four lower stages so red/● stay reserved for cold
-		warm_stage_pct=$((elapsed_pct * 80 / 100))
-		[ "$warm_stage_pct" -gt 79 ] && warm_stage_pct=79
-		cache_color=$(color_for_pct "$warm_stage_pct")
-		render_metric "💾" "cache" "$warm_stage_pct" "$(fmt_reset "$cache_expires")"
+		# A warm cache is never used up, so red/● stay reserved for cold
+		[ "$elapsed_pct" -gt 99 ] && elapsed_pct=99
+		cache_color=$(color_for_pct "$elapsed_pct")
+		render_metric "💾" "cache" "$elapsed_pct" "$(fmt_reset "$cache_expires")"
 	else
 		# Cold means the whole TTL has elapsed, so it renders as a spent (100%) metric
 		cache_color=$(color_for_pct 100)
