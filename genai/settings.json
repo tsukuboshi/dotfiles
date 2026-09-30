@@ -169,7 +169,8 @@
   },
   "statusLine": {
     "type": "command",
-    "command": "zsh ~/dotfiles/genai/scripts/statusline.sh"
+    "command": "zsh ~/dotfiles/genai/scripts/statusline.sh",
+    "refreshInterval": 60
   },
   "enabledPlugins": {
     "claude-md-management@claude-plugins-official": false,
