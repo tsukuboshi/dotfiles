@@ -1,10 +1,13 @@
 #!/bin/zsh
 # Claude Code Enhanced Status Line
-# Prompt | Model | Context % | 5h Rate | 7d Rate | Compression
+# Prompt | Model | Effort | Context % | Prompt Cache | 5h Rate | 7d Rate
 
-CLAUDE_DIR="$HOME/.claude"
-LAST_STATE_FILE="$CLAUDE_DIR/.sl_last_state.json"
-COMPRESS_FILE="$CLAUDE_DIR/.sl_compress.json"
+# How long a cache miss cause stays visible after it happens
+MISS_CAUSE_WINDOW=300
+# Recache size (tokens) worth acting on: matches the threshold at which Claude Code
+# offers "Resume from summary" for a session idle past the cache TTL
+# https://code.claude.com/docs/en/sessions#resume-from-a-summary
+RECACHE_THRESHOLD=100000
 
 RST='\033[0m'
 
@@ -31,25 +34,33 @@ fi
 # Extract all fields in single jq call
 _data=$(jq -r '[
   (.model.display_name // .model.id // "Unknown"),
-  (.context_window.context_window_size // 200000 | tostring),
   (.context_window.used_percentage // 0 | tostring),
-  (.session_id // "unknown"),
   (.rate_limits.five_hour.used_percentage // "" | tostring),
   (.rate_limits.five_hour.resets_at // "" | tostring),
   (.rate_limits.seven_day.used_percentage // "" | tostring),
   (.rate_limits.seven_day.resets_at // "" | tostring),
-  (.effort.level // "")
+  (.effort.level // ""),
+  # `//` treats false as missing, so booleans are stringified explicitly
+  (.prompt_cache.caching_observed | if . == null then "" else tostring end),
+  (.prompt_cache.warm | if . == null then "" else tostring end),
+  (.prompt_cache.ttl // ""),
+  # Numbers feed shell arithmetic, so anything but a number becomes empty
+  (.prompt_cache.expires_at | if type == "number" then floor | tostring else "" end),
+  (.prompt_cache.recache_tokens_if_cold | if type == "number" then floor | tostring else "" end),
+  (.prompt_cache.last_miss_at | if type == "number" then floor | tostring else "" end),
+  ((.prompt_cache.last_miss_cause.causes[0]? | strings) // "")
 ] | join("\u001f")' <<<"$input" 2>/dev/null)
 
 # Use the ASCII Unit Separator (0x1f) so that empty fields (e.g. a missing
 # resets_at) are preserved; a whitespace IFS like tab collapses them and shifts
 # every subsequent value into the wrong variable.
-IFS=$'\x1f' read -r model context_size used_pct session_id \
-	five_hour_pct five_hour_reset seven_day_pct seven_day_reset effort <<<"$_data"
+IFS=$'\x1f' read -r model used_pct \
+	five_hour_pct five_hour_reset seven_day_pct seven_day_reset effort \
+	cache_observed cache_warm cache_ttl cache_expires cache_recache \
+	cache_miss_at cache_miss_cause <<<"$_data"
 
 pct_int=${used_pct%%.*}
 pct_int=${pct_int:-0}
-current_used=$((pct_int * context_size / 100))
 current_time=$(date +%s)
 
 # ANSI color matching pie chart stages and zsh prompt palette
@@ -133,56 +144,17 @@ render_metric() {
 	out+=" │ ${icon}${label} ${color}${pie} ${value_text}${RST}${reset_suffix}"
 }
 
-# Read {sid, count} from COMPRESS_FILE; returns stored count if session matches, else 0.
-read_compress_count() {
-	[ -f "$COMPRESS_FILE" ] || {
-		printf 0
-		return
-	}
-	local c_sid c_count
-	IFS=$'\t' read -r c_sid c_count < <(
-		jq -r '[(.sid // ""), (.count // 0 | tostring)] | @tsv' <"$COMPRESS_FILE" 2>/dev/null
-	)
-	if [ "$session_id" = "$c_sid" ]; then
-		printf '%d' "${c_count:-0}"
+# Format a token count compactly: 950 / 45k / 1.2M
+fmt_tokens() {
+	local n=$1
+	if [ "$n" -ge 1000000 ]; then
+		printf '%d.%dM' "$((n / 1000000))" "$(((n % 1000000) / 100000))"
+	elif [ "$n" -ge 1000 ]; then
+		printf '%dk' "$((n / 1000))"
 	else
-		printf 0
+		printf '%d' "$n"
 	fi
 }
-
-write_compress_count() {
-	printf '{"sid":"%s","count":%d}\n' "$session_id" "$1" >"$COMPRESS_FILE"
-}
-
-# --- Session & compression tracking ---
-compress_count=0
-
-if [ -f "$LAST_STATE_FILE" ]; then
-	IFS=$'\t' read -r last_sid last_tok < <(
-		jq -r '[(.sid // ""), (.tok // 0 | tostring)] | @tsv' <"$LAST_STATE_FILE" 2>/dev/null
-	)
-	last_tok=${last_tok:-0}
-
-	if [ "$session_id" != "$last_sid" ]; then
-		write_compress_count 0
-	elif [ "$current_used" -lt "$last_tok" ] 2>/dev/null; then
-		drop=$((last_tok - current_used))
-		threshold=$((last_tok / 5))
-		compress_count=$(read_compress_count)
-		if [ "$drop" -gt "$threshold" ] && [ "$drop" -gt 10000 ]; then
-			compress_count=$((compress_count + 1))
-		fi
-		write_compress_count "$compress_count"
-	fi
-else
-	write_compress_count 0
-fi
-
-# Load compress count if not yet set (covers the no-drop / new-session paths)
-[ "$compress_count" -eq 0 ] && compress_count=$(read_compress_count)
-
-# Update last state
-printf '{"sid":"%s","tok":%d}\n' "$session_id" "$current_used" >"$LAST_STATE_FILE"
 
 # --- Build output ---
 out=""
@@ -200,10 +172,40 @@ out+="🤖${model}"
 # Context usage
 render_metric "📊" "ctx" "$pct_int" "${pct_int}%"
 
-# Compression (max 4 levels visualised; pct synthesized from count)
-cmp_level=$compress_count
-[ "$cmp_level" -gt 4 ] && cmp_level=4
-render_metric "🔄" "cmp" "$((cmp_level * 25))" "${compress_count}x"
+# Prompt cache (absent until the first response; skipped when caching is off)
+# Color/pie track how much of the TTL has elapsed, like the other metrics.
+if [ "$cache_observed" = "true" ]; then
+	cache_left=$((${cache_expires:-0} - current_time))
+	cache_is_warm=false
+	[ "$cache_warm" = "true" ] && [ -n "$cache_expires" ] && [ "$cache_left" -gt 0 ] && cache_is_warm=true
+	if [ "$cache_is_warm" = "true" ]; then
+		[ "$cache_ttl" = "5m" ] && ttl_sec=300 || ttl_sec=3600
+		elapsed_pct=$(((ttl_sec - cache_left) * 100 / ttl_sec))
+		[ "$elapsed_pct" -lt 0 ] && elapsed_pct=0
+		# Squeeze 0-99% into the four lower stages so red/● stay reserved for cold
+		warm_stage_pct=$((elapsed_pct * 80 / 100))
+		[ "$warm_stage_pct" -gt 79 ] && warm_stage_pct=79
+		cache_color=$(color_for_pct "$warm_stage_pct")
+		render_metric "💾" "cache" "$warm_stage_pct" "$(fmt_reset "$cache_expires")"
+	else
+		# Cold means the whole TTL has elapsed, so it renders as a spent (100%) metric
+		cache_color=$(color_for_pct 100)
+		render_metric "💾" "cache" 100 "-m"
+	fi
+	# Below the threshold the recache size is not worth attention, so it stays uncolored
+	# like the label; above it, it takes the pie's color to share its urgency.
+	if [ -n "$cache_recache" ]; then
+		if [ "$cache_recache" -lt "$RECACHE_THRESHOLD" ]; then
+			out+=" ↻$(fmt_tokens "$cache_recache")"
+		else
+			out+=" ${cache_color}↻$(fmt_tokens "$cache_recache")${RST}"
+		fi
+	fi
+	if [ -n "$cache_miss_at" ] && [ -n "$cache_miss_cause" ] &&
+		[ $((current_time - cache_miss_at)) -le "$MISS_CAUSE_WINDOW" ]; then
+		out+=" \033[33m⚠${cache_miss_cause}${RST}"
+	fi
+fi
 
 # 5h rate limit (Pro/Max only; absent on Team/Enterprise)
 if [ -n "$five_hour_pct" ]; then
