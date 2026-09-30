@@ -6,8 +6,8 @@
     "BASH_DEFAULT_TIMEOUT_MS": "300000",
     "CLAUDE_CODE_DISABLE_FEEDBACK_SURVEY": "1",
     "DISABLE_ERROR_REPORTING": "1",
-    "ANTHROPIC_DEFAULT_OPUS_MODEL": "claude-fable-5[1m]",
-    "ANTHROPIC_DEFAULT_SONNET_MODEL": "claude-opus-5[1m]",
+    "ANTHROPIC_DEFAULT_OPUS_MODEL": "claude-fable-5-1",
+    "ANTHROPIC_DEFAULT_SONNET_MODEL": "claude-opus-5-5",
     "ANTHROPIC_MODEL": "opusplan"
   },
   "attribution": {
@@ -198,14 +198,8 @@
       ]
     },
     "filesystem": {
-      "allowWrite": [
-        "/tmp"
-      ],
-      "denyWrite": [
-        "~/.bashrc",
-        "~/.zshrc",
-        "~/.ssh"
-      ],
+      "allowWrite": ["/tmp"],
+      "denyWrite": ["~/.bashrc", "~/.zshrc", "~/.ssh"],
       "denyRead": [
         "./.env",
         "./secrets",
@@ -215,12 +209,10 @@
         "~/.aws/credentials"
       ]
     },
-    "excludedCommands": [
-      "open"
-    ]
+    "excludedCommands": ["open"]
   },
   "askUserQuestionTimeout": "10m",
   "remoteControlAtStartup": true,
-  "skipAutoPermissionPrompt": true,
-  "agentPushNotifEnabled": true
+  "agentPushNotifEnabled": true,
+  "skipAutoPermissionPrompt": true
 }
