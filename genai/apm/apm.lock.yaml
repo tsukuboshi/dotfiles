@@ -1,6 +1,245 @@
 lockfile_version: '1'
 apm_version: 0.31.0
 dependencies:
+- repo_url: coji/natural-japanese
+  name: natural-japanese
+  host: github.com
+  resolved_commit: 9a78a42964096da509b8f3e011f0085a5f080151
+  resolved_ref: main
+  version: unknown
+  virtual_path: skills/natural-japanese
+  is_virtual: true
+  package_type: claude_skill
+  deployed_files:
+  - .agents/skills/natural-japanese
+  - .agents/skills/natural-japanese/SKILL.md
+  - .agents/skills/natural-japanese/assets/style-profile-template.md
+  - .agents/skills/natural-japanese/references/diagnose.md
+  - .agents/skills/natural-japanese/references/doctypes/guide.md
+  - .agents/skills/natural-japanese/references/doctypes/memo.md
+  - .agents/skills/natural-japanese/references/doctypes/minutes.md
+  - .agents/skills/natural-japanese/references/doctypes/report.md
+  - .agents/skills/natural-japanese/references/doctypes/slide.md
+  - .agents/skills/natural-japanese/references/eval-rubric.md
+  - .agents/skills/natural-japanese/references/examples.md
+  - .agents/skills/natural-japanese/references/forbidden-patterns.md
+  - .agents/skills/natural-japanese/references/genre-notes.md
+  - .agents/skills/natural-japanese/references/manual-checklist.md
+  - .agents/skills/natural-japanese/references/readability-antipatterns.md
+  - .agents/skills/natural-japanese/references/readability-principles.md
+  - .agents/skills/natural-japanese/references/revision-guide.md
+  - .agents/skills/natural-japanese/references/translationese.md
+  - .agents/skills/natural-japanese/references/writing-constitution.md
+  - .agents/skills/natural-japanese/scripts/calibrate.py
+  - .agents/skills/natural-japanese/scripts/fixtures/ai-smelly.md
+  - .agents/skills/natural-japanese/scripts/fixtures/natural.md
+  - .agents/skills/natural-japanese/scripts/lint.py
+  - .agents/skills/natural-japanese/scripts/outline.py
+  - .agents/skills/natural-japanese/scripts/semantic.py
+  - .agents/skills/natural-japanese/scripts/terms.py
+  - .agents/skills/natural-japanese/scripts/textcore.py
+  - .claude/skills/natural-japanese
+  - .claude/skills/natural-japanese/SKILL.md
+  - .claude/skills/natural-japanese/assets/style-profile-template.md
+  - .claude/skills/natural-japanese/references/diagnose.md
+  - .claude/skills/natural-japanese/references/doctypes/guide.md
+  - .claude/skills/natural-japanese/references/doctypes/memo.md
+  - .claude/skills/natural-japanese/references/doctypes/minutes.md
+  - .claude/skills/natural-japanese/references/doctypes/report.md
+  - .claude/skills/natural-japanese/references/doctypes/slide.md
+  - .claude/skills/natural-japanese/references/eval-rubric.md
+  - .claude/skills/natural-japanese/references/examples.md
+  - .claude/skills/natural-japanese/references/forbidden-patterns.md
+  - .claude/skills/natural-japanese/references/genre-notes.md
+  - .claude/skills/natural-japanese/references/manual-checklist.md
+  - .claude/skills/natural-japanese/references/readability-antipatterns.md
+  - .claude/skills/natural-japanese/references/readability-principles.md
+  - .claude/skills/natural-japanese/references/revision-guide.md
+  - .claude/skills/natural-japanese/references/translationese.md
+  - .claude/skills/natural-japanese/references/writing-constitution.md
+  - .claude/skills/natural-japanese/scripts/calibrate.py
+  - .claude/skills/natural-japanese/scripts/fixtures/ai-smelly.md
+  - .claude/skills/natural-japanese/scripts/fixtures/natural.md
+  - .claude/skills/natural-japanese/scripts/lint.py
+  - .claude/skills/natural-japanese/scripts/outline.py
+  - .claude/skills/natural-japanese/scripts/semantic.py
+  - .claude/skills/natural-japanese/scripts/terms.py
+  - .claude/skills/natural-japanese/scripts/textcore.py
+  - .kiro/skills/natural-japanese
+  - .kiro/skills/natural-japanese/SKILL.md
+  - .kiro/skills/natural-japanese/assets/style-profile-template.md
+  - .kiro/skills/natural-japanese/references/diagnose.md
+  - .kiro/skills/natural-japanese/references/doctypes/guide.md
+  - .kiro/skills/natural-japanese/references/doctypes/memo.md
+  - .kiro/skills/natural-japanese/references/doctypes/minutes.md
+  - .kiro/skills/natural-japanese/references/doctypes/report.md
+  - .kiro/skills/natural-japanese/references/doctypes/slide.md
+  - .kiro/skills/natural-japanese/references/eval-rubric.md
+  - .kiro/skills/natural-japanese/references/examples.md
+  - .kiro/skills/natural-japanese/references/forbidden-patterns.md
+  - .kiro/skills/natural-japanese/references/genre-notes.md
+  - .kiro/skills/natural-japanese/references/manual-checklist.md
+  - .kiro/skills/natural-japanese/references/readability-antipatterns.md
+  - .kiro/skills/natural-japanese/references/readability-principles.md
+  - .kiro/skills/natural-japanese/references/revision-guide.md
+  - .kiro/skills/natural-japanese/references/translationese.md
+  - .kiro/skills/natural-japanese/references/writing-constitution.md
+  - .kiro/skills/natural-japanese/scripts/calibrate.py
+  - .kiro/skills/natural-japanese/scripts/fixtures/ai-smelly.md
+  - .kiro/skills/natural-japanese/scripts/fixtures/natural.md
+  - .kiro/skills/natural-japanese/scripts/lint.py
+  - .kiro/skills/natural-japanese/scripts/outline.py
+  - .kiro/skills/natural-japanese/scripts/semantic.py
+  - .kiro/skills/natural-japanese/scripts/terms.py
+  - .kiro/skills/natural-japanese/scripts/textcore.py
+  deployed_file_hashes:
+    .agents/skills/natural-japanese/SKILL.md: sha256:0f662a6ab4955b9146a138a38b73a619b27fa1448ef71e27fcc57f67d3ad0267
+    .agents/skills/natural-japanese/assets/style-profile-template.md: sha256:d43a199e1399c73a41f332c45c5cf2321457fd49391b0a5bec23e52ef6fb5541
+    .agents/skills/natural-japanese/references/diagnose.md: sha256:e3c80cdeada823d34d003f83df1e9cbc0e07fbdf109b5c8f7a796a889a00d5a4
+    .agents/skills/natural-japanese/references/doctypes/guide.md: sha256:4b9db16365ea305c71eb9a59faedfc73620fd93d09721dc29292951994ba239d
+    .agents/skills/natural-japanese/references/doctypes/memo.md: sha256:d74be03c71e992f4c070fe42249e1cfc6faa87efc7438c6f5aa2659d831e17f5
+    .agents/skills/natural-japanese/references/doctypes/minutes.md: sha256:de38887be3def7cd35e1b1ffbdf10c21a9c4601fb528f3022f14512df3bc8129
+    .agents/skills/natural-japanese/references/doctypes/report.md: sha256:28f0cd6cef86fda5cb0bc236b9d1bb1d3d09892aacf5f813bec4f7c4cd84ea8f
+    .agents/skills/natural-japanese/references/doctypes/slide.md: sha256:1ca8db97566ad053cdb0115a72e12099f94648c5ba3a3d0bd6d33bf91c7f59d8
+    .agents/skills/natural-japanese/references/eval-rubric.md: sha256:77a49a4d0f70a51d4e595dec3ab236543b404edab5c6ccafb57c3f1f68d4ae65
+    .agents/skills/natural-japanese/references/examples.md: sha256:bc37c36ebda975351e2949f05990b7202737a3f5b1f95f53584158e9a6d1e99d
+    .agents/skills/natural-japanese/references/forbidden-patterns.md: sha256:0cce2ad7f053611a8c983ebf86f55631e019bbf752cc815c04077b229a557b1f
+    .agents/skills/natural-japanese/references/genre-notes.md: sha256:d5b2f7ecda12649efc26ef4a716fe6b2d4c03568b674dc5a06842f90cf6e8a6f
+    .agents/skills/natural-japanese/references/manual-checklist.md: sha256:19eda8c3098e941c593bb3d4018b9b1f284f3c184db140c799623a07e91c487c
+    .agents/skills/natural-japanese/references/readability-antipatterns.md: sha256:10418600db75d12da4ba7ca6d76cc9d0bc60e305ae4e75fa90f28c2aa76317b0
+    .agents/skills/natural-japanese/references/readability-principles.md: sha256:6a495446fe6828968371d24a1b628d28a37842ae0fd0e4f11162b57a7f9c4d70
+    .agents/skills/natural-japanese/references/revision-guide.md: sha256:27641d1a2aa5b41821d3da186ddf4139dc091c5dd8fb20544d814675b863433a
+    .agents/skills/natural-japanese/references/translationese.md: sha256:09b3da1ebf4c663be9cb0bf9ed5bade476ba10804509e6ca6dc22dc15129f827
+    .agents/skills/natural-japanese/references/writing-constitution.md: sha256:457b83afa64fa0da95a9daa25a8140e203fc4a3e87b2ff2c2839e0c8aad7ffdb
+    .agents/skills/natural-japanese/scripts/calibrate.py: sha256:7409007f511524fafe7eaf026f8d693a0829d0bc0845b9e35092ea61deb411d8
+    .agents/skills/natural-japanese/scripts/fixtures/ai-smelly.md: sha256:c84979246c11005139ba35afe4e6c5f0a716cf2f8d7e9ac647efffe1b1c5c558
+    .agents/skills/natural-japanese/scripts/fixtures/natural.md: sha256:218c4e52cf0e231ba8c9192fc8f23b49de40d0b3463419a6697dea787862572e
+    .agents/skills/natural-japanese/scripts/lint.py: sha256:576fb564126b6a81feadc88969a0ec8fb8fc7a755899e5b90fe91981e644881a
+    .agents/skills/natural-japanese/scripts/outline.py: sha256:9b0478364f76c6aeed2befc8f4ee1aa4aa1ec6789eca45fb7b9958ccaed7ca80
+    .agents/skills/natural-japanese/scripts/semantic.py: sha256:c14909618677ee66c6f67a0cc81bc9ced9951f2ffd9727182e5e0de6b2d1d667
+    .agents/skills/natural-japanese/scripts/terms.py: sha256:304acb82d8d8cb8a2f45b5efc1110f407e2316d23c13bfc8734670fc1ac81e19
+    .agents/skills/natural-japanese/scripts/textcore.py: sha256:ea363ed8611256afb07b0ce83b478c2d559a910d00bfa152d9244f60025da1f2
+    .claude/skills/natural-japanese/SKILL.md: sha256:0f662a6ab4955b9146a138a38b73a619b27fa1448ef71e27fcc57f67d3ad0267
+    .claude/skills/natural-japanese/assets/style-profile-template.md: sha256:d43a199e1399c73a41f332c45c5cf2321457fd49391b0a5bec23e52ef6fb5541
+    .claude/skills/natural-japanese/references/diagnose.md: sha256:e3c80cdeada823d34d003f83df1e9cbc0e07fbdf109b5c8f7a796a889a00d5a4
+    .claude/skills/natural-japanese/references/doctypes/guide.md: sha256:4b9db16365ea305c71eb9a59faedfc73620fd93d09721dc29292951994ba239d
+    .claude/skills/natural-japanese/references/doctypes/memo.md: sha256:d74be03c71e992f4c070fe42249e1cfc6faa87efc7438c6f5aa2659d831e17f5
+    .claude/skills/natural-japanese/references/doctypes/minutes.md: sha256:de38887be3def7cd35e1b1ffbdf10c21a9c4601fb528f3022f14512df3bc8129
+    .claude/skills/natural-japanese/references/doctypes/report.md: sha256:28f0cd6cef86fda5cb0bc236b9d1bb1d3d09892aacf5f813bec4f7c4cd84ea8f
+    .claude/skills/natural-japanese/references/doctypes/slide.md: sha256:1ca8db97566ad053cdb0115a72e12099f94648c5ba3a3d0bd6d33bf91c7f59d8
+    .claude/skills/natural-japanese/references/eval-rubric.md: sha256:77a49a4d0f70a51d4e595dec3ab236543b404edab5c6ccafb57c3f1f68d4ae65
+    .claude/skills/natural-japanese/references/examples.md: sha256:bc37c36ebda975351e2949f05990b7202737a3f5b1f95f53584158e9a6d1e99d
+    .claude/skills/natural-japanese/references/forbidden-patterns.md: sha256:0cce2ad7f053611a8c983ebf86f55631e019bbf752cc815c04077b229a557b1f
+    .claude/skills/natural-japanese/references/genre-notes.md: sha256:d5b2f7ecda12649efc26ef4a716fe6b2d4c03568b674dc5a06842f90cf6e8a6f
+    .claude/skills/natural-japanese/references/manual-checklist.md: sha256:19eda8c3098e941c593bb3d4018b9b1f284f3c184db140c799623a07e91c487c
+    .claude/skills/natural-japanese/references/readability-antipatterns.md: sha256:10418600db75d12da4ba7ca6d76cc9d0bc60e305ae4e75fa90f28c2aa76317b0
+    .claude/skills/natural-japanese/references/readability-principles.md: sha256:6a495446fe6828968371d24a1b628d28a37842ae0fd0e4f11162b57a7f9c4d70
+    .claude/skills/natural-japanese/references/revision-guide.md: sha256:27641d1a2aa5b41821d3da186ddf4139dc091c5dd8fb20544d814675b863433a
+    .claude/skills/natural-japanese/references/translationese.md: sha256:09b3da1ebf4c663be9cb0bf9ed5bade476ba10804509e6ca6dc22dc15129f827
+    .claude/skills/natural-japanese/references/writing-constitution.md: sha256:457b83afa64fa0da95a9daa25a8140e203fc4a3e87b2ff2c2839e0c8aad7ffdb
+    .claude/skills/natural-japanese/scripts/calibrate.py: sha256:7409007f511524fafe7eaf026f8d693a0829d0bc0845b9e35092ea61deb411d8
+    .claude/skills/natural-japanese/scripts/fixtures/ai-smelly.md: sha256:c84979246c11005139ba35afe4e6c5f0a716cf2f8d7e9ac647efffe1b1c5c558
+    .claude/skills/natural-japanese/scripts/fixtures/natural.md: sha256:218c4e52cf0e231ba8c9192fc8f23b49de40d0b3463419a6697dea787862572e
+    .claude/skills/natural-japanese/scripts/lint.py: sha256:576fb564126b6a81feadc88969a0ec8fb8fc7a755899e5b90fe91981e644881a
+    .claude/skills/natural-japanese/scripts/outline.py: sha256:9b0478364f76c6aeed2befc8f4ee1aa4aa1ec6789eca45fb7b9958ccaed7ca80
+    .claude/skills/natural-japanese/scripts/semantic.py: sha256:c14909618677ee66c6f67a0cc81bc9ced9951f2ffd9727182e5e0de6b2d1d667
+    .claude/skills/natural-japanese/scripts/terms.py: sha256:304acb82d8d8cb8a2f45b5efc1110f407e2316d23c13bfc8734670fc1ac81e19
+    .claude/skills/natural-japanese/scripts/textcore.py: sha256:ea363ed8611256afb07b0ce83b478c2d559a910d00bfa152d9244f60025da1f2
+    .kiro/skills/natural-japanese/SKILL.md: sha256:0f662a6ab4955b9146a138a38b73a619b27fa1448ef71e27fcc57f67d3ad0267
+    .kiro/skills/natural-japanese/assets/style-profile-template.md: sha256:d43a199e1399c73a41f332c45c5cf2321457fd49391b0a5bec23e52ef6fb5541
+    .kiro/skills/natural-japanese/references/diagnose.md: sha256:e3c80cdeada823d34d003f83df1e9cbc0e07fbdf109b5c8f7a796a889a00d5a4
+    .kiro/skills/natural-japanese/references/doctypes/guide.md: sha256:4b9db16365ea305c71eb9a59faedfc73620fd93d09721dc29292951994ba239d
+    .kiro/skills/natural-japanese/references/doctypes/memo.md: sha256:d74be03c71e992f4c070fe42249e1cfc6faa87efc7438c6f5aa2659d831e17f5
+    .kiro/skills/natural-japanese/references/doctypes/minutes.md: sha256:de38887be3def7cd35e1b1ffbdf10c21a9c4601fb528f3022f14512df3bc8129
+    .kiro/skills/natural-japanese/references/doctypes/report.md: sha256:28f0cd6cef86fda5cb0bc236b9d1bb1d3d09892aacf5f813bec4f7c4cd84ea8f
+    .kiro/skills/natural-japanese/references/doctypes/slide.md: sha256:1ca8db97566ad053cdb0115a72e12099f94648c5ba3a3d0bd6d33bf91c7f59d8
+    .kiro/skills/natural-japanese/references/eval-rubric.md: sha256:77a49a4d0f70a51d4e595dec3ab236543b404edab5c6ccafb57c3f1f68d4ae65
+    .kiro/skills/natural-japanese/references/examples.md: sha256:bc37c36ebda975351e2949f05990b7202737a3f5b1f95f53584158e9a6d1e99d
+    .kiro/skills/natural-japanese/references/forbidden-patterns.md: sha256:0cce2ad7f053611a8c983ebf86f55631e019bbf752cc815c04077b229a557b1f
+    .kiro/skills/natural-japanese/references/genre-notes.md: sha256:d5b2f7ecda12649efc26ef4a716fe6b2d4c03568b674dc5a06842f90cf6e8a6f
+    .kiro/skills/natural-japanese/references/manual-checklist.md: sha256:19eda8c3098e941c593bb3d4018b9b1f284f3c184db140c799623a07e91c487c
+    .kiro/skills/natural-japanese/references/readability-antipatterns.md: sha256:10418600db75d12da4ba7ca6d76cc9d0bc60e305ae4e75fa90f28c2aa76317b0
+    .kiro/skills/natural-japanese/references/readability-principles.md: sha256:6a495446fe6828968371d24a1b628d28a37842ae0fd0e4f11162b57a7f9c4d70
+    .kiro/skills/natural-japanese/references/revision-guide.md: sha256:27641d1a2aa5b41821d3da186ddf4139dc091c5dd8fb20544d814675b863433a
+    .kiro/skills/natural-japanese/references/translationese.md: sha256:09b3da1ebf4c663be9cb0bf9ed5bade476ba10804509e6ca6dc22dc15129f827
+    .kiro/skills/natural-japanese/references/writing-constitution.md: sha256:457b83afa64fa0da95a9daa25a8140e203fc4a3e87b2ff2c2839e0c8aad7ffdb
+    .kiro/skills/natural-japanese/scripts/calibrate.py: sha256:7409007f511524fafe7eaf026f8d693a0829d0bc0845b9e35092ea61deb411d8
+    .kiro/skills/natural-japanese/scripts/fixtures/ai-smelly.md: sha256:c84979246c11005139ba35afe4e6c5f0a716cf2f8d7e9ac647efffe1b1c5c558
+    .kiro/skills/natural-japanese/scripts/fixtures/natural.md: sha256:218c4e52cf0e231ba8c9192fc8f23b49de40d0b3463419a6697dea787862572e
+    .kiro/skills/natural-japanese/scripts/lint.py: sha256:576fb564126b6a81feadc88969a0ec8fb8fc7a755899e5b90fe91981e644881a
+    .kiro/skills/natural-japanese/scripts/outline.py: sha256:9b0478364f76c6aeed2befc8f4ee1aa4aa1ec6789eca45fb7b9958ccaed7ca80
+    .kiro/skills/natural-japanese/scripts/semantic.py: sha256:c14909618677ee66c6f67a0cc81bc9ced9951f2ffd9727182e5e0de6b2d1d667
+    .kiro/skills/natural-japanese/scripts/terms.py: sha256:304acb82d8d8cb8a2f45b5efc1110f407e2316d23c13bfc8734670fc1ac81e19
+    .kiro/skills/natural-japanese/scripts/textcore.py: sha256:ea363ed8611256afb07b0ce83b478c2d559a910d00bfa152d9244f60025da1f2
+  content_hash: sha256:6b522424613a4f552b3b45f8cef72d172c20e27b06fee7ac88a069c1d9d54ed0
+- repo_url: ikora128/stop-ai-slop-jp
+  materialization_repo_url: iKora128/stop-ai-slop-jp
+  name: stop-ai-slop-jp
+  host: github.com
+  resolved_commit: e09d32796f253a62693885757cea484c275d06f2
+  resolved_ref: main
+  version: unknown
+  package_type: claude_skill
+  deployed_files:
+  - .agents/skills/stop-ai-slop-jp
+  - .agents/skills/stop-ai-slop-jp/.gitignore
+  - .agents/skills/stop-ai-slop-jp/CHANGELOG.md
+  - .agents/skills/stop-ai-slop-jp/LICENSE
+  - .agents/skills/stop-ai-slop-jp/README.en.md
+  - .agents/skills/stop-ai-slop-jp/README.md
+  - .agents/skills/stop-ai-slop-jp/SKILL.md
+  - .agents/skills/stop-ai-slop-jp/references/examples.md
+  - .agents/skills/stop-ai-slop-jp/references/phrases.md
+  - .agents/skills/stop-ai-slop-jp/references/structures.md
+  - .claude/skills/stop-ai-slop-jp
+  - .claude/skills/stop-ai-slop-jp/.gitignore
+  - .claude/skills/stop-ai-slop-jp/CHANGELOG.md
+  - .claude/skills/stop-ai-slop-jp/LICENSE
+  - .claude/skills/stop-ai-slop-jp/README.en.md
+  - .claude/skills/stop-ai-slop-jp/README.md
+  - .claude/skills/stop-ai-slop-jp/SKILL.md
+  - .claude/skills/stop-ai-slop-jp/references/examples.md
+  - .claude/skills/stop-ai-slop-jp/references/phrases.md
+  - .claude/skills/stop-ai-slop-jp/references/structures.md
+  - .kiro/skills/stop-ai-slop-jp
+  - .kiro/skills/stop-ai-slop-jp/.gitignore
+  - .kiro/skills/stop-ai-slop-jp/CHANGELOG.md
+  - .kiro/skills/stop-ai-slop-jp/LICENSE
+  - .kiro/skills/stop-ai-slop-jp/README.en.md
+  - .kiro/skills/stop-ai-slop-jp/README.md
+  - .kiro/skills/stop-ai-slop-jp/SKILL.md
+  - .kiro/skills/stop-ai-slop-jp/references/examples.md
+  - .kiro/skills/stop-ai-slop-jp/references/phrases.md
+  - .kiro/skills/stop-ai-slop-jp/references/structures.md
+  deployed_file_hashes:
+    .agents/skills/stop-ai-slop-jp/.gitignore: sha256:cf237c7aff44efbe6e502e645c3e06da03a69d7bdeb43392108ef3348143417e
+    .agents/skills/stop-ai-slop-jp/CHANGELOG.md: sha256:13b54e7ba2750b34f62c04ee47a29495777348e7ff90847078e3029dd1c742bd
+    .agents/skills/stop-ai-slop-jp/LICENSE: sha256:f9145903368bf0483fec06d7f2ed12d2e20667190783a7ffea161e92ff39f301
+    .agents/skills/stop-ai-slop-jp/README.en.md: sha256:37874550afb353707d5ef3f2706c776c4f97e3fe904dcf1057fc4c3ab66d3d40
+    .agents/skills/stop-ai-slop-jp/README.md: sha256:555c1fcabb809420cb5b8de240ab0be49e88a915bac872ce12a0b35b7916f4d8
+    .agents/skills/stop-ai-slop-jp/SKILL.md: sha256:4da89e5f9c69ce69a8d6c04e8f3d238686cd3a3ba3946c5cfadad805116c50f3
+    .agents/skills/stop-ai-slop-jp/references/examples.md: sha256:a971dfc0f69e914365d29b7566cf1dbcf4cbaf3abf3c331b384e8d29beb9b5f5
+    .agents/skills/stop-ai-slop-jp/references/phrases.md: sha256:0e23388b43146d7f560cdc04a1f8ebe3518b57889404e39fa258b025ab4d2003
+    .agents/skills/stop-ai-slop-jp/references/structures.md: sha256:af7447458633e522394a153295ac2a5ef8c14c6e82befae212a0650058e52969
+    .claude/skills/stop-ai-slop-jp/.gitignore: sha256:cf237c7aff44efbe6e502e645c3e06da03a69d7bdeb43392108ef3348143417e
+    .claude/skills/stop-ai-slop-jp/CHANGELOG.md: sha256:13b54e7ba2750b34f62c04ee47a29495777348e7ff90847078e3029dd1c742bd
+    .claude/skills/stop-ai-slop-jp/LICENSE: sha256:f9145903368bf0483fec06d7f2ed12d2e20667190783a7ffea161e92ff39f301
+    .claude/skills/stop-ai-slop-jp/README.en.md: sha256:37874550afb353707d5ef3f2706c776c4f97e3fe904dcf1057fc4c3ab66d3d40
+    .claude/skills/stop-ai-slop-jp/README.md: sha256:555c1fcabb809420cb5b8de240ab0be49e88a915bac872ce12a0b35b7916f4d8
+    .claude/skills/stop-ai-slop-jp/SKILL.md: sha256:4da89e5f9c69ce69a8d6c04e8f3d238686cd3a3ba3946c5cfadad805116c50f3
+    .claude/skills/stop-ai-slop-jp/references/examples.md: sha256:a971dfc0f69e914365d29b7566cf1dbcf4cbaf3abf3c331b384e8d29beb9b5f5
+    .claude/skills/stop-ai-slop-jp/references/phrases.md: sha256:0e23388b43146d7f560cdc04a1f8ebe3518b57889404e39fa258b025ab4d2003
+    .claude/skills/stop-ai-slop-jp/references/structures.md: sha256:af7447458633e522394a153295ac2a5ef8c14c6e82befae212a0650058e52969
+    .kiro/skills/stop-ai-slop-jp/.gitignore: sha256:cf237c7aff44efbe6e502e645c3e06da03a69d7bdeb43392108ef3348143417e
+    .kiro/skills/stop-ai-slop-jp/CHANGELOG.md: sha256:13b54e7ba2750b34f62c04ee47a29495777348e7ff90847078e3029dd1c742bd
+    .kiro/skills/stop-ai-slop-jp/LICENSE: sha256:f9145903368bf0483fec06d7f2ed12d2e20667190783a7ffea161e92ff39f301
+    .kiro/skills/stop-ai-slop-jp/README.en.md: sha256:37874550afb353707d5ef3f2706c776c4f97e3fe904dcf1057fc4c3ab66d3d40
+    .kiro/skills/stop-ai-slop-jp/README.md: sha256:555c1fcabb809420cb5b8de240ab0be49e88a915bac872ce12a0b35b7916f4d8
+    .kiro/skills/stop-ai-slop-jp/SKILL.md: sha256:4da89e5f9c69ce69a8d6c04e8f3d238686cd3a3ba3946c5cfadad805116c50f3
+    .kiro/skills/stop-ai-slop-jp/references/examples.md: sha256:a971dfc0f69e914365d29b7566cf1dbcf4cbaf3abf3c331b384e8d29beb9b5f5
+    .kiro/skills/stop-ai-slop-jp/references/phrases.md: sha256:0e23388b43146d7f560cdc04a1f8ebe3518b57889404e39fa258b025ab4d2003
+    .kiro/skills/stop-ai-slop-jp/references/structures.md: sha256:af7447458633e522394a153295ac2a5ef8c14c6e82befae212a0650058e52969
+  content_hash: sha256:2e81e3a96cd7e5eaaf6fae3a597a76c8538c027a3ec86b8643cb454dc231f8ff
 - repo_url: k16shikano/eb2929f13ed19c97188393d297be8432
   name: cognitive-rhythm-writing
   host: gist.github.com
@@ -1131,6 +1370,249 @@ deployments:
   content_hash: sha256:c8cb20f68ebf0edb4e497bc11ae5fcaa196004e661cd189015b04f4109ced7f1
 - kind: project-relative
   target: claude
+  value: .claude/skills/natural-japanese
+  runtime: null
+  scope: project
+  owners:
+  - coji/natural-japanese/skills/natural-japanese
+  active_owner: coji/natural-japanese/skills/natural-japanese
+  content_hash: null
+- kind: project-relative
+  target: claude
+  value: .claude/skills/natural-japanese/SKILL.md
+  runtime: null
+  scope: project
+  owners:
+  - coji/natural-japanese/skills/natural-japanese
+  active_owner: coji/natural-japanese/skills/natural-japanese
+  content_hash: sha256:0f662a6ab4955b9146a138a38b73a619b27fa1448ef71e27fcc57f67d3ad0267
+- kind: project-relative
+  target: claude
+  value: .claude/skills/natural-japanese/assets/style-profile-template.md
+  runtime: null
+  scope: project
+  owners:
+  - coji/natural-japanese/skills/natural-japanese
+  active_owner: coji/natural-japanese/skills/natural-japanese
+  content_hash: sha256:d43a199e1399c73a41f332c45c5cf2321457fd49391b0a5bec23e52ef6fb5541
+- kind: project-relative
+  target: claude
+  value: .claude/skills/natural-japanese/references/diagnose.md
+  runtime: null
+  scope: project
+  owners:
+  - coji/natural-japanese/skills/natural-japanese
+  active_owner: coji/natural-japanese/skills/natural-japanese
+  content_hash: sha256:e3c80cdeada823d34d003f83df1e9cbc0e07fbdf109b5c8f7a796a889a00d5a4
+- kind: project-relative
+  target: claude
+  value: .claude/skills/natural-japanese/references/doctypes/guide.md
+  runtime: null
+  scope: project
+  owners:
+  - coji/natural-japanese/skills/natural-japanese
+  active_owner: coji/natural-japanese/skills/natural-japanese
+  content_hash: sha256:4b9db16365ea305c71eb9a59faedfc73620fd93d09721dc29292951994ba239d
+- kind: project-relative
+  target: claude
+  value: .claude/skills/natural-japanese/references/doctypes/memo.md
+  runtime: null
+  scope: project
+  owners:
+  - coji/natural-japanese/skills/natural-japanese
+  active_owner: coji/natural-japanese/skills/natural-japanese
+  content_hash: sha256:d74be03c71e992f4c070fe42249e1cfc6faa87efc7438c6f5aa2659d831e17f5
+- kind: project-relative
+  target: claude
+  value: .claude/skills/natural-japanese/references/doctypes/minutes.md
+  runtime: null
+  scope: project
+  owners:
+  - coji/natural-japanese/skills/natural-japanese
+  active_owner: coji/natural-japanese/skills/natural-japanese
+  content_hash: sha256:de38887be3def7cd35e1b1ffbdf10c21a9c4601fb528f3022f14512df3bc8129
+- kind: project-relative
+  target: claude
+  value: .claude/skills/natural-japanese/references/doctypes/report.md
+  runtime: null
+  scope: project
+  owners:
+  - coji/natural-japanese/skills/natural-japanese
+  active_owner: coji/natural-japanese/skills/natural-japanese
+  content_hash: sha256:28f0cd6cef86fda5cb0bc236b9d1bb1d3d09892aacf5f813bec4f7c4cd84ea8f
+- kind: project-relative
+  target: claude
+  value: .claude/skills/natural-japanese/references/doctypes/slide.md
+  runtime: null
+  scope: project
+  owners:
+  - coji/natural-japanese/skills/natural-japanese
+  active_owner: coji/natural-japanese/skills/natural-japanese
+  content_hash: sha256:1ca8db97566ad053cdb0115a72e12099f94648c5ba3a3d0bd6d33bf91c7f59d8
+- kind: project-relative
+  target: claude
+  value: .claude/skills/natural-japanese/references/eval-rubric.md
+  runtime: null
+  scope: project
+  owners:
+  - coji/natural-japanese/skills/natural-japanese
+  active_owner: coji/natural-japanese/skills/natural-japanese
+  content_hash: sha256:77a49a4d0f70a51d4e595dec3ab236543b404edab5c6ccafb57c3f1f68d4ae65
+- kind: project-relative
+  target: claude
+  value: .claude/skills/natural-japanese/references/examples.md
+  runtime: null
+  scope: project
+  owners:
+  - coji/natural-japanese/skills/natural-japanese
+  active_owner: coji/natural-japanese/skills/natural-japanese
+  content_hash: sha256:bc37c36ebda975351e2949f05990b7202737a3f5b1f95f53584158e9a6d1e99d
+- kind: project-relative
+  target: claude
+  value: .claude/skills/natural-japanese/references/forbidden-patterns.md
+  runtime: null
+  scope: project
+  owners:
+  - coji/natural-japanese/skills/natural-japanese
+  active_owner: coji/natural-japanese/skills/natural-japanese
+  content_hash: sha256:0cce2ad7f053611a8c983ebf86f55631e019bbf752cc815c04077b229a557b1f
+- kind: project-relative
+  target: claude
+  value: .claude/skills/natural-japanese/references/genre-notes.md
+  runtime: null
+  scope: project
+  owners:
+  - coji/natural-japanese/skills/natural-japanese
+  active_owner: coji/natural-japanese/skills/natural-japanese
+  content_hash: sha256:d5b2f7ecda12649efc26ef4a716fe6b2d4c03568b674dc5a06842f90cf6e8a6f
+- kind: project-relative
+  target: claude
+  value: .claude/skills/natural-japanese/references/manual-checklist.md
+  runtime: null
+  scope: project
+  owners:
+  - coji/natural-japanese/skills/natural-japanese
+  active_owner: coji/natural-japanese/skills/natural-japanese
+  content_hash: sha256:19eda8c3098e941c593bb3d4018b9b1f284f3c184db140c799623a07e91c487c
+- kind: project-relative
+  target: claude
+  value: .claude/skills/natural-japanese/references/readability-antipatterns.md
+  runtime: null
+  scope: project
+  owners:
+  - coji/natural-japanese/skills/natural-japanese
+  active_owner: coji/natural-japanese/skills/natural-japanese
+  content_hash: sha256:10418600db75d12da4ba7ca6d76cc9d0bc60e305ae4e75fa90f28c2aa76317b0
+- kind: project-relative
+  target: claude
+  value: .claude/skills/natural-japanese/references/readability-principles.md
+  runtime: null
+  scope: project
+  owners:
+  - coji/natural-japanese/skills/natural-japanese
+  active_owner: coji/natural-japanese/skills/natural-japanese
+  content_hash: sha256:6a495446fe6828968371d24a1b628d28a37842ae0fd0e4f11162b57a7f9c4d70
+- kind: project-relative
+  target: claude
+  value: .claude/skills/natural-japanese/references/revision-guide.md
+  runtime: null
+  scope: project
+  owners:
+  - coji/natural-japanese/skills/natural-japanese
+  active_owner: coji/natural-japanese/skills/natural-japanese
+  content_hash: sha256:27641d1a2aa5b41821d3da186ddf4139dc091c5dd8fb20544d814675b863433a
+- kind: project-relative
+  target: claude
+  value: .claude/skills/natural-japanese/references/translationese.md
+  runtime: null
+  scope: project
+  owners:
+  - coji/natural-japanese/skills/natural-japanese
+  active_owner: coji/natural-japanese/skills/natural-japanese
+  content_hash: sha256:09b3da1ebf4c663be9cb0bf9ed5bade476ba10804509e6ca6dc22dc15129f827
+- kind: project-relative
+  target: claude
+  value: .claude/skills/natural-japanese/references/writing-constitution.md
+  runtime: null
+  scope: project
+  owners:
+  - coji/natural-japanese/skills/natural-japanese
+  active_owner: coji/natural-japanese/skills/natural-japanese
+  content_hash: sha256:457b83afa64fa0da95a9daa25a8140e203fc4a3e87b2ff2c2839e0c8aad7ffdb
+- kind: project-relative
+  target: claude
+  value: .claude/skills/natural-japanese/scripts/calibrate.py
+  runtime: null
+  scope: project
+  owners:
+  - coji/natural-japanese/skills/natural-japanese
+  active_owner: coji/natural-japanese/skills/natural-japanese
+  content_hash: sha256:7409007f511524fafe7eaf026f8d693a0829d0bc0845b9e35092ea61deb411d8
+- kind: project-relative
+  target: claude
+  value: .claude/skills/natural-japanese/scripts/fixtures/ai-smelly.md
+  runtime: null
+  scope: project
+  owners:
+  - coji/natural-japanese/skills/natural-japanese
+  active_owner: coji/natural-japanese/skills/natural-japanese
+  content_hash: sha256:c84979246c11005139ba35afe4e6c5f0a716cf2f8d7e9ac647efffe1b1c5c558
+- kind: project-relative
+  target: claude
+  value: .claude/skills/natural-japanese/scripts/fixtures/natural.md
+  runtime: null
+  scope: project
+  owners:
+  - coji/natural-japanese/skills/natural-japanese
+  active_owner: coji/natural-japanese/skills/natural-japanese
+  content_hash: sha256:218c4e52cf0e231ba8c9192fc8f23b49de40d0b3463419a6697dea787862572e
+- kind: project-relative
+  target: claude
+  value: .claude/skills/natural-japanese/scripts/lint.py
+  runtime: null
+  scope: project
+  owners:
+  - coji/natural-japanese/skills/natural-japanese
+  active_owner: coji/natural-japanese/skills/natural-japanese
+  content_hash: sha256:576fb564126b6a81feadc88969a0ec8fb8fc7a755899e5b90fe91981e644881a
+- kind: project-relative
+  target: claude
+  value: .claude/skills/natural-japanese/scripts/outline.py
+  runtime: null
+  scope: project
+  owners:
+  - coji/natural-japanese/skills/natural-japanese
+  active_owner: coji/natural-japanese/skills/natural-japanese
+  content_hash: sha256:9b0478364f76c6aeed2befc8f4ee1aa4aa1ec6789eca45fb7b9958ccaed7ca80
+- kind: project-relative
+  target: claude
+  value: .claude/skills/natural-japanese/scripts/semantic.py
+  runtime: null
+  scope: project
+  owners:
+  - coji/natural-japanese/skills/natural-japanese
+  active_owner: coji/natural-japanese/skills/natural-japanese
+  content_hash: sha256:c14909618677ee66c6f67a0cc81bc9ced9951f2ffd9727182e5e0de6b2d1d667
+- kind: project-relative
+  target: claude
+  value: .claude/skills/natural-japanese/scripts/terms.py
+  runtime: null
+  scope: project
+  owners:
+  - coji/natural-japanese/skills/natural-japanese
+  active_owner: coji/natural-japanese/skills/natural-japanese
+  content_hash: sha256:304acb82d8d8cb8a2f45b5efc1110f407e2316d23c13bfc8734670fc1ac81e19
+- kind: project-relative
+  target: claude
+  value: .claude/skills/natural-japanese/scripts/textcore.py
+  runtime: null
+  scope: project
+  owners:
+  - coji/natural-japanese/skills/natural-japanese
+  active_owner: coji/natural-japanese/skills/natural-japanese
+  content_hash: sha256:ea363ed8611256afb07b0ce83b478c2d559a910d00bfa152d9244f60025da1f2
+- kind: project-relative
+  target: claude
   value: .claude/skills/prototype
   runtime: null
   scope: project
@@ -1228,6 +1710,96 @@ deployments:
   - mattpocock/skills/skills/engineering/resolving-merge-conflicts
   active_owner: mattpocock/skills/skills/engineering/resolving-merge-conflicts
   content_hash: sha256:a1f4f96838f2ed6282eb28abbbf99029cb8fadce552baf53da90a025b8bffddf
+- kind: project-relative
+  target: claude
+  value: .claude/skills/stop-ai-slop-jp
+  runtime: null
+  scope: project
+  owners:
+  - ikora128/stop-ai-slop-jp
+  active_owner: ikora128/stop-ai-slop-jp
+  content_hash: null
+- kind: project-relative
+  target: claude
+  value: .claude/skills/stop-ai-slop-jp/.gitignore
+  runtime: null
+  scope: project
+  owners:
+  - ikora128/stop-ai-slop-jp
+  active_owner: ikora128/stop-ai-slop-jp
+  content_hash: sha256:cf237c7aff44efbe6e502e645c3e06da03a69d7bdeb43392108ef3348143417e
+- kind: project-relative
+  target: claude
+  value: .claude/skills/stop-ai-slop-jp/CHANGELOG.md
+  runtime: null
+  scope: project
+  owners:
+  - ikora128/stop-ai-slop-jp
+  active_owner: ikora128/stop-ai-slop-jp
+  content_hash: sha256:13b54e7ba2750b34f62c04ee47a29495777348e7ff90847078e3029dd1c742bd
+- kind: project-relative
+  target: claude
+  value: .claude/skills/stop-ai-slop-jp/LICENSE
+  runtime: null
+  scope: project
+  owners:
+  - ikora128/stop-ai-slop-jp
+  active_owner: ikora128/stop-ai-slop-jp
+  content_hash: sha256:f9145903368bf0483fec06d7f2ed12d2e20667190783a7ffea161e92ff39f301
+- kind: project-relative
+  target: claude
+  value: .claude/skills/stop-ai-slop-jp/README.en.md
+  runtime: null
+  scope: project
+  owners:
+  - ikora128/stop-ai-slop-jp
+  active_owner: ikora128/stop-ai-slop-jp
+  content_hash: sha256:37874550afb353707d5ef3f2706c776c4f97e3fe904dcf1057fc4c3ab66d3d40
+- kind: project-relative
+  target: claude
+  value: .claude/skills/stop-ai-slop-jp/README.md
+  runtime: null
+  scope: project
+  owners:
+  - ikora128/stop-ai-slop-jp
+  active_owner: ikora128/stop-ai-slop-jp
+  content_hash: sha256:555c1fcabb809420cb5b8de240ab0be49e88a915bac872ce12a0b35b7916f4d8
+- kind: project-relative
+  target: claude
+  value: .claude/skills/stop-ai-slop-jp/SKILL.md
+  runtime: null
+  scope: project
+  owners:
+  - ikora128/stop-ai-slop-jp
+  active_owner: ikora128/stop-ai-slop-jp
+  content_hash: sha256:4da89e5f9c69ce69a8d6c04e8f3d238686cd3a3ba3946c5cfadad805116c50f3
+- kind: project-relative
+  target: claude
+  value: .claude/skills/stop-ai-slop-jp/references/examples.md
+  runtime: null
+  scope: project
+  owners:
+  - ikora128/stop-ai-slop-jp
+  active_owner: ikora128/stop-ai-slop-jp
+  content_hash: sha256:a971dfc0f69e914365d29b7566cf1dbcf4cbaf3abf3c331b384e8d29beb9b5f5
+- kind: project-relative
+  target: claude
+  value: .claude/skills/stop-ai-slop-jp/references/phrases.md
+  runtime: null
+  scope: project
+  owners:
+  - ikora128/stop-ai-slop-jp
+  active_owner: ikora128/stop-ai-slop-jp
+  content_hash: sha256:0e23388b43146d7f560cdc04a1f8ebe3518b57889404e39fa258b025ab4d2003
+- kind: project-relative
+  target: claude
+  value: .claude/skills/stop-ai-slop-jp/references/structures.md
+  runtime: null
+  scope: project
+  owners:
+  - ikora128/stop-ai-slop-jp
+  active_owner: ikora128/stop-ai-slop-jp
+  content_hash: sha256:af7447458633e522394a153295ac2a5ef8c14c6e82befae212a0650058e52969
 - kind: project-relative
   target: claude
   value: .claude/skills/tdd
@@ -1950,6 +2522,249 @@ deployments:
   content_hash: sha256:c8cb20f68ebf0edb4e497bc11ae5fcaa196004e661cd189015b04f4109ced7f1
 - kind: project-relative
   target: codex
+  value: .agents/skills/natural-japanese
+  runtime: null
+  scope: project
+  owners:
+  - coji/natural-japanese/skills/natural-japanese
+  active_owner: coji/natural-japanese/skills/natural-japanese
+  content_hash: null
+- kind: project-relative
+  target: codex
+  value: .agents/skills/natural-japanese/SKILL.md
+  runtime: null
+  scope: project
+  owners:
+  - coji/natural-japanese/skills/natural-japanese
+  active_owner: coji/natural-japanese/skills/natural-japanese
+  content_hash: sha256:0f662a6ab4955b9146a138a38b73a619b27fa1448ef71e27fcc57f67d3ad0267
+- kind: project-relative
+  target: codex
+  value: .agents/skills/natural-japanese/assets/style-profile-template.md
+  runtime: null
+  scope: project
+  owners:
+  - coji/natural-japanese/skills/natural-japanese
+  active_owner: coji/natural-japanese/skills/natural-japanese
+  content_hash: sha256:d43a199e1399c73a41f332c45c5cf2321457fd49391b0a5bec23e52ef6fb5541
+- kind: project-relative
+  target: codex
+  value: .agents/skills/natural-japanese/references/diagnose.md
+  runtime: null
+  scope: project
+  owners:
+  - coji/natural-japanese/skills/natural-japanese
+  active_owner: coji/natural-japanese/skills/natural-japanese
+  content_hash: sha256:e3c80cdeada823d34d003f83df1e9cbc0e07fbdf109b5c8f7a796a889a00d5a4
+- kind: project-relative
+  target: codex
+  value: .agents/skills/natural-japanese/references/doctypes/guide.md
+  runtime: null
+  scope: project
+  owners:
+  - coji/natural-japanese/skills/natural-japanese
+  active_owner: coji/natural-japanese/skills/natural-japanese
+  content_hash: sha256:4b9db16365ea305c71eb9a59faedfc73620fd93d09721dc29292951994ba239d
+- kind: project-relative
+  target: codex
+  value: .agents/skills/natural-japanese/references/doctypes/memo.md
+  runtime: null
+  scope: project
+  owners:
+  - coji/natural-japanese/skills/natural-japanese
+  active_owner: coji/natural-japanese/skills/natural-japanese
+  content_hash: sha256:d74be03c71e992f4c070fe42249e1cfc6faa87efc7438c6f5aa2659d831e17f5
+- kind: project-relative
+  target: codex
+  value: .agents/skills/natural-japanese/references/doctypes/minutes.md
+  runtime: null
+  scope: project
+  owners:
+  - coji/natural-japanese/skills/natural-japanese
+  active_owner: coji/natural-japanese/skills/natural-japanese
+  content_hash: sha256:de38887be3def7cd35e1b1ffbdf10c21a9c4601fb528f3022f14512df3bc8129
+- kind: project-relative
+  target: codex
+  value: .agents/skills/natural-japanese/references/doctypes/report.md
+  runtime: null
+  scope: project
+  owners:
+  - coji/natural-japanese/skills/natural-japanese
+  active_owner: coji/natural-japanese/skills/natural-japanese
+  content_hash: sha256:28f0cd6cef86fda5cb0bc236b9d1bb1d3d09892aacf5f813bec4f7c4cd84ea8f
+- kind: project-relative
+  target: codex
+  value: .agents/skills/natural-japanese/references/doctypes/slide.md
+  runtime: null
+  scope: project
+  owners:
+  - coji/natural-japanese/skills/natural-japanese
+  active_owner: coji/natural-japanese/skills/natural-japanese
+  content_hash: sha256:1ca8db97566ad053cdb0115a72e12099f94648c5ba3a3d0bd6d33bf91c7f59d8
+- kind: project-relative
+  target: codex
+  value: .agents/skills/natural-japanese/references/eval-rubric.md
+  runtime: null
+  scope: project
+  owners:
+  - coji/natural-japanese/skills/natural-japanese
+  active_owner: coji/natural-japanese/skills/natural-japanese
+  content_hash: sha256:77a49a4d0f70a51d4e595dec3ab236543b404edab5c6ccafb57c3f1f68d4ae65
+- kind: project-relative
+  target: codex
+  value: .agents/skills/natural-japanese/references/examples.md
+  runtime: null
+  scope: project
+  owners:
+  - coji/natural-japanese/skills/natural-japanese
+  active_owner: coji/natural-japanese/skills/natural-japanese
+  content_hash: sha256:bc37c36ebda975351e2949f05990b7202737a3f5b1f95f53584158e9a6d1e99d
+- kind: project-relative
+  target: codex
+  value: .agents/skills/natural-japanese/references/forbidden-patterns.md
+  runtime: null
+  scope: project
+  owners:
+  - coji/natural-japanese/skills/natural-japanese
+  active_owner: coji/natural-japanese/skills/natural-japanese
+  content_hash: sha256:0cce2ad7f053611a8c983ebf86f55631e019bbf752cc815c04077b229a557b1f
+- kind: project-relative
+  target: codex
+  value: .agents/skills/natural-japanese/references/genre-notes.md
+  runtime: null
+  scope: project
+  owners:
+  - coji/natural-japanese/skills/natural-japanese
+  active_owner: coji/natural-japanese/skills/natural-japanese
+  content_hash: sha256:d5b2f7ecda12649efc26ef4a716fe6b2d4c03568b674dc5a06842f90cf6e8a6f
+- kind: project-relative
+  target: codex
+  value: .agents/skills/natural-japanese/references/manual-checklist.md
+  runtime: null
+  scope: project
+  owners:
+  - coji/natural-japanese/skills/natural-japanese
+  active_owner: coji/natural-japanese/skills/natural-japanese
+  content_hash: sha256:19eda8c3098e941c593bb3d4018b9b1f284f3c184db140c799623a07e91c487c
+- kind: project-relative
+  target: codex
+  value: .agents/skills/natural-japanese/references/readability-antipatterns.md
+  runtime: null
+  scope: project
+  owners:
+  - coji/natural-japanese/skills/natural-japanese
+  active_owner: coji/natural-japanese/skills/natural-japanese
+  content_hash: sha256:10418600db75d12da4ba7ca6d76cc9d0bc60e305ae4e75fa90f28c2aa76317b0
+- kind: project-relative
+  target: codex
+  value: .agents/skills/natural-japanese/references/readability-principles.md
+  runtime: null
+  scope: project
+  owners:
+  - coji/natural-japanese/skills/natural-japanese
+  active_owner: coji/natural-japanese/skills/natural-japanese
+  content_hash: sha256:6a495446fe6828968371d24a1b628d28a37842ae0fd0e4f11162b57a7f9c4d70
+- kind: project-relative
+  target: codex
+  value: .agents/skills/natural-japanese/references/revision-guide.md
+  runtime: null
+  scope: project
+  owners:
+  - coji/natural-japanese/skills/natural-japanese
+  active_owner: coji/natural-japanese/skills/natural-japanese
+  content_hash: sha256:27641d1a2aa5b41821d3da186ddf4139dc091c5dd8fb20544d814675b863433a
+- kind: project-relative
+  target: codex
+  value: .agents/skills/natural-japanese/references/translationese.md
+  runtime: null
+  scope: project
+  owners:
+  - coji/natural-japanese/skills/natural-japanese
+  active_owner: coji/natural-japanese/skills/natural-japanese
+  content_hash: sha256:09b3da1ebf4c663be9cb0bf9ed5bade476ba10804509e6ca6dc22dc15129f827
+- kind: project-relative
+  target: codex
+  value: .agents/skills/natural-japanese/references/writing-constitution.md
+  runtime: null
+  scope: project
+  owners:
+  - coji/natural-japanese/skills/natural-japanese
+  active_owner: coji/natural-japanese/skills/natural-japanese
+  content_hash: sha256:457b83afa64fa0da95a9daa25a8140e203fc4a3e87b2ff2c2839e0c8aad7ffdb
+- kind: project-relative
+  target: codex
+  value: .agents/skills/natural-japanese/scripts/calibrate.py
+  runtime: null
+  scope: project
+  owners:
+  - coji/natural-japanese/skills/natural-japanese
+  active_owner: coji/natural-japanese/skills/natural-japanese
+  content_hash: sha256:7409007f511524fafe7eaf026f8d693a0829d0bc0845b9e35092ea61deb411d8
+- kind: project-relative
+  target: codex
+  value: .agents/skills/natural-japanese/scripts/fixtures/ai-smelly.md
+  runtime: null
+  scope: project
+  owners:
+  - coji/natural-japanese/skills/natural-japanese
+  active_owner: coji/natural-japanese/skills/natural-japanese
+  content_hash: sha256:c84979246c11005139ba35afe4e6c5f0a716cf2f8d7e9ac647efffe1b1c5c558
+- kind: project-relative
+  target: codex
+  value: .agents/skills/natural-japanese/scripts/fixtures/natural.md
+  runtime: null
+  scope: project
+  owners:
+  - coji/natural-japanese/skills/natural-japanese
+  active_owner: coji/natural-japanese/skills/natural-japanese
+  content_hash: sha256:218c4e52cf0e231ba8c9192fc8f23b49de40d0b3463419a6697dea787862572e
+- kind: project-relative
+  target: codex
+  value: .agents/skills/natural-japanese/scripts/lint.py
+  runtime: null
+  scope: project
+  owners:
+  - coji/natural-japanese/skills/natural-japanese
+  active_owner: coji/natural-japanese/skills/natural-japanese
+  content_hash: sha256:576fb564126b6a81feadc88969a0ec8fb8fc7a755899e5b90fe91981e644881a
+- kind: project-relative
+  target: codex
+  value: .agents/skills/natural-japanese/scripts/outline.py
+  runtime: null
+  scope: project
+  owners:
+  - coji/natural-japanese/skills/natural-japanese
+  active_owner: coji/natural-japanese/skills/natural-japanese
+  content_hash: sha256:9b0478364f76c6aeed2befc8f4ee1aa4aa1ec6789eca45fb7b9958ccaed7ca80
+- kind: project-relative
+  target: codex
+  value: .agents/skills/natural-japanese/scripts/semantic.py
+  runtime: null
+  scope: project
+  owners:
+  - coji/natural-japanese/skills/natural-japanese
+  active_owner: coji/natural-japanese/skills/natural-japanese
+  content_hash: sha256:c14909618677ee66c6f67a0cc81bc9ced9951f2ffd9727182e5e0de6b2d1d667
+- kind: project-relative
+  target: codex
+  value: .agents/skills/natural-japanese/scripts/terms.py
+  runtime: null
+  scope: project
+  owners:
+  - coji/natural-japanese/skills/natural-japanese
+  active_owner: coji/natural-japanese/skills/natural-japanese
+  content_hash: sha256:304acb82d8d8cb8a2f45b5efc1110f407e2316d23c13bfc8734670fc1ac81e19
+- kind: project-relative
+  target: codex
+  value: .agents/skills/natural-japanese/scripts/textcore.py
+  runtime: null
+  scope: project
+  owners:
+  - coji/natural-japanese/skills/natural-japanese
+  active_owner: coji/natural-japanese/skills/natural-japanese
+  content_hash: sha256:ea363ed8611256afb07b0ce83b478c2d559a910d00bfa152d9244f60025da1f2
+- kind: project-relative
+  target: codex
   value: .agents/skills/prototype
   runtime: null
   scope: project
@@ -2047,6 +2862,96 @@ deployments:
   - mattpocock/skills/skills/engineering/resolving-merge-conflicts
   active_owner: mattpocock/skills/skills/engineering/resolving-merge-conflicts
   content_hash: sha256:a1f4f96838f2ed6282eb28abbbf99029cb8fadce552baf53da90a025b8bffddf
+- kind: project-relative
+  target: codex
+  value: .agents/skills/stop-ai-slop-jp
+  runtime: null
+  scope: project
+  owners:
+  - ikora128/stop-ai-slop-jp
+  active_owner: ikora128/stop-ai-slop-jp
+  content_hash: null
+- kind: project-relative
+  target: codex
+  value: .agents/skills/stop-ai-slop-jp/.gitignore
+  runtime: null
+  scope: project
+  owners:
+  - ikora128/stop-ai-slop-jp
+  active_owner: ikora128/stop-ai-slop-jp
+  content_hash: sha256:cf237c7aff44efbe6e502e645c3e06da03a69d7bdeb43392108ef3348143417e
+- kind: project-relative
+  target: codex
+  value: .agents/skills/stop-ai-slop-jp/CHANGELOG.md
+  runtime: null
+  scope: project
+  owners:
+  - ikora128/stop-ai-slop-jp
+  active_owner: ikora128/stop-ai-slop-jp
+  content_hash: sha256:13b54e7ba2750b34f62c04ee47a29495777348e7ff90847078e3029dd1c742bd
+- kind: project-relative
+  target: codex
+  value: .agents/skills/stop-ai-slop-jp/LICENSE
+  runtime: null
+  scope: project
+  owners:
+  - ikora128/stop-ai-slop-jp
+  active_owner: ikora128/stop-ai-slop-jp
+  content_hash: sha256:f9145903368bf0483fec06d7f2ed12d2e20667190783a7ffea161e92ff39f301
+- kind: project-relative
+  target: codex
+  value: .agents/skills/stop-ai-slop-jp/README.en.md
+  runtime: null
+  scope: project
+  owners:
+  - ikora128/stop-ai-slop-jp
+  active_owner: ikora128/stop-ai-slop-jp
+  content_hash: sha256:37874550afb353707d5ef3f2706c776c4f97e3fe904dcf1057fc4c3ab66d3d40
+- kind: project-relative
+  target: codex
+  value: .agents/skills/stop-ai-slop-jp/README.md
+  runtime: null
+  scope: project
+  owners:
+  - ikora128/stop-ai-slop-jp
+  active_owner: ikora128/stop-ai-slop-jp
+  content_hash: sha256:555c1fcabb809420cb5b8de240ab0be49e88a915bac872ce12a0b35b7916f4d8
+- kind: project-relative
+  target: codex
+  value: .agents/skills/stop-ai-slop-jp/SKILL.md
+  runtime: null
+  scope: project
+  owners:
+  - ikora128/stop-ai-slop-jp
+  active_owner: ikora128/stop-ai-slop-jp
+  content_hash: sha256:4da89e5f9c69ce69a8d6c04e8f3d238686cd3a3ba3946c5cfadad805116c50f3
+- kind: project-relative
+  target: codex
+  value: .agents/skills/stop-ai-slop-jp/references/examples.md
+  runtime: null
+  scope: project
+  owners:
+  - ikora128/stop-ai-slop-jp
+  active_owner: ikora128/stop-ai-slop-jp
+  content_hash: sha256:a971dfc0f69e914365d29b7566cf1dbcf4cbaf3abf3c331b384e8d29beb9b5f5
+- kind: project-relative
+  target: codex
+  value: .agents/skills/stop-ai-slop-jp/references/phrases.md
+  runtime: null
+  scope: project
+  owners:
+  - ikora128/stop-ai-slop-jp
+  active_owner: ikora128/stop-ai-slop-jp
+  content_hash: sha256:0e23388b43146d7f560cdc04a1f8ebe3518b57889404e39fa258b025ab4d2003
+- kind: project-relative
+  target: codex
+  value: .agents/skills/stop-ai-slop-jp/references/structures.md
+  runtime: null
+  scope: project
+  owners:
+  - ikora128/stop-ai-slop-jp
+  active_owner: ikora128/stop-ai-slop-jp
+  content_hash: sha256:af7447458633e522394a153295ac2a5ef8c14c6e82befae212a0650058e52969
 - kind: project-relative
   target: codex
   value: .agents/skills/tdd
@@ -2769,6 +3674,249 @@ deployments:
   content_hash: sha256:c8cb20f68ebf0edb4e497bc11ae5fcaa196004e661cd189015b04f4109ced7f1
 - kind: project-relative
   target: kiro
+  value: .kiro/skills/natural-japanese
+  runtime: null
+  scope: project
+  owners:
+  - coji/natural-japanese/skills/natural-japanese
+  active_owner: coji/natural-japanese/skills/natural-japanese
+  content_hash: null
+- kind: project-relative
+  target: kiro
+  value: .kiro/skills/natural-japanese/SKILL.md
+  runtime: null
+  scope: project
+  owners:
+  - coji/natural-japanese/skills/natural-japanese
+  active_owner: coji/natural-japanese/skills/natural-japanese
+  content_hash: sha256:0f662a6ab4955b9146a138a38b73a619b27fa1448ef71e27fcc57f67d3ad0267
+- kind: project-relative
+  target: kiro
+  value: .kiro/skills/natural-japanese/assets/style-profile-template.md
+  runtime: null
+  scope: project
+  owners:
+  - coji/natural-japanese/skills/natural-japanese
+  active_owner: coji/natural-japanese/skills/natural-japanese
+  content_hash: sha256:d43a199e1399c73a41f332c45c5cf2321457fd49391b0a5bec23e52ef6fb5541
+- kind: project-relative
+  target: kiro
+  value: .kiro/skills/natural-japanese/references/diagnose.md
+  runtime: null
+  scope: project
+  owners:
+  - coji/natural-japanese/skills/natural-japanese
+  active_owner: coji/natural-japanese/skills/natural-japanese
+  content_hash: sha256:e3c80cdeada823d34d003f83df1e9cbc0e07fbdf109b5c8f7a796a889a00d5a4
+- kind: project-relative
+  target: kiro
+  value: .kiro/skills/natural-japanese/references/doctypes/guide.md
+  runtime: null
+  scope: project
+  owners:
+  - coji/natural-japanese/skills/natural-japanese
+  active_owner: coji/natural-japanese/skills/natural-japanese
+  content_hash: sha256:4b9db16365ea305c71eb9a59faedfc73620fd93d09721dc29292951994ba239d
+- kind: project-relative
+  target: kiro
+  value: .kiro/skills/natural-japanese/references/doctypes/memo.md
+  runtime: null
+  scope: project
+  owners:
+  - coji/natural-japanese/skills/natural-japanese
+  active_owner: coji/natural-japanese/skills/natural-japanese
+  content_hash: sha256:d74be03c71e992f4c070fe42249e1cfc6faa87efc7438c6f5aa2659d831e17f5
+- kind: project-relative
+  target: kiro
+  value: .kiro/skills/natural-japanese/references/doctypes/minutes.md
+  runtime: null
+  scope: project
+  owners:
+  - coji/natural-japanese/skills/natural-japanese
+  active_owner: coji/natural-japanese/skills/natural-japanese
+  content_hash: sha256:de38887be3def7cd35e1b1ffbdf10c21a9c4601fb528f3022f14512df3bc8129
+- kind: project-relative
+  target: kiro
+  value: .kiro/skills/natural-japanese/references/doctypes/report.md
+  runtime: null
+  scope: project
+  owners:
+  - coji/natural-japanese/skills/natural-japanese
+  active_owner: coji/natural-japanese/skills/natural-japanese
+  content_hash: sha256:28f0cd6cef86fda5cb0bc236b9d1bb1d3d09892aacf5f813bec4f7c4cd84ea8f
+- kind: project-relative
+  target: kiro
+  value: .kiro/skills/natural-japanese/references/doctypes/slide.md
+  runtime: null
+  scope: project
+  owners:
+  - coji/natural-japanese/skills/natural-japanese
+  active_owner: coji/natural-japanese/skills/natural-japanese
+  content_hash: sha256:1ca8db97566ad053cdb0115a72e12099f94648c5ba3a3d0bd6d33bf91c7f59d8
+- kind: project-relative
+  target: kiro
+  value: .kiro/skills/natural-japanese/references/eval-rubric.md
+  runtime: null
+  scope: project
+  owners:
+  - coji/natural-japanese/skills/natural-japanese
+  active_owner: coji/natural-japanese/skills/natural-japanese
+  content_hash: sha256:77a49a4d0f70a51d4e595dec3ab236543b404edab5c6ccafb57c3f1f68d4ae65
+- kind: project-relative
+  target: kiro
+  value: .kiro/skills/natural-japanese/references/examples.md
+  runtime: null
+  scope: project
+  owners:
+  - coji/natural-japanese/skills/natural-japanese
+  active_owner: coji/natural-japanese/skills/natural-japanese
+  content_hash: sha256:bc37c36ebda975351e2949f05990b7202737a3f5b1f95f53584158e9a6d1e99d
+- kind: project-relative
+  target: kiro
+  value: .kiro/skills/natural-japanese/references/forbidden-patterns.md
+  runtime: null
+  scope: project
+  owners:
+  - coji/natural-japanese/skills/natural-japanese
+  active_owner: coji/natural-japanese/skills/natural-japanese
+  content_hash: sha256:0cce2ad7f053611a8c983ebf86f55631e019bbf752cc815c04077b229a557b1f
+- kind: project-relative
+  target: kiro
+  value: .kiro/skills/natural-japanese/references/genre-notes.md
+  runtime: null
+  scope: project
+  owners:
+  - coji/natural-japanese/skills/natural-japanese
+  active_owner: coji/natural-japanese/skills/natural-japanese
+  content_hash: sha256:d5b2f7ecda12649efc26ef4a716fe6b2d4c03568b674dc5a06842f90cf6e8a6f
+- kind: project-relative
+  target: kiro
+  value: .kiro/skills/natural-japanese/references/manual-checklist.md
+  runtime: null
+  scope: project
+  owners:
+  - coji/natural-japanese/skills/natural-japanese
+  active_owner: coji/natural-japanese/skills/natural-japanese
+  content_hash: sha256:19eda8c3098e941c593bb3d4018b9b1f284f3c184db140c799623a07e91c487c
+- kind: project-relative
+  target: kiro
+  value: .kiro/skills/natural-japanese/references/readability-antipatterns.md
+  runtime: null
+  scope: project
+  owners:
+  - coji/natural-japanese/skills/natural-japanese
+  active_owner: coji/natural-japanese/skills/natural-japanese
+  content_hash: sha256:10418600db75d12da4ba7ca6d76cc9d0bc60e305ae4e75fa90f28c2aa76317b0
+- kind: project-relative
+  target: kiro
+  value: .kiro/skills/natural-japanese/references/readability-principles.md
+  runtime: null
+  scope: project
+  owners:
+  - coji/natural-japanese/skills/natural-japanese
+  active_owner: coji/natural-japanese/skills/natural-japanese
+  content_hash: sha256:6a495446fe6828968371d24a1b628d28a37842ae0fd0e4f11162b57a7f9c4d70
+- kind: project-relative
+  target: kiro
+  value: .kiro/skills/natural-japanese/references/revision-guide.md
+  runtime: null
+  scope: project
+  owners:
+  - coji/natural-japanese/skills/natural-japanese
+  active_owner: coji/natural-japanese/skills/natural-japanese
+  content_hash: sha256:27641d1a2aa5b41821d3da186ddf4139dc091c5dd8fb20544d814675b863433a
+- kind: project-relative
+  target: kiro
+  value: .kiro/skills/natural-japanese/references/translationese.md
+  runtime: null
+  scope: project
+  owners:
+  - coji/natural-japanese/skills/natural-japanese
+  active_owner: coji/natural-japanese/skills/natural-japanese
+  content_hash: sha256:09b3da1ebf4c663be9cb0bf9ed5bade476ba10804509e6ca6dc22dc15129f827
+- kind: project-relative
+  target: kiro
+  value: .kiro/skills/natural-japanese/references/writing-constitution.md
+  runtime: null
+  scope: project
+  owners:
+  - coji/natural-japanese/skills/natural-japanese
+  active_owner: coji/natural-japanese/skills/natural-japanese
+  content_hash: sha256:457b83afa64fa0da95a9daa25a8140e203fc4a3e87b2ff2c2839e0c8aad7ffdb
+- kind: project-relative
+  target: kiro
+  value: .kiro/skills/natural-japanese/scripts/calibrate.py
+  runtime: null
+  scope: project
+  owners:
+  - coji/natural-japanese/skills/natural-japanese
+  active_owner: coji/natural-japanese/skills/natural-japanese
+  content_hash: sha256:7409007f511524fafe7eaf026f8d693a0829d0bc0845b9e35092ea61deb411d8
+- kind: project-relative
+  target: kiro
+  value: .kiro/skills/natural-japanese/scripts/fixtures/ai-smelly.md
+  runtime: null
+  scope: project
+  owners:
+  - coji/natural-japanese/skills/natural-japanese
+  active_owner: coji/natural-japanese/skills/natural-japanese
+  content_hash: sha256:c84979246c11005139ba35afe4e6c5f0a716cf2f8d7e9ac647efffe1b1c5c558
+- kind: project-relative
+  target: kiro
+  value: .kiro/skills/natural-japanese/scripts/fixtures/natural.md
+  runtime: null
+  scope: project
+  owners:
+  - coji/natural-japanese/skills/natural-japanese
+  active_owner: coji/natural-japanese/skills/natural-japanese
+  content_hash: sha256:218c4e52cf0e231ba8c9192fc8f23b49de40d0b3463419a6697dea787862572e
+- kind: project-relative
+  target: kiro
+  value: .kiro/skills/natural-japanese/scripts/lint.py
+  runtime: null
+  scope: project
+  owners:
+  - coji/natural-japanese/skills/natural-japanese
+  active_owner: coji/natural-japanese/skills/natural-japanese
+  content_hash: sha256:576fb564126b6a81feadc88969a0ec8fb8fc7a755899e5b90fe91981e644881a
+- kind: project-relative
+  target: kiro
+  value: .kiro/skills/natural-japanese/scripts/outline.py
+  runtime: null
+  scope: project
+  owners:
+  - coji/natural-japanese/skills/natural-japanese
+  active_owner: coji/natural-japanese/skills/natural-japanese
+  content_hash: sha256:9b0478364f76c6aeed2befc8f4ee1aa4aa1ec6789eca45fb7b9958ccaed7ca80
+- kind: project-relative
+  target: kiro
+  value: .kiro/skills/natural-japanese/scripts/semantic.py
+  runtime: null
+  scope: project
+  owners:
+  - coji/natural-japanese/skills/natural-japanese
+  active_owner: coji/natural-japanese/skills/natural-japanese
+  content_hash: sha256:c14909618677ee66c6f67a0cc81bc9ced9951f2ffd9727182e5e0de6b2d1d667
+- kind: project-relative
+  target: kiro
+  value: .kiro/skills/natural-japanese/scripts/terms.py
+  runtime: null
+  scope: project
+  owners:
+  - coji/natural-japanese/skills/natural-japanese
+  active_owner: coji/natural-japanese/skills/natural-japanese
+  content_hash: sha256:304acb82d8d8cb8a2f45b5efc1110f407e2316d23c13bfc8734670fc1ac81e19
+- kind: project-relative
+  target: kiro
+  value: .kiro/skills/natural-japanese/scripts/textcore.py
+  runtime: null
+  scope: project
+  owners:
+  - coji/natural-japanese/skills/natural-japanese
+  active_owner: coji/natural-japanese/skills/natural-japanese
+  content_hash: sha256:ea363ed8611256afb07b0ce83b478c2d559a910d00bfa152d9244f60025da1f2
+- kind: project-relative
+  target: kiro
   value: .kiro/skills/prototype
   runtime: null
   scope: project
@@ -2866,6 +4014,96 @@ deployments:
   - mattpocock/skills/skills/engineering/resolving-merge-conflicts
   active_owner: mattpocock/skills/skills/engineering/resolving-merge-conflicts
   content_hash: sha256:a1f4f96838f2ed6282eb28abbbf99029cb8fadce552baf53da90a025b8bffddf
+- kind: project-relative
+  target: kiro
+  value: .kiro/skills/stop-ai-slop-jp
+  runtime: null
+  scope: project
+  owners:
+  - ikora128/stop-ai-slop-jp
+  active_owner: ikora128/stop-ai-slop-jp
+  content_hash: null
+- kind: project-relative
+  target: kiro
+  value: .kiro/skills/stop-ai-slop-jp/.gitignore
+  runtime: null
+  scope: project
+  owners:
+  - ikora128/stop-ai-slop-jp
+  active_owner: ikora128/stop-ai-slop-jp
+  content_hash: sha256:cf237c7aff44efbe6e502e645c3e06da03a69d7bdeb43392108ef3348143417e
+- kind: project-relative
+  target: kiro
+  value: .kiro/skills/stop-ai-slop-jp/CHANGELOG.md
+  runtime: null
+  scope: project
+  owners:
+  - ikora128/stop-ai-slop-jp
+  active_owner: ikora128/stop-ai-slop-jp
+  content_hash: sha256:13b54e7ba2750b34f62c04ee47a29495777348e7ff90847078e3029dd1c742bd
+- kind: project-relative
+  target: kiro
+  value: .kiro/skills/stop-ai-slop-jp/LICENSE
+  runtime: null
+  scope: project
+  owners:
+  - ikora128/stop-ai-slop-jp
+  active_owner: ikora128/stop-ai-slop-jp
+  content_hash: sha256:f9145903368bf0483fec06d7f2ed12d2e20667190783a7ffea161e92ff39f301
+- kind: project-relative
+  target: kiro
+  value: .kiro/skills/stop-ai-slop-jp/README.en.md
+  runtime: null
+  scope: project
+  owners:
+  - ikora128/stop-ai-slop-jp
+  active_owner: ikora128/stop-ai-slop-jp
+  content_hash: sha256:37874550afb353707d5ef3f2706c776c4f97e3fe904dcf1057fc4c3ab66d3d40
+- kind: project-relative
+  target: kiro
+  value: .kiro/skills/stop-ai-slop-jp/README.md
+  runtime: null
+  scope: project
+  owners:
+  - ikora128/stop-ai-slop-jp
+  active_owner: ikora128/stop-ai-slop-jp
+  content_hash: sha256:555c1fcabb809420cb5b8de240ab0be49e88a915bac872ce12a0b35b7916f4d8
+- kind: project-relative
+  target: kiro
+  value: .kiro/skills/stop-ai-slop-jp/SKILL.md
+  runtime: null
+  scope: project
+  owners:
+  - ikora128/stop-ai-slop-jp
+  active_owner: ikora128/stop-ai-slop-jp
+  content_hash: sha256:4da89e5f9c69ce69a8d6c04e8f3d238686cd3a3ba3946c5cfadad805116c50f3
+- kind: project-relative
+  target: kiro
+  value: .kiro/skills/stop-ai-slop-jp/references/examples.md
+  runtime: null
+  scope: project
+  owners:
+  - ikora128/stop-ai-slop-jp
+  active_owner: ikora128/stop-ai-slop-jp
+  content_hash: sha256:a971dfc0f69e914365d29b7566cf1dbcf4cbaf3abf3c331b384e8d29beb9b5f5
+- kind: project-relative
+  target: kiro
+  value: .kiro/skills/stop-ai-slop-jp/references/phrases.md
+  runtime: null
+  scope: project
+  owners:
+  - ikora128/stop-ai-slop-jp
+  active_owner: ikora128/stop-ai-slop-jp
+  content_hash: sha256:0e23388b43146d7f560cdc04a1f8ebe3518b57889404e39fa258b025ab4d2003
+- kind: project-relative
+  target: kiro
+  value: .kiro/skills/stop-ai-slop-jp/references/structures.md
+  runtime: null
+  scope: project
+  owners:
+  - ikora128/stop-ai-slop-jp
+  active_owner: ikora128/stop-ai-slop-jp
+  content_hash: sha256:af7447458633e522394a153295ac2a5ef8c14c6e82befae212a0650058e52969
 - kind: project-relative
   target: kiro
   value: .kiro/skills/tdd
