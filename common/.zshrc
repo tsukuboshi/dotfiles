@@ -156,6 +156,11 @@ if command -v aws_completer &>/dev/null; then
   complete -C aws_completer aws
 fi
 
+# Set 1Password CLI plugins
+if command -v op &>/dev/null && [ -f "$HOME/.config/op/plugins.sh" ]; then
+  source "$HOME/.config/op/plugins.sh"
+fi
+
 #Auto-Complete function for AWSume
 fpath=(~/.awsume/zsh-autocomplete/ $fpath)
 
