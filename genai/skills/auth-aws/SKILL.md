@@ -124,8 +124,10 @@ exit $value
 書き込んだプロファイルファイルで認証が有効か確認します。
 
 ```bash
-source <PROFILE_PATH> && aws sts get-caller-identity
+source <PROFILE_PATH> && command aws sts get-caller-identity
 ```
+
+プロファイルファイルを `source` した後の AWS コマンドは、以降も全て `command aws` で呼んでください。`aws` のままでは `op plugin run -- aws` のシェル関数が呼ばれ、書き出した環境変数を使わずに 1Password を経由しようとして `interactive IO not available` で失敗するためです。
 
 このコマンドが失敗した場合、認証情報の有効期限切れの可能性を伝え、新しい認証情報の取得を促してください。
 
@@ -171,7 +173,7 @@ echo "export AWS_PROFILE_DISPLAY=<profile_name>" >> <PROFILE_PATH>
 以下のコマンドを実行してください:
 
 ```bash
-source <PROFILE_PATH> && aws iam list-attached-role-policies --role-name <ROLE_NAME>
+source <PROFILE_PATH> && command aws iam list-attached-role-policies --role-name <ROLE_NAME>
 ```
 
 出力の `AttachedPolicies[].PolicyArn` を確認し、`<POLICY_TYPE>` を以下のルールで決定してください:
@@ -190,7 +192,7 @@ source <PROFILE_PATH> && aws iam list-attached-role-policies --role-name <ROLE_N
 Bashツールはコマンド間でシェル状態（環境変数）が永続しないため、毎回のコマンド実行時にプレフィックスとして環境変数を設定します。`<AWS_CMD>` はシェル変数ではなく、以降のAWSコマンド実行時に毎回先頭に付与するプレフィックスパターンです。
 
 ```bash
-<AWS_CMD> = source <PROFILE_PATH> && aws
+<AWS_CMD> = source <PROFILE_PATH> && command aws
 ```
 
 ```text
