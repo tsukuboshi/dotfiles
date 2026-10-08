@@ -35,6 +35,7 @@ dependencies:
   - https://gist.github.com/k16shikano/eb2929f13ed19c97188393d297be8432#a3b1e26beced71d582e13314fb6f5b179b023c76
   - coji/natural-japanese/skills/natural-japanese#main
   - iKora128/stop-ai-slop-jp#main
+  - nanaism/yomiyasu/skills/yomiyasu#main
   mcp:
   - name: context7
     registry: false
