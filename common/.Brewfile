@@ -3,7 +3,6 @@ cask_args appdir: "/Applications"
 # tap "domt4/autoupdate"
 tap "microsoft/apm"
 
-# brew "awscli"
 # brew "awsume"
 brew "bash-completion"
 brew "blueutil"
