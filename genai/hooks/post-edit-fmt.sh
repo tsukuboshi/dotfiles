@@ -64,6 +64,31 @@ run_tool() {
 	return 0
 }
 
+# trivy resolves Terraform variables and modules across files, so it scans
+# $target as a whole and only the misconfigurations in $file_path are kept.
+# Only HIGH and CRITICAL are reported so the agent is not pushed into
+# hardening every resource it touches.
+run_trivy_config() {
+	local file_path=$1 target=$2
+	local bin
+	bin=$(resolve_bin trivy "$target")
+	if [[ -z "$bin" ]]; then
+		MISSING+=("trivy")
+		return 0
+	fi
+	local json findings
+	if ! json=$("$bin" config --quiet --severity HIGH,CRITICAL --format json "$target" 2>/dev/null); then
+		MISSING+=("trivy")
+		return 0
+	fi
+	findings=$(jq -r --arg t "$(basename "$file_path")" '
+		.Results[]? | select(.Target == $t) | .Misconfigurations[]?
+		| "\($t):\(.CauseMetadata.StartLine // "-") \(.ID) (\(.Severity)): \(.Title | rtrimstr(".")). \(.Resolution)"
+	' <<<"$json")
+	[[ -n "$findings" ]] && FINDINGS+=("[trivy] ${findings}")
+	return 0
+}
+
 format_file() {
 	local file_path="$1"
 
@@ -81,6 +106,14 @@ format_file() {
 		pushd "$dir" >/dev/null || return 0
 		run_tool tflint "$dir" --no-color --filter="$(basename "$file_path")"
 		popd >/dev/null || return 0
+		run_trivy_config "$file_path" "$dir"
+		;;
+	*/Dockerfile | */Dockerfile.* | *.dockerfile | */Containerfile)
+		# info-level rules such as DL3059 are style advice, not defects.
+		run_tool hadolint "$dir" --no-color --failure-threshold warning "$file_path"
+		# A Dockerfile often sits at the repository root, so scan only the
+		# file instead of everything below it.
+		run_trivy_config "$file_path" "$file_path"
 		;;
 	*.py)
 		run_tool ruff "$dir" check --fix "$file_path"
