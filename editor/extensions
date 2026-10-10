@@ -6,7 +6,6 @@ biomejs.biome
 bpruitt-goddard.mermaid-markdown-syntax-highlighting
 charliermarsh.ruff
 chrmarti.regex
-davidanson.vscode-markdownlint
 dbaeumer.vscode-eslint
 docker.docker
 donjayamanne.githistory
@@ -40,6 +39,7 @@ prisma.prisma
 redhat.vscode-yaml
 ritwickdey.liveserver
 rogalmic.bash-debug
+rvben.rumdl
 ryu1kn.partial-diff
 shd101wyy.markdown-preview-enhanced
 streetsidesoftware.code-spell-checker
