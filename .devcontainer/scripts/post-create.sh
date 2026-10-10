@@ -54,10 +54,6 @@ mise install
 echo "--- run genai/setup.sh -l ---"
 bash "$DOTFILES/genai/setup.sh" -l
 
-# ---------- markdownlint required by hooks (installed via mise-managed node) ----------
-echo "--- npm install markdownlint-cli ---"
-mise exec -- npm install -g markdownlint-cli
-
 # ---------- VS Code editor settings & extensions (single source of truth: editor/) ----------
 echo "--- link editor settings ---"
 mkdir -p "$HOME/.vscode-server/data/Machine"

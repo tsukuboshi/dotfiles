@@ -26,7 +26,7 @@ ln -fsn ~/dotfiles/.devcontainer <target-project>/.devcontainer
 ```bash
 mise current
 ls -la ~/.claude/CLAUDE.md ~/.claude/settings.json ~/.claude/rules
-which shellcheck shfmt markdownlint ripgrep git-secrets
+which shellcheck shfmt rumdl ripgrep git-secrets
 ```
 
 3. Confirm editor settings and extensions are wired up to the `editor/` dotfiles.
