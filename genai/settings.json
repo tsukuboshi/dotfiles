@@ -109,9 +109,7 @@
       "Edit(**/*.pem)",
       "Read(**/*.key)",
       "Edit(**/*.key)",
-      "mcp__claude-in-chrome__computer",
       "mcp__claude-in-chrome__form_input",
-      "mcp__claude-in-chrome__javascript_tool",
       "mcp__claude-in-chrome__shortcuts_execute",
       "mcp__claude-in-chrome__file_upload",
       "mcp__claude-in-chrome__upload_image",
@@ -129,6 +127,15 @@
           {
             "type": "command",
             "command": "bash ~/dotfiles/genai/hooks/pre-commit-fmt.sh"
+          }
+        ]
+      },
+      {
+        "matcher": "mcp__claude-in-chrome__computer|mcp__claude-in-chrome__javascript_tool",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "bash ~/dotfiles/genai/hooks/chrome-tool-guard.sh"
           }
         ]
       }
