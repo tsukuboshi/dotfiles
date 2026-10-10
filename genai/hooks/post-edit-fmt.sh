@@ -10,6 +10,11 @@ TOOL_COMMAND=$(jq -r '.tool_input.command // empty' <<<"$INPUT")
 # broken toolchain surfaces instead of leaving files silently unformatted.
 MISSING=()
 
+# Lint findings left after auto-fixing. Claude Code and Codex hand a
+# PostToolUse hook's stderr to the model only on exit 2, so these are
+# reported that way for the agent to fix in its next edit.
+FINDINGS=()
+
 # Resolve a tool, preferring the project's node_modules/.bin over PATH so
 # pnpm-managed versions win over anything installed globally.
 resolve_bin() {
@@ -46,11 +51,16 @@ run_tool() {
 		MISSING+=("$name")
 		return 0
 	fi
-	"$bin" "$@" && return 0
+	local output
+	output=$("$bin" "$@" 2>&1) && return 0
 	# A non-zero exit usually means lint findings, so probe before blaming the
 	# tool: only one that cannot run at all counts as unavailable. This catches
 	# a stale shim that resolves on PATH but fails to execute.
-	"$bin" --version >/dev/null 2>&1 || MISSING+=("$name")
+	if "$bin" --version >/dev/null 2>&1; then
+		FINDINGS+=("[${name}] ${output}")
+	else
+		MISSING+=("$name")
+	fi
 	return 0
 }
 
@@ -86,6 +96,16 @@ format_file() {
 		run_tool shfmt "$dir" -w "$file_path"
 		run_tool shellcheck "$dir" "$file_path"
 		;;
+	*/.github/workflows/*.yml | */.github/workflows/*.yaml)
+		# Offline keeps zizmor inside the hook timeout; its online audits
+		# are left to manual runs with GH_TOKEN.
+		run_tool actionlint "$dir" "$file_path"
+		run_tool zizmor "$dir" --offline --quiet --no-progress "$file_path"
+		;;
+	*/action.yml | */action.yaml)
+		# actionlint cannot take action metadata as an argument.
+		run_tool zizmor "$dir" --offline --quiet --no-progress "$file_path"
+		;;
 	esac
 }
 
@@ -106,7 +126,13 @@ fi
 if ((${#MISSING[@]} > 0)); then
 	names=$(printf '%s\n' "${MISSING[@]}" | sort -u | paste -sd', ' -)
 	printf 'post-edit-fmt: %s unavailable; file left unformatted\n' "$names" >&2
-	exit 1
 fi
 
+if ((${#FINDINGS[@]} > 0)); then
+	printf 'post-edit-fmt: fix these lint findings\n' >&2
+	printf '%s\n' "${FINDINGS[@]}" >&2
+	exit 2
+fi
+
+((${#MISSING[@]} > 0)) && exit 1
 exit 0
