@@ -167,8 +167,9 @@ format_file() {
 	*.md)
 		# MD034 rewrites bare URLs; MD013 and MD025 fight the Japanese prose
 		# and the per-step h1 structure these documents are written in.
-		run_tool markdownlint "$dir" \
-			--fix --disable MD034 MD013 MD025 -- "$file_path"
+		# fmt always exits 0, so only what check still finds is reported.
+		run_tool rumdl "$dir" fmt --disable MD034,MD013,MD025 -- "$file_path"
+		run_tool rumdl "$dir" check --disable MD034,MD013,MD025 -- "$file_path"
 		;;
 	*.sh | *.bash)
 		run_tool shfmt "$dir" -w "$file_path"
