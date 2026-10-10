@@ -29,17 +29,25 @@ resolve_bin() {
 	command -v "$name" 2>/dev/null
 }
 
-# True when an ancestor of $1 holds any of the remaining arguments.
-has_project_file() {
+# Print the nearest ancestor of $1 that holds any of the remaining arguments.
+find_project_dir() {
 	local dir=$1 name
 	shift
 	while [[ -n "$dir" && "$dir" != "/" ]]; do
 		for name in "$@"; do
-			[[ -e "${dir}/${name}" ]] && return 0
+			if [[ -e "${dir}/${name}" ]]; then
+				printf '%s\n' "$dir"
+				return 0
+			fi
 		done
 		dir=$(dirname "$dir")
 	done
 	return 1
+}
+
+# True when an ancestor of $1 holds any of the remaining arguments.
+has_project_file() {
+	find_project_dir "$@" >/dev/null
 }
 
 run_tool() {
@@ -89,6 +97,18 @@ run_trivy_config() {
 	return 0
 }
 
+# yamllint's default fails lines over 80 columns, which long commands in
+# workflows hit all the time. -d would override a project's own config, so
+# it is passed only when the project has none.
+lint_yaml() {
+	local file_path=$1 dir=$2
+	local args=(-f parsable)
+	if ! has_project_file "$dir" .yamllint .yamllint.yaml .yamllint.yml; then
+		args+=(-d '{extends: default, rules: {line-length: {level: warning}}}')
+	fi
+	run_tool yamllint "$dir" "${args[@]}" "$file_path"
+}
+
 format_file() {
 	local file_path="$1"
 
@@ -98,6 +118,8 @@ format_file() {
 	dir=$(cd "$(dirname "$file_path")" 2>/dev/null && pwd) || return 0
 
 	case "$file_path" in
+	# Lock files are generated, so edits to them are not the agent's to fix.
+	*.lock.yaml | *.lock.yml | *-lock.yaml | *-lock.yml) ;;
 	*.tf)
 		run_tool terraform "$dir" fmt "$file_path"
 		# tflint lints the whole module, and --filter matches the paths it
@@ -118,6 +140,13 @@ format_file() {
 	*.py)
 		run_tool ruff "$dir" check --fix "$file_path"
 		run_tool ruff "$dir" format "$file_path"
+		# Without a virtual environment every third-party import is
+		# unresolved, and ty finds .venv only from the project it is given.
+		local venv_root
+		if venv_root=$(find_project_dir "$dir" .venv); then
+			run_tool ty "$dir" check --project "$venv_root" \
+				--output-format concise "$file_path"
+		fi
 		;;
 	*.ts | *.tsx | *.js | *.jsx | *.json)
 		# Only projects that configure biome are expected to have it.
@@ -135,15 +164,25 @@ format_file() {
 		run_tool shfmt "$dir" -w "$file_path"
 		run_tool shellcheck "$dir" "$file_path"
 		;;
+	*.toml)
+		# taplo logs every file it collects at INFO level.
+		RUST_LOG=error run_tool taplo "$dir" fmt "$file_path"
+		RUST_LOG=error run_tool taplo "$dir" check "$file_path"
+		;;
 	*/.github/workflows/*.yml | */.github/workflows/*.yaml)
 		# Offline keeps zizmor inside the hook timeout; its online audits
 		# are left to manual runs with GH_TOKEN.
+		lint_yaml "$file_path" "$dir"
 		run_tool actionlint "$dir" "$file_path"
 		run_tool zizmor "$dir" --offline --quiet --no-progress "$file_path"
 		;;
 	*/action.yml | */action.yaml)
+		lint_yaml "$file_path" "$dir"
 		# actionlint cannot take action metadata as an argument.
 		run_tool zizmor "$dir" --offline --quiet --no-progress "$file_path"
+		;;
+	*.yml | *.yaml)
+		lint_yaml "$file_path" "$dir"
 		;;
 	esac
 }
