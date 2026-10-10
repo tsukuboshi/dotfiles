@@ -109,6 +109,16 @@ lint_yaml() {
 	run_tool yamllint "$dir" "${args[@]}" "$file_path"
 }
 
+# sqruff fix exits non-zero while unfixable findings remain and also lists
+# the ones it fixed, so its result is discarded and lint reports what is left.
+lint_sql() {
+	local file_path=$1 dir=$2
+	local bin
+	bin=$(resolve_bin sqruff "$dir")
+	[[ -n "$bin" ]] && "$bin" fix -f none "$file_path" >/dev/null 2>&1
+	run_tool sqruff "$dir" lint -n -q "$file_path"
+}
+
 format_file() {
 	local file_path="$1"
 
@@ -168,6 +178,9 @@ format_file() {
 		# taplo logs every file it collects at INFO level.
 		RUST_LOG=error run_tool taplo "$dir" fmt "$file_path"
 		RUST_LOG=error run_tool taplo "$dir" check "$file_path"
+		;;
+	*.sql)
+		lint_sql "$file_path" "$dir"
 		;;
 	*/.github/workflows/*.yml | */.github/workflows/*.yaml)
 		# Offline keeps zizmor inside the hook timeout; its online audits
