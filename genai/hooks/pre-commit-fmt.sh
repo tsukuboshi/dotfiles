@@ -35,6 +35,7 @@ fmt_js() { xargs biome check --fix <<<"$1" 2>/dev/null; }
 fmt_tf() { xargs terraform fmt <<<"$1" 2>/dev/null; }
 fmt_sh() { xargs shfmt -w <<<"$1" 2>/dev/null; }
 fmt_md() { xargs markdownlint --fix --disable MD034 -- <<<"$1" 2>/dev/null; }
+fmt_toml() { xargs taplo fmt <<<"$1" 2>/dev/null; }
 
 process_ext() {
 	local pattern="$1" fmt="$2"
@@ -51,6 +52,17 @@ process_ext '\.(ts|tsx|js|jsx|json)$' fmt_js
 process_ext '\.tf$' fmt_tf
 process_ext '\.(sh|bash)$' fmt_sh
 process_ext '\.md$' fmt_md
+process_ext '\.toml$' fmt_toml
+
+# Block the commit when the staged changes carry a secret. --redact keeps the
+# secret itself out of the transcript the agent reads.
+if command -v gitleaks >/dev/null 2>&1; then
+	if ! LEAKS=$(gitleaks git --staged --no-banner --no-color --redact -v 2>&1); then
+		printf 'Pre-commit (%s): gitleaks found secrets in the staged changes\n%s\n' \
+			"${CALLER}" "${LEAKS}" >&2
+		exit 2
+	fi
+fi
 
 # Output result as JSON (both Claude Code and Codex accept `systemMessage`)
 if [[ ${#FORMATTED_FILES[@]} -gt 0 ]]; then
