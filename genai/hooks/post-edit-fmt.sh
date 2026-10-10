@@ -75,6 +75,12 @@ format_file() {
 	case "$file_path" in
 	*.tf)
 		run_tool terraform "$dir" fmt "$file_path"
+		# tflint lints the whole module, and --filter matches the paths it
+		# prints relative to the cwd, so run it from the module directory.
+		# --fix is left out because it deletes declarations not yet used.
+		pushd "$dir" >/dev/null || return 0
+		run_tool tflint "$dir" --no-color --filter="$(basename "$file_path")"
+		popd >/dev/null || return 0
 		;;
 	*.py)
 		run_tool ruff "$dir" check --fix "$file_path"
