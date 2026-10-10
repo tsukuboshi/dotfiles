@@ -34,7 +34,9 @@ fmt_py() {
 fmt_js() { xargs biome check --fix <<<"$1" 2>/dev/null; }
 fmt_tf() { xargs terraform fmt <<<"$1" 2>/dev/null; }
 fmt_sh() { xargs shfmt -w <<<"$1" 2>/dev/null; }
-fmt_md() { xargs markdownlint --fix --disable MD034 -- <<<"$1" 2>/dev/null; }
+# rumdl fixes MD025 by demoting later h1s, which breaks the per-step h1
+# structure, so it is disabled along with the post-edit hook's rules.
+fmt_md() { xargs rumdl fmt --disable MD034,MD013,MD025 -- <<<"$1" >/dev/null 2>&1; }
 fmt_toml() { xargs taplo fmt <<<"$1" 2>/dev/null; }
 fmt_sql() { xargs sqruff fix -f none <<<"$1" >/dev/null 2>&1; }
 
