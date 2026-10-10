@@ -1,120 +1,120 @@
 #!/bin/bash
 
 get_sleepwatcher_config() {
-    local blueutil_path
-    blueutil_path=$(which blueutil)
+	local blueutil_path
+	blueutil_path=$(which blueutil)
 
-    if [ -z "$blueutil_path" ]; then
-        echo ""
-    else
-        echo "$blueutil_path"
-    fi
+	if [ -z "$blueutil_path" ]; then
+		echo ""
+	else
+		echo "$blueutil_path"
+	fi
 }
 
 show_sleepwatcher_usage() {
-    echo "Usage: $0 [OPTIONS]"
-    echo ""
-    echo "OPTIONS:"
-    echo "  -s, --create-sleep-only    Create sleep script (~/.sleep) only"
-    echo "  -w, --create-wakeup-only   Create wakeup script (~/.wakeup) only"
-    echo "  -r, --restart-service-only Restart sleepwatcher service only"
-    echo "  (no option)                Execute all (default)"
-    echo ""
-    echo "Examples:"
-    echo "  $0                         # Execute all setup"
-    echo "  $0 --create-sleep-only     # Create sleep script only"
-    echo "  $0 --create-wakeup-only    # Create wakeup script only"
-    echo "  $0 --restart-service-only  # Restart service only"
-    echo "  $0 -s                      # Create sleep script only (short)"
-    echo "  $0 -w                      # Create wakeup script only (short)"
-    echo "  $0 -r                      # Restart service only (short)"
+	echo "Usage: $0 [OPTIONS]"
+	echo ""
+	echo "OPTIONS:"
+	echo "  -s, --create-sleep-only    Create sleep script (~/.sleep) only"
+	echo "  -w, --create-wakeup-only   Create wakeup script (~/.wakeup) only"
+	echo "  -r, --restart-service-only Restart sleepwatcher service only"
+	echo "  (no option)                Execute all (default)"
+	echo ""
+	echo "Examples:"
+	echo "  $0                         # Execute all setup"
+	echo "  $0 --create-sleep-only     # Create sleep script only"
+	echo "  $0 --create-wakeup-only    # Create wakeup script only"
+	echo "  $0 --restart-service-only  # Restart service only"
+	echo "  $0 -s                      # Create sleep script only (short)"
+	echo "  $0 -w                      # Create wakeup script only (short)"
+	echo "  $0 -r                      # Restart service only (short)"
 }
 
 create_sleep_script() {
-    local blueutil_path
-    blueutil_path=$(get_sleepwatcher_config)
+	local blueutil_path
+	blueutil_path=$(get_sleepwatcher_config)
 
-    printf "\n\033[1;36m=== Creating sleep script (~/.sleep) ===\033[0m\n"
+	printf "\n\033[1;36m=== Creating sleep script (~/.sleep) ===\033[0m\n"
 
-    if [ -z "$blueutil_path" ]; then
-        printf "\033[1;31m✗ blueutil command not found. Please install blueutil first\033[0m\n"
-        return 1
-    fi
+	if [ -z "$blueutil_path" ]; then
+		printf "\033[1;31m✗ blueutil command not found. Please install blueutil first\033[0m\n"
+		return 1
+	fi
 
-    echo "$blueutil_path -p 0" > ~/.sleep
-    chmod 755 ~/.sleep
-    printf "\033[1;32m✓ Content: \033[0m"
-    cat ~/.sleep
+	echo "$blueutil_path -p 0" >~/.sleep
+	chmod 755 ~/.sleep
+	printf "\033[1;32m✓ Content: \033[0m"
+	cat ~/.sleep
 }
 
 create_wakeup_script() {
-    local blueutil_path
-    blueutil_path=$(get_sleepwatcher_config)
+	local blueutil_path
+	blueutil_path=$(get_sleepwatcher_config)
 
-    printf "\n\033[1;36m=== Creating wakeup script (~/.wakeup) ===\033[0m\n"
+	printf "\n\033[1;36m=== Creating wakeup script (~/.wakeup) ===\033[0m\n"
 
-    if [ -z "$blueutil_path" ]; then
-        printf "\033[1;31m✗ blueutil command not found. Please install blueutil first\033[0m\n"
-        return 1
-    fi
+	if [ -z "$blueutil_path" ]; then
+		printf "\033[1;31m✗ blueutil command not found. Please install blueutil first\033[0m\n"
+		return 1
+	fi
 
-    echo "$blueutil_path -p 1" > ~/.wakeup
-    chmod 755 ~/.wakeup
-    printf "\033[1;32m✓ Content: \033[0m"
-    cat ~/.wakeup
+	echo "$blueutil_path -p 1" >~/.wakeup
+	chmod 755 ~/.wakeup
+	printf "\033[1;32m✓ Content: \033[0m"
+	cat ~/.wakeup
 }
 
 restart_sleepwatcher_service() {
-    printf "\n\033[1;36m=== Restarting sleepwatcher service ===\033[0m\n"
-    if brew services info sleepwatcher &> /dev/null; then
-        brew services restart sleepwatcher
-    else
-        printf "\033[1;31m✗ sleepwatcher not installed. Please install sleepwatcher using: brew install sleepwatcher\033[0m\n"
-        return 1
-    fi
+	printf "\n\033[1;36m=== Restarting sleepwatcher service ===\033[0m\n"
+	if brew services info sleepwatcher &>/dev/null; then
+		brew services restart sleepwatcher
+	else
+		printf "\033[1;31m✗ sleepwatcher not installed. Please install sleepwatcher using: brew install sleepwatcher\033[0m\n"
+		return 1
+	fi
 }
 
 MODE="all"
 
 while [[ $# -gt 0 ]]; do
-    case "$1" in
-        --help|-h)
-            show_sleepwatcher_usage
-            exit 0
-            ;;
-        --create-sleep-only|-s)
-            MODE="sleep"
-            shift
-            ;;
-        --create-wakeup-only|-w)
-            MODE="wakeup"
-            shift
-            ;;
-        --restart-service-only|-r)
-            MODE="restart"
-            shift
-            ;;
-        *)
-            echo "Unknown option: $1"
-            show_sleepwatcher_usage
-            exit 1
-            ;;
-    esac
+	case "$1" in
+	--help | -h)
+		show_sleepwatcher_usage
+		exit 0
+		;;
+	--create-sleep-only | -s)
+		MODE="sleep"
+		shift
+		;;
+	--create-wakeup-only | -w)
+		MODE="wakeup"
+		shift
+		;;
+	--restart-service-only | -r)
+		MODE="restart"
+		shift
+		;;
+	*)
+		echo "Unknown option: $1"
+		show_sleepwatcher_usage
+		exit 1
+		;;
+	esac
 done
 
 case "$MODE" in
-    sleep)
-        create_sleep_script
-        ;;
-    wakeup)
-        create_wakeup_script
-        ;;
-    restart)
-        restart_sleepwatcher_service
-        ;;
-    *)
-        create_sleep_script
-        create_wakeup_script
-        restart_sleepwatcher_service
-        ;;
+sleep)
+	create_sleep_script
+	;;
+wakeup)
+	create_wakeup_script
+	;;
+restart)
+	restart_sleepwatcher_service
+	;;
+*)
+	create_sleep_script
+	create_wakeup_script
+	restart_sleepwatcher_service
+	;;
 esac
