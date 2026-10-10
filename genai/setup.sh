@@ -157,7 +157,7 @@ install_agent_apm() {
 	# To add or remove a target agent, edit genai/apm/apm.yml instead.
 	printf "\n\033[1;36m=== Installing apm-managed skills (global) for %s ===\033[0m\n" "${agent_name}"
 	if ! command -v apm >/dev/null 2>&1; then
-		printf "\033[1;33m⚠ apm not installed — skipping external skills. Install via: brew bundle --global\033[0m\n"
+		printf "\033[1;33m⚠ apm not installed — skipping external skills. Install via: mise install\033[0m\n"
 		return
 	fi
 	# apm 0.29.1+ refuses to run when ~/.apm itself is a symlink (it writes a

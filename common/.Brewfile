@@ -1,7 +1,6 @@
 cask_args appdir: "/Applications"
 
 # tap "domt4/autoupdate"
-tap "microsoft/apm"
 
 # brew "awsume"
 brew "bash-completion"
@@ -21,7 +20,6 @@ brew "gzip"
 brew "jq"
 brew "libyaml"
 brew "mas"
-brew "microsoft/apm/apm"
 brew "mise"
 brew "pinact"
 brew "pinentry-mac"
