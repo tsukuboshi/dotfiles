@@ -2,31 +2,50 @@
 idiomatic_version_file_enable_tools = ["node"]
 
 [tools]
+# Python
 python = "3.12.13"
 uv = "0.11.28"
 ruff = "0.16.10"
 ty = "0.0.85"
+
+# Node.js
 node = ["24.17.0", "22.23.0"]
 pnpm = "11.22.0"
-apm = "0.33.0"
 biome = "2.5.15"
 "npm:typescript" = "7.0.2"
+
+# Ruby
 ruby = "3.3.11"
+
+# Go
 go = "1.26.5"
+
+# IaC / AWS
 terraform = "1.15.8"
 tflint = "0.64.0"
 aws-cli = "2.37.12"
 cfn-lint = "1.57.2"
+
+# Container / Security
 hadolint = "2.15.1"
 trivy = "0.75.0"
 gitleaks = "8.30.1"
-prek = "0.5.5"
+
+# Shell
 shellcheck = "0.11.0"
 shfmt = "3.14.1"
+
+# GitHub Actions
 actionlint = "1.7.12"
 zizmor = "1.30.1"
 pinact = "5.0.0"
+
+# Document / Data
 rumdl = "0.2.78"
 "aqua:owenlamont/ryl" = "0.24.0"
 taplo = "0.10.0"
 "aqua:quarylabs/sqruff" = "0.41.0"
+
+# Dev workflow
+prek = "0.5.5"
+apm = "0.33.0"
