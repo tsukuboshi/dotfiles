@@ -24,6 +24,10 @@
 リポジトリに `.pre-commit-config.yaml` があれば、コミット前のチェックは `prek run` で行う。
 引数なしの `prek run` はステージ済みの内容だけを検査する。
 
+ファイルの編集は Edit / Write ツールで行う。
+Python の heredoc や `sed` で書き換えると、定型コードの記述と auto モードの権限審査で 1 回あたり十数秒余計にかかる。
+多数のファイルへ同じ置換を機械的に適用するときに限り、Bash のスクリプトで一括変更する。
+
 ## GitHub 操作
 
 GitHub の Issue・PR・Actions を扱うときは、`gh` コマンドの代わりに以下のスキルを使う。
