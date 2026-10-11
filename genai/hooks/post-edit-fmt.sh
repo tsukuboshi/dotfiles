@@ -97,16 +97,18 @@ run_trivy_config() {
 	return 0
 }
 
-# yamllint's default fails lines over 80 columns, which long commands in
-# workflows hit all the time. -d would override a project's own config, so
-# it is passed only when the project has none.
+# ryl enables no rules without a config, so yamllint's default preset is
+# passed with its 80-column limit, which long commands in workflows hit all
+# the time, lowered to a warning. -d would override a project's own config,
+# so it is passed only when the project has none.
 lint_yaml() {
 	local file_path=$1 dir=$2
-	local args=(-f parsable)
-	if ! has_project_file "$dir" .yamllint .yamllint.yaml .yamllint.yml; then
+	local args=(check --fix -f parsable)
+	if ! has_project_file "$dir" .ryl.toml ryl.toml .config/.ryl.toml .config/ryl.toml \
+		.yamllint .yamllint.yaml .yamllint.yml; then
 		args+=(-d '{extends: default, rules: {line-length: {level: warning}}}')
 	fi
-	run_tool yamllint "$dir" "${args[@]}" "$file_path"
+	run_tool ryl "$dir" "${args[@]}" "$file_path"
 }
 
 # sqruff fix exits non-zero while unfixable findings remain and also lists
