@@ -112,7 +112,7 @@ export LANG="ja_JP.UTF-8"
 # Set git
 export PATH="/opt/homebrew/bin:$PATH"
 
-# Set pipx
+# Set ~/.local/bin (uv tools, kiro-cli)
 export PATH="$PATH:$HOME/.local/bin"
 
 # Set brew
