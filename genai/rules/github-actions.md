@@ -8,6 +8,8 @@ paths:
 
 - リンタ: `actionlint`
 - セキュリティ検査: `zizmor`
+- SHA 固定: `pinact run`
 
 `actionlint` は workflow ファイルだけを引数に取る。`action.yml` は直接指定できず、workflow から参照されたときに検査されるため、`action.yml` には `zizmor` だけをかける。
 `zizmor` は `GH_TOKEN` がないと offline モードで動き、`impostor-commit` などのオンライン audit を省略する。
+`pinact run` は action を今のバージョンのままコミット SHA に固定し、バージョンをコメントに残す。`-u` は最新版への更新になるため、ユーザーがバージョン更新を求めたときだけ付ける。
