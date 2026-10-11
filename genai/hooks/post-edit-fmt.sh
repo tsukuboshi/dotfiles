@@ -148,7 +148,13 @@ format_file() {
 		run_trivy_config "$file_path" "$file_path"
 		;;
 	*.py)
-		run_tool ruff "$dir" check --fix "$file_path"
+		# S adds the Bandit security rules. pytest checks with assert, so
+		# S101 is left out for test files.
+		run_tool ruff "$dir" check --fix --extend-select S \
+			--extend-per-file-ignores '**/test_*.py:S101' \
+			--extend-per-file-ignores '**/*_test.py:S101' \
+			--extend-per-file-ignores '**/conftest.py:S101' \
+			"$file_path"
 		run_tool ruff "$dir" format "$file_path"
 		# Without a virtual environment every third-party import is
 		# unresolved, and ty finds .venv only from the project it is given.
