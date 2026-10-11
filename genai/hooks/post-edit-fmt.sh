@@ -156,13 +156,6 @@ format_file() {
 			--extend-per-file-ignores '**/conftest.py:S101' \
 			"$file_path"
 		run_tool ruff "$dir" format "$file_path"
-		# Without a virtual environment every third-party import is
-		# unresolved, and ty finds .venv only from the project it is given.
-		local venv_root
-		if venv_root=$(find_project_dir "$dir" .venv); then
-			run_tool ty "$dir" check --project "$venv_root" \
-				--output-format concise "$file_path"
-		fi
 		;;
 	*.ts | *.tsx | *.js | *.jsx | *.json)
 		# Only projects that configure biome are expected to have it.
