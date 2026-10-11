@@ -50,13 +50,46 @@ process_ext() {
 	while IFS= read -r f; do FORMATTED_FILES+=("$f"); done <<<"$files"
 }
 
-process_ext '\.py$' fmt_py
-process_ext '\.(ts|tsx|js|jsx|json)$' fmt_js
-process_ext '\.tf$' fmt_tf
-process_ext '\.(sh|bash)$' fmt_sh
-process_ext '\.md$' fmt_md
-process_ext '\.toml$' fmt_toml
-process_ext '\.sql$' fmt_sql
+# Run the project's own hooks with prek. Fixer hooks such as
+# end-of-file-fixer exit non-zero after rewriting files, so the rewritten
+# files are restaged and the hooks run once more; whatever still fails
+# blocks the commit for the agent to fix.
+run_prek() {
+	local files=() before after output
+	while IFS= read -r f; do files+=("$f"); done <<<"$STAGED_FILES"
+	before=$(git -C "$REPO_ROOT" hash-object -- "${files[@]}")
+	if ! prek run --cd "$REPO_ROOT" --files "${files[@]}" >/dev/null 2>&1; then
+		git -C "$REPO_ROOT" add -- "${files[@]}"
+		if ! output=$(prek run --cd "$REPO_ROOT" --files "${files[@]}" 2>&1); then
+			printf 'Pre-commit (%s): prek hooks failed on the staged changes\n%s\n' \
+				"${CALLER}" "${output}" >&2
+			exit 2
+		fi
+	fi
+	after=$(git -C "$REPO_ROOT" hash-object -- "${files[@]}")
+	while IFS=$'\t' read -r f b a; do
+		[[ "$b" != "$a" ]] && FORMATTED_FILES+=("$f")
+	done < <(paste <(printf '%s\n' "${files[@]}") <(echo "$before") <(echo "$after"))
+}
+
+# Projects that declare their own hooks get those instead of the fixed
+# formatter set below, so the commit is checked the way CI checks it and no
+# formatter the project does not use rewrites its files.
+REPO_ROOT=$(git rev-parse --show-toplevel)
+if command -v prek >/dev/null 2>&1 &&
+	[[ -f "$REPO_ROOT/.pre-commit-config.yaml" ||
+		-f "$REPO_ROOT/.pre-commit-config.yml" ||
+		-f "$REPO_ROOT/prek.toml" ]]; then
+	run_prek
+else
+	process_ext '\.py$' fmt_py
+	process_ext '\.(ts|tsx|js|jsx|json)$' fmt_js
+	process_ext '\.tf$' fmt_tf
+	process_ext '\.(sh|bash)$' fmt_sh
+	process_ext '\.md$' fmt_md
+	process_ext '\.toml$' fmt_toml
+	process_ext '\.sql$' fmt_sql
+fi
 
 # Block the commit when the staged changes carry a secret. --redact keeps the
 # secret itself out of the transcript the agent reads.
