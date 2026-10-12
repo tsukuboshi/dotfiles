@@ -172,6 +172,27 @@ dependencies:
     .kiro/skills/natural-japanese/scripts/terms.py: sha256:304acb82d8d8cb8a2f45b5efc1110f407e2316d23c13bfc8734670fc1ac81e19
     .kiro/skills/natural-japanese/scripts/textcore.py: sha256:ea363ed8611256afb07b0ce83b478c2d559a910d00bfa152d9244f60025da1f2
   content_hash: sha256:6b522424613a4f552b3b45f8cef72d172c20e27b06fee7ac88a069c1d9d54ed0
+- repo_url: herdrdev/herdr
+  name: herdr
+  host: github.com
+  resolved_commit: dc6b6e5f42831ea7114f34dcf12900680eb36ae0
+  resolved_ref: master
+  version: unknown
+  virtual_path: skills/herdr
+  is_virtual: true
+  package_type: claude_skill
+  deployed_files:
+  - .agents/skills/herdr
+  - .agents/skills/herdr/SKILL.md
+  - .claude/skills/herdr
+  - .claude/skills/herdr/SKILL.md
+  - .kiro/skills/herdr
+  - .kiro/skills/herdr/SKILL.md
+  deployed_file_hashes:
+    .agents/skills/herdr/SKILL.md: sha256:b16ba0d9a22adbaf259d2022cd323801f8e51d530c94cb0cd23a69069292506b
+    .claude/skills/herdr/SKILL.md: sha256:b16ba0d9a22adbaf259d2022cd323801f8e51d530c94cb0cd23a69069292506b
+    .kiro/skills/herdr/SKILL.md: sha256:b16ba0d9a22adbaf259d2022cd323801f8e51d530c94cb0cd23a69069292506b
+  content_hash: sha256:66715d76e5947497431ec0db32f2693b9c916ad799c3f32b99e6174b4b9c607f
 - repo_url: ikora128/stop-ai-slop-jp
   materialization_repo_url: iKora128/stop-ai-slop-jp
   name: stop-ai-slop-jp
@@ -1635,6 +1656,24 @@ deployments:
   content_hash: sha256:5c479fd562c691851690e8b18c8501045bef0943c10743d636b2fae26add1d28
 - kind: project-relative
   target: claude
+  value: .claude/skills/herdr
+  runtime: null
+  scope: project
+  owners:
+  - herdrdev/herdr/skills/herdr
+  active_owner: herdrdev/herdr/skills/herdr
+  content_hash: null
+- kind: project-relative
+  target: claude
+  value: .claude/skills/herdr/SKILL.md
+  runtime: null
+  scope: project
+  owners:
+  - herdrdev/herdr/skills/herdr
+  active_owner: herdrdev/herdr/skills/herdr
+  content_hash: sha256:b16ba0d9a22adbaf259d2022cd323801f8e51d530c94cb0cd23a69069292506b
+- kind: project-relative
+  target: claude
   value: .claude/skills/implement
   runtime: null
   scope: project
@@ -3066,6 +3105,24 @@ deployments:
   content_hash: sha256:5c479fd562c691851690e8b18c8501045bef0943c10743d636b2fae26add1d28
 - kind: project-relative
   target: codex
+  value: .agents/skills/herdr
+  runtime: null
+  scope: project
+  owners:
+  - herdrdev/herdr/skills/herdr
+  active_owner: herdrdev/herdr/skills/herdr
+  content_hash: null
+- kind: project-relative
+  target: codex
+  value: .agents/skills/herdr/SKILL.md
+  runtime: null
+  scope: project
+  owners:
+  - herdrdev/herdr/skills/herdr
+  active_owner: herdrdev/herdr/skills/herdr
+  content_hash: sha256:b16ba0d9a22adbaf259d2022cd323801f8e51d530c94cb0cd23a69069292506b
+- kind: project-relative
+  target: codex
   value: .agents/skills/implement
   runtime: null
   scope: project
@@ -4495,6 +4552,24 @@ deployments:
   - mattpocock/skills/skills/productivity/handoff
   active_owner: mattpocock/skills/skills/productivity/handoff
   content_hash: sha256:5c479fd562c691851690e8b18c8501045bef0943c10743d636b2fae26add1d28
+- kind: project-relative
+  target: kiro
+  value: .kiro/skills/herdr
+  runtime: null
+  scope: project
+  owners:
+  - herdrdev/herdr/skills/herdr
+  active_owner: herdrdev/herdr/skills/herdr
+  content_hash: null
+- kind: project-relative
+  target: kiro
+  value: .kiro/skills/herdr/SKILL.md
+  runtime: null
+  scope: project
+  owners:
+  - herdrdev/herdr/skills/herdr
+  active_owner: herdrdev/herdr/skills/herdr
+  content_hash: sha256:b16ba0d9a22adbaf259d2022cd323801f8e51d530c94cb0cd23a69069292506b
 - kind: project-relative
   target: kiro
   value: .kiro/skills/implement

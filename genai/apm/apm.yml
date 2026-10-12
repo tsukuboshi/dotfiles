@@ -1,3 +1,4 @@
+---
 name: tsukuboshi-dotfiles-genai
 version: 0.1.0
 description: External Agent skills managed by apm for dotfiles
@@ -36,6 +37,7 @@ dependencies:
     - coji/natural-japanese/skills/natural-japanese#main
     - iKora128/stop-ai-slop-jp#main
     - nanaism/yomiyasu/skills/yomiyasu#main
+    - herdrdev/herdr/skills/herdr#master
   mcp:
     - name: context7
       registry: false
