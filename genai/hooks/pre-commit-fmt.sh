@@ -20,12 +20,42 @@ if ! grep -qE '^git\s+commit' <<<"$COMMAND"; then
 	exit 0
 fi
 
+# Staged paths are relative to the repository root, and rumdl looks for its
+# config upward from the cwd, so the formatters run from there.
+REPO_ROOT=$(git rev-parse --show-toplevel)
+cd "$REPO_ROOT" || exit 0
+
 STAGED_FILES=$(git diff --cached --name-only --diff-filter=ACM)
 if [[ -z "$STAGED_FILES" ]]; then
 	exit 0
 fi
 
 FORMATTED_FILES=()
+
+# True when the repository root holds any of the given config files. An
+# argument such as pyproject.toml:tool.rumdl counts only when the file
+# declares that table.
+has_root_config() {
+	local spec name table
+	for spec in "$@"; do
+		name=${spec%%:*}
+		[[ -f "$name" ]] || continue
+		if [[ "$spec" == *:* ]]; then
+			table=${spec#*:}
+			grep -qE "^\[${table//./\\.}[].]" "$name" || continue
+		fi
+		return 0
+	done
+	return 1
+}
+
+# A project's own rumdl or markdownlint config replaces the rules disabled
+# below, since --disable would override its list.
+RUMDL_ARGS=()
+has_root_config .rumdl.toml rumdl.toml .config/rumdl.toml pyproject.toml:tool.rumdl \
+	.markdownlint-cli2.jsonc .markdownlint-cli2.yaml .markdownlint-cli2.yml \
+	.markdownlint.json .markdownlint.yaml markdownlint.json ||
+	RUMDL_ARGS=(--disable "MD034,MD013,MD025")
 
 fmt_py() {
 	xargs ruff check --fix <<<"$1" 2>/dev/null
@@ -36,7 +66,7 @@ fmt_tf() { xargs terraform fmt <<<"$1" 2>/dev/null; }
 fmt_sh() { xargs shfmt -w <<<"$1" 2>/dev/null; }
 # rumdl fixes MD025 by demoting later h1s, which breaks the per-step h1
 # structure, so it is disabled along with the post-edit hook's rules.
-fmt_md() { xargs rumdl fmt --disable MD034,MD013,MD025 -- <<<"$1" >/dev/null 2>&1; }
+fmt_md() { xargs rumdl fmt "${RUMDL_ARGS[@]}" -- <<<"$1" >/dev/null 2>&1; }
 fmt_toml() { xargs taplo fmt <<<"$1" 2>/dev/null; }
 fmt_sql() { xargs sqruff fix -f none <<<"$1" >/dev/null 2>&1; }
 
@@ -75,7 +105,6 @@ run_prek() {
 # Projects that declare their own hooks get those instead of the fixed
 # formatter set below, so the commit is checked the way CI checks it and no
 # formatter the project does not use rewrites its files.
-REPO_ROOT=$(git rev-parse --show-toplevel)
 if command -v prek >/dev/null 2>&1 &&
 	[[ -f "$REPO_ROOT/.pre-commit-config.yaml" ||
 		-f "$REPO_ROOT/.pre-commit-config.yml" ||

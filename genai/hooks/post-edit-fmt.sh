@@ -29,26 +29,38 @@ resolve_bin() {
 	command -v "$name" 2>/dev/null
 }
 
-# Print the nearest ancestor of $1 that holds any of the remaining arguments.
-find_project_dir() {
-	local dir=$1 name
+# Print the nearest file among the remaining arguments in $1 or its
+# ancestors. An argument such as pyproject.toml:tool.ruff counts only when
+# the file declares that table, the way the tools themselves read it.
+find_config() {
+	local dir=$1 spec name table
 	shift
 	while [[ -n "$dir" && "$dir" != "/" ]]; do
-		for name in "$@"; do
-			if [[ -e "${dir}/${name}" ]]; then
-				printf '%s\n' "$dir"
-				return 0
+		for spec in "$@"; do
+			name=${spec%%:*}
+			[[ -f "${dir}/${name}" ]] || continue
+			if [[ "$spec" == *:* ]]; then
+				table=${spec#*:}
+				grep -qE "^\[${table//./\\.}[].]" "${dir}/${name}" || continue
 			fi
+			printf '%s\n' "${dir}/${name}"
+			return 0
 		done
 		dir=$(dirname "$dir")
 	done
 	return 1
 }
 
-# True when an ancestor of $1 holds any of the remaining arguments.
+# True when $1 or an ancestor holds any of the remaining config files. The
+# defaults below are passed as flags, which override a project's config, so
+# they are passed only when this is false.
 has_project_file() {
-	find_project_dir "$@" >/dev/null
+	find_config "$@" >/dev/null
 }
+
+RUMDL_CONFIGS=(.rumdl.toml rumdl.toml .config/rumdl.toml pyproject.toml:tool.rumdl
+	.markdownlint-cli2.jsonc .markdownlint-cli2.yaml .markdownlint-cli2.yml
+	.markdownlint.json .markdownlint.yaml markdownlint.json)
 
 run_tool() {
 	local name=$1 dir=$2
@@ -84,8 +96,16 @@ run_trivy_config() {
 		MISSING+=("trivy")
 		return 0
 	fi
+	# trivy reads trivy.yaml only from the cwd, so the project's is passed
+	# explicitly and takes the place of the severity default.
+	local args=(config --quiet --format json) config
+	if config=$(find_config "$(dirname "$file_path")" trivy.yaml); then
+		args+=(--config "$config")
+	else
+		args+=(--severity "HIGH,CRITICAL")
+	fi
 	local json findings
-	if ! json=$("$bin" config --quiet --severity HIGH,CRITICAL --format json "$target" 2>/dev/null); then
+	if ! json=$("$bin" "${args[@]}" "$target" 2>/dev/null); then
 		MISSING+=("trivy")
 		return 0
 	fi
@@ -128,7 +148,10 @@ format_file() {
 
 	local dir
 	dir=$(cd "$(dirname "$file_path")" 2>/dev/null && pwd) || return 0
+	# Codex passes paths relative to the cwd, which pushd below would break.
+	file_path="${dir}/$(basename "$file_path")"
 
+	local config
 	case "$file_path" in
 	# Lock files are generated, so edits to them are not the agent's to fix.
 	*.lock.yaml | *.lock.yml | *-lock.yaml | *-lock.yml) ;;
@@ -137,21 +160,32 @@ format_file() {
 		# tflint lints the whole module, and --filter matches the paths it
 		# prints relative to the cwd, so run it from the module directory.
 		# --fix is left out because it deletes declarations not yet used.
+		# tflint reads .tflint.hcl only from the cwd, so a project's config
+		# at the repository root is passed explicitly.
+		local tflint_args=(--no-color --filter="$(basename "$file_path")")
+		config=$(find_config "$dir" .tflint.hcl) && tflint_args+=(--config="$config")
 		pushd "$dir" >/dev/null || return 0
-		run_tool tflint "$dir" --no-color --filter="$(basename "$file_path")"
+		run_tool tflint "$dir" "${tflint_args[@]}"
 		popd >/dev/null || return 0
 		run_trivy_config "$file_path" "$dir"
 		;;
 	*/Dockerfile | */Dockerfile.* | *.dockerfile | */Containerfile)
-		# info-level rules such as DL3059 are style advice, not defects.
-		run_tool hadolint "$dir" --no-color --failure-threshold warning "$file_path"
+		# hadolint reads .hadolint.yaml only from the cwd, so a project's
+		# config is passed explicitly. Without one, info-level rules such as
+		# DL3059 are style advice, not defects.
+		if config=$(find_config "$dir" .hadolint.yaml .hadolint.yml); then
+			run_tool hadolint "$dir" --no-color --config "$config" "$file_path"
+		else
+			run_tool hadolint "$dir" --no-color --failure-threshold warning "$file_path"
+		fi
 		# A Dockerfile often sits at the repository root, so scan only the
 		# file instead of everything below it.
 		run_trivy_config "$file_path" "$file_path"
 		;;
 	*.py)
-		# S adds the Bandit security rules. pytest checks with assert, so
-		# S101 is left out for test files.
+		# S adds the Bandit security rules even to a project's own config,
+		# since the extend flags add to its selection instead of replacing
+		# it. pytest checks with assert, so S101 is left out for test files.
 		run_tool ruff "$dir" check --fix --extend-select S \
 			--extend-per-file-ignores '**/test_*.py:S101' \
 			--extend-per-file-ignores '**/*_test.py:S101' \
@@ -166,11 +200,18 @@ format_file() {
 		fi
 		;;
 	*.md)
-		# MD034 rewrites bare URLs; MD013 and MD025 fight the Japanese prose
-		# and the per-step h1 structure these documents are written in.
+		# Without a project config, MD034 rewrites bare URLs; MD013 and MD025
+		# fight the Japanese prose and the per-step h1 structure these
+		# documents are written in. rumdl searches for its config upward from
+		# the cwd, so it runs from the file's directory.
 		# fmt always exits 0, so only what check still finds is reported.
-		run_tool rumdl "$dir" fmt --disable MD034,MD013,MD025 -- "$file_path"
-		run_tool rumdl "$dir" check --disable MD034,MD013,MD025 -- "$file_path"
+		local rumdl_args=()
+		has_project_file "$dir" "${RUMDL_CONFIGS[@]}" ||
+			rumdl_args+=(--disable "MD034,MD013,MD025")
+		pushd "$dir" >/dev/null || return 0
+		run_tool rumdl "$dir" fmt "${rumdl_args[@]}" -- "$file_path"
+		run_tool rumdl "$dir" check "${rumdl_args[@]}" -- "$file_path"
+		popd >/dev/null || return 0
 		;;
 	*.sh | *.bash)
 		run_tool shfmt "$dir" -w "$file_path"
