@@ -12,6 +12,11 @@
 | `git clean` | `git stash -u` | 未追跡ファイルも含めて退避する |
 | `git reset --hard` | `git reset`（`--hard` なし）+ `git stash` | `--hard` なしならワーキングツリーを破壊しない |
 
+rebase や amend の後にユーザーへ force push を依頼するときは、`git push --force-with-lease --force-if-includes` を提示する。
+`--force-with-lease` はリモートのブランチがリモート追跡ブランチと一致する場合だけ上書きし、他者が先に push したコミットを消さない。
+ただし IDE などがバックグラウンドで fetch するとリモート追跡ブランチが黙って最新になり、このチェックが素通りする。
+`--force-if-includes` を併用すると、リモート追跡ブランチの先端がローカルブランチの reflog から辿れること、つまりリモートの更新を手元に取り込み済みであることも確かめてから上書きする（出典: `git help push`）。
+
 ## ブランチ運用
 
 コミットや PR 作成に着手する前に `git branch --show-current` で作業ブランチを確認する。
