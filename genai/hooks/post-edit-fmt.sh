@@ -15,15 +15,18 @@ MISSING=()
 # reported that way for the agent to fix in its next edit.
 FINDINGS=()
 
-# Resolve a tool, preferring the project's node_modules/.bin over PATH so
-# pnpm-managed versions win over anything installed globally.
+# Resolve a tool, preferring the project's node_modules/.bin and .venv/bin
+# over PATH so pnpm- and uv-managed versions win over anything installed
+# globally, which a pinned version such as ruff's required-version rejects.
 resolve_bin() {
-	local name=$1 dir=$2
+	local name=$1 dir=$2 bin_dir
 	while [[ -n "$dir" && "$dir" != "/" ]]; do
-		if [[ -x "${dir}/node_modules/.bin/${name}" ]]; then
-			printf '%s\n' "${dir}/node_modules/.bin/${name}"
-			return 0
-		fi
+		for bin_dir in node_modules/.bin .venv/bin; do
+			if [[ -x "${dir}/${bin_dir}/${name}" ]]; then
+				printf '%s\n' "${dir}/${bin_dir}/${name}"
+				return 0
+			fi
+		done
 		dir=$(dirname "$dir")
 	done
 	command -v "$name" 2>/dev/null
