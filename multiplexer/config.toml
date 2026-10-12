@@ -1,0 +1,16 @@
+onboarding = false
+
+[theme]
+name = "catppuccin"
+auto_switch = false
+
+[keys]
+new_tab = ["prefix+c", "shift+up"]
+previous_tab = ["prefix+p", "shift+left"]
+next_tab = ["prefix+n", "shift+right"]
+close_tab = ["prefix+shift+x", "shift+down"]
+
+[ui]
+prompt_new_tab_name = false
+status_indicators = "symbols"
+window_title = "{workspace}: {terminal_title}"

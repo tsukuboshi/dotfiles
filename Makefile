@@ -1,4 +1,4 @@
-.PHONY: all xcode link defaults brew editor genai runtime sleepwatcher
+.PHONY: all xcode link defaults brew editor genai multiplexer runtime sleepwatcher
 
 # Initialize macOS.
 all: xcode link defaults brew
@@ -44,6 +44,13 @@ genai:
 	@printf "\033[1;34m  Run genai/setup.sh\033[0m\n"
 	@printf "\033[1;34m========================================\033[0m\n"
 	@genai/setup.sh
+
+# Setup terminal multiplexer settings.
+multiplexer:
+	@printf "\n\033[1;34m========================================\033[0m\n"
+	@printf "\033[1;34m  Run multiplexer/setup.sh\033[0m\n"
+	@printf "\033[1;34m========================================\033[0m\n"
+	@multiplexer/setup.sh
 
 # Setup runtime environment.
 runtime:

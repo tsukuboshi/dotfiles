@@ -33,6 +33,7 @@ make
 - Editor: Follow instructions in `editor/README.md`
 - GenAI Agent: Follow instructions in `genai/README.md`
 - Launcher: Follow instructions in `launcher/README.md`
+- Multiplexer: Follow instructions in `multiplexer/README.md`
 - Runtime Management: Follow instructions in `runtime/README.md`
 - SleepWatcher: Follow instructions in `sleepwatcher/README.md`
 
@@ -42,6 +43,7 @@ make
 - `editor/`: Editor configurations
 - `genai/`: GenAI Agent configurations
 - `launcher/`: Launcher configurations
+- `multiplexer/`: Terminal Multiplexer configurations
 - `runtime/`: Programming Language Runtime Management configurations
 - `sleepwatcher/`: Sleep mode configurations
 
