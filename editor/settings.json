@@ -90,10 +90,11 @@
 	"terminal.integrated.enableMultiLinePasteWarning": "never",
 	"terminal.integrated.fontSize": 12,
 	"terminal.integrated.gpuAcceleration": "off",
-	"terminal.integrated.ignoreBracketedPasteMode": true,
+	"terminal.integrated.ignoreBracketedPasteMode": false,
 	"terminal.integrated.mouseWheelScrollSensitivity": 3,
 	"terminal.integrated.rightClickBehavior": "paste",
 	"terminal.integrated.scrollback": 10000,
+	"terminal.integrated.tabs.title": "${process}${separator}${sequence}",
 	"terminal.integrated.wordSeparators": " `~!@#$%^&*()-=+[{]}\\|;:'\",.<>?",
 	"shellcheck.ignorePatterns": {
 		"**/.bash_profile": true,
