@@ -5,10 +5,12 @@ name = "catppuccin"
 auto_switch = false
 
 [keys]
-new_tab = ["prefix+c", "shift+up"]
+new_tab = ["prefix+c", "ctrl+shift+up"]
+close_tab = ["prefix+shift+x", "ctrl+shift+down"]
 previous_tab = ["prefix+p", "shift+left"]
 next_tab = ["prefix+n", "shift+right"]
-close_tab = ["prefix+shift+x", "shift+down"]
+previous_workspace = ["shift+up"]
+next_workspace = ["shift+down"]
 
 [ui]
 prompt_new_tab_name = false
