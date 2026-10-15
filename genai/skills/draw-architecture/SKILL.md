@@ -1,12 +1,12 @@
 ---
-name: "draw-architecture"
-description: "Draw or edit an architecture diagram in draw.io, verify AWS components against AWS docs, and export one editable .drawio.png per page that opens in the VS Code Draw.io extension. Use this skill whenever you create or edit a .drawio file, draw an architecture or system diagram (e.g. '構成図を描いて', '構成図を直して', 'drawio を PNG にして'), or a .drawio.png opens blank in VS Code."
+name: "export-drawio"
+description: "Export a draw.io diagram (.drawio) to one editable .drawio.png per page that opens in the VS Code Draw.io extension, verifying AWS architecture diagrams against AWS docs first. Use this skill whenever you create or edit a .drawio file, draw an architecture or system diagram (e.g. '構成図を描いて', '構成図を直して', 'drawio を PNG にして'), or a .drawio.png opens blank in VS Code."
 argument-hint: "[.drawio のパス] [ページごとの接尾辞（例: dev,ops）]"
 ---
 
-# draw.io で構成図を描く
+# draw.io の図を `.drawio.png` に書き出す
 
-構成図は `.drawio` を正として編集し、ページごとの `.drawio.png` を派生物として書き出します。
+draw.io の図は `.drawio` を正として編集し、ページごとの `.drawio.png` を派生物として書き出します。
 `.drawio.png` は画像として資料に貼れるうえ、図データを埋め込むので draw.io や VS Code の拡張でそのまま開いて編集できます。
 
 # 入力
