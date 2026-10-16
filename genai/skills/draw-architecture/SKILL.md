@@ -1,6 +1,6 @@
 ---
 name: "export-drawio"
-description: "Export a draw.io diagram (.drawio) to one editable .drawio.png per page that opens in the VS Code Draw.io extension, verifying AWS architecture diagrams against AWS docs first. Use this skill whenever you create or edit a .drawio file, draw an architecture or system diagram (e.g. '構成図を描いて', '構成図を直して', 'drawio を PNG にして'), or a .drawio.png opens blank in VS Code."
+description: "Export a draw.io diagram (.drawio) to one editable .drawio.png per page that opens in the VS Code Draw.io extension, verifying AWS architecture diagrams against AWS docs first. Use this skill whenever you create or edit a .drawio file, draw an architecture or system diagram (e.g. '構成図を描いて', '構成図を直して', 'drawio を PNG にして'), reflect edits made in a .drawio.png back into the .drawio, or a .drawio.png opens blank in VS Code."
 argument-hint: "[.drawio のパス] [ページごとの接尾辞（例: dev,ops）]"
 ---
 
@@ -21,6 +21,21 @@ draw.io の図は `.drawio` を正として編集し、ページごとの `.draw
 図の変更は `.drawio`（XML）に対して行います。
 XML なので git の差分が読め、Edit でセル単位に直せます。
 PNG を直接編集すると、次の書き出しで `.drawio` の内容に上書きされて変更が消えます。
+
+AWS の外のサービス（GitHub などの SaaS）は AWS Cloud 枠の外に「外部サービス」の枠を作って置き、全ページで置き方を揃えます。
+ロゴは draw.io の `mxgraph.weblogos.*`（例: `shape=mxgraph.weblogos.github`）を使います。
+
+## ユーザーが `.drawio.png` 側を編集したとき
+
+「PNG の方が正しい」と言われたら、PNG に埋め込まれた図データを `.drawio` とセル単位で比べます。
+
+```bash
+python3 -I ~/.claude/skills/draw-architecture/scripts/diff_png_drawio.py <file.drawio.png> <file.drawio>
+```
+
+PNG は VS Code で開いたままの古いタブから保存されていることがあり、ユーザーが触っていない箇所まで古い版に戻っている場合があります。
+`.drawio` へ取り込むのは、ユーザーが指した変更（とその変更に付随するセル）だけです。
+それ以外の差分は古い版の名残とみなして取り込まず、手順 5 で一覧を報告し、意図した変更かを確認します。
 
 # 2. AWS 構成を検証する
 
@@ -75,3 +90,5 @@ CLI の `-e` は `zTXt` の `mxGraphModel` キーへ書き込み、VS Code の D
 
 - 書き出した `.drawio.png` のパス一覧
 - AWS 構成を検証した場合は、「条件付き」「未確認」の主張と、その条件・確認方法・出典。「不可」で図を直した場合は、何をどう直したか
+- PNG 側の編集を取り込んだ場合は、取り込まなかった差分の一覧
+- VS Code で `.drawio.png` を開いている場合は、タブを保存せずに閉じて開き直すこと。開いたままのタブは書き出し後も古い内容を表示し、そのまま保存すると書き出した PNG が古い版で上書きされる
