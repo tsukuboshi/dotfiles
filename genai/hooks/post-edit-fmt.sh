@@ -189,7 +189,12 @@ format_file() {
 		# S adds the Bandit security rules even to a project's own config,
 		# since the extend flags add to its selection instead of replacing
 		# it. pytest checks with assert, so S101 is left out for test files.
+		# F401 stays a finding instead of a fix: an edit that adds an import
+		# before the code that uses it would otherwise lose the import. The
+		# --config override extends the project's unfixable list, whereas
+		# --unfixable would replace it.
 		run_tool ruff "$dir" check --fix --extend-select S \
+			--config "lint.extend-unfixable = ['F401']" \
 			--extend-per-file-ignores '**/test_*.py:S101' \
 			--extend-per-file-ignores '**/*_test.py:S101' \
 			--extend-per-file-ignores '**/conftest.py:S101' \
