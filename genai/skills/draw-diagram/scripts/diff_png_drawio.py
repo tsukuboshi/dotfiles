@@ -11,12 +11,27 @@
 """
 
 import argparse
+import pyexpat
 import struct
 import sys
 import urllib.parse
 import xml.etree.ElementTree as ET
 import zlib
 from pathlib import Path
+
+# xml.etree は外部エンティティを解決せず、expat 2.7.2 以降は Billion Laughs・
+# Quadratic Blowup・巨大トークンの攻撃を expat 自身が抑える
+# （https://docs.python.org/3/library/xml.html#xml-vulnerabilities）。
+# defusedxml は python3 -I では読み込めないため、expat の版を確かめて標準のパーサーを使う
+MIN_EXPAT = (2, 7, 2)
+
+
+def require_safe_expat() -> None:
+    if pyexpat.version_info < MIN_EXPAT:
+        sys.exit(
+            f"expat {pyexpat.EXPAT_VERSION} は XML の展開攻撃を防げない。"
+            "expat 2.7.2 以降の Python で実行する"
+        )
 
 
 def embedded_mxfile(png: Path) -> ET.Element:
@@ -34,8 +49,8 @@ def embedded_mxfile(png: Path) -> ET.Element:
             continue
         if ctype == b"zTXt":
             value = zlib.decompress(value[1:])
-        # 読むのは手元の図だけ。python3 -I で動かすため defusedxml は使えない
-        return ET.fromstring(urllib.parse.unquote(value.decode("latin-1")))
+        xml = urllib.parse.unquote(value.decode("latin-1"))
+        return ET.fromstring(xml)  # noqa: S314 -- main で require_safe_expat を済ませている
     sys.exit(f"{png} に図データが埋め込まれていない")
 
 
@@ -62,8 +77,9 @@ def main() -> None:
     parser.add_argument("drawio", type=Path)
     args = parser.parse_args()
 
+    require_safe_expat()
     png_page = embedded_mxfile(args.png).find("diagram")
-    pages = ET.parse(args.drawio).getroot().findall("diagram")
+    pages = ET.parse(args.drawio).getroot().findall("diagram")  # noqa: S314 -- 同上
     page = next(
         (p for p in pages if p.get("id") == png_page.get("id")),
         next((p for p in pages if p.get("name") == png_page.get("name")), None),
