@@ -3,8 +3,13 @@
 # Supports both Claude Code (Edit/Write/MultiEdit) and Codex (apply_patch)
 
 INPUT=$(cat)
-TOOL_NAME=$(jq -r '.tool_name // empty' <<<"$INPUT")
-TOOL_COMMAND=$(jq -r '.tool_input.command // empty' <<<"$INPUT")
+# One jq call reads both fields, since each process spawned here delays the
+# agent after every edit. The patch body is multi-line, so it is read only
+# for apply_patch.
+{
+	IFS= read -r TOOL_NAME
+	IFS= read -r FILE_PATH
+} < <(jq -r '(.tool_name // ""), (.tool_input.file_path // "")' <<<"$INPUT")
 
 # Formatters that were called for but could not run. Reported at exit so a
 # broken toolchain surfaces instead of leaving files silently unformatted.
@@ -14,6 +19,10 @@ MISSING=()
 # PostToolUse hook's stderr to the model only on exit 2, so these are
 # reported that way for the agent to fix in its next edit.
 FINDINGS=()
+
+# Directory walks below step up with ${dir%/*} instead of $(dirname), which
+# forked once per level and took half of the hook's run time. $dir is always
+# absolute, and the walk stops before "/" either way.
 
 # Resolve a tool, preferring the project's node_modules/.bin and .venv/bin
 # over PATH so pnpm- and uv-managed versions win over anything installed
@@ -27,7 +36,7 @@ resolve_bin() {
 				return 0
 			fi
 		done
-		dir=$(dirname "$dir")
+		dir=${dir%/*}
 	done
 	command -v "$name" 2>/dev/null
 }
@@ -49,7 +58,7 @@ find_config() {
 			printf '%s\n' "${dir}/${name}"
 			return 0
 		done
-		dir=$(dirname "$dir")
+		dir=${dir%/*}
 	done
 	return 1
 }
@@ -102,7 +111,7 @@ run_trivy_config() {
 	# trivy reads trivy.yaml only from the cwd, so the project's is passed
 	# explicitly and takes the place of the severity default.
 	local args=(config --quiet --format json) config
-	if config=$(find_config "$(dirname "$file_path")" trivy.yaml); then
+	if config=$(find_config "${file_path%/*}" trivy.yaml); then
 		args+=(--config "$config")
 	else
 		args+=(--severity "HIGH,CRITICAL")
@@ -112,7 +121,7 @@ run_trivy_config() {
 		MISSING+=("trivy")
 		return 0
 	fi
-	findings=$(jq -r --arg t "$(basename "$file_path")" '
+	findings=$(jq -r --arg t "${file_path##*/}" '
 		.Results[]? | select(.Target == $t) | .Misconfigurations[]?
 		| "\($t):\(.CauseMetadata.StartLine // "-") \(.ID) (\(.Severity)): \(.Title | rtrimstr(".")). \(.Resolution)"
 	' <<<"$json")
@@ -152,7 +161,7 @@ format_file() {
 	local dir
 	dir=$(cd "$(dirname "$file_path")" 2>/dev/null && pwd) || return 0
 	# Codex passes paths relative to the cwd, which pushd below would break.
-	file_path="${dir}/$(basename "$file_path")"
+	file_path="${dir}/${file_path##*/}"
 
 	local config
 	case "$file_path" in
@@ -165,7 +174,7 @@ format_file() {
 		# --fix is left out because it deletes declarations not yet used.
 		# tflint reads .tflint.hcl only from the cwd, so a project's config
 		# at the repository root is passed explicitly.
-		local tflint_args=(--no-color --filter="$(basename "$file_path")")
+		local tflint_args=(--no-color --filter="${file_path##*/}")
 		config=$(find_config "$dir" .tflint.hcl) && tflint_args+=(--config="$config")
 		pushd "$dir" >/dev/null || return 0
 		run_tool tflint "$dir" "${tflint_args[@]}"
@@ -252,6 +261,7 @@ format_file() {
 }
 
 if [[ "$TOOL_NAME" == "apply_patch" ]]; then
+	TOOL_COMMAND=$(jq -r '.tool_input.command // empty' <<<"$INPUT")
 	while IFS= read -r file_path; do
 		format_file "$file_path"
 	done < <(
@@ -261,7 +271,6 @@ if [[ "$TOOL_NAME" == "apply_patch" ]]; then
 		' <<<"$TOOL_COMMAND" | sort -u
 	)
 else
-	FILE_PATH=$(jq -r '.tool_input.file_path // empty' <<<"$INPUT")
 	format_file "$FILE_PATH"
 fi
 

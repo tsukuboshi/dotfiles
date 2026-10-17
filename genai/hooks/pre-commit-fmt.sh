@@ -30,6 +30,18 @@ if [[ -z "$STAGED_FILES" ]]; then
 	exit 0
 fi
 
+# Scan for secrets while the formatters run: gitleaks spends most of its
+# time loading its rules, and no formatter adds a secret, so the index as
+# staged before formatting carries the same leaks as after it.
+# --redact keeps the secret itself out of the transcript the agent reads.
+LEAKS_FILE=""
+if command -v gitleaks >/dev/null 2>&1; then
+	LEAKS_FILE=$(mktemp)
+	gitleaks git --staged --no-banner --no-color --redact -v >"$LEAKS_FILE" 2>&1 &
+	LEAKS_PID=$!
+	trap 'kill "$LEAKS_PID" 2>/dev/null; rm -f "$LEAKS_FILE"' EXIT
+fi
+
 FORMATTED_FILES=()
 
 # True when the repository root holds any of the given config files. An
@@ -120,14 +132,11 @@ else
 	process_ext '\.sql$' fmt_sql
 fi
 
-# Block the commit when the staged changes carry a secret. --redact keeps the
-# secret itself out of the transcript the agent reads.
-if command -v gitleaks >/dev/null 2>&1; then
-	if ! LEAKS=$(gitleaks git --staged --no-banner --no-color --redact -v 2>&1); then
-		printf 'Pre-commit (%s): gitleaks found secrets in the staged changes\n%s\n' \
-			"${CALLER}" "${LEAKS}" >&2
-		exit 2
-	fi
+# Block the commit when the staged changes carry a secret.
+if [[ -n "$LEAKS_FILE" ]] && ! wait "$LEAKS_PID"; then
+	printf 'Pre-commit (%s): gitleaks found secrets in the staged changes\n%s\n' \
+		"${CALLER}" "$(<"$LEAKS_FILE")" >&2
+	exit 2
 fi
 
 # Output result as JSON (both Claude Code and Codex accept `systemMessage`)
