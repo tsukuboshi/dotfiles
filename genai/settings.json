@@ -1,4 +1,9 @@
 {
+	"skillOverrides": {
+		"eb005d0d93737e46": "off",
+		"natural-japanese": "off",
+		"stop-ai-slop-jp": "off"
+	},
 	"cleanupPeriodDays": 365,
 	"env": {
 		"DISABLE_AUTOUPDATER": "1",
