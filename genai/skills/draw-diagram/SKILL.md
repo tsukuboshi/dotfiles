@@ -53,6 +53,7 @@ PNG は VS Code で開いたままの古いタブから保存されているこ�
 # 2. 書き出す
 
 インフラ構成図では、書き出す前に `references/infrastructure.md` の「AWS 構成を検証する」を済ませます。
+手順 3 から戻って書き出し直すときは、判定表と比べて変わった主張だけを検証します。
 
 ```bash
 python3 -I ~/.claude/skills/draw-diagram/scripts/export_drawio_png.py <file.drawio> --names <接尾辞,...>

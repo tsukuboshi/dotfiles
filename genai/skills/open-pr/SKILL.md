@@ -39,21 +39,13 @@ git branch --contains 上記で取得したハッシュ
 
 # リモートへのプッシュ確認
 
-`COMPARE_BRANCH`がリモートにプッシュ済みかつ最新であることを確認してください。
+`COMPARE_BRANCH`がリモートにプッシュ済みかつ最新であることを、1 回のコマンドで確認してください。
 
 ```bash
-git fetch origin COMPARE_BRANCH 2>/dev/null
+git fetch origin COMPARE_BRANCH 2>/dev/null; echo "LOCAL=$(git rev-parse COMPARE_BRANCH)"; echo "REMOTE=$(git rev-parse --verify --quiet origin/COMPARE_BRANCH)"
 ```
 
-```bash
-git rev-parse COMPARE_BRANCH
-```
-
-```bash
-git rev-parse origin/COMPARE_BRANCH 2>/dev/null
-```
-
-- リモートブランチが存在しない場合: ユーザーに `git push -u origin COMPARE_BRANCH` の実行を促して中断
+- `REMOTE=` が空の場合（リモートブランチが存在しない）: ユーザーに `git push -u origin COMPARE_BRANCH` の実行を促して中断
 - LOCAL ≠ REMOTE の場合: ローカルに未プッシュのコミットがある旨を伝え、`git push` の実行を促して中断
 - LOCAL = REMOTE の場合: そのまま続行
 

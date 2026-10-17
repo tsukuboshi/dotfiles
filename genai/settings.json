@@ -1,249 +1,252 @@
 {
-  "cleanupPeriodDays": 365,
-  "env": {
-    "DISABLE_AUTOUPDATER": "1",
-    "CLAUDE_CODE_NO_FLICKER": "1",
-    "BASH_DEFAULT_TIMEOUT_MS": "300000",
-    "CLAUDE_CODE_DISABLE_FEEDBACK_SURVEY": "1",
-    "DISABLE_ERROR_REPORTING": "1",
-    "ANTHROPIC_DEFAULT_OPUS_MODEL": "claude-fable-5-1",
-    "ANTHROPIC_DEFAULT_SONNET_MODEL": "claude-opus-5-5",
-    "ANTHROPIC_MODEL": "opusplan"
-  },
-  "attribution": {
-    "commit": "",
-    "pr": "",
-    "sessionUrl": false
-  },
-  "permissions": {
-    "allow": [
-      "Glob(*)",
-      "Grep(*)",
-      "Read(**)",
-      "WebSearch(*)",
-      "Bash(basename:*)",
-      "Bash(cat:*)",
-      "Bash(cd:*)",
-      "Bash(cut:*)",
-      "Bash(date:*)",
-      "Bash(diff:*)",
-      "Bash(dirname:*)",
-      "Bash(echo:*)",
-      "Bash(export:*)",
-      "Bash(file:*)",
-      "Bash(find:*)",
-      "Bash(git:*)",
-      "Bash(grep:*)",
-      "Bash(head:*)",
-      "Bash(jq:*)",
-      "Bash(ls:*)",
-      "Bash(mkdir:*)",
-      "Bash(od:*)",
-      "Bash(open:*)",
-      "Bash(printf:*)",
-      "Bash(rumdl:*)",
-      "Bash(sort:*)",
-      "Bash(tail:*)",
-      "Bash(tee:*)",
-      "Bash(tr:*)",
-      "Bash(trash:*)",
-      "Bash(uniq:*)",
-      "Bash(wc:*)",
-      "Bash(which:*)",
-      "Bash(xargs:*)",
-      "WebFetch(domain:aws.amazon.com)",
-      "WebFetch(domain:code.claude.com)",
-      "WebFetch(domain:dev.classmethod.jp)",
-      "WebFetch(domain:developer.hashicorp.com)",
-      "WebFetch(domain:docs.anthropic.com)",
-      "WebFetch(domain:docs.aws.amazon.com)",
-      "WebFetch(domain:docs.docker.com)",
-      "WebFetch(domain:docs.github.com)",
-      "WebFetch(domain:docs.localstack.cloud)",
-      "WebFetch(domain:docs.opensearch.org)",
-      "WebFetch(domain:docs.pydantic.dev)",
-      "WebFetch(domain:docs.python.org)",
-      "WebFetch(domain:fastapi.tiangolo.com)",
-      "WebFetch(domain:nodejs.org)",
-      "WebFetch(domain:openai.com)",
-      "WebFetch(domain:react.dev)",
-      "WebFetch(domain:www.anthropic.com)",
-      "WebFetch(domain:www.typescriptlang.org)",
-      "mcp__claude-in-chrome__tabs_context_mcp",
-      "mcp__claude-in-chrome__tabs_create_mcp",
-      "mcp__claude-in-chrome__tabs_close_mcp",
-      "mcp__claude-in-chrome__navigate",
-      "mcp__claude-in-chrome__get_page_text",
-      "mcp__claude-in-chrome__read_page",
-      "mcp__claude-in-chrome__find",
-      "mcp__claude-in-chrome__read_console_messages",
-      "mcp__claude-in-chrome__read_network_requests",
-      "mcp__claude-in-chrome__list_connected_browsers",
-      "mcp__claude-in-chrome__select_browser",
-      "mcp__claude-in-chrome__switch_browser",
-      "mcp__claude-in-chrome__resize_window",
-      "mcp__aws-knowledge__aws___search_documentation",
-      "mcp__aws-knowledge__aws___read_documentation",
-      "mcp__context7__resolve-library-id",
-      "mcp__context7__query-docs"
-    ],
-    "deny": [
-      "Bash(rm:*)",
-      "Bash(git clean:*)",
-      "Bash(git checkout:*)",
-      "Bash(git restore:*)",
-      "Bash(git reset --hard:*)",
-      "Bash(docker push:*)",
-      "Bash(git push:*)",
-      "Bash(cdk deploy:*)",
-      "Bash(terraform apply:*)",
-      "Bash(cdk destroy:*)",
-      "Bash(terraform destroy:*)",
-      "Read(**/.env*)",
-      "Edit(**/.env*)",
-      "Read(**/secrets/**)",
-      "Edit(**/secrets/**)",
-      "Read(**/*credentials*)",
-      "Edit(**/*credentials*)",
-      "Read(**/*.pem)",
-      "Edit(**/*.pem)",
-      "Read(**/*.key)",
-      "Edit(**/*.key)",
-      "mcp__claude-in-chrome__form_input",
-      "mcp__claude-in-chrome__shortcuts_execute",
-      "mcp__claude-in-chrome__file_upload",
-      "mcp__claude-in-chrome__upload_image",
-      "mcp__claude-in-chrome__browser_batch",
-      "mcp__claude-in-chrome__gif_creator"
-    ],
-    "defaultMode": "auto",
-    "disableBypassPermissionsMode": "disable"
-  },
-  "hooks": {
-    "PreToolUse": [
-      {
-        "matcher": "Bash",
-        "hooks": [
-          {
-            "type": "command",
-            "command": "bash ~/dotfiles/genai/hooks/pre-commit-fmt.sh"
-          }
-        ]
-      },
-      {
-        "matcher": "mcp__claude-in-chrome__computer|mcp__claude-in-chrome__javascript_tool",
-        "hooks": [
-          {
-            "type": "command",
-            "command": "bash ~/dotfiles/genai/hooks/chrome-tool-guard.sh"
-          }
-        ]
-      }
-    ],
-    "PostToolUse": [
-      {
-        "matcher": "Edit|Write|MultiEdit",
-        "hooks": [
-          {
-            "type": "command",
-            "command": "bash ~/dotfiles/genai/hooks/post-edit-fmt.sh"
-          }
-        ]
-      }
-    ],
-    "Stop": [
-      {
-        "matcher": "*",
-        "hooks": [
-          {
-            "type": "command",
-            "command": "bash ~/dotfiles/genai/hooks/stop-notify.sh"
-          }
-        ]
-      }
-    ],
-    "ConfigChange": [
-      {
-        "matcher": "*",
-        "hooks": [
-          {
-            "type": "command",
-            "command": "bash ~/dotfiles/genai/hooks/config-change-guard.sh"
-          }
-        ]
-      }
-    ],
-    "SessionStart": [
-      {
-        "matcher": "^(startup|resume|clear|compact|fork)$",
-        "hooks": [
-          {
-            "type": "command",
-            "command": "bash ~/dotfiles/genai/hooks/herdr-agent-state.sh session",
-            "timeout": 10
-          }
-        ]
-      }
-    ],
-    "UserPromptSubmit": [
-      {
-        "hooks": [
-          {
-            "type": "command",
-            "command": "bash ~/dotfiles/genai/hooks/herdr-tab-title.sh",
-            "timeout": 5
-          }
-        ]
-      }
-    ]
-  },
-  "statusLine": {
-    "type": "command",
-    "command": "zsh ~/dotfiles/genai/scripts/statusline.sh",
-    "refreshInterval": 60
-  },
-  "enabledPlugins": {
-    "claude-md-management@claude-plugins-official": false,
-    "frontend-design@claude-plugins-official": false,
-    "feature-dev@claude-plugins-official": true,
-    "pyright-lsp@claude-plugins-official": false,
-    "typescript-lsp@claude-plugins-official": false,
-    "skill-creator@claude-plugins-official": true,
-    "chrome-devtools-mcp@claude-plugins-official": false,
-    "playwright@claude-plugins-official": false,
-    "aws-operations-toolkit@consulting-team-plugins": false,
-    "meeting-notes-processor@consulting-team-plugins": false
-  },
-  "outputStyle": "explanatory",
-  "language": "Japanese",
-  "sandbox": {
-    "enabled": false,
-    "allowUnsandboxedCommands": true,
-    "network": {
-      "allowedDomains": [
-        "github.com",
-        "api.github.com",
-        "registry.npmjs.org",
-        "pypi.org",
-        "files.pythonhosted.org"
-      ]
-    },
-    "filesystem": {
-      "allowWrite": ["/tmp"],
-      "denyWrite": ["~/.bashrc", "~/.zshrc", "~/.ssh"],
-      "denyRead": [
-        "./.env",
-        "./secrets",
-        "./config/credentials.json",
-        "./build",
-        "~/.ssh",
-        "~/.aws/credentials"
-      ]
-    },
-    "excludedCommands": ["open"]
-  },
-  "askUserQuestionTimeout": "10m",
-  "remoteControlAtStartup": true,
-  "agentPushNotifEnabled": true,
-  "skipAutoPermissionPrompt": true
+	"cleanupPeriodDays": 365,
+	"env": {
+		"DISABLE_AUTOUPDATER": "1",
+		"CLAUDE_CODE_NO_FLICKER": "1",
+		"BASH_DEFAULT_TIMEOUT_MS": "300000",
+		"CLAUDE_CODE_DISABLE_FEEDBACK_SURVEY": "1",
+		"DISABLE_ERROR_REPORTING": "1",
+		"ANTHROPIC_DEFAULT_OPUS_MODEL": "claude-fable-5-1",
+		"ANTHROPIC_DEFAULT_SONNET_MODEL": "claude-opus-5-5",
+		"ANTHROPIC_MODEL": "opusplan"
+	},
+	"attribution": {
+		"commit": "",
+		"pr": "",
+		"sessionUrl": false
+	},
+	"permissions": {
+		"allow": [
+			"Glob(*)",
+			"Grep(*)",
+			"Read(**)",
+			"WebSearch(*)",
+			"Bash(basename:*)",
+			"Bash(cat:*)",
+			"Bash(cd:*)",
+			"Bash(cut:*)",
+			"Bash(date:*)",
+			"Bash(diff:*)",
+			"Bash(dirname:*)",
+			"Bash(echo:*)",
+			"Bash(export:*)",
+			"Bash(ffmpeg:*)",
+			"Bash(file:*)",
+			"Bash(find:*)",
+			"Bash(git:*)",
+			"Bash(grep:*)",
+			"Bash(head:*)",
+			"Bash(jq:*)",
+			"Bash(ls:*)",
+			"Bash(mkdir:*)",
+			"Bash(od:*)",
+			"Bash(open:*)",
+			"Bash(printf:*)",
+			"Bash(rumdl:*)",
+			"Bash(screencapture:*)",
+			"Bash(sleep:*)",
+			"Bash(sort:*)",
+			"Bash(tail:*)",
+			"Bash(tee:*)",
+			"Bash(tr:*)",
+			"Bash(trash:*)",
+			"Bash(uniq:*)",
+			"Bash(wc:*)",
+			"Bash(which:*)",
+			"Bash(xargs:*)",
+			"WebFetch(domain:aws.amazon.com)",
+			"WebFetch(domain:code.claude.com)",
+			"WebFetch(domain:dev.classmethod.jp)",
+			"WebFetch(domain:developer.hashicorp.com)",
+			"WebFetch(domain:docs.anthropic.com)",
+			"WebFetch(domain:docs.aws.amazon.com)",
+			"WebFetch(domain:docs.docker.com)",
+			"WebFetch(domain:docs.github.com)",
+			"WebFetch(domain:docs.localstack.cloud)",
+			"WebFetch(domain:docs.opensearch.org)",
+			"WebFetch(domain:docs.pydantic.dev)",
+			"WebFetch(domain:docs.python.org)",
+			"WebFetch(domain:fastapi.tiangolo.com)",
+			"WebFetch(domain:nodejs.org)",
+			"WebFetch(domain:openai.com)",
+			"WebFetch(domain:react.dev)",
+			"WebFetch(domain:www.anthropic.com)",
+			"WebFetch(domain:www.typescriptlang.org)",
+			"mcp__claude-in-chrome__tabs_context_mcp",
+			"mcp__claude-in-chrome__tabs_create_mcp",
+			"mcp__claude-in-chrome__tabs_close_mcp",
+			"mcp__claude-in-chrome__navigate",
+			"mcp__claude-in-chrome__get_page_text",
+			"mcp__claude-in-chrome__read_page",
+			"mcp__claude-in-chrome__find",
+			"mcp__claude-in-chrome__read_console_messages",
+			"mcp__claude-in-chrome__read_network_requests",
+			"mcp__claude-in-chrome__list_connected_browsers",
+			"mcp__claude-in-chrome__select_browser",
+			"mcp__claude-in-chrome__switch_browser",
+			"mcp__claude-in-chrome__resize_window",
+			"mcp__aws-knowledge__aws___search_documentation",
+			"mcp__aws-knowledge__aws___read_documentation",
+			"mcp__context7__resolve-library-id",
+			"mcp__context7__query-docs"
+		],
+		"deny": [
+			"Bash(rm:*)",
+			"Bash(git clean:*)",
+			"Bash(git checkout:*)",
+			"Bash(git restore:*)",
+			"Bash(git reset --hard:*)",
+			"Bash(docker push:*)",
+			"Bash(git push:*)",
+			"Bash(cdk deploy:*)",
+			"Bash(terraform apply:*)",
+			"Bash(cdk destroy:*)",
+			"Bash(terraform destroy:*)",
+			"Read(**/.env*)",
+			"Edit(**/.env*)",
+			"Read(**/secrets/**)",
+			"Edit(**/secrets/**)",
+			"Read(**/*credentials*)",
+			"Edit(**/*credentials*)",
+			"Read(**/*.pem)",
+			"Edit(**/*.pem)",
+			"Read(**/*.key)",
+			"Edit(**/*.key)",
+			"mcp__claude-in-chrome__form_input",
+			"mcp__claude-in-chrome__shortcuts_execute",
+			"mcp__claude-in-chrome__file_upload",
+			"mcp__claude-in-chrome__upload_image",
+			"mcp__claude-in-chrome__browser_batch",
+			"mcp__claude-in-chrome__gif_creator"
+		],
+		"defaultMode": "auto",
+		"disableBypassPermissionsMode": "disable"
+	},
+	"hooks": {
+		"PreToolUse": [
+			{
+				"matcher": "Bash",
+				"hooks": [
+					{
+						"type": "command",
+						"command": "bash ~/dotfiles/genai/hooks/pre-commit-fmt.sh"
+					}
+				]
+			},
+			{
+				"matcher": "mcp__claude-in-chrome__computer|mcp__claude-in-chrome__javascript_tool",
+				"hooks": [
+					{
+						"type": "command",
+						"command": "bash ~/dotfiles/genai/hooks/chrome-tool-guard.sh"
+					}
+				]
+			}
+		],
+		"PostToolUse": [
+			{
+				"matcher": "Edit|Write|MultiEdit",
+				"hooks": [
+					{
+						"type": "command",
+						"command": "bash ~/dotfiles/genai/hooks/post-edit-fmt.sh"
+					}
+				]
+			}
+		],
+		"Stop": [
+			{
+				"matcher": "*",
+				"hooks": [
+					{
+						"type": "command",
+						"command": "bash ~/dotfiles/genai/hooks/stop-notify.sh"
+					}
+				]
+			}
+		],
+		"ConfigChange": [
+			{
+				"matcher": "*",
+				"hooks": [
+					{
+						"type": "command",
+						"command": "bash ~/dotfiles/genai/hooks/config-change-guard.sh"
+					}
+				]
+			}
+		],
+		"SessionStart": [
+			{
+				"matcher": "^(startup|resume|clear|compact|fork)$",
+				"hooks": [
+					{
+						"type": "command",
+						"command": "bash ~/dotfiles/genai/hooks/herdr-agent-state.sh session",
+						"timeout": 10
+					}
+				]
+			}
+		],
+		"UserPromptSubmit": [
+			{
+				"hooks": [
+					{
+						"type": "command",
+						"command": "bash ~/dotfiles/genai/hooks/herdr-tab-title.sh",
+						"timeout": 5
+					}
+				]
+			}
+		]
+	},
+	"statusLine": {
+		"type": "command",
+		"command": "zsh ~/dotfiles/genai/scripts/statusline.sh",
+		"refreshInterval": 60
+	},
+	"enabledPlugins": {
+		"claude-md-management@claude-plugins-official": false,
+		"frontend-design@claude-plugins-official": false,
+		"feature-dev@claude-plugins-official": true,
+		"pyright-lsp@claude-plugins-official": false,
+		"typescript-lsp@claude-plugins-official": false,
+		"skill-creator@claude-plugins-official": true,
+		"chrome-devtools-mcp@claude-plugins-official": false,
+		"playwright@claude-plugins-official": false,
+		"aws-operations-toolkit@consulting-team-plugins": false,
+		"meeting-notes-processor@consulting-team-plugins": false
+	},
+	"outputStyle": "explanatory",
+	"language": "Japanese",
+	"sandbox": {
+		"enabled": false,
+		"allowUnsandboxedCommands": true,
+		"network": {
+			"allowedDomains": [
+				"github.com",
+				"api.github.com",
+				"registry.npmjs.org",
+				"pypi.org",
+				"files.pythonhosted.org"
+			]
+		},
+		"filesystem": {
+			"allowWrite": ["/tmp"],
+			"denyWrite": ["~/.bashrc", "~/.zshrc", "~/.ssh"],
+			"denyRead": [
+				"./.env",
+				"./secrets",
+				"./config/credentials.json",
+				"./build",
+				"~/.ssh",
+				"~/.aws/credentials"
+			]
+		},
+		"excludedCommands": ["open"]
+	},
+	"askUserQuestionTimeout": "10m",
+	"remoteControlAtStartup": true,
+	"agentPushNotifEnabled": true,
+	"skipAutoPermissionPrompt": true
 }
