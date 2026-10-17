@@ -11,6 +11,8 @@
 """
 
 import argparse
+import os
+import pyexpat
 import shutil
 import struct
 import subprocess
@@ -18,18 +20,33 @@ import sys
 import urllib.parse
 import xml.etree.ElementTree as ET
 import zlib
+from concurrent.futures import ThreadPoolExecutor
 from pathlib import Path
 
 DRAWIO_APP = "/Applications/draw.io.app/Contents/MacOS/draw.io"
+
+# xml.etree は外部エンティティを解決せず、expat 2.7.2 以降は Billion Laughs・
+# Quadratic Blowup・巨大トークンの攻撃を expat 自身が抑える
+# （https://docs.python.org/3/library/xml.html#xml-vulnerabilities）。
+# defusedxml は python3 -I では読み込めないため、expat の版を確かめて標準のパーサーを使う
+MIN_EXPAT = (2, 7, 2)
+
+
+def require_safe_expat() -> None:
+    if pyexpat.version_info < MIN_EXPAT:
+        sys.exit(
+            f"expat {pyexpat.EXPAT_VERSION} は XML の展開攻撃を防げない。"
+            "expat 2.7.2 以降の Python で実行する"
+        )
 
 
 def find_drawio() -> str:
     found = shutil.which("drawio") or (
         DRAWIO_APP if Path(DRAWIO_APP).exists() else None
     )
-    if not found:
+    if not found or not os.access(found, os.X_OK):
         sys.exit("drawio CLI が見つからない。`brew install --cask drawio` で入れる")
-    return found
+    return str(Path(found).resolve())
 
 
 def page_xml(root: ET.Element, diagram: ET.Element) -> str:
@@ -78,7 +95,13 @@ def main() -> None:
     )
     args = parser.parse_args()
 
-    root = ET.parse(args.drawio).getroot()
+    # drawio CLI に渡す前に、入力が実在する .drawio であることを確かめる
+    if not (args.drawio.is_file() and args.drawio.name.endswith(".drawio")):
+        sys.exit(f"{args.drawio} は .drawio のファイルではない")
+    drawio_path = args.drawio.resolve()
+
+    require_safe_expat()
+    root = ET.parse(drawio_path).getroot()  # noqa: S314 -- require_safe_expat で expat の版を確かめている
     diagrams = root.findall("diagram")
     names = args.names.split(",") if args.names else []
     if len(diagrams) > 1 and len(names) != len(diagrams):
@@ -87,13 +110,15 @@ def main() -> None:
             f"{len(diagrams)} ページある（{pages}）。--names で同じ数の接尾辞を渡す"
         )
 
-    stem = args.drawio.name.removesuffix(".drawio")
-    out_dir = args.out_dir or args.drawio.parent
+    stem = drawio_path.name.removesuffix(".drawio")
+    out_dir = (args.out_dir or drawio_path.parent).resolve()
     drawio = find_drawio()
-    for index, diagram in enumerate(diagrams, 1):
-        png = out_dir / (
-            f"{stem}-{names[index - 1]}.drawio.png" if names else f"{stem}.drawio.png"
-        )
+    pngs = [
+        out_dir / (f"{stem}-{names[i]}.drawio.png" if names else f"{stem}.drawio.png")
+        for i in range(len(diagrams))
+    ]
+
+    def export_page(index: int) -> None:
         # ページ番号は 1 始まり（drawio v27.0.2 以降）
         cmd = [
             drawio,
@@ -107,10 +132,20 @@ def main() -> None:
             "-p",
             str(index),
             "-o",
-            str(png),
-            str(args.drawio),
+            str(pngs[index - 1]),
+            str(drawio_path),
         ]
-        subprocess.run(cmd, check=True, capture_output=True, timeout=120)
+        # shell を通さない引数リストで、実行ファイルと入力は検証済み
+        subprocess.run(cmd, check=True, capture_output=True, timeout=120)  # noqa: S603
+
+    # drawio CLI は PNG を 1 起動 1 ページでしか書き出せず、1 ページに 1〜2 秒かかる。
+    # 同時に起動しても衝突せず出力も同じなので、ページごとの起動を並列に回す
+    # （6 ページの図で、順に起動して 10 秒 → 並列で 3〜4 秒）
+    workers = min(len(diagrams), os.cpu_count() or 1)
+    with ThreadPoolExecutor(max_workers=workers) as pool:
+        list(pool.map(export_page, range(1, len(diagrams) + 1)))
+
+    for index, (diagram, png) in enumerate(zip(diagrams, pngs), 1):
         embed_mxfile(png, page_xml(root, diagram))
         print(f"{png}  <- page {index}「{diagram.get('name')}」")
 
