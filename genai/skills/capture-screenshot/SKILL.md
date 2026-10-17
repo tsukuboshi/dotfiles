@@ -38,20 +38,15 @@ Claude in Chrome の `navigate` / `get_page_text` / `read_page` で対象ペー�
 
 Chrome のウィンドウは複数開いている前提で扱います。`window 1` は撮影対象とは別のウィンドウを指す事があるため、URL で特定したウィンドウ ID を 4 段階すべてで使い回してください。
 
+AppleScript は `scripts/` のスクリプトにまとめてあり、以下のコマンドは書かれたとおりの形（`bash ~/.claude/skills/...`）で実行してください。この形で `permissions.allow` に登録してあるため、auto モードの分類器を通らずにすぐ実行されます。
+
 ## 2-1. 対象ウィンドウを特定し、元の bounds を控える
 
 ```bash
-osascript <<'AS'
-tell application "Google Chrome"
-  set out to ""
-  repeat with w in windows
-    set b to bounds of w
-    set out to out & (id of w) & " | " & (item 1 of b) & "," & (item 2 of b) & "," & (item 3 of b) & "," & (item 4 of b) & " | " & (URL of active tab of w) & linefeed
-  end repeat
-  return out
-end tell
-AS
+bash ~/.claude/skills/capture-screenshot/scripts/chrome_windows.sh
 ```
+
+1 行に 1 ウィンドウずつ、`<ID> | <x1>,<y1>,<x2>,<y2> | <アクティブなタブの URL>` の形で出ます。
 
 ## 2-2. ウィンドウを狭める
 
@@ -61,20 +56,18 @@ GitHub のようにコンテンツを幅いっぱいに配置するページを 
 
 ただし、SaaS の管理画面のようにページの最小幅が狭めた幅を超える場合は、右側が切れたり横スクロールが出たりします。その時は狭めずに画面幅いっぱい（例: 1512x949 のディスプレイなら全体）で撮り、手順 1 の zoom で収まりを調整してください。
 
-適用後は 2-1 のコマンドで bounds を再確認します。`tabId` とウィンドウの対応を取り違えて別のウィンドウが縮む場合があり、その時は対象が変わるまで呼び直してください。
+`tabId` とウィンドウの対応を取り違えて別のウィンドウが縮む場合があります。2-3 の撮影スクリプトに狙ったサイズを渡すと、対象ウィンドウがそのサイズになっていない時は撮らずに終了コード 3 で全ウィンドウの一覧を出すので、別のウィンドウが縮んでいたら対象が変わるまで `resize_window` を呼び直してください。
 
 ## 2-3. 前面に出して撮影する
 
 ```bash
-osascript <<'AS' >/dev/null
-tell application "Google Chrome"
-  activate
-  set index of (first window whose id is <ウィンドウID>) to 1
-end tell
-AS
-sleep 2
-screencapture -x -R "<x>,<y>,<w>,<h>" "${HOME}/Pictures/ScreenShot/スクリーンショット $(TZ=Asia/Tokyo date '+%Y-%m-%d %H.%M.%S').png"
+bash ~/.claude/skills/capture-screenshot/scripts/chrome_capture.sh <ウィンドウID> "" <幅> <高さ>
 ```
+
+- 第 2 引数は保存先の PNG パス。`""` なら macOS 標準のスクリーンショットと同じ `${HOME}/Pictures/ScreenShot/スクリーンショット <日時>.png` に保存する
+- 第 3・4 引数は 2-2 で狙ったサイズ（pt）。画面幅いっぱいで撮る場合も、2-1 の bounds から求めた幅と高さを渡す
+- スクリプトは ID 指定でウィンドウを前面へ出し、Chrome が最前面になるのを待ってから撮る（固定の待ち時間は置かない）。出力の bounds・PNG の寸法・px/pt の比は手順 3 の座標計算に使う
+- `warning: Chrome did not come to the front` が出たら、他のアプリのウィンドウが写り込んでいないかを PNG で確かめる
 
 ウィンドウが重なっていると背面のものが写るため、ID 指定で前面へ出してから撮ります。比較画像は同じウィンドウサイズのまま連続で撮り、途中でサイズを変えないでください。
 
@@ -87,16 +80,30 @@ screencapture -x -R "<x>,<y>,<w>,<h>" "${HOME}/Pictures/ScreenShot/スクリー�
 ## 2-4. 元のウィンドウ配置に戻す
 
 ```bash
-osascript -e 'tell application "Google Chrome" to set bounds of (first window whose id is <ウィンドウID>) to {<x1>, <y1>, <x2>, <y2>}'
+bash ~/.claude/skills/capture-screenshot/scripts/chrome_restore.sh <ウィンドウID> <x1> <y1> <x2> <y2>
 ```
 
-`resize_window` は幅と高さしか扱えず位置を戻せないため、復元は `set bounds` で行います。2-2 で取り違えて動かした他のウィンドウがあればそれも戻し、2-1 のコマンドで確認してください。
+`resize_window` は幅と高さしか扱えず位置を戻せないため、復元は AppleScript の `set bounds` で行います。スクリプトは戻した後に全ウィンドウの一覧を出すので、それで復元を確認してください。2-2 で取り違えて動かした他のウィンドウがあれば、同じスクリプトでそれも戻します。
 
 # 3. 変換して保存先へ切り出す
 
 PNG を Read すると元画像の寸法と表示倍率が返るので、それを使って掲載したい領域の座標を算出し、ffmpeg で切り出して JPEG に変換します。
 
-同じ条件で何枚も撮る場合は、`screenshot` で見たビューポート座標から PNG の座標への対応を 1 度求めておくと、毎回の目測を省けます。Retina では横は `PNG x = ビューポート x × 2`、縦は `PNG y = (タブバー・アドレスバー・デバッグ中のバナー等の高さの実寸) + ビューポート y × 2` になります（例: Claude in Chrome のデバッグバナーが出ている 1512x949 の撮影では上端のオフセットが約 287px）。オフセットは、ページ上の目立つ要素の位置を `screenshot` と PNG で見比べて決めてください。
+切り出す座標は、`screenshot` で見たビューポート座標から計算で求めます。目測で合わせると、ずれるたびに全画面 PNG の Read と切り出しをやり直すことになるためです。
+
+| 記号 | 値 | 出どころ |
+| --- | --- | --- |
+| `W`・`H` | ウィンドウの幅と高さ（pt） | 2-3 の出力の bounds |
+| `r` | PNG の px/pt の比（Retina は 2） | 2-3 の出力 |
+| `sw`・`sh` | `screenshot` 画像の幅と高さ（px） | `screenshot` の結果 |
+
+1. ビューポートの縮尺 `s = W / sw` を求める（`screenshot` が縮小されていなければ 1）
+2. ブラウザ UI（タブバー・アドレスバー・ブックマークバー・Claude in Chrome のデバッグバナー）の高さを `top = H - sh × s` で求める。macOS の Chrome はウィンドウの左右と下に枠を持たないため、上端以外にオフセットはない
+3. ビューポート座標 `(vx, vy)` は PNG 上で `PNG x = vx × s × r`、`PNG y = (top + vy × s) × r` になる
+
+例: 1512x949 pt のウィンドウで `screenshot` が 1512x806 なら、`top = 143` pt、PNG 上の上端オフセットは 286 px になる。
+同じウィンドウサイズで撮る間は `top` が変わらないので、1 度求めれば使い回せます。
+切り出した JPEG を確かめて数 px ずれている場合だけ、ページ上の目立つ要素の位置を `screenshot` と PNG で見比べて補正してください。
 
 ```bash
 ffmpeg -loglevel error -y -i "<PNG パス>" -vf "crop=<w>:<h>:<x>:<y>" -q:v 2 "<保存先パス>"
