@@ -43,8 +43,9 @@ pinact = "5.0.0"
 
 # Document / Data
 rumdl = "0.2.78"
-"aqua:owenlamont/ryl" = "0.24.0"
+lychee = "0.24.2"
 taplo = "0.9.3"
+"aqua:owenlamont/ryl" = "0.24.0"
 "aqua:quarylabs/sqruff" = "0.41.0"
 
 # Dev workflow
