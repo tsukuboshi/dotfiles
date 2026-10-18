@@ -21,6 +21,9 @@ ruby = "3.3.11"
 # Go
 go = "1.26.5"
 
+# Rust
+rust = "1.99.1"
+
 # IaC / AWS
 terraform = "1.15.8"
 tflint = "0.64.0"
