@@ -14,7 +14,7 @@ fi
 
 echo "=== post-create.sh: wiring up dotfiles ==="
 
-# ---------- Shell (zsh + .zshrc are required because statusline.sh sources common/.zshrc) ----------
+# ---------- Shell (zsh + .zshrc are required because statusline/render.sh sources common/.zshrc) ----------
 # .gitconfig contains macOS-specific settings (osxkeychain, code --wait), so it is
 # handled separately below using [include].
 echo "--- symlink shell dotfiles ---"

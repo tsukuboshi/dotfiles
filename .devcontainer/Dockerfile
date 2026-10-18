@@ -7,6 +7,9 @@ FROM debian:bookworm-slim@sha256:f9c6a2fd2ddbc23e336b6257a5245e31f996953ef06cd13
 
 ARG TZ=Asia/Tokyo
 
+# Fail a piped RUN (e.g. `curl | sh`) when any stage fails, not just the last
+SHELL ["/bin/bash", "-o", "pipefail", "-c"]
+
 # Timezone
 ENV TZ=${TZ}
 RUN ln -snf /usr/share/zoneinfo/$TZ /etc/localtime && echo $TZ > /etc/timezone
@@ -14,6 +17,9 @@ RUN ln -snf /usr/share/zoneinfo/$TZ /etc/localtime && echo $TZ > /etc/timezone
 # Base tools and CLIs required by hooks.
 # Language runtimes (python/node/terraform/...) are managed by mise via runtime/config.toml,
 # so they are intentionally not installed here.
+# Versions stay unpinned: the bookworm archive drops superseded package versions
+# on every security update, so pins would break the build within weeks.
+# hadolint ignore=DL3008
 RUN apt-get update && apt-get install -y --no-install-recommends \
     # Dev tools
     git \
@@ -26,7 +32,7 @@ RUN apt-get update && apt-get install -y --no-install-recommends \
     zsh \
     less \
     xdg-utils \
-    # Lint/format CLIs invoked by genai/scripts/post-edit-hook.sh
+    # Lint/format CLIs invoked by genai/hooks/post-edit-fmt.sh
     shellcheck \
     ripgrep \
     # mise build deps (required to build python / ruby and other mise-managed runtimes)
@@ -67,26 +73,26 @@ RUN curl -fsSL https://mise.run | sh \
     && mv /root/.local/bin/mise /usr/local/bin/mise
 
 # Create a non-root user
-ARG USERNAME=dev
+ARG DEV_USER=dev
 ARG USER_UID=1000
 ARG USER_GID=$USER_UID
-RUN groupadd --gid $USER_GID $USERNAME \
-    && useradd --uid $USER_UID --gid $USER_GID -m -s /bin/bash $USERNAME \
-    && echo "$USERNAME ALL=(ALL) NOPASSWD: /usr/local/bin/init-firewall.sh" >> /etc/sudoers.d/$USERNAME
+RUN groupadd --gid $USER_GID $DEV_USER \
+    && useradd --uid $USER_UID --gid $USER_GID -m -s /bin/bash $DEV_USER \
+    && echo "$DEV_USER ALL=(ALL) NOPASSWD: /usr/local/bin/init-firewall.sh" >> /etc/sudoers.d/$DEV_USER
 
 # Create workspace, history, and language cache directories.
 # Named volumes are root-owned on first mount, so chown to the dev user up-front.
 RUN mkdir -p /workspace /commandhistory \
-    /home/$USERNAME/.npm \
-    /home/$USERNAME/.local/share/pnpm/store \
-    /home/$USERNAME/.local/share/mise \
-    /home/$USERNAME/.cache/uv \
-    /home/$USERNAME/.cache/pip \
-    /home/$USERNAME/.cache/mise \
-    /home/$USERNAME/.terraform.d/plugin-cache \
-    /home/$USERNAME/.config/mise \
-    /home/$USERNAME/.claude \
-    && chown -R $USERNAME:$USERNAME /workspace /commandhistory /home/$USERNAME
+    /home/$DEV_USER/.npm \
+    /home/$DEV_USER/.local/share/pnpm/store \
+    /home/$DEV_USER/.local/share/mise \
+    /home/$DEV_USER/.cache/uv \
+    /home/$DEV_USER/.cache/pip \
+    /home/$DEV_USER/.cache/mise \
+    /home/$DEV_USER/.terraform.d/plugin-cache \
+    /home/$DEV_USER/.config/mise \
+    /home/$DEV_USER/.claude \
+    && chown -R $DEV_USER:$DEV_USER /workspace /commandhistory /home/$DEV_USER
 
 # devcontainer environment flag
 ENV DEVCONTAINER=true
@@ -96,13 +102,13 @@ COPY scripts/init-firewall.sh /usr/local/bin/init-firewall.sh
 COPY scripts/post-create.sh /usr/local/bin/post-create.sh
 RUN chmod +x /usr/local/bin/init-firewall.sh /usr/local/bin/post-create.sh
 
-USER $USERNAME
+USER $DEV_USER
 # Add the user's local bin to PATH so the Claude Code installer (and other user-local
 # binaries) is reachable in non-interactive shells.
 ENV PATH="/home/dev/.local/bin:${PATH}"
 
 # Activate mise for bash (zsh is activated inside the dotfiles .zshrc)
-RUN echo 'eval "$(mise activate bash)"' >> /home/$USERNAME/.bashrc
+RUN echo "eval \"\$(mise activate bash)\"" >>/home/$DEV_USER/.bashrc
 
 # Install Claude Code into the dev user's ~/.local/bin
 RUN curl -fsSL https://claude.ai/install.sh | bash
