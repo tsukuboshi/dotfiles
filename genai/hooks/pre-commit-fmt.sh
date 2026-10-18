@@ -124,7 +124,11 @@ if command -v prek >/dev/null 2>&1 &&
 	run_prek
 else
 	process_ext '\.py$' fmt_py
-	process_ext '\.(ts|tsx|js|jsx|json)$' fmt_js
+	# Only projects that configure biome are expected to have it, as in the
+	# post-edit hook.
+	if has_root_config biome.json biome.jsonc; then
+		process_ext '\.(ts|tsx|js|jsx|json)$' fmt_js
+	fi
 	process_ext '\.tf$' fmt_tf
 	process_ext '\.(sh|bash)$' fmt_sh
 	process_ext '\.md$' fmt_md
