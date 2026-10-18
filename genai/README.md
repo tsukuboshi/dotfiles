@@ -1,3 +1,5 @@
+# GenAI
+
 ## Required
 
 - [Claude Code \- Anthropic](https://docs.anthropic.com/en/docs/claude-code)
@@ -38,7 +40,7 @@ This installs:
 
 `config.toml` is copied rather than symlinked because Codex writes per-project trust entries (`[projects.*]`) and NUX tooltip counters (`[tui.model_availability_nux]`) back to `~/.codex/config.toml` at runtime. Copying keeps that user- / machine-local state out of the dotfiles source tree; re-running setup overwrites whatever has accumulated since the previous install.
 
-Note that Codex does not support custom status line commands (only the built-in items selected in `[tui]` are shown), so `scripts/statusline.sh` is intentionally not wired up for Codex.
+Note that Codex does not support custom status line commands (only the built-in items selected in `[tui]` are shown), so `statusline/render.sh` is intentionally not wired up for Codex.
 
 ## Setup Kiro CLI
 

@@ -232,7 +232,12 @@ format_file() {
 		;;
 	*.sh | *.bash)
 		run_tool shfmt "$dir" -w "$file_path"
-		run_tool shellcheck "$dir" "$file_path"
+		# zsh is rejected outright by the linter (SC1071), so a #!/bin/zsh .sh
+		# would block every edit. The shebang is read with a builtin to avoid a fork.
+		local shebang=""
+		IFS= read -r shebang <"$file_path"
+		[[ "$shebang" == '#!'*zsh* ]] ||
+			run_tool shellcheck "$dir" "$file_path"
 		;;
 	*.toml)
 		# taplo logs every file it collects at INFO level.
