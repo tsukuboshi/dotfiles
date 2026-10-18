@@ -100,6 +100,7 @@
 			"mcp__aws-knowledge__aws___read_documentation",
 			"mcp__aws-knowledge__aws___get_regional_availability",
 			"mcp__aws-knowledge__aws___list_regions",
+			"mcp__aws-knowledge__aws___retrieve_skill",
 			"mcp__context7__resolve-library-id",
 			"mcp__context7__query-docs",
 			"mcp__claude_ai_draw_io__search_shapes",
