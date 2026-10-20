@@ -74,6 +74,7 @@ fmt_py() {
 	xargs ruff format <<<"$1" 2>/dev/null
 }
 fmt_js() { xargs biome check --fix <<<"$1" 2>/dev/null; }
+fmt_go() { xargs golangci-lint fmt <<<"$1" >/dev/null 2>&1; }
 fmt_tf() { xargs terraform fmt <<<"$1" 2>/dev/null; }
 fmt_sh() { xargs shfmt -w <<<"$1" 2>/dev/null; }
 # rumdl fixes MD025 by demoting later h1s, which breaks the per-step h1
@@ -129,6 +130,7 @@ else
 	if has_root_config biome.json biome.jsonc; then
 		process_ext '\.(ts|tsx|js|jsx|json)$' fmt_js
 	fi
+	process_ext '\.go$' fmt_go
 	process_ext '\.tf$' fmt_tf
 	process_ext '\.(sh|bash)$' fmt_sh
 	process_ext '\.md$' fmt_md
