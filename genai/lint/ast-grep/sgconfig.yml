@@ -3,7 +3,7 @@
 # The post-edit and pre-commit hooks pass this file with --config to projects
 # without their own sgconfig.yml.
 # Run the rule tests with:
-#   ast-grep test -c genai/ast-grep/sgconfig.yml --skip-snapshot-tests
+#   ast-grep test -c genai/lint/ast-grep/sgconfig.yml --skip-snapshot-tests
 ruleDirs:
   - rules
 testConfigs:

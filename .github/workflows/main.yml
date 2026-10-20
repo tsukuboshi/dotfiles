@@ -46,4 +46,4 @@ jobs:
       - name: Test ast-grep rules
         run: >-
           npx --yes --package @ast-grep/cli@0.51.0 --
-          ast-grep test -c genai/ast-grep/sgconfig.yml --skip-snapshot-tests
+          ast-grep test -c genai/lint/ast-grep/sgconfig.yml --skip-snapshot-tests

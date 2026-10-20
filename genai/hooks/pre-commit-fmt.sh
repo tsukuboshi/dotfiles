@@ -21,7 +21,8 @@ if ! grep -qE '^git\s+commit' <<<"$COMMAND"; then
 fi
 
 # Resolved before the cd below, in case the hook was invoked by a relative path.
-AST_GREP_CONFIG="${BASH_SOURCE[0]%/*}/../ast-grep/sgconfig.yml"
+AST_GREP_CONFIG="${BASH_SOURCE[0]%/*}/../lint/ast-grep/sgconfig.yml"
+TYPOS_CONFIG="${BASH_SOURCE[0]%/*}/../lint/typos/_typos.toml"
 
 # Staged paths are relative to the repository root, and rumdl looks for its
 # config upward from the cwd, so the formatters run from there.
@@ -95,7 +96,7 @@ fmt_md() { xargs rumdl fmt "${RUMDL_ARGS[@]}" -- <<<"$1" >/dev/null 2>&1; }
 fmt_toml() { xargs taplo fmt <<<"$1" 2>/dev/null; }
 fmt_sql() { xargs sqruff fix -f none <<<"$1" >/dev/null 2>&1; }
 
-# ast-grep checks the custom rules in genai/ast-grep, or the repository's own
+# ast-grep checks the custom rules in genai/lint/ast-grep, or the repository's own
 # sgconfig.yml in their place. Only error-level findings such as a recursive
 # rm block the commit; warnings were already reported by the post-edit hook.
 # Findings are read from the JSON, so a config ast-grep cannot load is not
@@ -112,6 +113,25 @@ lint_ast_grep() {
 		.[] | "\(.file):\(.range.start.line + 1):\(.range.start.column + 1) [\(.ruleId)] \(.message)"
 			+ (if .note then " " + (.note | gsub("\\s+"; " ") | rtrimstr(" ")) else "" end)
 	' <<<"$json" 2>/dev/null)
+}
+
+# typos checks the staged files of every type, with the words in genai/lint/typos
+# allowed, or the repository's own config in their place. It exits 2 on
+# findings only, so a config it cannot load does not block the commit.
+# Lock files are generated, as in the post-edit hook.
+TYPOS_FINDINGS=""
+lint_typos() {
+	local files=() config=() output
+	command -v typos >/dev/null 2>&1 || return 0
+	while IFS= read -r f; do
+		[[ -n "$f" ]] && files+=("$f")
+	done < <(grep -vE '(\.lock|[.-]lock\.ya?ml)$' <<<"$STAGED_FILES")
+	((${#files[@]} == 0)) && return 0
+	has_root_config typos.toml _typos.toml .typos.toml \
+		Cargo.toml:package.metadata.typos Cargo.toml:workspace.metadata.typos \
+		pyproject.toml:tool.typos || config=(--config "$TYPOS_CONFIG")
+	output=$(typos "${config[@]}" --force-exclude --format brief --color never -- "${files[@]}" 2>&1)
+	(($? == 2)) && TYPOS_FINDINGS=$output
 }
 
 process_ext() {
@@ -170,6 +190,7 @@ else
 	process_ext '\.toml$' fmt_toml
 	process_ext '\.sql$' fmt_sql
 	lint_ast_grep
+	lint_typos
 fi
 
 # Block the commit when the staged changes carry a secret.
@@ -183,6 +204,13 @@ fi
 if [[ -n "$AST_GREP_FINDINGS" ]]; then
 	printf 'Pre-commit (%s): ast-grep found rule violations in the staged changes\n%s\n' \
 		"${CALLER}" "${AST_GREP_FINDINGS}" >&2
+	exit 2
+fi
+
+# Block the commit on misspellings.
+if [[ -n "$TYPOS_FINDINGS" ]]; then
+	printf 'Pre-commit (%s): typos found misspellings in the staged changes\n%s\n' \
+		"${CALLER}" "${TYPOS_FINDINGS}" >&2
 	exit 2
 fi
 

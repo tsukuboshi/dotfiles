@@ -173,11 +173,11 @@ lint_yaml() {
 	run_tool ryl "$dir" "${args[@]}" "$file_path"
 }
 
-# ast-grep checks the custom rules in genai/ast-grep for what the other
+# ast-grep checks the custom rules in genai/lint/ast-grep for what the other
 # linters miss, or a project's own sgconfig.yml in their place. scan exits
 # non-zero only on error-level findings, so warnings are read from its JSON
 # instead of the exit code, which run_tool relies on.
-AST_GREP_CONFIG="${BASH_SOURCE[0]%/*}/../ast-grep/sgconfig.yml"
+AST_GREP_CONFIG="${BASH_SOURCE[0]%/*}/../lint/ast-grep/sgconfig.yml"
 lint_ast_grep() {
 	local file_path=$1 dir=$2
 	local bin config json findings
@@ -196,6 +196,33 @@ lint_ast_grep() {
 		return 0
 	fi
 	[[ -n "$findings" ]] && FINDINGS+=("[ast-grep] ${findings}")
+	return 0
+}
+
+# typos checks every file type for misspellings, with the words in
+# genai/lint/typos allowed, or a project's own config in their place: --config
+# would take precedence over it. Fixes are left to the agent, since a
+# suggested spelling can rename an identifier the code depends on. typos
+# exits 2 on findings only, so any other failure means it could not run.
+TYPOS_CONFIG="${BASH_SOURCE[0]%/*}/../lint/typos/_typos.toml"
+lint_typos() {
+	local file_path=$1 dir=$2
+	local bin config=() output status
+	bin=$(resolve_bin typos "$dir")
+	if [[ -z "$bin" ]]; then
+		MISSING+=("typos")
+		return 0
+	fi
+	has_project_file "$dir" typos.toml _typos.toml .typos.toml \
+		Cargo.toml:package.metadata.typos Cargo.toml:workspace.metadata.typos \
+		pyproject.toml:tool.typos || config=(--config "$TYPOS_CONFIG")
+	output=$("$bin" "${config[@]}" --force-exclude --format brief --color never -- "$file_path" 2>&1)
+	status=$?
+	case $status in
+	0) ;;
+	2) FINDINGS+=("[typos] ${output}") ;;
+	*) MISSING+=("typos") ;;
+	esac
 	return 0
 }
 
@@ -219,10 +246,15 @@ format_file() {
 	# Codex passes paths relative to the cwd, which pushd below would break.
 	file_path="${dir}/${file_path##*/}"
 
+	# Lock files are generated, so edits to them are not the agent's to fix.
+	case "$file_path" in
+	*.lock | *.lock.yaml | *.lock.yml | *-lock.yaml | *-lock.yml) return 0 ;;
+	esac
+
+	lint_typos "$file_path" "$dir"
+
 	local config
 	case "$file_path" in
-	# Lock files are generated, so edits to them are not the agent's to fix.
-	*.lock.yaml | *.lock.yml | *-lock.yaml | *-lock.yml) ;;
 	*.py)
 		# S adds the Bandit security rules even to a project's own config,
 		# since the extend flags add to its selection instead of replacing
