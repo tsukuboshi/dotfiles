@@ -96,15 +96,15 @@ GitHub の Issue・PR・Actions を扱うときは、`gh` コマンドの代わ�
 | `resolving-merge-conflicts` | 進行中の merge / rebase コンフリクトの解決 |
 | `wizard` | 人間にしかできない手順を対話式 bash ウィザードにする |
 
-## プラグインの作成
+## OSS として公開するもの
 
-他ツールに読み込ませる拡張（スキル・フック、リンターのルール・プリセット、エディタ拡張など）は、後から単体の OSS リポジトリとして切り出せる形で最初から作る。
+単体の OSS リポジトリ（CLI・ライブラリなど）と、親リポジトリ内で作り後から単体の OSS リポジトリとして切り出す拡張（スキル・フック、リンターのルール・プリセット、エディタ拡張など）は、最初から以下の作法で作る。
 ツール固有のレイアウトやマニフェストは、そのツールの公式ドキュメントに従う。
 
 | 対象 | 作法 | 出典 |
 | --- | --- | --- |
-| 構成 | 1 プラグイン = 1 ディレクトリにまとめ、その直下を将来のリポジトリルートとみなす。参照はディレクトリ内に閉じた相対パスで書く。`git subtree split -P <dir>` はそのディレクトリに触れたコミットだけを、ディレクトリ直下をルートにした履歴として取り出す | `git help subtree` |
-| コミット | ディレクトリ外の差分は split で落ちるが、コミットメッセージはそのまま残る。プラグイン内の変更は、メッセージ単独で意味が通るコミットにまとめる | `git help subtree` |
+| 構成（親リポジトリ内で作る場合） | 1 プラグイン = 1 ディレクトリにまとめ、その直下を将来のリポジトリルートとみなす。参照はディレクトリ内に閉じた相対パスで書く。`git subtree split -P <dir>` はそのディレクトリに触れたコミットだけを、ディレクトリ直下をルートにした履歴として取り出す | `git help subtree` |
+| コミット（親リポジトリ内で作る場合） | ディレクトリ外の差分は split で落ちるが、コミットメッセージはそのまま残る。プラグイン内の変更は、メッセージ単独で意味が通るコミットにまとめる | `git help subtree` |
 | README | 英語の `README.md` に、何をするか・なぜ有用か・始め方・助けを得る場所・メンテナを書く。日本語の補足は `README.ja.md` に分ける | <https://docs.github.com/en/repositories/managing-your-repositorys-settings-and-features/customizing-your-repository/about-readmes> |
 | ライセンス | MIT の `LICENSE` を置き、マニフェストの `license` に SPDX 識別子 `MIT` を書く。依存パッケージを追加するときは、そのライセンスの条件を確認する | <https://opensource.guide/legal/> |
 | 設定と秘密情報 | 個人・組織固有の値（ホーム配下の絶対パス、社内ドメイン・URL、ID、認証情報）は環境変数か gitignore した `*.local.*` から読み、`*.example.*` をコミットする。いつ公開しても認証情報が漏れない状態を保つ | <https://12factor.net/config> |
@@ -112,7 +112,8 @@ GitHub の Issue・PR・Actions を扱うときは、`gh` コマンドの代わ�
 | バージョン | Semantic Versioning で上げ、リリースごとに `v<version>` の git タグを打つ | <https://semver.org/> |
 | 変更履歴 | `CHANGELOG.md` の `Unreleased` 節に、変更を `Added` / `Changed` / `Deprecated` / `Removed` / `Fixed` / `Security` で分類して積む | <https://keepachangelog.com/> |
 | コミュニティ | 貢献方法の `CONTRIBUTING.md` と、脆弱性の報告窓口の `SECURITY.md` を置く。GitHub はこれらをルート・`.github/`・`docs/` から探す | <https://docs.github.com/en/communities/setting-up-your-project-for-healthy-contributions/creating-a-default-community-health-file> |
-| テストと CI | テストをディレクトリ内に置き、1 コマンドで実行できるようにする。push と PR でリンターとテストを回す GitHub Actions のワークフローを用意し、切り出し前は親リポジトリのワークフローから同じコマンドを呼ぶ | <https://docs.github.com/en/actions/get-started/continuous-integration> |
+| 公開時の点検 | リポジトリを public にしたら、Insights > Community Standards（`https://github.com/<owner>/<repo>/community`）をブラウザで開く。`Not added yet` の項目ごとに、追加するか見送るかを理由付きで決め、全項目に判断がついたら完了とする。チェックリストは public リポジトリにだけ表示される | <https://docs.github.com/en/communities/setting-up-your-project-for-healthy-contributions/about-community-profiles-for-public-repositories> |
+| テストと CI | テストをリポジトリ（親リポジトリ内で作る場合はそのディレクトリ）の中に置き、1 コマンドで実行できるようにする。push と PR でリンターとテストを回す GitHub Actions のワークフローを用意する。親リポジトリ内で作る場合は、切り出し前は親リポジトリのワークフローから同じコマンドを呼ぶ | <https://docs.github.com/en/actions/get-started/continuous-integration> |
 
 ## 根拠の提示
 
