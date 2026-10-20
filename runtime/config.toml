@@ -52,6 +52,9 @@ taplo = "0.9.3"
 "aqua:owenlamont/ryl" = "0.24.0"
 "aqua:quarylabs/sqruff" = "0.41.0"
 
+# Multi-language
+ast-grep = "0.51.0"
+
 # Dev workflow
 prek = "0.5.5"
 # prek does not implement `pre-commit hazmat`, which monorepo hooks call
