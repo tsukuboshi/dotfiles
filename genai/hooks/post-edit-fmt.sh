@@ -96,6 +96,36 @@ run_tool() {
 	return 0
 }
 
+# golangci-lint resolves types per package, so the whole package in $dir is
+# linted and only the issues in $file_path are kept, as with trivy below.
+# Paths in its output are relative to the cwd, and it searches for its config
+# upward from there, so it runs from the package directory.
+lint_go() {
+	local file_path=$1 dir=$2
+	local bin
+	bin=$(resolve_bin golangci-lint "$dir")
+	if [[ -z "$bin" ]]; then
+		MISSING+=("golangci-lint")
+		return 0
+	fi
+	pushd "$dir" >/dev/null || return 0
+	"$bin" fmt "$file_path" >/dev/null 2>&1
+	local json findings
+	json=$("$bin" run --output.json.path stdout --show-stats=false ./ 2>/dev/null)
+	popd >/dev/null || return 0
+	# Issues come as JSON on exit 0 and 1 alike; anything else means the run
+	# itself failed.
+	if ! findings=$(jq -r --arg t "${file_path##*/}" '
+		.Issues[]? | select(.Pos.Filename == $t)
+		| "\($t):\(.Pos.Line):\(.Pos.Column) \(.Text) (\(.FromLinter))"
+	' <<<"$json" 2>/dev/null) || [[ -z "$json" ]]; then
+		MISSING+=("golangci-lint")
+		return 0
+	fi
+	[[ -n "$findings" ]] && FINDINGS+=("[golangci-lint] ${findings}")
+	return 0
+}
+
 # trivy resolves Terraform variables and modules across files, so it scans
 # $target as a whole and only the misconfigurations in $file_path are kept.
 # Only HIGH and CRITICAL are reported so the agent is not pushed into
@@ -167,6 +197,32 @@ format_file() {
 	case "$file_path" in
 	# Lock files are generated, so edits to them are not the agent's to fix.
 	*.lock.yaml | *.lock.yml | *-lock.yaml | *-lock.yml) ;;
+	*.py)
+		# S adds the Bandit security rules even to a project's own config,
+		# since the extend flags add to its selection instead of replacing
+		# it. pytest checks with assert, so S101 is left out for test files.
+		# F401 stays a finding instead of a fix: an edit that adds an import
+		# before the code that uses it would otherwise lose the import. The
+		# --config override extends the project's unfixable list, whereas
+		# --unfixable would replace it.
+		run_tool ruff "$dir" check --fix --extend-select S \
+			--config "lint.extend-unfixable = ['F401']" \
+			--extend-per-file-ignores '**/test_*.py:S101' \
+			--extend-per-file-ignores '**/*_test.py:S101' \
+			--extend-per-file-ignores '**/conftest.py:S101' \
+			"$file_path"
+		run_tool ruff "$dir" format "$file_path"
+		;;
+	*.ts | *.tsx | *.js | *.jsx | *.json)
+		# Only projects that configure biome are expected to have it.
+		if has_project_file "$dir" biome.json biome.jsonc; then
+			run_tool biome "$dir" check --fix "$file_path"
+		fi
+		;;
+	*.go)
+		# Outside a module, golangci-lint cannot load the package at all.
+		has_project_file "$dir" go.mod && lint_go "$file_path" "$dir"
+		;;
 	*.tf)
 		run_tool terraform "$dir" fmt "$file_path"
 		# tflint lints the whole module, and --filter matches the paths it
@@ -194,27 +250,26 @@ format_file() {
 		# file instead of everything below it.
 		run_trivy_config "$file_path" "$file_path"
 		;;
-	*.py)
-		# S adds the Bandit security rules even to a project's own config,
-		# since the extend flags add to its selection instead of replacing
-		# it. pytest checks with assert, so S101 is left out for test files.
-		# F401 stays a finding instead of a fix: an edit that adds an import
-		# before the code that uses it would otherwise lose the import. The
-		# --config override extends the project's unfixable list, whereas
-		# --unfixable would replace it.
-		run_tool ruff "$dir" check --fix --extend-select S \
-			--config "lint.extend-unfixable = ['F401']" \
-			--extend-per-file-ignores '**/test_*.py:S101' \
-			--extend-per-file-ignores '**/*_test.py:S101' \
-			--extend-per-file-ignores '**/conftest.py:S101' \
-			"$file_path"
-		run_tool ruff "$dir" format "$file_path"
+	*.sh | *.bash)
+		run_tool shfmt "$dir" -w "$file_path"
+		# zsh is rejected outright by the linter (SC1071), so a #!/bin/zsh .sh
+		# would block every edit. The shebang is read with a builtin to avoid a fork.
+		local shebang=""
+		IFS= read -r shebang <"$file_path"
+		[[ "$shebang" == '#!'*zsh* ]] ||
+			run_tool shellcheck "$dir" "$file_path"
 		;;
-	*.ts | *.tsx | *.js | *.jsx | *.json)
-		# Only projects that configure biome are expected to have it.
-		if has_project_file "$dir" biome.json biome.jsonc; then
-			run_tool biome "$dir" check --fix "$file_path"
-		fi
+	*/.github/workflows/*.yml | */.github/workflows/*.yaml)
+		# Offline keeps zizmor inside the hook timeout; its online audits
+		# are left to manual runs with GH_TOKEN.
+		lint_yaml "$file_path" "$dir"
+		run_tool actionlint "$dir" "$file_path"
+		run_tool zizmor "$dir" --offline --quiet --no-progress "$file_path"
+		;;
+	*/action.yml | */action.yaml)
+		lint_yaml "$file_path" "$dir"
+		# actionlint cannot take action metadata as an argument.
+		run_tool zizmor "$dir" --offline --quiet --no-progress "$file_path"
 		;;
 	*.md)
 		# Without a project config, MD034 rewrites bare URLs; MD013 and MD025
@@ -230,37 +285,16 @@ format_file() {
 		run_tool rumdl "$dir" check "${rumdl_args[@]}" -- "$file_path"
 		popd >/dev/null || return 0
 		;;
-	*.sh | *.bash)
-		run_tool shfmt "$dir" -w "$file_path"
-		# zsh is rejected outright by the linter (SC1071), so a #!/bin/zsh .sh
-		# would block every edit. The shebang is read with a builtin to avoid a fork.
-		local shebang=""
-		IFS= read -r shebang <"$file_path"
-		[[ "$shebang" == '#!'*zsh* ]] ||
-			run_tool shellcheck "$dir" "$file_path"
-		;;
 	*.toml)
 		# taplo logs every file it collects at INFO level.
 		RUST_LOG=error run_tool taplo "$dir" fmt "$file_path"
 		RUST_LOG=error run_tool taplo "$dir" check "$file_path"
 		;;
-	*.sql)
-		lint_sql "$file_path" "$dir"
-		;;
-	*/.github/workflows/*.yml | */.github/workflows/*.yaml)
-		# Offline keeps zizmor inside the hook timeout; its online audits
-		# are left to manual runs with GH_TOKEN.
-		lint_yaml "$file_path" "$dir"
-		run_tool actionlint "$dir" "$file_path"
-		run_tool zizmor "$dir" --offline --quiet --no-progress "$file_path"
-		;;
-	*/action.yml | */action.yaml)
-		lint_yaml "$file_path" "$dir"
-		# actionlint cannot take action metadata as an argument.
-		run_tool zizmor "$dir" --offline --quiet --no-progress "$file_path"
-		;;
 	*.yml | *.yaml)
 		lint_yaml "$file_path" "$dir"
+		;;
+	*.sql)
+		lint_sql "$file_path" "$dir"
 		;;
 	esac
 }
