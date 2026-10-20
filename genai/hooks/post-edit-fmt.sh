@@ -173,6 +173,44 @@ lint_yaml() {
 	run_tool ryl "$dir" "${args[@]}" "$file_path"
 }
 
+# kubeconform validates Kubernetes manifests against the API's schemas, and
+# custom resources against those in the CRDs-catalog; kinds in neither, such
+# as a Kustomization, are skipped. -strict rejects unknown fields, which is
+# how a misspelled one is caught. A manifest is told from other YAML by its
+# top-level apiVersion and kind, and a Helm template, which kubeconform
+# cannot parse, by its {{ }}. Schemas are cached, since every validation
+# would download them otherwise; one that cannot be downloaded leaves the
+# tool unavailable rather than the manifest invalid.
+KUBECONFORM_CACHE="${XDG_CACHE_HOME:-$HOME/.cache}/kubeconform"
+lint_k8s() {
+	local file_path=$1 dir=$2
+	awk '/\{\{/ { t = 1 } /^apiVersion:/ { a = 1 } /^kind:/ { k = 1 }
+		END { exit !(a && k && !t) }' "$file_path" || return 0
+	local bin json findings
+	bin=$(resolve_bin kubeconform "$dir")
+	if [[ -z "$bin" ]]; then
+		MISSING+=("kubeconform")
+		return 0
+	fi
+	mkdir -p "$KUBECONFORM_CACHE"
+	json=$("$bin" -strict -ignore-missing-schemas -cache "$KUBECONFORM_CACHE" -output json \
+		-schema-location default \
+		-schema-location 'https://raw.githubusercontent.com/datreeio/CRDs-catalog/main/{{.Group}}/{{.ResourceKind}}_{{.ResourceAPIVersion}}.json' \
+		"$file_path" 2>/dev/null)
+	if [[ -z "$json" ]] ||
+		jq -e 'any(.resources[]?; .msg | startswith("failed downloading schema"))' <<<"$json" >/dev/null 2>&1 ||
+		! findings=$(jq -r --arg t "${file_path##*/}" '
+			.resources[]? | select(.status == "statusInvalid" or .status == "statusError")
+			| "\($t) \(.kind)/\(.name): " as $p
+			| if .validationErrors then .validationErrors[] | $p + "\(.path) \(.msg)" else $p + .msg end
+		' <<<"$json" 2>/dev/null); then
+		MISSING+=("kubeconform")
+		return 0
+	fi
+	[[ -n "$findings" ]] && FINDINGS+=("[kubeconform] ${findings}")
+	return 0
+}
+
 # ast-grep checks the custom rules in genai/lint/ast-grep for what the other
 # linters miss, or a project's own sgconfig.yml in their place. scan exits
 # non-zero only on error-level findings, so warnings are read from its JSON
@@ -355,6 +393,7 @@ format_file() {
 		;;
 	*.yml | *.yaml)
 		lint_yaml "$file_path" "$dir"
+		lint_k8s "$file_path" "$dir"
 		lint_ast_grep "$file_path" "$dir"
 		;;
 	*.sql)
