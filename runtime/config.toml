@@ -21,6 +21,7 @@ ruby = "3.3.11"
 # Go
 go = "1.26.5"
 golangci-lint = "2.15.0"
+"go:golang.org/x/vuln/cmd/govulncheck" = "1.9.0"
 
 # Rust
 rust = "1.99.1"
