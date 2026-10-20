@@ -392,7 +392,12 @@ format_file() {
 		RUST_LOG=error run_tool taplo "$dir" check "$file_path"
 		;;
 	*.yml | *.yaml)
-		lint_yaml "$file_path" "$dir"
+		# Files under a chart's templates/ are Go templates that render to
+		# YAML, which ryl reports as syntax errors, so only the chart's
+		# Chart.yaml and values.yaml are linted. A subchart's are matched too,
+		# since the shortest suffix leaves charts/<name>.
+		[[ "$file_path" == */templates/* && -f "${file_path%/templates/*}/Chart.yaml" ]] ||
+			lint_yaml "$file_path" "$dir"
 		lint_k8s "$file_path" "$dir"
 		lint_ast_grep "$file_path" "$dir"
 		;;

@@ -14,6 +14,7 @@ paths:
 `--fix` は warning の指摘も直すため、`---` のない文書には先頭に `---` が足される。
 `ryl` は YAML 1.2 として解釈するため、`yes` / `no` / `on` / `off` は真偽値ではなく文字列として扱われる。
 `apm.lock.yaml` や `pnpm-lock.yaml` などの lock ファイルは生成物のため対象外とする。
+Helm チャートの `templates/` 配下（親ディレクトリに `Chart.yaml` があるもの）は Go テンプレートで YAML として解釈できないため、`ryl` の対象外とする。`Chart.yaml` と `values.yaml` は通常どおり検査する。
 `ast-grep` は workflow の `run:` も含め、ホーム配下の絶対パスを検出する。GitHub Actions のランナーの `/home/runner/` は対象外とする。
 `kubeconform` は行頭に `apiVersion:` と `kind:` があり、`{{` を含まないファイルだけを Kubernetes マニフェストとして検査する。Helm テンプレートは kubeconform が解釈できないため対象外とする。
 `-strict` は存在しないフィールドを拒否し、フィールド名の typo を検出する。`-ignore-missing-schemas` により、Kubernetes 本体にも CRDs-catalog にもない kind（`Kustomization` や kind の `Cluster` など）は検査を飛ばす。
