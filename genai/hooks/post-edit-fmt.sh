@@ -173,6 +173,32 @@ lint_yaml() {
 	run_tool ryl "$dir" "${args[@]}" "$file_path"
 }
 
+# ast-grep checks the custom rules in genai/ast-grep for what the other
+# linters miss, or a project's own sgconfig.yml in their place. scan exits
+# non-zero only on error-level findings, so warnings are read from its JSON
+# instead of the exit code, which run_tool relies on.
+AST_GREP_CONFIG="${BASH_SOURCE[0]%/*}/../ast-grep/sgconfig.yml"
+lint_ast_grep() {
+	local file_path=$1 dir=$2
+	local bin config json findings
+	bin=$(resolve_bin ast-grep "$dir")
+	if [[ -z "$bin" ]]; then
+		MISSING+=("ast-grep")
+		return 0
+	fi
+	config=$(find_config "$dir" sgconfig.yml sgconfig.yaml) || config=$AST_GREP_CONFIG
+	json=$("$bin" scan --config "$config" --color never --json=compact "$file_path" 2>/dev/null)
+	if ! findings=$(jq -r --arg t "${file_path##*/}" '
+		.[] | "\($t):\(.range.start.line + 1):\(.range.start.column + 1) \(.severity)[\(.ruleId)] \(.message)"
+			+ (if .note then " " + (.note | gsub("\\s+"; " ") | rtrimstr(" ")) else "" end)
+	' <<<"$json" 2>/dev/null) || [[ -z "$json" ]]; then
+		MISSING+=("ast-grep")
+		return 0
+	fi
+	[[ -n "$findings" ]] && FINDINGS+=("[ast-grep] ${findings}")
+	return 0
+}
+
 # sqruff fix exits non-zero while unfixable findings remain and also lists
 # the ones it fixed, so its result is discarded and lint reports what is left.
 lint_sql() {
@@ -212,6 +238,7 @@ format_file() {
 			--extend-per-file-ignores '**/conftest.py:S101' \
 			"$file_path"
 		run_tool ruff "$dir" format "$file_path"
+		lint_ast_grep "$file_path" "$dir"
 		;;
 	*.ts | *.tsx | *.js | *.jsx | *.json)
 		# Only projects that configure biome are expected to have it.
@@ -258,6 +285,8 @@ format_file() {
 		IFS= read -r shebang <"$file_path"
 		[[ "$shebang" == '#!'*zsh* ]] ||
 			run_tool shellcheck "$dir" "$file_path"
+		# The Bash grammar also reads zsh, so ast-grep checks zsh scripts too.
+		lint_ast_grep "$file_path" "$dir"
 		;;
 	*/.github/workflows/*.yml | */.github/workflows/*.yaml)
 		# Offline keeps zizmor inside the hook timeout; its online audits
@@ -265,11 +294,13 @@ format_file() {
 		lint_yaml "$file_path" "$dir"
 		run_tool actionlint "$dir" "$file_path"
 		run_tool zizmor "$dir" --offline --quiet --no-progress "$file_path"
+		lint_ast_grep "$file_path" "$dir"
 		;;
 	*/action.yml | */action.yaml)
 		lint_yaml "$file_path" "$dir"
 		# actionlint cannot take action metadata as an argument.
 		run_tool zizmor "$dir" --offline --quiet --no-progress "$file_path"
+		lint_ast_grep "$file_path" "$dir"
 		;;
 	*.md)
 		# Without a project config, MD034 rewrites bare URLs; MD013 and MD025
@@ -292,6 +323,7 @@ format_file() {
 		;;
 	*.yml | *.yaml)
 		lint_yaml "$file_path" "$dir"
+		lint_ast_grep "$file_path" "$dir"
 		;;
 	*.sql)
 		lint_sql "$file_path" "$dir"

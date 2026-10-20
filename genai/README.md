@@ -22,6 +22,25 @@ This links:
 - `genai/rules/*` → `~/.claude/rules/*` (language/tooling rules)
 - apm-installed skills are deployed by `apm install -g` into `~/.claude/skills/` (per `targets:` pinned in `apm/apm.yml`)
 
+## ast-grep rules
+
+`genai/ast-grep/` holds custom [ast-grep](https://ast-grep.github.io/) rules for what ruff, shellcheck and the other linters do not check:
+
+| Rule | Language | Severity | Detects |
+|---|---|---|---|
+| `sh-no-recursive-rm` | Bash | error | `rm -r` / `rm -rf`, to be replaced with `trash` |
+| `sh-no-destructive-git` | Bash | error | `git checkout` / `restore` / `clean` / `reset --hard` / `branch -D` / `push --force` |
+| `sh-no-hardcoded-home-path` | Bash | warning | Paths under `/Users/<name>/` or `/home/<name>/` |
+| `py-no-hardcoded-home-path` | Python | warning | The same paths outside tests |
+| `yaml-no-hardcoded-home-path` | YAML | warning | The same paths, including workflow `run:` blocks |
+
+The hooks pass `genai/ast-grep/sgconfig.yml` with `--config`, so nothing is linked into the agent's config directory, and a project's own `sgconfig.yml` takes its place.
+The post-edit hook reports every finding to the agent, and the pre-commit hook blocks the commit only on error-level findings.
+
+```bash
+ast-grep test -c genai/ast-grep/sgconfig.yml --skip-snapshot-tests
+```
+
 ## Setup Codex CLI
 
 1. Execute genai setup script with the agent option set to codex.

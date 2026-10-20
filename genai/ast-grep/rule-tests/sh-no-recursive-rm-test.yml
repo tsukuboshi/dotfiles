@@ -1,0 +1,16 @@
+---
+id: sh-no-recursive-rm
+valid:
+  - rm -f "$tmp"
+  - rm "$file"
+  - trash "$dir"
+  - sudo ls -r /var
+  - grep -r rm .
+invalid:
+  - rm -rf "$dir"
+  - rm -r "$dir"
+  - rm -fr "$dir"
+  - rm -Rf "$dir"
+  - rm --recursive "$dir"
+  - sudo rm -rf /opt/app
+  - find . -name '*.tmp' | xargs rm -rf

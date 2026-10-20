@@ -1,0 +1,17 @@
+---
+id: sh-no-hardcoded-home-path
+language: Bash
+severity: warning
+message: Build this path from the HOME variable or read it from an environment variable.
+note: >-
+  A path under one user's home directory breaks on every other machine and
+  leaks the user name when the script is published (rules/common.md).
+  Use `$HOME/...` or `~/...`, or a variable set in a gitignored .env file.
+rule:
+  any:
+    - kind: word
+    - kind: string_content
+    - kind: raw_string
+  regex: /(Users|home)/[^/\s"'{}$]+/
+  not:
+    regex: /home/runner/

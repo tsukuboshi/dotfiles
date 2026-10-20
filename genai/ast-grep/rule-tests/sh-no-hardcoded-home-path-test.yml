@@ -1,0 +1,12 @@
+---
+id: sh-no-hardcoded-home-path
+valid:
+  - cd "$HOME/project/app"
+  - cd ~/dotfiles
+  - ls "/Users/$USER/project"
+  - ls /home/runner/work
+  - echo /usr/local/bin
+invalid:
+  - ls /Users/alice/project
+  - OUT="/Users/alice/project/out"
+  - OUT='/home/alice/out'

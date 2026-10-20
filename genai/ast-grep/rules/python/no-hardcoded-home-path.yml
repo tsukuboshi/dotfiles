@@ -1,0 +1,20 @@
+---
+id: py-no-hardcoded-home-path
+language: Python
+severity: warning
+message: Build this path from Path.home() or read it from an environment variable.
+note: >-
+  A path under one user's home directory breaks on every other machine and
+  leaks the user name when the code is published (rules/common.md).
+  Use `Path.home() / ...`, or `os.environ[...]` set in a gitignored .env file.
+# Tests build fake home directories on purpose.
+ignores:
+  - "**/test_*.py"
+  - "**/*_test.py"
+  - "**/conftest.py"
+  - "**/tests/**"
+rule:
+  kind: string
+  regex: /(Users|home)/[^/\s"'{}$]+/
+  not:
+    regex: /home/runner/

@@ -1,0 +1,30 @@
+---
+id: sh-no-recursive-rm
+language: Bash
+severity: error
+message: Move the path to the Trash with `trash <path>` instead of a recursive rm.
+note: >-
+  A recursive rm cannot be undone, so rules/common.md replaces it with trash.
+  A plain `rm -f <file>` that cleans up a temporary file is left alone.
+rule:
+  kind: command
+  any:
+    # rm -rf <path>
+    - all:
+        - has:
+            field: name
+            regex: ^rm$
+        - has:
+            kind: word
+            regex: ^(-[a-zA-Z]*[rR][a-zA-Z]*|--recursive)$
+    # sudo rm -rf <path>, xargs rm -rf
+    - all:
+        - has:
+            field: name
+            regex: ^(sudo|xargs|command|env)$
+        - has:
+            kind: word
+            regex: ^rm$
+        - has:
+            kind: word
+            regex: ^(-[a-zA-Z]*[rR][a-zA-Z]*|--recursive)$

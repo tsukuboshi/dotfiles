@@ -1,0 +1,10 @@
+---
+id: py-no-hardcoded-home-path
+valid:
+  - OUT = Path.home() / "project"
+  - OUT = f"/Users/{user}/project"
+  - OUT = "/home/runner/work"
+  - OUT = "/usr/local/bin"
+invalid:
+  - OUT = "/Users/alice/project"
+  - OUT = Path("/home/alice/out")
