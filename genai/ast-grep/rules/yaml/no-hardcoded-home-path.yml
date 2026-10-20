@@ -1,0 +1,21 @@
+---
+id: yaml-no-hardcoded-home-path
+language: Yaml
+severity: warning
+message: Build this path from the HOME variable or an environment variable instead.
+note: >-
+  A path under one user's home directory breaks on every other machine and
+  leaks the user name when the file is published (rules/common.md).
+  Use `$HOME/...` or `~/...`, or a variable such as `${{ env.X }}`.
+# The tests of this rule hold such paths on purpose.
+ignores:
+  - rule-tests/**
+rule:
+  any:
+    - kind: string_scalar
+    - kind: double_quote_scalar
+    - kind: single_quote_scalar
+    - kind: block_scalar
+  regex: /(Users|home)/[^/\s"'{}$]+/
+  not:
+    regex: /home/runner/

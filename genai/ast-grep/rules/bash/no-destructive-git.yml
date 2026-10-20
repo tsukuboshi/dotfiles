@@ -1,0 +1,24 @@
+---
+id: sh-no-destructive-git
+language: Bash
+severity: error
+message: Replace this git command with the reversible one from rules/common.md.
+note: >-
+  checkout: `git switch <branch>` or `git stash`.
+  restore / clean: `git stash -u`.
+  reset --hard: `git reset` without --hard, then `git stash`.
+  branch -D: `git branch -d`.
+  push --force: `git push --force-with-lease --force-if-includes`.
+rule:
+  kind: command
+  any:
+    - pattern: git checkout $$$
+    - pattern: git restore $$$
+    - pattern: git clean $$$
+    - pattern: git reset --hard $$$
+    - pattern: git branch -D $$$
+    - all:
+        - pattern: git push $$$
+        - has:
+            kind: word
+            regex: ^(--force|-f)$

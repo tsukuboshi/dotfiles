@@ -20,6 +20,9 @@ if ! grep -qE '^git\s+commit' <<<"$COMMAND"; then
 	exit 0
 fi
 
+# Resolved before the cd below, in case the hook was invoked by a relative path.
+AST_GREP_CONFIG="${BASH_SOURCE[0]%/*}/../ast-grep/sgconfig.yml"
+
 # Staged paths are relative to the repository root, and rumdl looks for its
 # config upward from the cwd, so the formatters run from there.
 REPO_ROOT=$(git rev-parse --show-toplevel)
@@ -92,6 +95,25 @@ fmt_md() { xargs rumdl fmt "${RUMDL_ARGS[@]}" -- <<<"$1" >/dev/null 2>&1; }
 fmt_toml() { xargs taplo fmt <<<"$1" 2>/dev/null; }
 fmt_sql() { xargs sqruff fix -f none <<<"$1" >/dev/null 2>&1; }
 
+# ast-grep checks the custom rules in genai/ast-grep, or the repository's own
+# sgconfig.yml in their place. Only error-level findings such as a recursive
+# rm block the commit; warnings were already reported by the post-edit hook.
+# Findings are read from the JSON, so a config ast-grep cannot load is not
+# mistaken for a violation.
+AST_GREP_FINDINGS=""
+lint_ast_grep() {
+	local files config=() json
+	files=$(grep -E '\.(py|sh|bash|ya?ml)$' <<<"$STAGED_FILES" || true)
+	[[ -z "$files" ]] && return 0
+	command -v ast-grep >/dev/null 2>&1 || return 0
+	has_root_config sgconfig.yml sgconfig.yaml || config=(--config "$AST_GREP_CONFIG")
+	json=$(xargs ast-grep scan "${config[@]}" --color never --min-severity error --json=compact <<<"$files" 2>/dev/null)
+	AST_GREP_FINDINGS=$(jq -r '
+		.[] | "\(.file):\(.range.start.line + 1):\(.range.start.column + 1) [\(.ruleId)] \(.message)"
+			+ (if .note then " " + (.note | gsub("\\s+"; " ") | rtrimstr(" ")) else "" end)
+	' <<<"$json" 2>/dev/null)
+}
+
 process_ext() {
 	local pattern="$1" fmt="$2"
 	local files
@@ -147,12 +169,20 @@ else
 	process_ext '\.md$' fmt_md
 	process_ext '\.toml$' fmt_toml
 	process_ext '\.sql$' fmt_sql
+	lint_ast_grep
 fi
 
 # Block the commit when the staged changes carry a secret.
 if [[ -n "$LEAKS_FILE" ]] && ! wait "$LEAKS_PID"; then
 	printf 'Pre-commit (%s): gitleaks found secrets in the staged changes\n%s\n' \
 		"${CALLER}" "$(<"$LEAKS_FILE")" >&2
+	exit 2
+fi
+
+# Block the commit on error-level ast-grep findings.
+if [[ -n "$AST_GREP_FINDINGS" ]]; then
+	printf 'Pre-commit (%s): ast-grep found rule violations in the staged changes\n%s\n' \
+		"${CALLER}" "${AST_GREP_FINDINGS}" >&2
 	exit 2
 fi
 

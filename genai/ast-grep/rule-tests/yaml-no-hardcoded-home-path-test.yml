@@ -1,0 +1,16 @@
+---
+id: yaml-no-hardcoded-home-path
+valid:
+  - "dir: ~/project"
+  - "dir: ${{ env.HOME }}/project"
+  - "dir: /home/runner/work"
+  - |
+    run: |
+      cd "$HOME/project"
+invalid:
+  - "dir: /Users/alice/project"
+  - "dir: \"/home/alice/out\""
+  - "dir: '/Users/alice/out'"
+  - |
+    run: |
+      cd /Users/alice/project
