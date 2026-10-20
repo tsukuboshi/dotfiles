@@ -42,6 +42,15 @@ if command -v gitleaks >/dev/null 2>&1; then
 	trap 'kill "$LEAKS_PID" 2>/dev/null; rm -f "$LEAKS_FILE"' EXIT
 fi
 
+# Formatting and restaging work on the whole file in the working tree, so a
+# file with unstaged changes beside its staged ones would have them committed
+# too. Such files are left out and reported instead.
+UNSTAGED_FILES=$(git diff --name-only)
+PARTIAL_FILES=$(grep -Fxf <(echo "$UNSTAGED_FILES") <<<"$STAGED_FILES" || true)
+if [[ -n "$PARTIAL_FILES" ]]; then
+	STAGED_FILES=$(grep -vFxf <(echo "$PARTIAL_FILES") <<<"$STAGED_FILES" || true)
+fi
+
 FORMATTED_FILES=()
 
 # True when the repository root holds any of the given config files. An
@@ -118,7 +127,9 @@ run_prek() {
 # Projects that declare their own hooks get those instead of the fixed
 # formatter set below, so the commit is checked the way CI checks it and no
 # formatter the project does not use rewrites its files.
-if command -v prek >/dev/null 2>&1 &&
+if [[ -z "$STAGED_FILES" ]]; then
+	:
+elif command -v prek >/dev/null 2>&1 &&
 	[[ -f "$REPO_ROOT/.pre-commit-config.yaml" ||
 		-f "$REPO_ROOT/.pre-commit-config.yml" ||
 		-f "$REPO_ROOT/prek.toml" ]]; then
@@ -149,11 +160,13 @@ fi
 if [[ ${#FORMATTED_FILES[@]} -gt 0 ]]; then
 	FILE_LIST=$(printf ', %s' "${FORMATTED_FILES[@]}")
 	FILE_LIST=${FILE_LIST:2}
-	printf '{"systemMessage":"Pre-commit (%s): formatted %d file(s): %s"}\n' \
-		"${CALLER}" "${#FORMATTED_FILES[@]}" "${FILE_LIST}"
+	MESSAGE="formatted ${#FORMATTED_FILES[@]} file(s): ${FILE_LIST}"
 else
-	printf '{"systemMessage":"Pre-commit (%s): no files matched formatting targets"}\n' \
-		"${CALLER}"
+	MESSAGE="no files matched formatting targets"
 fi
+if [[ -n "$PARTIAL_FILES" ]]; then
+	MESSAGE+="; left partially staged file(s) unformatted: ${PARTIAL_FILES//$'\n'/, }"
+fi
+printf '{"systemMessage":"Pre-commit (%s): %s"}\n' "${CALLER}" "${MESSAGE}"
 
 exit 0
