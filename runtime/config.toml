@@ -49,12 +49,15 @@ pinact = "5.0.0"
 # Document / Data
 rumdl = "0.2.78"
 lychee = "0.24.2"
+harper-cli = "2.13.0"
 taplo = "0.9.3"
 "aqua:owenlamont/ryl" = "0.24.0"
 "aqua:quarylabs/sqruff" = "0.41.0"
 
 # Multi-language
 ast-grep = "0.51.0"
+typos = "1.51.1"
+"npm:jscpd" = "5.4.1"
 
 # Dev workflow
 prek = "0.5.5"
