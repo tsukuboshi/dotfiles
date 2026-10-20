@@ -24,7 +24,7 @@ This links:
 
 ## ast-grep rules
 
-`genai/ast-grep/` holds custom [ast-grep](https://ast-grep.github.io/) rules for what ruff, shellcheck and the other linters do not check:
+`genai/lint/ast-grep/` holds custom [ast-grep](https://ast-grep.github.io/) rules for what ruff, shellcheck and the other linters do not check:
 
 | Rule | Language | Severity | Detects |
 |---|---|---|---|
@@ -34,12 +34,18 @@ This links:
 | `py-no-hardcoded-home-path` | Python | warning | The same paths outside tests |
 | `yaml-no-hardcoded-home-path` | YAML | warning | The same paths, including workflow `run:` blocks |
 
-The hooks pass `genai/ast-grep/sgconfig.yml` with `--config`, so nothing is linked into the agent's config directory, and a project's own `sgconfig.yml` takes its place.
+The hooks pass `genai/lint/ast-grep/sgconfig.yml` with `--config`, so nothing is linked into the agent's config directory, and a project's own `sgconfig.yml` takes its place.
 The post-edit hook reports every finding to the agent, and the pre-commit hook blocks the commit only on error-level findings.
 
 ```bash
-ast-grep test -c genai/ast-grep/sgconfig.yml --skip-snapshot-tests
+ast-grep test -c genai/lint/ast-grep/sgconfig.yml --skip-snapshot-tests
 ```
+
+## typos config
+
+The post-edit and pre-commit hooks check every edited or staged file for misspellings with [typos](https://github.com/crate-ci/typos), skipping lock files.
+`genai/lint/typos/_typos.toml` allows the words typos misreads in these dotfiles, such as zsh's `print -Pn`, and the hooks pass it with `--config` only when a project has no typos config of its own, since `--config` takes precedence over the one typos finds.
+The post-edit hook reports findings to the agent, and the pre-commit hook blocks the commit on them; neither applies typos' suggested fixes, which can rename identifiers.
 
 ## Setup Codex CLI
 

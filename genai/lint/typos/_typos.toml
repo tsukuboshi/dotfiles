@@ -1,0 +1,7 @@
+# Words typos flags in code these hooks see often. The post-edit and
+# pre-commit hooks pass this file with --config to projects without their own
+# typos config, since --config takes precedence over the one typos finds.
+
+[default.extend-words]
+# zsh's print -P (prompt expansion) with -n
+Pn = "Pn"

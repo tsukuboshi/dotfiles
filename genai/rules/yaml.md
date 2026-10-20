@@ -6,7 +6,7 @@ paths:
 # YAML
 
 - リンタ: `ryl check --fix -d '{extends: default, rules: {line-length: {level: warning}}}'`
-- 構文ルール: `ast-grep scan --config ~/dotfiles/genai/ast-grep/sgconfig.yml <file>`
+- 構文ルール: `ast-grep scan --config ~/dotfiles/genai/lint/ast-grep/sgconfig.yml <file>`
 
 `ryl` は設定がないとルールを 1 つも有効にしないため、`-d` で yamllint の `default` プリセットを渡し、80 字の行長制限を warning に下げる。
 プロジェクトに `.ryl.toml` / `ryl.toml` / `.config/.ryl.toml` / `.config/ryl.toml` / `.yamllint` / `.yamllint.yaml` / `.yamllint.yml` があれば、`-d` を付けずにその設定を使う。
