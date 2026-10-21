@@ -36,7 +36,7 @@ git remote get-url origin
 Claude in ChromeのMCPツールが未ロードの場合、**1回のToolSearch呼び出しでまとめてロード**してください。ツールごとに個別のToolSearchを呼ぶとラウンドトリップを無駄にします。
 
 ```text
-ToolSearch query: "select:mcp__claude-in-chrome__tabs_context_mcp,mcp__claude-in-chrome__navigate,mcp__claude-in-chrome__get_page_text,mcp__claude-in-chrome__find,mcp__claude-in-chrome__tabs_close_mcp"
+ToolSearch query: "select:mcp__claude-in-chrome__tabs_context_mcp,mcp__claude-in-chrome__navigate,mcp__claude-in-chrome__get_page_text,mcp__claude-in-chrome__find,mcp__claude-in-chrome__computer,mcp__claude-in-chrome__tabs_close_mcp"
 ```
 
 次に`tabs_context_mcp`を`createIfEmpty: true`で呼び、使用するタブのIDを取得してください。他のブラウザツールを使う前に最低1回はこの呼び出しが必要です。
@@ -47,9 +47,21 @@ ToolSearch query: "select:mcp__claude-in-chrome__tabs_context_mcp,mcp__claude-in
 2. ChromeでClaude Codeと同じアカウントでclaude.aiにログインしているか確認する
 3. 準備ができたら再度スキルを起動してもらう
 
+## 使える操作
+
+`computer`はPreToolUseフック（`~/dotfiles/genai/hooks/chrome-tool-guard.sh`）で絞ってあり、ページを変えない操作（`scroll`・`scroll_to`・`screenshot`・`zoom`・`hover`・`wait`）だけが通ります。これらは必要に応じて自由に使ってください。クリック・キー入力はフックで拒否されるので、展開やボタン押下が必要な場面ではユーザーに手動操作を依頼してください。
+
+## ページを開いて読む
+
+`navigate`の直後に`get_page_text`を呼ぶと、読み込み前のエラーになるか、**遷移前のページの本文**が返ることがあります。前のページの本文は一見正常に見えるため、空振りより気付きにくい失敗です。ページを開くたびに次の順で読んでください。
+
+1. `navigate`でURLを開く
+2. `navigate`の結果が返ってから、`computer`の`wait`で2〜3秒待つ。`navigate`と同じバッチで並列に呼ぶと、遷移前に実行されて失敗する
+3. `get_page_text`を呼び、結果の`URL:`と`Title:`が開いたページのものか確かめる。違っていたり本文が空だったりしたら、もう一度`wait`してから読み直す
+
 ## リンクを辿る手段
 
-このスキルはクリック操作を行わないため、ページ内リンクは`navigate`でURLを直接開いて辿ります。目的のリンクのURLが分からない場合は、`find`に自然言語でリンクを説明すると`href`付きで返ってくるので、それを`navigate`に渡してください。
+ページ内リンクはクリックせず、`navigate`でURLを直接開いて辿ります。目的のリンクのURLが分からない場合は、`find`に自然言語でリンクを説明すると`href`付きで返ってくるので、それを`navigate`に渡してください。
 
 ```text
 find query: "◯◯へのリンク"
@@ -60,9 +72,11 @@ URLを推測して404を踏むより確実です。
 
 # Conversationタブの読み取り
 
-`navigate`で`TARGET_URL`を開き、`get_page_text`でページ本文を取得してください。このページからPR本文・通常コメント・レビューの要約・CIチェックの状態が読み取れます。
+「ページを開いて読む」の手順で`TARGET_URL`を読んでください。このページからPR本文・通常コメント・レビューの要約とインラインコメント・CIチェックの状態が読み取れます。
 
-GitHubのページは本文が遅延レンダリングされるため、`get_page_text`が1回目でナビゲーションやフィルタ部分だけを返し、肝心の中身が空で返ることがあります。期待した内容が無い場合は、まず`get_page_text`をもう一度呼んでください。2回試しても取れない場合のみ、ページが重い旨をユーザーに伝えて判断を仰いでください。
+GitHubのページは本文が遅延レンダリングされるため、`get_page_text`がナビゲーションやフィルタ部分だけを返し、肝心の中身が空で返ることがあります。期待した内容が無い場合は、`wait`を挟んで読み直してください。2回試しても取れない場合のみ、ページが重い旨をユーザーに伝えて判断を仰いでください。
+
+PR本文やコメントに画像（UI変更のBefore / After、エラー画面など）があれば中身を見てください。`get_page_text`は画像をaltテキストでしか返しません。`find`で画像のrefを得て`computer`の`scroll_to`で画面内へ移し、`screenshot`で見ます。細かい文字は`zoom`で拡大すると読めます。画像から読み取った内容は、報告で「画像より」と出どころを添えてください。
 
 ページが見つからない（404）場合、以下のいずれかが原因です。ユーザーに状況を伝えて中断してください。
 
@@ -70,7 +84,7 @@ GitHubのページは本文が遅延レンダリングされるため、`get_pag
 - そのGitHubアカウントにリポジトリの参照権限がない
 - ブラウザで別アカウントにログインしている
 
-コメント数が多いPRでは、GitHubが中間のコメントを折りたたんで「Load more」「N remaining items」のように表示します。折りたたまれたコメントはDOMに存在しない（クリック時にGraphQLで取得される）ため、このスキルの読み取り専用ツールでは取得できません。前後のコメントのパーマリンクを付けて開き直しても展開されないことは検証済みなので、試さないでください。
+コメント数が多いPRでは、GitHubが中間のコメントを折りたたんで「Load more」「N remaining items」「N hidden conversations」のように表示します。折りたたまれたコメントはDOMに存在しない（クリック時にGraphQLで取得される）ため、クリックできないこのスキルでは取得できません。前後のコメントのパーマリンクを付けて開き直しても、「Load more」まで`scroll`しても展開されないことは検証済みなので、ユーザーへの依頼に進んでください。
 
 省略が検出された場合は、読めた範囲を報告した上で、何件がどの期間で省略されているかを明示してください。`find`で「Load more」ボタンを探すと前後のコメントの投稿日時が得られるので、欠落区間を特定できます。内容が必要な場合は、ブラウザで展開して貼ってもらうようユーザーに案内してください。
 
@@ -78,7 +92,7 @@ GitHubのページは本文が遅延レンダリングされるため、`get_pag
 
 差分は`REPO_URL/pull/番号.diff`を`navigate`で開き、`get_page_text`で取得してください。プレーンテキストのunified diffがそのまま返ります。
 
-Files changedタブ（`/pull/番号/files`）は使わないでください。仮想スクロールでレンダリングされるため、`get_page_text`ではファイルツリーしか取れず、差分本体がDOMに存在しません。大きな差分の「Load diff」も、このスキルはクリックできないため展開できません。`.diff`はこれらの制約をまとめて回避できます（プライベートリポジトリでもブラウザのログインセッションで読めます）。
+差分は`.diff`で読み、Files changedタブ（`/pull/番号/files`、現在は`/pull/番号/changes`へリダイレクト）は差分の取得には使いません。表示中のファイルしか描画されないため`scroll`を繰り返さないと全体が取れず、大きなファイルの「Load Diff」はクリックが要ります。インラインコメントも件数のマーカーしか出ず、本文は読めません。`.diff`はこれらの制約をまとめて回避できます（プライベートリポジトリでもブラウザのログインセッションで読めます）。
 
 差分が非常に大きく`.diff`の取得自体が重い場合は、ローカルにブランチがあれば`git fetch origin PRのブランチ名`した上で`git diff BASE...HEAD`で読む方が速いです。PRページから読み取ったブランチ名を使ってください。
 
@@ -86,7 +100,14 @@ Files changedタブ（`/pull/番号/files`）は使わないでください。�
 
 # レビューコメントの扱い
 
-Conversationタブにはレビューの要約（Approved / Changes requested とその本文）が出ますが、コード行に紐づくインラインコメントは差分ページ側に表示されます。レビュー指摘が議論の中心になっている場合は、差分ページの読み取り結果からインラインコメントを拾い、どのファイルのどの箇所への指摘かを対応付けて報告してください。
+インラインコメントはConversationタブで拾ってください。`.diff`はプレーンなunified diffなのでコメントを含みません。Conversationタブの`get_page_text`には、レビューの要約（Approved / Changes requested とその本文）に続けて、各スレッドがファイルパス・`Comment on lines +174 to +180`のような行範囲・該当コード・コメント本文・Suggested changeの形で出ます。これを使って、どのファイルのどの箇所への指摘かを対応付けて報告してください。
+
+ただし次のスレッドは本文が取れません。読めた範囲を報告した上で、取れなかった件数を明示してください。
+
+- **resolved のスレッド**: ファイルパスと「Show resolved」だけが出て、本文は折りたたまれている。解決済みなので、未解決の指摘を知る目的なら多くの場合は読まなくて構わない
+- **「N hidden conversations」に畳まれたスレッド**: 「Load more」のクリックが要る。中身が必要ならユーザーにブラウザで展開してもらう
+
+`REPO_URL/pull/番号/changes`のファイルツリーにはファイルごとのコメント件数が数字で出ますが、outdated のスレッドを数えないことがあり、Conversationタブのスレッド数と一致しません。どのファイルに指摘が多いかの目安に留め、hidden の件数の内訳としては使わないでください。
 
 # 一覧からの選択（引数未指定時）
 
