@@ -1,7 +1,7 @@
 ## Required
 
 - [Visual Studio Code](https://code.visualstudio.com/)
-- [Cursor]([Cursor](https://www.cursor.com/))
+- [Cursor](https://www.cursor.com/)
 
 ## Setup Visual Studio Code
 
