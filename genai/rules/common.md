@@ -11,7 +11,6 @@
 | `git restore` | `git stash` | 変更を保全した上で復元する |
 | `git clean` | `git stash -u` | 未追跡ファイルも含めて退避する |
 | `git reset --hard` | `git reset`（`--hard` なし）+ `git stash` | `--hard` なしならワーキングツリーを破壊しない |
-| `git branch -D` | `git branch -d` | 上流ブランチか HEAD にマージ済みでないと削除を拒否し、どこからも参照されないコミットを生まない |
 
 スクリプトに書いたこれらのコマンドも、編集時とコミット前の hook が ast-grep で検出する。
 

@@ -5,6 +5,7 @@ valid:
   - git stash -u
   - git reset HEAD~1
   - git branch -d feature
+  - git branch -D feature
   - git push --force-with-lease --force-if-includes
   - git push origin main
 invalid:
@@ -13,6 +14,5 @@ invalid:
   - git restore file.txt
   - git clean -fd
   - git reset --hard HEAD
-  - git branch -D feature
   - git push --force origin main
   - git push -f

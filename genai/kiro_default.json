@@ -58,6 +58,7 @@
         "git checkout.*",
         "git restore.*",
         "git reset --hard.*",
+        "git branch -D.*",
         "docker push.*",
         "git push.*",
         "cdk deploy.*",
