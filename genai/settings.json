@@ -179,6 +179,9 @@
 			"mcp__context7__resolve-library-id",
 			"mcp__ide__getDiagnostics"
 		],
+		"ask": [
+			"Bash(git branch -D:*)"
+		],
 		"deny": [
 			"Bash(rm:*)",
 			"Bash(git clean:*)",

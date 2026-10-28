@@ -7,7 +7,6 @@ note: >-
   checkout: `git switch <branch>` or `git stash`.
   restore / clean: `git stash -u`.
   reset --hard: `git reset` without --hard, then `git stash`.
-  branch -D: `git branch -d`.
   push --force: `git push --force-with-lease --force-if-includes`.
 rule:
   kind: command
@@ -16,7 +15,6 @@ rule:
     - pattern: git restore $$$
     - pattern: git clean $$$
     - pattern: git reset --hard $$$
-    - pattern: git branch -D $$$
     - all:
         - pattern: git push $$$
         - has:
