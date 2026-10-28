@@ -22,7 +22,6 @@ fi
 
 # Resolved before the cd below, in case the hook was invoked by a relative path.
 AST_GREP_CONFIG="${BASH_SOURCE[0]%/*}/../lint/ast-grep/sgconfig.yml"
-TYPOS_CONFIG="${BASH_SOURCE[0]%/*}/../lint/typos/_typos.toml"
 
 # Staged paths are relative to the repository root, and rumdl looks for its
 # config upward from the cwd, so the formatters run from there.
@@ -115,22 +114,19 @@ lint_ast_grep() {
 	' <<<"$json" 2>/dev/null)
 }
 
-# typos checks the staged files of every type, with the words in genai/lint/typos
-# allowed, or the repository's own config in their place. It exits 2 on
+# typos checks the staged files of every type with its own defaults or the
+# repository's config, which it finds by itself. It exits 2 on
 # findings only, so a config it cannot load does not block the commit.
 # Lock files are generated, as in the post-edit hook.
 TYPOS_FINDINGS=""
 lint_typos() {
-	local files=() config=() output
+	local files=() output
 	command -v typos >/dev/null 2>&1 || return 0
 	while IFS= read -r f; do
 		[[ -n "$f" ]] && files+=("$f")
 	done < <(grep -vE '(\.lock|[.-]lock\.ya?ml)$' <<<"$STAGED_FILES")
 	((${#files[@]} == 0)) && return 0
-	has_root_config typos.toml _typos.toml .typos.toml \
-		Cargo.toml:package.metadata.typos Cargo.toml:workspace.metadata.typos \
-		pyproject.toml:tool.typos || config=(--config "$TYPOS_CONFIG")
-	output=$(typos "${config[@]}" --force-exclude --format brief --color never -- "${files[@]}" 2>&1)
+	output=$(typos --force-exclude --format brief --color never -- "${files[@]}" 2>&1)
 	(($? == 2)) && TYPOS_FINDINGS=$output
 }
 

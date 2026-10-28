@@ -24,7 +24,8 @@ _build_statusline_prompt() {
 		local output=$($func)
 		[ -n "$output" ] && result+="${result:+ }${output}"
 	done
-	print -Pn "$result"
+	# Keep -P and -n as separate flags: typos reads them bundled as a misspelling.
+	print -P -n "$result"
 }
 
 IFS= read -r -d '' input
