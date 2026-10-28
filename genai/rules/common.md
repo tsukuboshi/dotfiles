@@ -97,6 +97,7 @@ GitHub の Issue・PR・Actions を扱うときは、`gh` コマンドの代わ�
 | `research` | 一次資料に当たる調査をバックグラウンドエージェントに任せ、出典付き Markdown に残す |
 | `resolving-merge-conflicts` | 進行中の merge / rebase コンフリクトの解決 |
 | `wizard` | 人間にしかできない手順を対話式 bash ウィザードにする |
+| `sync-docs` | commit や PR の前に、変更で古くなったドキュメントを探して更新する |
 
 ## OSS として公開するもの
 
