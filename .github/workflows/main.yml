@@ -1,22 +1,87 @@
 ---
-name: Setup Dotfiles
+name: CI
 
+# Pull requests are checked before they merge, and main is checked again
+# after the merge.
 on:
   push:
     branches:
       - main
+  pull_request:
 
 permissions:
   contents: read
 
+# A new push to a pull request cancels the run still going. Each push to main
+# gets a group of its own, because a group keeps only one pending run and a
+# newer merge would otherwise replace a queued one, so every merge is checked.
 concurrency:
-  group: ${{ github.workflow }}-${{ github.ref }}
-  cancel-in-progress: true
+  group: ${{ github.workflow }}-${{ github.event_name == 'pull_request' && github.ref || github.sha }}
+  cancel-in-progress: ${{ github.event_name == 'pull_request' }}
 
 jobs:
+  lint:
+    name: Lint
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    env:
+      # runtime/config.toml is linked to ~/.config/mise/config.toml on a
+      # machine, so it is read here as the global config too.
+      MISE_GLOBAL_CONFIG_FILE: ${{ github.workspace }}/runtime/config.toml
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1  # v7.0.1
+        with:
+          persist-credentials: false
+
+      # Only the tools the post-edit hook calls on the files in this
+      # repository, at the versions pinned in runtime/config.toml. The cache
+      # key also hashes that file, which mise-action does not watch.
+      - name: Install linters
+        uses: jdx/mise-action@6be3c7ed4c21d4f76b208d351d95aac273ebb76d  # v5.2.4
+        with:
+          install_args: >-
+            actionlint aqua:owenlamont/ryl ast-grep hadolint rumdl ruff
+            shellcheck shfmt taplo trivy typos zizmor
+          cache_key: "{{default}}-${{ hashFiles('runtime/config.toml') }}"
+
+      # The hooks check only the files an agent edits, so this catches
+      # files edited by hand with the same formatters and linters.
+      - name: Lint every tracked file
+        run: bash .github/scripts/lint-tracked-files.sh
+
+  test:
+    name: Tests
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    env:
+      MISE_GLOBAL_CONFIG_FILE: ${{ github.workspace }}/runtime/config.toml
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1  # v7.0.1
+        with:
+          persist-credentials: false
+
+      - name: Install ast-grep
+        uses: jdx/mise-action@6be3c7ed4c21d4f76b208d351d95aac273ebb76d  # v5.2.4
+        with:
+          install_args: ast-grep
+          cache_key: "{{default}}-${{ hashFiles('runtime/config.toml') }}"
+
+      - name: Test ast-grep rules
+        run: ast-grep test -c genai/lint/ast-grep/sgconfig.yml --skip-snapshot-tests
+
+      # Independent of the step above, so it still runs when that one fails.
+      - name: Test guard hooks
+        if: ${{ !cancelled() }}
+        run: bash .github/scripts/test-guard-hooks.sh
+
   make:
     name: Make
     runs-on: macos-latest
+    timeout-minutes: 30
 
     defaults:
       run:
@@ -28,22 +93,5 @@ jobs:
         with:
           persist-credentials: false
 
-      - name: Setup Dotfiles
+      - name: Initialize macOS (xcode, link, defaults, brew)
         run: make
-
-  ast-grep:
-    name: ast-grep rule tests
-    runs-on: ubuntu-latest
-
-    steps:
-      - name: Checkout
-        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1  # v7.0.1
-        with:
-          persist-credentials: false
-
-      # make does not install the mise tools, so the CLI comes from npm at
-      # the version pinned in runtime/config.toml.
-      - name: Test ast-grep rules
-        run: >-
-          npx --yes --package @ast-grep/cli@0.51.0 --
-          ast-grep test -c genai/lint/ast-grep/sgconfig.yml --skip-snapshot-tests
