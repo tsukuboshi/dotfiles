@@ -62,6 +62,10 @@ show_agent_usage() {
 	echo "  $0 -a kiro -i              # Install apm-managed skills only"
 }
 
+# Copy rather than link ~/.codex/config.toml: Codex writes per-project trust
+# entries ([projects.*]) and NUX tooltip counters back to it at runtime, which
+# would land in the dotfiles source tree through a symlink. Only the part above
+# the marker is managed here; everything below it stays machine-local.
 sync_codex_config() {
 	local source_file=$1
 	local target_file=$2
