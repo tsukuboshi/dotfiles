@@ -11,6 +11,7 @@
 | `git restore` | `git stash` | 変更を保全した上で復元する |
 | `git clean` | `git stash -u` | 未追跡ファイルも含めて退避する |
 | `git reset --hard` | `git reset`（`--hard` なし）+ `git stash` | `--hard` なしならワーキングツリーを破壊しない |
+| `git push --force` / `-f` | `git push --force-with-lease --force-if-includes` | 他者が先に push したコミットや、手元に取り込んでいないリモートの更新を消さない（詳細は「Git の運用」） |
 
 スクリプトに書いたこれらのコマンドも、編集時とコミット前の hook が ast-grep で検出する。
 
