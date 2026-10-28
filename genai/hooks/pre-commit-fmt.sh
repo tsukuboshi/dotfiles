@@ -80,7 +80,7 @@ RUMDL_ARGS=()
 has_root_config .rumdl.toml rumdl.toml .config/rumdl.toml pyproject.toml:tool.rumdl \
 	.markdownlint-cli2.jsonc .markdownlint-cli2.yaml .markdownlint-cli2.yml \
 	.markdownlint.json .markdownlint.yaml markdownlint.json ||
-	RUMDL_ARGS=(--disable "MD034,MD013,MD025")
+	RUMDL_ARGS=(--disable "MD034,MD013,MD025,MD041")
 
 fmt_py() {
 	xargs ruff check --fix <<<"$1" 2>/dev/null
