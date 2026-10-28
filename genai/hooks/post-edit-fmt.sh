@@ -375,12 +375,14 @@ format_file() {
 	*.md)
 		# Without a project config, MD034 rewrites bare URLs; MD013 and MD025
 		# fight the Japanese prose and the per-step h1 structure these
-		# documents are written in. rumdl searches for its config upward from
+		# documents are written in. MD041 rejects SKILL.md files, which open
+		# with frontmatter and an instruction, and templates and READMEs
+		# that open with an h2. rumdl searches for its config upward from
 		# the cwd, so it runs from the file's directory.
 		# fmt always exits 0, so only what check still finds is reported.
 		local rumdl_args=()
 		has_project_file "$dir" "${RUMDL_CONFIGS[@]}" ||
-			rumdl_args+=(--disable "MD034,MD013,MD025")
+			rumdl_args+=(--disable "MD034,MD013,MD025,MD041")
 		pushd "$dir" >/dev/null || return 0
 		run_tool rumdl "$dir" fmt "${rumdl_args[@]}" -- "$file_path"
 		run_tool rumdl "$dir" check "${rumdl_args[@]}" -- "$file_path"
