@@ -66,7 +66,7 @@ git branch --show-current
 
 ## フォーマット
 
-```
+```text
 <type>[optional scope]: <description>
 
 [optional body]
