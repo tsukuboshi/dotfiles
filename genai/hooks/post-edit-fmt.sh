@@ -237,24 +237,19 @@ lint_ast_grep() {
 	return 0
 }
 
-# typos checks every file type for misspellings, with the words in
-# genai/lint/typos allowed, or a project's own config in their place: --config
-# would take precedence over it. Fixes are left to the agent, since a
+# typos checks every file type for misspellings with its own defaults or the
+# project's config, which it finds by itself. Fixes are left to the agent, since a
 # suggested spelling can rename an identifier the code depends on. typos
 # exits 2 on findings only, so any other failure means it could not run.
-TYPOS_CONFIG="${BASH_SOURCE[0]%/*}/../lint/typos/_typos.toml"
 lint_typos() {
 	local file_path=$1 dir=$2
-	local bin config=() output status
+	local bin output status
 	bin=$(resolve_bin typos "$dir")
 	if [[ -z "$bin" ]]; then
 		MISSING+=("typos")
 		return 0
 	fi
-	has_project_file "$dir" typos.toml _typos.toml .typos.toml \
-		Cargo.toml:package.metadata.typos Cargo.toml:workspace.metadata.typos \
-		pyproject.toml:tool.typos || config=(--config "$TYPOS_CONFIG")
-	output=$("$bin" "${config[@]}" --force-exclude --format brief --color never -- "$file_path" 2>&1)
+	output=$("$bin" --force-exclude --format brief --color never -- "$file_path" 2>&1)
 	status=$?
 	case $status in
 	0) ;;
