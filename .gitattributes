@@ -1,0 +1,2 @@
+# Normalize line endings to LF for every file Git treats as text.
+* text=auto eol=lf
