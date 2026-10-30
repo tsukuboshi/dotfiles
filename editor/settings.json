@@ -52,8 +52,7 @@
 	"files.insertFinalNewline": true,
 	"files.trimFinalNewlines": true,
 	"files.trimTrailingWhitespace": true,
-	"files.autoSave": "afterDelay",
-	"files.autoSaveDelay": 10000,
+	"files.autoSave": "onFocusChange",
 	"files.exclude": {
 		"**/.git": true,
 		"**/.svn": true,
