@@ -68,6 +68,7 @@
 		"markdown": true,
 		"scminput": false
 	},
+	"git.autofetch": false,
 	"github.copilot.nextEditSuggestions.enabled": true,
 	"javascript.updateImportsOnFileMove.enabled": "never",
 	"json.schemas": [],
