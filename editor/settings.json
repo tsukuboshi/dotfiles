@@ -103,6 +103,7 @@
 	},
 	"vsintellicode.modify.editor.suggestSelection": "automaticallyOverrodeDefaultValue",
 	"telemetry.telemetryLevel": "off",
+	"typescript.updateImportsOnFileMove.enabled": "never",
 	"window.title": "${dirty}${activeEditorMedium}${separator}${rootName}",
 	"window.zoomLevel": 0,
 	"workbench.iconTheme": "material-icon-theme",
