@@ -151,10 +151,14 @@
 		"editor.defaultFormatter": "redhat.vscode-yaml"
 	},
 	"[javascript]": {
-		"editor.defaultFormatter": "esbenp.prettier-vscode",
+		"editor.defaultFormatter": "biomejs.biome",
 		"editor.tabSize": 2
 	},
 	"[json]": {
+		"editor.defaultFormatter": "biomejs.biome",
+		"editor.tabSize": 4
+	},
+	"[jsonc]": {
 		"editor.defaultFormatter": "biomejs.biome",
 		"editor.tabSize": 4
 	},
