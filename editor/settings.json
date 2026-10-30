@@ -80,7 +80,6 @@
 			"filename": "${tag}${difficulty}${id}${PascalCaseName}.${ext}"
 		}
 	},
-	"leetcode.workspaceFolder": "/Users/tsukuboshi/work/leetcode",
 	"markdown-pdf.executablePath": "/Applications/Google Chrome.app/Contents/MacOS/Google Chrome",
 	"python.defaultInterpreterPath": "/usr/bin/python3",
 	"python.languageServer": "Default",
