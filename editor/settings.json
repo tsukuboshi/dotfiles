@@ -71,7 +71,6 @@
 	"git.autofetch": false,
 	"github.copilot.nextEditSuggestions.enabled": true,
 	"javascript.updateImportsOnFileMove.enabled": "never",
-	"json.schemas": [],
 	"liveServer.settings.donotShowInfoMsg": true,
 	"leetcode.defaultLanguage": "typescript",
 	"leetcode.filePath": {
@@ -101,7 +100,6 @@
 		"**/.bash_profile": true,
 		"**/.bashrc": true
 	},
-	"vsintellicode.modify.editor.suggestSelection": "automaticallyOverrodeDefaultValue",
 	"telemetry.telemetryLevel": "off",
 	"typescript.updateImportsOnFileMove.enabled": "never",
 	"window.title": "${dirty}${activeEditorMedium}${separator}${rootName}",
