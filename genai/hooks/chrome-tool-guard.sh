@@ -1,28 +1,78 @@
 #!/bin/bash
-# PreToolUse hook: narrow Claude in Chrome tools to the operations listed below
-#   computer:        actions that do not change the page only: scroll, scroll_to, screenshot,
-#                    zoom, hover and wait (clicks, typing, key presses and drags stay blocked)
+# Claude in Chrome guard. Registered for two events:
+#
+# PreToolUse: narrow Claude in Chrome tools to the operations listed below
+#   computer:        actions that do not change the page: scroll, scroll_to, screenshot,
+#                    zoom, hover and wait. Clicks, typing, key presses and drags are allowed
+#                    only on a tab whose last recorded URL is on a loopback host
+#                    (127.0.0.1, localhost, *.localhost, [::1]), for testing local apps.
 #   javascript_tool: a single page zoom assignment only, e.g. document.body.style.zoom = '80%'
 #                    (25-100% or 0.25-1). Any other string in tool_input, besides lowercase
 #                    identifiers such as the action name, is denied.
 # Fails closed: any other tool name, action or script, and unreadable input, is denied.
+#
+# PostToolUse: record each tab's current URL. Every Claude in Chrome result
+# carries a tab context listing `tabId <id>: "<title>" ("<url>")`; the last URL
+# seen for a tab is the one PreToolUse checks. A click that leaves the loopback
+# host is recorded by its own result, so the next action on that tab is denied.
 
 INPUT=$(cat)
+EVENT=$(jq -r '.hook_event_name // empty' <<<"$INPUT" 2>/dev/null)
 TOOL_NAME=$(jq -r '.tool_name // empty' <<<"$INPUT" 2>/dev/null)
+SESSION_ID=$(jq -r '.session_id // empty' <<<"$INPUT" 2>/dev/null | tr -cd 'A-Za-z0-9-')
+
+STATE_DIR="${XDG_STATE_HOME:-$HOME/.local/state}/claude-chrome-guard"
+TAB_FILE="$STATE_DIR/tabs-${SESSION_ID:-unknown}.tsv"
+
+LOOPBACK_URL_RE='^https?://(127\.0\.0\.1|localhost|[a-z0-9-]+\.localhost|\[::1\])(:[0-9]+)?(/|$)'
+TAB_LINE_RE='tabId ([0-9]+): .*\("([^"]*)"\)[[:space:]]*$'
+
+record_tab_urls() {
+	local text line
+	text=$(jq -r '.tool_response | [.. | strings] | .[]' <<<"$INPUT" 2>/dev/null) || return 0
+	mkdir -p "$STATE_DIR" && chmod 700 "$STATE_DIR" || return 0
+	while IFS= read -r line; do
+		if [[ "$line" =~ $TAB_LINE_RE ]]; then
+			printf '%s\t%s\n' "${BASH_REMATCH[1]}" "${BASH_REMATCH[2]}" >>"$TAB_FILE"
+		fi
+	done <<<"$text"
+}
+
+# Prints the last URL recorded for a tab, or nothing.
+last_url_of_tab() {
+	local tab_id=$1
+	[[ -f "$TAB_FILE" ]] || return 0
+	awk -F'\t' -v id="$tab_id" '$1 == id { url = $2 } END { if (url != "") print url }' "$TAB_FILE"
+}
+
+if [[ "$EVENT" == "PostToolUse" ]]; then
+	record_tab_urls
+	exit 0
+fi
 
 DECISION="deny"
 REASON="This operation is not allowed for ${TOOL_NAME:-unknown}. Ask the user to perform it."
 
 guard_computer() {
-	local action
+	local action tab_id url
 	action=$(jq -r '.tool_input.action // empty' <<<"$INPUT" 2>/dev/null)
 	case "$action" in
 	scroll | scroll_to | screenshot | zoom | hover | wait)
 		DECISION="allow"
 		REASON="Non-mutating action is allowed"
 		;;
+	left_click | right_click | double_click | triple_click | type | key | left_click_drag)
+		tab_id=$(jq -r '.tool_input.tabId // empty' <<<"$INPUT" 2>/dev/null)
+		url=$(last_url_of_tab "$tab_id")
+		if [[ "$tab_id" =~ ^[0-9]+$ && "$url" =~ $LOOPBACK_URL_RE ]]; then
+			DECISION="allow"
+			REASON="Page-changing action is allowed on a loopback host ($url)"
+		else
+			REASON="${action} is allowed only on a tab at 127.0.0.1, localhost or [::1] (tab ${tab_id:-unknown} is at ${url:-an unrecorded URL}). Ask the user to perform this action."
+		fi
+		;;
 	*)
-		REASON="Only scroll, scroll_to, screenshot, zoom, hover and wait are allowed for ${TOOL_NAME} (got: ${action:-unknown}). Ask the user to perform this action."
+		REASON="Only scroll, scroll_to, screenshot, zoom, hover and wait are allowed for ${TOOL_NAME}, plus page-changing actions on a loopback host (got: ${action:-unknown}). Ask the user to perform this action."
 		;;
 	esac
 }
