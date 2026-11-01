@@ -11,9 +11,14 @@
 | `git restore` | `git stash` | 変更を保全した上で復元する |
 | `git clean` | `git stash -u` | 未追跡ファイルも含めて退避する |
 | `git reset --hard` | `git reset`（`--hard` なし）+ `git stash` | `--hard` なしならワーキングツリーを破壊しない |
-| `git push --force` / `-f` | `git push --force-with-lease --force-if-includes` | 他者が先に push したコミットや、手元に取り込んでいないリモートの更新を消さない（詳細は「Git の運用」） |
+| `git push --force` / `-f` | `git push --force-with-lease --force-if-includes` | 他者が先に push したコミットや、手元に取り込んでいないリモートの更新を消さない |
 
 スクリプトに書いたこれらのコマンドも、編集時とコミット前の hook が ast-grep で検出する。
+
+rebase や amend の後にユーザーへ force push を依頼するときも、`git push --force-with-lease --force-if-includes` を提示する。
+`--force-with-lease` はリモートのブランチがリモート追跡ブランチと一致する場合だけ上書きし、他者が先に push したコミットを消さない。
+ただし IDE などがバックグラウンドで fetch するとリモート追跡ブランチが黙って最新になり、このチェックが素通りする。
+`--force-if-includes` を併用すると、リモート追跡ブランチの先端がローカルブランチの reflog から辿れること、つまりリモートの更新を手元に取り込み済みであることも確かめてから上書きする（出典: `git help push`）。
 
 ## ツールの実行
 
@@ -30,39 +35,34 @@ Bash で行うと、定型コードの記述と auto モードの権限審査で
 Read は行番号付きで部分読みもできるため、ファイルの一部を見るときも `offset` / `limit` を使う。
 Bash を使うのは、多数のファイルへ同じ置換を機械的に適用するとき、組み込みの検索ツールが無いとき、組み込みツールで表現できない条件（更新日時・サイズでの絞り込み、パイプでの集計など）で探すときに限る。
 
-## Git の運用
+## Git / GitHub 操作
 
-コミットや PR 作成に着手する前に `git branch --show-current` で作業ブランチを確認する。
-デフォルトブランチ（`main` / `master`）上でコミットを求められた場合は、ユーザーがコミット先を明示していない限り、実行前にブランチを切るかどうかを確認する。
-
-rebase や amend の後にユーザーへ force push を依頼するときは、`git push --force-with-lease --force-if-includes` を提示する。
-`--force-with-lease` はリモートのブランチがリモート追跡ブランチと一致する場合だけ上書きし、他者が先に push したコミットを消さない。
-ただし IDE などがバックグラウンドで fetch するとリモート追跡ブランチが黙って最新になり、このチェックが素通りする。
-`--force-if-includes` を併用すると、リモート追跡ブランチの先端がローカルブランチの reflog から辿れること、つまりリモートの更新を手元に取り込み済みであることも確かめてから上書きする（出典: `git help push`）。
-
-## GitHub 操作
-
-GitHub の Issue・PR・Actions を扱うときは、`gh` コマンドの代わりに以下のスキルを使う。
-`gh` の OAuth トークンは必要以上に広い権限を要求し、fine-grained PAT は organization の private リポジトリで 404 を返すため、ログイン済みブラウザの GitHub Web UI 経由で操作する。
+コミット・ブランチ、GitHub の Issue・PR・Actions を扱うときは、以下のスキルを使う。
+`create-commit` は、デフォルトブランチ上ならブランチを切るかを確認した上で、リポジトリの履歴に沿ったメッセージでコミットする。
+GitHub を扱うスキルは `gh` コマンドの代わりに使う。`gh` の OAuth トークンは必要以上に広い権限を要求し、fine-grained PAT は organization の private リポジトリで 404 を返すため、ログイン済みブラウザの GitHub Web UI 経由で操作する。
 
 | 操作 | スキル |
 | --- | --- |
+| コミットする | `create-commit` |
+| ローカルブランチの差分を確認する | `review-branch` |
+| マージ済みブランチを削除し、リモート追跡参照を整理する | `clean-branch` |
 | Issue を作成する | `open-issue` |
 | PR を作成する | `open-pr` |
 | Issue とコメントを読む | `read-issue` |
 | PR の説明・コメント・レビュー・差分を読む | `read-pr` |
 | Actions のワークフロー実行結果・失敗ログを読む | `read-action` |
 
-## `grilling` / `grill-with-docs` スキル発火時の開発ワークフロー
+## plan mode から始める開発ワークフロー
 
-`grilling` または `grill-with-docs` が発火された場合、以下の 4 フェーズを **一連のシーケンス** として最後まで実行する。各フェーズが完了したら、簡潔な完了報告を行った上で続けて次フェーズを起動する。
+実質的に plan mode から始まった作業（ユーザーが plan mode で依頼した、または作業の最初に plan mode へ入った）は、下表のフェーズを **一連のシーケンス** として最後まで実行する。各フェーズが完了したら、簡潔な完了報告を行った上で続けて次フェーズを起動する。
 
-| # | フェーズ | ツール | アクション | 完了条件 |
-| --- | --- | --- | --- | --- |
-| 1 | 要件定義・設計 | `grilling` または `grill-with-docs` スキル / `context7` MCP（フォールバック: WebSearch / WebFetch） | 設計ツリーをラウンド単位で潰しながら公式ドキュメント・参考実装・論文を収集する | フロンティアが空になり、ユーザーが共有理解を確認したとき |
-| 2 | 計画 | plan mode | プランファイルを書き起こす | ユーザーがプランを承認したとき |
-| 3 | 実装 | `/goal` コマンド + `tdd` スキル | `/goal <測定可能な完了条件> or stop after N turns` の起動を提案して完了条件を宣言し（条件は Claude の出力から達成を判定できる形で書く。例: `npm test` が exit 0 になる）、RED-GREEN ループを `tdd` スキルで回す | テストが通ったとき |
-| 4 | レビュー | `code-review` スキル + `security-review` スキル | Agent ツールで別エージェントを 2 つ並列起動し、一方は `code-review`（バグ・再利用・品質・効率性。再利用は `jscpd --ignore-identifiers <変更したディレクトリ>` の重複検出で裏付ける）、他方は `security-review`（ブランチ差分のセキュリティ）で指摘を収集する。修正はメインセッションで直列に適用する | 両レビューの全指摘に対処し、ユーザーへ最終報告したとき |
+| # | フェーズ | モード | ツール | アクション | 完了条件 |
+| --- | --- | --- | --- | --- | --- |
+| 1 | 計画 | plan mode | `context7` MCP（フォールバック: WebSearch / WebFetch） / `AskUserQuestion` | 公式ドキュメント・参考実装を収集し、プランファイルを書き起こす。未決の設計・方針の判断は `AskUserQuestion` で論点を 1 つずつ聞き、答えを受けてから次の論点に進む（本文に質問を並べて終えると、一部の論点にしか答えが返らず残りが黙って決まりやすいため）。調べた事実の報告や決まった内容の反映は一度に行ってよい | ユーザーがプランを承認したとき |
+| 2 | Issue 作成 | auto mode | `open-issue` スキル | 承認されたプランファイルをソースに、コードを書く前に Issue を作成する | ユーザーが Web UI で Issue を作成し、Issue 番号が確定したとき |
+| 3 | 実装 | auto mode | `/goal` コマンド + `tdd` スキル | 作業ブランチを用意した上で、`/goal <測定可能な完了条件> or stop after N turns` の起動を提案して完了条件を宣言し（条件は Claude の出力から達成を判定できる形で書く。例: `npm test` が exit 0 になる）、RED-GREEN ループを `tdd` スキルで回す | テストが通ったとき |
+| 4 | レビュー | auto mode | `code-review` スキル + `security-review` スキル | Agent ツールで別エージェントを 2 つ並列起動し、一方は `code-review`（バグ・再利用・品質・効率性。再利用は `jscpd --ignore-identifiers <変更したディレクトリ>` の重複検出で裏付ける）、他方は `security-review`（ブランチ差分のセキュリティ）で指摘を収集する。修正はメインセッションで直列に適用する | 両レビューの全指摘に対処したとき |
+| 5 | PR 作成 | auto mode | `create-commit` スキル + `open-pr` スキル | 変更をコミットし、フェーズ 2 の Issue を本文で参照する（例: `Closes #N`）PR を作成する | ユーザーが Web UI で PR を作成し、最終報告したとき |
 
 ## 補助スキル
 
@@ -71,6 +71,8 @@ GitHub の Issue・PR・Actions を扱うときは、`gh` コマンドの代わ�
 | スキル | 提案するタイミング |
 | --- | --- |
 | `handoff` | コンテキストが逼迫し、作業を別セッションへ引き継ぐとき。`/handoff <次セッションの目的>` の形で目的を添えるよう促す |
+| `grilling` | plan mode に入る前に、要件や設計判断がまだ固まっていないとき。設計ツリーをラウンド単位で潰しながら `context7` MCP（フォールバック: WebSearch / WebFetch）で公式ドキュメント・参考実装・論文を収集し、ユーザーが共有理解を確認したら plan mode へ移る |
+| `grill-with-docs` | `grilling` と同じ状況で、決まった用語や設計判断を `CONTEXT.md` や ADR に残したいとき |
 | `to-questionnaire` | grilling のラウンドで、ユーザー単独では答えられない質問が出たとき |
 | `wait-what` | こちらの説明が伝わらなかったとき |
 | `teach` | 設計・実装の前提となる概念をユーザーが学びたいとき。起動したディレクトリを学習ワークスペースとして多数のファイルを生成するため、学習用の空ディレクトリで起動するよう促す |
@@ -98,12 +100,6 @@ GitHub の Issue・PR・Actions を扱うときは、`gh` コマンドの代わ�
 | `resolving-merge-conflicts` | 進行中の merge / rebase コンフリクトの解決 |
 | `wizard` | 人間にしかできない手順を対話式 bash ウィザードにする |
 | `sync-docs` | commit や PR の前に、変更で古くなったドキュメントを探して更新する |
-
-## ユーザーへの確認
-
-設計・方針の判断をユーザーに求めるときは、`AskUserQuestion` で論点を 1 つずつ聞き、答えを受けてから次の論点に進む。
-本文に質問を並べて終えると、ユーザーは一部の論点にしか答えず、残りが黙って決まったことになりやすい。
-調べた事実を伝えることや、決まった内容をまとめて反映することは、一度に行ってよい。
 
 ## 根拠の提示
 
