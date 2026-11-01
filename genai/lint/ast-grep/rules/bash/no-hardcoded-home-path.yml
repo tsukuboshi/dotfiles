@@ -5,8 +5,8 @@ severity: warning
 message: Build this path from the HOME variable or read it from an environment variable.
 note: >-
   A path under one user's home directory breaks on every other machine and
-  leaks the user name when the script is published (rules/common.md).
-  Use `$HOME/...` or `~/...`, or a variable set in a gitignored .env file.
+  leaks the user name when the script is published (skills/prepare-oss/SKILL.md).
+  Use `$HOME/...` or `~/...`, an environment variable, or a gitignored *.local.* file.
 rule:
   any:
     - kind: word
