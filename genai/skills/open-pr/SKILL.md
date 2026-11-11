@@ -26,10 +26,12 @@ git reflog show COMPARE_BRANCH --format='%H' | tail -1
 ```
 
 ```bash
-git branch --contains 上記で取得したハッシュ
+git branch --contains 上記で取得したハッシュ --merged COMPARE_BRANCH
 ```
 
 出力から`COMPARE_BRANCH`自身を除いた最初のブランチ名を`BASE_BRANCH`としてください。
+`--merged`で候補を`COMPARE_BRANCH`の祖先に絞るのは、Stacked PR で上に積んだブランチを base に選ばないためです。
+`COMPARE_BRANCH`自身しか残らない場合（ブランチを切った後に base が進んだ場合など）は、`--merged COMPARE_BRANCH`を外して再実行してください。
 
 `BASE_BRANCH`が空、またはローカル・リモートに存在しないブランチ名だった場合は、ユーザーにベースブランチを確認してから続行してください。
 
@@ -90,6 +92,13 @@ PRボディは「何をどう変えたか」「なぜその実装にしたか」
 - **実装方針**: 設計判断の理由や採用した方針（3〜5項目）
 - **動作確認**: 確認手順 / テスト結果 / スクリーンショット参照（3〜6項目）
 - **関連 Issue**: `Closes #N` / `Refs #N`（任意）
+
+### Stacked PR の場合
+
+`BASE_BRANCH`がデフォルトブランチ以外のときは、Stacked PR の上の段として扱います。
+
+- 概要に、`BASE_BRANCH`の PR の上に積んでいる旨を書く
+- 関連 Issue は `Refs #N` にし、`Closes #N` はスタック最上段の PR だけに書く（途中の段のマージで Issue が閉じないようにするため）
 
 ### PRテンプレートがある場合の扱い
 
@@ -168,3 +177,8 @@ gitleaks・rumdl・typos のいずれかが入っていないと、その検査�
 - URL が GitHub の上限（8000 バイト）を超えていないか
 
 assignees は、GitHub ログイン名を保持する慣例的な git config キー `github.user`（`gh` CLI に依存しない）が設定済みならスクリプトが付けます。`user.name` は表示名（フルネーム等）が入っていて GitHub ログインと一致しないケースが多いため使いません。未設定なら assignees は省略されるので、PR 作成ページで手動アサインしてもらってください。
+
+Stacked PR の上の段を開いたときは、最後に以下を伝えてください。
+
+- 下の段から順にマージする。下の段のブランチをマージ後に削除すると、GitHub が上の段の PR の base を自動で付け替える
+- squash merge したときは、上の段を `git rebase --onto <新しい base> <マージ前の下の段のブランチ> <上の段のブランチ>` で載せ直し、`git push --force-with-lease --force-if-includes` で更新する

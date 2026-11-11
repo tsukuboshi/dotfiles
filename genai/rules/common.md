@@ -64,7 +64,7 @@ GitHub を扱うスキルは `gh` コマンドの代わりに使う。`gh` の O
 | 3 | 実装 | auto mode | `/goal` コマンド + `tdd` スキル | 作業ブランチを用意した上で、`/goal <測定可能な完了条件> or stop after N turns` の起動を提案して完了条件を宣言し（条件は Claude の出力から達成を判定できる形で書く。例: `npm test` が exit 0 になる）、RED-GREEN ループを `tdd` スキルで回す | テストが通ったとき | 実行（作業ブランチは切らずデフォルトブランチのまま） |
 | 4 | レビュー | auto mode | `code-review` スキル + `security-review` スキル | Agent ツールで別エージェントを 2 つ並列起動し、一方は `code-review`（バグ・再利用・品質・効率性。再利用は `jscpd --ignore-identifiers <変更したディレクトリ>` の重複検出で裏付ける）、他方は `security-review`（ブランチ差分のセキュリティ）で指摘を収集する。修正はメインセッションで直列に適用する | 両レビューの全指摘に対処したとき | 実行 |
 | 5 | コミット | auto mode | `create-commit` スキル | 変更を論理的変更ごとにコミットする | コミットが作成されたとき | 実行（デフォルトブランチにコミットし、最終報告して完了する） |
-| 6 | PR 作成 | auto mode | `open-pr` スキル | フェーズ 2 の Issue を本文で参照する（例: `Closes #N`）PR を作成する | ユーザーが Web UI で PR を作成し、最終報告したとき | スキップ |
+| 6 | PR 作成 | auto mode | `open-pr` スキル | フェーズ 2 の Issue を本文で参照する（例: `Closes #N`）PR を作成する。フェーズ 5 で Stacked PR にした場合は、下の段のブランチから順に 1 つずつ PR を作成する | ユーザーが Web UI で全 PR を作成し、最終報告したとき | スキップ |
 
 ## 補助スキル
 
