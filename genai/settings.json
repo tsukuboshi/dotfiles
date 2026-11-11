@@ -11,7 +11,7 @@
 		"BASH_DEFAULT_TIMEOUT_MS": "300000",
 		"CLAUDE_CODE_DISABLE_FEEDBACK_SURVEY": "1",
 		"DISABLE_ERROR_REPORTING": "1",
-		"ANTHROPIC_DEFAULT_OPUS_MODEL": "claude-fable-5-1",
+		"ANTHROPIC_DEFAULT_OPUS_MODEL": "claude-fable-5-2",
 		"ANTHROPIC_DEFAULT_SONNET_MODEL": "claude-opus-5-5",
 		"ANTHROPIC_MODEL": "opusplan"
 	},
@@ -256,6 +256,15 @@
 					{
 						"type": "command",
 						"command": "bash ~/dotfiles/genai/hooks/post-edit-fmt.sh"
+					}
+				]
+			},
+			{
+				"matcher": "mcp__claude-in-chrome__.*",
+				"hooks": [
+					{
+						"type": "command",
+						"command": "bash ~/dotfiles/genai/hooks/chrome-tool-guard.sh"
 					}
 				]
 			}
