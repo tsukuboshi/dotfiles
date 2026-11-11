@@ -5569,6 +5569,60 @@ deployments:
   - nanaism/yomiyasu/skills/yomiyasu
   active_owner: nanaism/yomiyasu/skills/yomiyasu
   content_hash: sha256:a5a253fbe5db7cde021e7c34b1e203472ff164f60a3886c85d5f69b140dcf230
+- kind: uri
+  target: mcp
+  value: aws-knowledge
+  runtime: claude
+  scope: project
+  owners:
+  - .
+  active_owner: .
+  content_hash: null
+- kind: uri
+  target: mcp
+  value: context7
+  runtime: claude
+  scope: project
+  owners:
+  - .
+  active_owner: .
+  content_hash: null
+- kind: uri
+  target: mcp
+  value: aws-knowledge
+  runtime: codex
+  scope: project
+  owners:
+  - .
+  active_owner: .
+  content_hash: null
+- kind: uri
+  target: mcp
+  value: context7
+  runtime: codex
+  scope: project
+  owners:
+  - .
+  active_owner: .
+  content_hash: null
+- kind: uri
+  target: mcp
+  value: aws-knowledge
+  runtime: kiro
+  scope: project
+  owners:
+  - .
+  active_owner: .
+  content_hash: null
+- kind: uri
+  target: mcp
+  value: context7
+  runtime: kiro
+  scope: project
+  owners:
+  - .
+  active_owner: .
+  content_hash: null
 mcp_servers:
 - aws-knowledge
 - context7
@@ -5586,4 +5640,13 @@ mcp_configs:
     - '@upstash/context7-mcp'
     registry: false
     command: npx
-mcp_target_servers: {}
+mcp_target_servers:
+  claude:
+  - aws-knowledge
+  - context7
+  codex:
+  - aws-knowledge
+  - context7
+  kiro:
+  - aws-knowledge
+  - context7
