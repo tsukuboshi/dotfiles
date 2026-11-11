@@ -15,6 +15,11 @@
 # carries a tab context listing `tabId <id>: "<title>" ("<url>")`; the last URL
 # seen for a tab is the one PreToolUse checks. A click that leaves the loopback
 # host is recorded by its own result, so the next action on that tab is denied.
+# Tools such as get_page_text also return text the page controls, which could
+# hold a forged tab line, so a loopback URL is recorded only from the tools in
+# TRUSTED_TOOLS_RE. A remote URL is recorded from any tool, since it can only
+# narrow what is allowed. A page title cannot hold a newline, so it cannot
+# start a forged line in a trusted tool's tab context.
 
 INPUT=$(cat)
 EVENT=$(jq -r '.hook_event_name // empty' <<<"$INPUT" 2>/dev/null)
@@ -26,15 +31,19 @@ TAB_FILE="$STATE_DIR/tabs-${SESSION_ID:-unknown}.tsv"
 
 LOOPBACK_URL_RE='^https?://(127\.0\.0\.1|localhost|[a-z0-9-]+\.localhost|\[::1\])(:[0-9]+)?(/|$)'
 TAB_LINE_RE='tabId ([0-9]+): .*\("([^"]*)"\)[[:space:]]*$'
+TRUSTED_TOOLS_RE='^mcp__claude-in-chrome__(computer|navigate|tabs_context_mcp|tabs_create_mcp)$'
 
 record_tab_urls() {
-	local text line
+	local text line tab_id url trusted=0
 	text=$(jq -r '.tool_response | [.. | strings] | .[]' <<<"$INPUT" 2>/dev/null) || return 0
 	mkdir -p "$STATE_DIR" && chmod 700 "$STATE_DIR" || return 0
+	[[ "$TOOL_NAME" =~ $TRUSTED_TOOLS_RE ]] && trusted=1
 	while IFS= read -r line; do
-		if [[ "$line" =~ $TAB_LINE_RE ]]; then
-			printf '%s\t%s\n' "${BASH_REMATCH[1]}" "${BASH_REMATCH[2]}" >>"$TAB_FILE"
-		fi
+		[[ "$line" =~ $TAB_LINE_RE ]] || continue
+		# Copied out before the next match below resets BASH_REMATCH.
+		tab_id=${BASH_REMATCH[1]} url=${BASH_REMATCH[2]}
+		((trusted)) || [[ ! "$url" =~ $LOOPBACK_URL_RE ]] || continue
+		printf '%s\t%s\n' "$tab_id" "$url" >>"$TAB_FILE"
 	done <<<"$text"
 }
 
