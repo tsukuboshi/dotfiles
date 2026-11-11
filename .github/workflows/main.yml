@@ -2,12 +2,16 @@
 name: CI
 
 # Pull requests are checked before they merge, and main is checked again
-# after the merge.
+# after the merge. The weekly run catches what breaks without a change here:
+# the Brewfile is not pinned and the apm skills follow their main branches.
 on:
   push:
     branches:
       - main
   pull_request:
+  schedule:
+    # Monday 06:00 JST
+    - cron: "0 21 * * 0"
 
 permissions:
   contents: read
@@ -30,9 +34,11 @@ jobs:
       MISE_GLOBAL_CONFIG_FILE: ${{ github.workspace }}/runtime/config.toml
 
     steps:
+      # The whole history, so gitleaks also sees what earlier commits added.
       - name: Checkout
         uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1  # v7.0.1
         with:
+          fetch-depth: 0
           persist-credentials: false
 
       # Only the tools the post-edit hook calls on the files in this
@@ -42,19 +48,38 @@ jobs:
         uses: jdx/mise-action@6be3c7ed4c21d4f76b208d351d95aac273ebb76d  # v5.2.4
         with:
           install_args: >-
-            actionlint aqua:owenlamont/ryl ast-grep hadolint rumdl ruff
-            shellcheck shfmt taplo trivy typos zizmor
+            actionlint aqua:owenlamont/ryl ast-grep gitleaks hadolint rumdl
+            ruff shellcheck shfmt taplo trivy typos zizmor
           cache_key: "{{default}}-${{ hashFiles('runtime/config.toml') }}"
+
+      # The post-edit hook checks zsh files with zsh -n, and the runner
+      # does not ship zsh.
+      - name: Install zsh
+        run: sudo apt-get update && sudo apt-get install -y --no-install-recommends zsh
 
       # The hooks check only the files an agent edits, so this catches
       # files edited by hand with the same formatters and linters.
       - name: Lint every tracked file
         run: bash .github/scripts/lint-tracked-files.sh
 
+      # The commit hook scans only what an agent commits, so this covers
+      # commits made by hand. --redact keeps a found secret out of the log.
+      - name: Scan the history for secrets
+        if: ${{ !cancelled() }}
+        run: gitleaks git --no-banner --redact
+
+  # The hooks run on macOS with its BSD sed, awk and mktemp, so the tests run
+  # there as well as on Linux, where the devcontainer runs them.
   test:
-    name: Tests
-    runs-on: ubuntu-latest
+    name: Tests (${{ matrix.os }})
+    runs-on: ${{ matrix.os }}
     timeout-minutes: 10
+    strategy:
+      fail-fast: false
+      matrix:
+        os:
+          - ubuntu-latest
+          - macos-latest
     env:
       MISE_GLOBAL_CONFIG_FILE: ${{ github.workspace }}/runtime/config.toml
 
@@ -64,13 +89,17 @@ jobs:
         with:
           persist-credentials: false
 
-      # open_form.sh skips a check whose tool is missing, so its test needs
-      # gitleaks, rumdl and typos to see the checks refuse a bad body.
+      # The hooks and open_form.sh skip a check whose tool is missing, so the
+      # tests need every tool they expect to see refuse a bad file.
       - name: Install test tools
         uses: jdx/mise-action@6be3c7ed4c21d4f76b208d351d95aac273ebb76d  # v5.2.4
         with:
-          install_args: ast-grep gitleaks rumdl typos
+          install_args: ast-grep gitleaks rumdl shellcheck shfmt typos
           cache_key: "{{default}}-${{ hashFiles('runtime/config.toml') }}"
+
+      - name: Install zsh
+        if: ${{ runner.os == 'Linux' }}
+        run: sudo apt-get update && sudo apt-get install -y --no-install-recommends zsh
 
       - name: Test ast-grep rules
         run: ast-grep test -c genai/lint/ast-grep/sgconfig.yml --skip-snapshot-tests
@@ -79,6 +108,14 @@ jobs:
       - name: Test guard hooks
         if: ${{ !cancelled() }}
         run: bash .github/scripts/test-guard-hooks.sh
+
+      - name: Test formatter hooks
+        if: ${{ !cancelled() }}
+        run: bash .github/scripts/test-fmt-hooks.sh
+
+      - name: Test agent settings
+        if: ${{ !cancelled() }}
+        run: bash .github/scripts/test-settings.sh
 
       - name: Test the issue and PR body checks
         if: ${{ !cancelled() }}
@@ -101,3 +138,22 @@ jobs:
 
       - name: Initialize macOS (xcode, link, defaults, brew)
         run: make
+
+      # Only the parts that need no app to be running or signed in: apm,
+      # the editor extensions and the sleepwatcher service are left out.
+      - name: Link the other configs
+        run: |
+          genai/setup.sh -a claude -l
+          genai/setup.sh -a codex -l
+          genai/setup.sh -a kiro -l
+          runtime/setup.sh -l
+          multiplexer/setup.sh
+          editor/setup.sh -l
+          sleepwatcher/setup.sh -s
+          sleepwatcher/setup.sh -w
+
+      # A setup script can exit 0 after a link it failed to make, so the
+      # result is checked here.
+      - name: Verify the setup
+        if: ${{ !cancelled() }}
+        run: bash .github/scripts/verify-make.sh
