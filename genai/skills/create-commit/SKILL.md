@@ -1,10 +1,10 @@
 ---
 name: "create-commit"
-description: "Generate commit message from staged changes and repository history, then commit. Use this skill whenever the user wants to commit, save changes, or asks to generate a commit message — even casually like 'commit this' or 'save my changes'."
+description: "Generate commit message from staged changes and repository history, then commit — one commit per logical change, asking whether to stack them on separate branches for Stacked PRs. Use this skill whenever the user wants to commit, save changes, or asks to generate a commit message — even casually like 'commit this' or 'save my changes'."
 argument-hint: "[file ...]"
 ---
 
-以下の手順でコミットメッセージを生成し、`git commit`を実行してください。
+以下の手順でステージされた変更を論理的変更ごとのコミットに分け、コミットメッセージを生成して`git commit`を実行してください。
 
 # 引数の解決
 
@@ -49,22 +49,71 @@ git branch --show-current
 - 文体（動詞始まり / 名詞始まり / 文章形式 など）
 - メッセージの長さの傾向（短文 / 詳細）
 
-# コミット先ブランチの確認
+# コミット単位の決定
 
-現在のブランチが `main` / `master` の場合、コミットを実行する前に AskUserQuestion で以下を確認してください。
+ステージされた変更を、論理的変更ごとの単位に分けてください。
+1 単位 = 1 コミットとし、どの単位もそのコミットだけで 1 つの PR としてレビューでき、ビルドとテストが通る大きさにします。
 
-- このままデフォルトブランチにコミットする
-- 新しいブランチを切ってからコミットする（変更内容に即したブランチ名を添えて提案する）
+- 分ける: Conventional Commits の type や scope が異なる変更、互いに依存しない変更、下準備のリファクタとそれを使う機能追加
+- まとめる: 実装とそのテスト、実装とそれで古くなるドキュメント、片方だけでは壊れる変更
 
-新しいブランチが選ばれた場合は `git switch -c <ブランチ名>` で切り替えてからコミットしてください。ステージング済みの変更はブランチ切替後も保持されます。
+単位は依存される側から順に並べてください（下準備 → 本体 → それを使う側）。
+先頭から何個目で切っても、そこまでのコミットだけで成立する並びにします。
 
-ユーザーが依頼の中でコミット先ブランチを明示している場合、およびデフォルトブランチ以外にいる場合は、確認せずそのまま次へ進んでください。
+単位が 1 つならそのまま次へ進んでください。
+2 つ以上なら、分割案（順序・type・含むファイル）をユーザーに表示し、確認を挟まずに次へ進んでください。
 
-# コミットメッセージの生成
+# コミット先ブランチの決定
+
+次の順に判定し、最初に当てはまったものに従ってください。
+
+1. プロジェクトの `AGENTS.md` / `CLAUDE.md` がトランクベース開発（デフォルトブランチへの直接コミット）を採用している、またはユーザーが依頼の中でコミット先ブランチを明示している: 確認せず、現在のブランチ（明示されたブランチ）に全単位を順にコミットする
+2. 単位が 1 つ、または単位が 2 つ以上でも Stacked PR の条件（後述）に当てはまらない: 現在のブランチが `main` / `master` なら AskUserQuestion で以下を確認し、それ以外のブランチならそのままコミットする
+   - このままデフォルトブランチにコミットする
+   - 新しいブランチを切ってからコミットする（変更内容に即したブランチ名を添えて提案する）
+3. 単位が 2 つ以上で Stacked PR の条件に当てはまる: 単位ごとのブランチ名と積む順序の表を示し、AskUserQuestion で以下を確認する
+   - 単位ごとに別ブランチを積む（Stacked PR）
+   - 1 本のブランチにまとめて積む（デフォルトブランチ上なら新しいブランチ名を添える）
+   - デフォルトブランチにそのままコミットする（現在のブランチが `main` / `master` のときだけ選択肢に含める）
+
+Stacked PR の条件は、次のどちらかに当てはまることです。
+
+- 性質の異なる単位が並んでいる（リファクタと機能追加、別モジュールへの変更など）
+- 生成物・lock ファイルを除いた差分の合計が 400 行を超える
+
+新しいブランチを切るときは `git switch -c <ブランチ名>` で切り替えてからコミットしてください。ステージング済み・未ステージの変更はブランチ切替後も保持されます。
+
+## Stacked PR を選んだ場合
+
+ブランチ名は各単位の内容に即して付けてください（例: `refactor/extract-session-store`、`feat/session-timeout`）。
+
+- 1 つ目の単位: 現在のブランチが `main` / `master` なら新しいブランチを切ってコミットする。作業ブランチ上なら、そのブランチの続きの変更は現在のブランチに、別の話題なら新しいブランチを切ってコミットする
+- 2 つ目以降の単位: 直前の単位をコミットしたブランチから新しいブランチを切り、その単位をコミットする
+
+# コミットの実行
+
+単位ごとに、ステージ → コミットメッセージの生成 → コミットを繰り返してください。
+単位が 2 つ以上のときは、まず `git reset`（`--hard` なし）でステージを外してから始めます。
+
+```bash
+git reset
+```
+
+各単位は `git add <ファイル>` でステージしてください。
+1 つのファイルに複数単位の hunk が混ざっていて明確に切り分けられるときは、その単位の hunk だけを含むパッチをスクラッチパッドに Write で書き出し、`git apply --cached` でステージします。
+切り分けが曖昧な hunk は、後ろの単位にまとめてください。
+
+```bash
+git apply --cached パッチファイル
+```
+
+もともとステージされていなかった変更は、どの単位にも含めず作業ツリーに残してください。
+
+## コミットメッセージの生成
 
 ステージされた差分を元に、Conventional Commits 形式でコミットメッセージを生成してください。
 
-## フォーマット
+### フォーマット
 
 ```text
 <type>[optional scope]: <description>
@@ -74,7 +123,7 @@ git branch --show-current
 [optional footer(s)]
 ```
 
-## type の選択基準
+### type の選択基準
 
 | type | 用途 |
 |------|------|
@@ -89,14 +138,14 @@ git branch --show-current
 | `ci` | CI 設定ファイルやスクリプトの変更 |
 | `chore` | 上記のいずれにも当てはまらない場合の最終手段 |
 
-## ルール
+### ルール
 
 - description の言語・文体はコミット履歴の分析結果に合わせること
 - 変更内容を正確に反映すること
 - 破壊的変更がある場合は type/scope の後に `!` を付与し、footer に `BREAKING CHANGE: <説明>` を記述すること
 - scope は明確なモジュール構造を持つリポジトリでのみ使用し、基本的には省略すること
 
-# コミットの実行
+## コミット
 
 body や footer を含む複数行メッセージの場合、HEREDOCを使用してください。
 
@@ -119,12 +168,15 @@ git commit -m "<type>[optional scope]: <description>"
 
 # ブランチ名とコミットメッセージの確認
 
-コミット実行後、以下の2つのコマンドを並列で実行し、現在のブランチ名と直近のコミットメッセージをユーザーに表示してください。
+全単位のコミット後、以下の2つのコマンドを並列で実行し、現在のブランチ名と作成したコミットをユーザーに表示してください。`N` は作成したコミット数です。
 
 ```bash
 git branch --show-current
 ```
 
 ```bash
-git log --oneline -1
+git log --oneline --decorate -N
 ```
+
+Stacked PR を選んだ場合は、下の段から順に PR を作る起動例を添えてください（例: `/open-pr <ブランチ1> main`、`/open-pr <ブランチ2> <ブランチ1>`）。
+後から下の段を直すときは、その段のブランチでコミットし、上の段を下から順に `git rebase <下の段のブランチ> <上の段のブランチ>` で載せ直すことも伝えてください。
