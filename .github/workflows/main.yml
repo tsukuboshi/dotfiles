@@ -64,10 +64,12 @@ jobs:
         with:
           persist-credentials: false
 
-      - name: Install ast-grep
+      # open_form.sh skips a check whose tool is missing, so its test needs
+      # gitleaks, rumdl and typos to see the checks refuse a bad body.
+      - name: Install test tools
         uses: jdx/mise-action@6be3c7ed4c21d4f76b208d351d95aac273ebb76d  # v5.2.4
         with:
-          install_args: ast-grep
+          install_args: ast-grep gitleaks rumdl typos
           cache_key: "{{default}}-${{ hashFiles('runtime/config.toml') }}"
 
       - name: Test ast-grep rules
@@ -77,6 +79,10 @@ jobs:
       - name: Test guard hooks
         if: ${{ !cancelled() }}
         run: bash .github/scripts/test-guard-hooks.sh
+
+      - name: Test the issue and PR body checks
+        if: ${{ !cancelled() }}
+        run: bash .github/scripts/test-open-form.sh
 
   make:
     name: Make
