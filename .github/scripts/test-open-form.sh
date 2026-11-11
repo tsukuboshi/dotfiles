@@ -112,8 +112,11 @@ expect_open "pr: a # in a branch name is encoded and a / is kept" \
 	"${REPO_URL}/compare/main...feat/fix%2312?quick_pull=1&title=" "$PR_BODY" "${PR_ARGS[@]}" --compare feat/fix#12
 expect_open "issue: a heading passed with --allow-missing may be left out" \
 	"${REPO_URL}/issues/new?title=" "${ISSUE_BODY%%## 補足情報*}" "${ISSUE_ARGS[@]}" --allow-missing 補足情報
+# Built outside the ${//} below, where the bash 3.2 of macOS runs the
+# backquotes of a $'...' replacement as a command substitution.
+code_block=$'```html\n<!-- x -->\n```'
 expect_open "issue: a template comment inside a code block is content" \
-	"${REPO_URL}/issues/new?title=" "${ISSUE_BODY/なし/$'```html\n<!-- x -->\n```'}" "${ISSUE_ARGS[@]}"
+	"${REPO_URL}/issues/new?title=" "${ISSUE_BODY/なし/$code_block}" "${ISSUE_ARGS[@]}"
 expect_open "issue: a body that opens with a horizontal rule keeps its headings" \
 	"${REPO_URL}/issues/new?title=" "---"$'\n\n'"${ISSUE_BODY}" "${ISSUE_ARGS[@]}"
 expect_open "issue: a section whose only content is a deeper heading after a tab is not empty" \
