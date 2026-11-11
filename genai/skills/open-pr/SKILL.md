@@ -96,7 +96,7 @@ PRボディは「何をどう変えたか」「なぜその実装にしたか」
 PRテンプレートのセクション構成には従う。ただし以下のルールで運用する：
 
 - 「必ず含める項目」（概要・実装方針・動作確認・関連 Issue）に相当するセクションは必ず埋める。テンプレートに該当セクションが無ければ、テンプレートに合わせた見出し名で追記してよい
-- それ以外の任意セクション（例: レビュー観点、補足事項など）は、書くべき内容があるときだけ短く記載し、無ければ削除する（空セクションは残さない）
+- それ以外の任意セクション（例: 補足事項）は、書くべき内容があるときだけ短く記載し、無ければ削除する（空セクションは残さない）
 - いずれの場合も、各セクションは上記の粒度で要約する
 
 ### 含めないもの
@@ -130,25 +130,15 @@ PRタイトルのConventional Commits typeと変更内容を基準に、以下�
 
 リポジトリに存在しないラベルを指定した場合は、そのラベルが無視されるだけでPR作成自体は成功する。
 
-選んだラベルは、後述のコマンドの `LABELS` 変数に設定してください。複数選んだ場合はカンマ区切りの1つの文字列にし、省略する場合は空文字のままにします。
+選んだラベルは、後述のコマンドの `--labels` に渡してください。複数選んだ場合はカンマ区切りの1つの文字列にし、省略する場合は `--labels` ごと外します。
 
 # PR作成ページをブラウザでオープン
 
-PRタイトルとPRボディをURLエンコードしてPR作成ページを開きます。
-
-`eval`内でのヒアドキュメントやインライン複数行文字列はパースエラーの原因になるため使用しないでください。
-
-まず、リポジトリURLと GitHub ログイン名を取得してください。
+まず、リポジトリURLを取得してください。
 
 ```bash
 git remote get-url origin
 ```
-
-```bash
-git config github.user
-```
-
-`git config github.user` は GitHub ログイン名を保持する慣例的な git config キー（`gh` CLI に依存しない）。設定済みなら assignees に使う。`git config user.name` は表示名（フルネーム等）が入っていて GitHub ログインと一致しないケースが多いため使わない。`github.user` が未設定の場合は assignees を省略し、PR 作成ページで手動アサインしてもらう。
 
 取得したリモートURLからリポジトリURLを構成してください。
 
@@ -157,15 +147,24 @@ git config github.user
 
 いずれの場合も末尾の `.git` は除去してください。
 
-最後に、PR作成ページを開いてください。ブラウザ起動コマンドはサンドボックス内では実行できないため、必ず`dangerouslyDisableSandbox: true`を指定して実行してください。PRタイトルとPRボディは`urlencode`関数でURLエンコードしてください。
+次に、PRボディをスクラッチパッドなどの一時ファイルに Write で書き出してください。
 
-`opener`関数は実行環境を判定し、適切なブラウザ起動コマンドにディスパッチします。
-
-- macOS: `open`
-- WSL: `explorer.exe`（`/proc/version`に`microsoft`が含まれるかで判定）
-- その他Linux: `xdg-open`（存在する場合）
-- フォールバック: URLを標準出力に表示
+最後に、`open_form.sh` で PRボディを検査し、通ったときだけ PR 作成ページを開いてください。ブラウザ起動コマンドはサンドボックス内では実行できないため、必ず`dangerouslyDisableSandbox: true`を指定して実行してください。
 
 ```bash
-urlencode(){ printf '%s' "$1" | od -An -tx1 | tr -d ' \n' | sed 's/\(..\)/%\1/g'; }; opener(){ case "$(uname -s)" in Darwin) open "$1";; Linux) if grep -qi microsoft /proc/version 2>/dev/null; then explorer.exe "$1"; elif command -v xdg-open >/dev/null 2>&1; then xdg-open "$1"; else printf 'Open this URL: %s\n' "$1"; fi;; *) printf 'Open this URL: %s\n' "$1";; esac; }; GH_USER=$(git config github.user 2>/dev/null); QS_ASSIGNEES=""; [ -n "$GH_USER" ] && QS_ASSIGNEES="&assignees=$GH_USER"; LABELS="選択したラベル"; QS_LABELS=""; [ -n "$LABELS" ] && QS_LABELS="&labels=$(urlencode "$LABELS")"; opener "REPO_URL/compare/BASE_BRANCH...COMPARE_BRANCH?quick_pull=1&title=$(urlencode "PRタイトル")&body=$(urlencode "PRボディ")${QS_ASSIGNEES}${QS_LABELS}"
+bash ~/.claude/skills/open-pr/scripts/open_form.sh pr --repo-url REPO_URL --base BASE_BRANCH --compare COMPARE_BRANCH --title "PRタイトル" --body-file ボディのファイル --template テンプレートのパス --labels "選択したラベル"
 ```
+
+- `--template`: 読み取った PR テンプレートのパス。テンプレートが無ければ外す
+- `--allow-missing 見出し`: 必ず含める項目以外で、テンプレートに「削除可」と書かれていない見出しを削除したとき、その見出し。複数あれば繰り返す（「削除可」と書かれた見出しは渡さなくても欠落を許される）
+
+スクリプトは以下を検査し、1 つでも引っかかると exit 2 で指摘を出し、ページを開きません。
+指摘に沿ってボディのファイルを Edit で直し、同じコマンドを再実行してください。
+gitleaks・rumdl・typos のいずれかが入っていないと、その検査を飛ばして `warning:` を出します。そのときは、どの検査を飛ばしたかをユーザーに伝えてください。
+
+- タイトルとボディに秘密情報が含まれていないか（gitleaks）
+- ボディの Markdown の書式（rumdl）と、タイトル・ボディの typo（typos）
+- テンプレートの `<!-- -->` コメントの消し残し、空のセクション、テンプレートの見出しの欠落
+- URL が GitHub の上限（8000 バイト）を超えていないか
+
+assignees は、GitHub ログイン名を保持する慣例的な git config キー `github.user`（`gh` CLI に依存しない）が設定済みならスクリプトが付けます。`user.name` は表示名（フルネーム等）が入っていて GitHub ログインと一致しないケースが多いため使いません。未設定なら assignees は省略されるので、PR 作成ページで手動アサインしてもらってください。

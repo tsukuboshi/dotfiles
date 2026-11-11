@@ -92,23 +92,15 @@ GitHub の Issue 作成エンドポイントは URL 全体で約 8KB が上限�
 
 リポジトリに存在しないラベルを指定した場合は、そのラベルが無視されるだけでIssue作成自体は成功する。
 
-選んだラベルは、後述のコマンドの `LABELS` 変数に設定してください。複数選んだ場合はカンマ区切りの1つの文字列にし、省略する場合は空文字のままにします。
+選んだラベルは、後述のコマンドの `--labels` に渡してください。複数選んだ場合はカンマ区切りの1つの文字列にし、省略する場合は `--labels` ごと外します。
 
 # Issue作成ページをブラウザでオープン
 
-`eval`内でのヒアドキュメントやインライン複数行文字列はパースエラーの原因になるため使用しないでください。
-
-まず、リポジトリURLと GitHub ログイン名を取得してください。
+まず、リポジトリURLを取得してください。
 
 ```bash
 git remote get-url origin
 ```
-
-```bash
-git config github.user
-```
-
-`git config github.user` は GitHub ログイン名を保持する慣例的な git config キー。設定済みなら assignees に使う。`git config user.name` は表示名（フルネーム等）が入っていて GitHub ログインと一致しないケースが多いため使わない。`github.user` が未設定の場合は assignees を省略し、Issue 作成ページで手動アサインしてもらう。
 
 取得したリモートURLからリポジトリURLを構成してください。
 
@@ -117,15 +109,24 @@ git config github.user
 
 いずれの場合も末尾の `.git` は除去してください。
 
-最後に、Issue作成ページを開いてください。ブラウザ起動コマンドはサンドボックス内では実行できないため、必ず`dangerouslyDisableSandbox: true`を指定して実行してください。IssueタイトルとIssueボディは`urlencode`関数でURLエンコードしてください。
+次に、Issueボディをスクラッチパッドなどの一時ファイルに Write で書き出してください。
 
-`opener`関数は実行環境を判定し、適切なブラウザ起動コマンドにディスパッチします。
-
-- macOS: `open`
-- WSL: `explorer.exe`（`/proc/version`に`microsoft`が含まれるかで判定）
-- その他Linux: `xdg-open`（存在する場合）
-- フォールバック: URLを標準出力に表示
+最後に、`open_form.sh` で Issueボディを検査し、通ったときだけ Issue 作成ページを開いてください。ブラウザ起動コマンドはサンドボックス内では実行できないため、必ず`dangerouslyDisableSandbox: true`を指定して実行してください。
 
 ```bash
-urlencode(){ printf '%s' "$1" | od -An -tx1 | tr -d ' \n' | sed 's/\(..\)/%\1/g'; }; opener(){ case "$(uname -s)" in Darwin) open "$1";; Linux) if grep -qi microsoft /proc/version 2>/dev/null; then explorer.exe "$1"; elif command -v xdg-open >/dev/null 2>&1; then xdg-open "$1"; else printf 'Open this URL: %s\n' "$1"; fi;; *) printf 'Open this URL: %s\n' "$1";; esac; }; GH_USER=$(git config github.user 2>/dev/null); QS_ASSIGNEES=""; [ -n "$GH_USER" ] && QS_ASSIGNEES="&assignees=$GH_USER"; LABELS="選択したラベル"; QS_LABELS=""; [ -n "$LABELS" ] && QS_LABELS="&labels=$(urlencode "$LABELS")"; opener "REPO_URL/issues/new?title=$(urlencode "Issueタイトル")&body=$(urlencode "Issueボディ")${QS_ASSIGNEES}${QS_LABELS}"
+bash ~/.claude/skills/open-issue/scripts/open_form.sh issue --repo-url REPO_URL --title "Issueタイトル" --body-file ボディのファイル --template テンプレートのパス --labels "選択したラベル"
 ```
+
+- `--template`: 選んだ Issue テンプレートのパス。テンプレートが無ければ外す
+- `--allow-missing 見出し`: 任意の項目（補足など）で書く内容がなく、テンプレートの見出しごと削除したもの。複数あれば繰り返す
+
+スクリプトは以下を検査し、1 つでも引っかかると exit 2 で指摘を出し、ページを開きません。
+指摘に沿ってボディのファイルを Edit で直し、同じコマンドを再実行してください。
+gitleaks・rumdl・typos のいずれかが入っていないと、その検査を飛ばして `warning:` を出します。そのときは、どの検査を飛ばしたかをユーザーに伝えてください。
+
+- タイトルとボディに秘密情報が含まれていないか（gitleaks）
+- ボディの Markdown の書式（rumdl）と、タイトル・ボディの typo（typos）
+- テンプレートの `<!-- -->` コメントの消し残し、空のセクション、テンプレートの見出しの欠落
+- URL が GitHub の上限（8000 バイト）を超えていないか
+
+assignees は、GitHub ログイン名を保持する慣例的な git config キー `github.user` が設定済みならスクリプトが付けます。`user.name` は表示名（フルネーム等）が入っていて GitHub ログインと一致しないケースが多いため使いません。未設定なら assignees は省略されるので、Issue 作成ページで手動アサインしてもらってください。
