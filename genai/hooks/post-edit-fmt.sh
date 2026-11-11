@@ -345,13 +345,29 @@ format_file() {
 	*.sh | *.bash)
 		run_tool shfmt "$dir" -w "$file_path"
 		# zsh is rejected outright by the linter (SC1071), so a #!/bin/zsh .sh
-		# would block every edit. The shebang is read with a builtin to avoid a fork.
+		# would block every edit; zsh checks its own syntax instead. The
+		# shebang is read with a builtin to avoid a fork.
 		local shebang=""
 		IFS= read -r shebang <"$file_path"
-		[[ "$shebang" == '#!'*zsh* ]] ||
+		if [[ "$shebang" == '#!'*zsh* ]]; then
+			run_tool zsh "$dir" -n "$file_path"
+		else
 			run_tool shellcheck "$dir" "$file_path"
+		fi
 		# The Bash grammar also reads zsh, so ast-grep checks zsh scripts too.
 		lint_ast_grep "$file_path" "$dir"
+		;;
+	*.zsh)
+		# No linter reads zsh, so its own parser catches the syntax errors.
+		run_tool zsh "$dir" -n "$file_path"
+		lint_ast_grep "$file_path" "$dir"
+		;;
+	*/.zshrc | */.zshenv | */.zprofile | */.zlogin | */.zlogout)
+		# Startup files configure an interactive shell, whose shortcuts may
+		# wrap the git commands the ast-grep rules reject for scripts, so only
+		# their syntax is checked. ast-grep would skip them anyway, since it
+		# picks a language by extension.
+		run_tool zsh "$dir" -n "$file_path"
 		;;
 	*/.github/workflows/*.yml | */.github/workflows/*.yaml)
 		# Offline keeps zizmor inside the hook timeout; its online audits
@@ -419,7 +435,9 @@ else
 fi
 
 if ((${#MISSING[@]} > 0)); then
-	names=$(printf '%s\n' "${MISSING[@]}" | sort -u | paste -sd', ' -)
+	# paste -d cycles through its delimiters one character at a time, so
+	# the list is joined with commas and a space is added after each.
+	names=$(printf '%s\n' "${MISSING[@]}" | sort -u | paste -sd, - | sed 's/,/, /g')
 	printf 'post-edit-fmt: %s unavailable; file left unformatted\n' "$names" >&2
 fi
 

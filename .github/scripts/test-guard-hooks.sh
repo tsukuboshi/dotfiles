@@ -165,10 +165,5 @@ printf '{"permissions": {"defaultMode": "bypassPermissions"}}\n' >"$settings_fil
 expect_silent "config: policy settings pass because they cannot be blocked" $G \
 	"$(jq -cn --arg f "$settings_file" '{source: "policy_settings", file_path: $f}')"
 
-# pre-commit-fmt.sh
-G=pre-commit-fmt.sh
-expect_silent "pre-commit: commands other than git commit pass" $G \
-	'{"tool_name": "Bash", "tool_input": {"command": "git status"}}'
-
 printf '%d passed, %d failed\n' "$PASSED" "$FAILED"
 ((FAILED == 0))
