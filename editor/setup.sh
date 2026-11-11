@@ -44,6 +44,14 @@ link_editor_config() {
 	local settings_path=$2
 
 	printf "\n\033[1;36m=== Linking config to %s ===\033[0m\n" "${editor_name}"
+
+	# The editor creates this directory on its first launch, which may not
+	# have happened yet on a new machine.
+	if [ ! -d "$settings_path" ]; then
+		printf "\033[1;33m⚠ Directory does not exist. Creating: %s\033[0m\n" "$settings_path"
+		mkdir -p "$settings_path"
+	fi
+
 	ln -fsvn "${SCRIPT_DIR}/settings.json" "${settings_path}/settings.json"
 }
 

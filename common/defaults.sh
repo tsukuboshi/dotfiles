@@ -2,13 +2,19 @@
 
 printf "\n\033[1;36m=== Applying system defaults ===\033[0m\n"
 
+# Counted so make stops on a setting that did not apply, instead of going on
+# as if every one had.
+FAILED=0
+
 print_result() {
-	local description="$1"
+	local description="$1" output
 	shift
-	if "$@" 2>/dev/null; then
+	if output=$("$@" 2>&1); then
 		printf "\033[1;32m✓\033[0m %s\n" "$description"
 	else
 		printf "\033[1;31m✗\033[0m %s\n" "$description"
+		[[ -n "$output" ]] && printf "  %s\n" "$output"
+		FAILED=$((FAILED + 1))
 	fi
 }
 
@@ -71,3 +77,8 @@ for app in "Dock" \
 		printf "\033[1;33m⚠ %s was not running or could not be restarted\033[0m\n" "${app}"
 	fi
 done
+
+if ((FAILED > 0)); then
+	printf "\n\033[1;31m✗ %d setting(s) could not be applied\033[0m\n" "$FAILED"
+	exit 1
+fi

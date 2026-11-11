@@ -41,12 +41,9 @@ link_runtime_config() {
 
 	printf "\n\033[1;36m=== Linking config to %s ===\033[0m\n" "${runtime_name}"
 
-	local runtime_config_dir
-	runtime_config_dir=$(dirname "$config_path")
-
-	if [ ! -d "$runtime_config_dir" ]; then
-		printf "\033[1;33m⚠ Directory does not exist. Creating: %s\033[0m\n" "$runtime_config_dir"
-		mkdir -p "$runtime_config_dir"
+	if [ ! -d "$config_path" ]; then
+		printf "\033[1;33m⚠ Directory does not exist. Creating: %s\033[0m\n" "$config_path"
+		mkdir -p "$config_path"
 	fi
 
 	ln -fsvn "${SCRIPT_DIR}/config.toml" "${config_path}/config.toml"
