@@ -45,7 +45,7 @@ jobs:
       # repository, at the versions pinned in runtime/config.toml. The cache
       # key also hashes that file, which mise-action does not watch.
       - name: Install linters
-        uses: jdx/mise-action@6be3c7ed4c21d4f76b208d351d95aac273ebb76d  # v5.2.4
+        uses: jdx/mise-action@f5be966e4a917d54244728e6a5fdcd1d93a35e6c  # v5.2.6
         with:
           install_args: >-
             actionlint aqua:owenlamont/ryl ast-grep gitleaks hadolint rumdl
@@ -92,7 +92,7 @@ jobs:
       # The hooks and open_form.sh skip a check whose tool is missing, so the
       # tests need every tool they expect to see refuse a bad file.
       - name: Install test tools
-        uses: jdx/mise-action@6be3c7ed4c21d4f76b208d351d95aac273ebb76d  # v5.2.4
+        uses: jdx/mise-action@f5be966e4a917d54244728e6a5fdcd1d93a35e6c  # v5.2.6
         with:
           install_args: ast-grep gitleaks rumdl shellcheck shfmt typos
           cache_key: "{{default}}-${{ hashFiles('runtime/config.toml') }}"
