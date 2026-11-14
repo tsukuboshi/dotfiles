@@ -1,6 +1,6 @@
 #!/bin/zsh
 # Claude Code Enhanced Status Line
-# Prompt | Model | Effort | Context % | Prompt Cache | Prompts Sent | Lines Changed | 5h Rate | 7d Rate
+# Prompt | Model | Effort | Context % | Prompt Cache | Prompts Sent | 5h Rate | 7d Rate | Lines Changed
 
 # How long a cache miss cause stays visible after it happens
 MISS_CAUSE_WINDOW=300
@@ -178,12 +178,6 @@ if [ "${prompt_count:-0}" -gt 0 ]; then
 	render_metric "💬" "msg" "$((prompt_count * 100 / PROMPT_THRESHOLD))" "${prompt_count}x${prompt_next}"
 fi
 
-# Lines Claude changed this session, colored like a git diff (only once something changed).
-# There is no upper bound, so it gets no pie.
-if [ $((${lines_added:-0} + ${lines_removed:-0})) -gt 0 ]; then
-	out+=" │ ✏️diff \033[32m+${lines_added:-0}${RST}/\033[31m-${lines_removed:-0}${RST}"
-fi
-
 # 5h rate limit (Pro/Max only; absent on Team/Enterprise)
 if [ -n "$five_hour_pct" ]; then
 	fh_int=${five_hour_pct%%.*}
@@ -196,6 +190,12 @@ if [ -n "$seven_day_pct" ]; then
 	sd_int=${seven_day_pct%%.*}
 	sd_int=${sd_int:-0}
 	render_metric "📅" "7d" "$sd_int" "${sd_int}%" "$seven_day_reset"
+fi
+
+# Lines Claude changed this session, colored like a git diff (only once something changed).
+# There is no upper bound, so it gets no pie.
+if [ $((${lines_added:-0} + ${lines_removed:-0})) -gt 0 ]; then
+	out+=" │ ✏️diff \033[32m+${lines_added:-0}${RST}/\033[31m-${lines_removed:-0}${RST}"
 fi
 
 printf '%b' "$out"
