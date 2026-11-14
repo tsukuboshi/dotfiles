@@ -1,6 +1,6 @@
 #!/bin/zsh
 # Claude Code Enhanced Status Line
-# Prompt | Model | Effort | Context % | Prompt Cache | Prompts Sent | 5h Rate | 7d Rate | Lines Changed
+# Prompt | Model | Effort | Context % | Prompt Cache | 5h Rate | 7d Rate | Lines Changed
 
 # How long a cache miss cause stays visible after it happens
 MISS_CAUSE_WINDOW=300
@@ -8,8 +8,6 @@ MISS_CAUSE_WINDOW=300
 # offers "Resume from summary" for a session idle past the cache TTL
 # https://code.claude.com/docs/en/sessions#resume-from-a-summary
 RECACHE_THRESHOLD=100000
-# Prompts after which a session is long enough to consider /clear (pie fills here)
-PROMPT_THRESHOLD=20
 
 RST='\033[0m'
 
@@ -55,7 +53,6 @@ _data=$(jq -r '[
   (.prompt_cache.recache_tokens_if_cold | if type == "number" then floor | tostring else "" end),
   (.prompt_cache.last_miss_at | if type == "number" then floor | tostring else "" end),
   ((.prompt_cache.last_miss_cause.causes[0]? | strings) // ""),
-  (.transcript_path // ""),
   (.cost.total_lines_added | if type == "number" then floor | tostring else "" end),
   (.cost.total_lines_removed | if type == "number" then floor | tostring else "" end)
 ] | join("\u001f")' <<<"$input" 2>/dev/null)
@@ -66,30 +63,7 @@ _data=$(jq -r '[
 IFS=$'\x1f' read -r model used_pct \
 	five_hour_pct five_hour_reset seven_day_pct seven_day_reset effort \
 	cache_observed cache_warm cache_ttl cache_expires cache_recache \
-	cache_miss_at cache_miss_cause transcript_path lines_added lines_removed <<<"$_data"
-
-# Count the prompts the user sent in the main conversation since the last /compact,
-# like prompt-rail's rail. Tool results, meta entries, compact summaries, interrupts and
-# shell / local command echoes are also "user" entries, so only typed prompts and skill
-# invocations (<command-message>) count. /compact appends to the same transcript, so a
-# compact_boundary entry restarts the count.
-# grep drops assistant entries and tool results (the bulk of a transcript) before jq,
-# and jq parses line by line so a line still being written is skipped, not fatal.
-prompt_count=""
-if [ -r "$transcript_path" ]; then
-	prompt_count=$(grep -E '"type":"user"|"subtype":"compact_boundary"' "$transcript_path" |
-		grep -v -F '"type":"tool_result"' |
-		jq -R -n 'reduce (inputs | fromjson? | objects) as $e (0;
-		  if $e.type == "system" and $e.subtype == "compact_boundary" then 0
-		  elif $e.type == "user" and $e.isSidechain != true and $e.isMeta != true
-		    and $e.isCompactSummary != true
-		    and ($e.message.content
-		      | if type == "string" then (startswith("<") | not) or startswith("<command-message>")
-		        elif type == "array" then any(.[]; .type == "text" and (.text | startswith("[Request interrupted") | not))
-		        else false end)
-		  then . + 1
-		  else . end)' 2>/dev/null)
-fi
+	cache_miss_at cache_miss_cause lines_added lines_removed <<<"$_data"
 
 pct_int=${used_pct%%.*}
 pct_int=${pct_int:-0}
@@ -97,7 +71,7 @@ current_time=$(date +%s)
 
 # Append one metric block to global $out: " │ <icon><label> <color><pie> <value><RST>[ <reset>]"
 # Color/pie are derived from $pct_for_color (integer 0-100);
-# $value_text is the user-visible suffix (e.g. "42%" or "3x").
+# $value_text is the user-visible suffix (e.g. "42%" or "12m").
 # Appends to $out directly to avoid one subshell per call on the statusline hot path.
 render_metric() {
 	local icon="$1" label="$2" pct_for_color="$3" value_text="$4" reset_iso="${5:-}"
@@ -169,13 +143,6 @@ if [ "$cache_observed" = "true" ]; then
 		[ $((current_time - cache_miss_at)) -le "$MISS_CAUSE_WINDOW" ]; then
 		out+=" \033[33m⚠${cache_miss_cause}${RST}"
 	fi
-fi
-
-# Prompts sent (only once the transcript has one); the pie fills at PROMPT_THRESHOLD,
-# where the session has likely drifted across tasks and /clear is the next move.
-if [ "${prompt_count:-0}" -gt 0 ]; then
-	[ "$prompt_count" -ge "$PROMPT_THRESHOLD" ] && prompt_next="→/clear" || prompt_next=""
-	render_metric "💬" "msg" "$((prompt_count * 100 / PROMPT_THRESHOLD))" "${prompt_count}x${prompt_next}"
 fi
 
 # 5h rate limit (Pro/Max only; absent on Team/Enterprise)
