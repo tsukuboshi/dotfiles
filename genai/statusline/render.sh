@@ -4,10 +4,16 @@
 
 # How long a cache miss cause stays visible after it happens
 MISS_CAUSE_WINDOW=300
-# Recache size (tokens) worth acting on: matches the threshold at which Claude Code
-# offers "Resume from summary" for a session idle past the cache TTL
-# https://code.claude.com/docs/en/sessions#resume-from-a-summary
+# Recache size (tokens) worth a /compact. The docs give no threshold; the only figure is
+# that an idle session past about 200K tokens on the one-hour cache is compacted for you,
+# so this rule of thumb sits below it to also cover the sessions that never reach that.
+# https://code.claude.com/docs/en/best-practices
 RECACHE_THRESHOLD=100000
+# Share of the TTL elapsed after which /compact is suggested (the ◕ pie stage).
+# Every request renews the TTL, so getting this far means the session has gone idle,
+# and it is the last chance to compact while the summary request can still read the cache.
+# https://code.claude.com/docs/en/prompt-caching#compacting-the-conversation
+COMPACT_HINT_PCT=75
 
 RST='\033[0m'
 
@@ -71,7 +77,7 @@ current_time=$(date +%s)
 
 # Append one metric block to global $out: " │ <icon><label> <color><pie> <value><RST>[ <reset>]"
 # Color/pie are derived from $pct_for_color (integer 0-100);
-# $value_text is the user-visible suffix (e.g. "42%" or "12m").
+# $value_text is the user-visible suffix (e.g. "42%").
 # Appends to $out directly to avoid one subshell per call on the statusline hot path.
 render_metric() {
 	local icon="$1" label="$2" pct_for_color="$3" value_text="$4" reset_iso="${5:-}"
@@ -109,36 +115,45 @@ render_metric "📊" "ctx" "$pct_int" "${pct_int}%"
 
 # Prompt cache (absent until the first response; skipped when caching is off)
 # Color/pie track how much of the TTL has elapsed, like the other metrics.
+# Laid out as "<pie> [<recache tokens>[→/compact]] <time left> [⚠<miss cause>]",
+# so the time left stays uncolored like the reset time of the rate limits.
 if [ "$cache_observed" = "true" ]; then
 	cache_left=$((${cache_expires:-0} - current_time))
 	cache_is_warm=false
 	[ "$cache_warm" = "true" ] && [ -n "$cache_expires" ] && [ "$cache_left" -gt 0 ] && cache_is_warm=true
 	if [ "$cache_is_warm" = "true" ]; then
-		[ "$cache_ttl" = "5m" ] && ttl_sec=300 || ttl_sec=3600
+		# An unknown TTL counts as just renewed, so it never suggests /compact by mistake
+		case "$cache_ttl" in
+		5m) ttl_sec=300 ;;
+		1h) ttl_sec=3600 ;;
+		*) ttl_sec=$cache_left ;;
+		esac
 		elapsed_pct=$(((ttl_sec - cache_left) * 100 / ttl_sec))
 		[ "$elapsed_pct" -lt 0 ] && elapsed_pct=0
 		# A warm cache is never used up, so red/● stay reserved for cold
 		[ "$elapsed_pct" -gt 99 ] && elapsed_pct=99
-		cache_color=$(color_for_pct "$elapsed_pct")
-		render_metric "💾" "ttl" "$elapsed_pct" "$(fmt_reset "$cache_expires")"
+		cache_time=$(fmt_reset "$cache_expires")
 	else
 		# Cold means the whole TTL has elapsed, so it renders as a spent (100%) metric
-		cache_color=$(color_for_pct 100)
-		render_metric "💾" "ttl" 100 "-m"
+		elapsed_pct=100
+		cache_time="-m"
 	fi
+	cache_color=$(color_for_pct "$elapsed_pct")
+	out+=" │ 💾ttl ${cache_color}$(pie_char "$elapsed_pct")${RST}"
 	# Below the threshold the recache size is not worth attention, so it stays uncolored
 	# like the label; above it, it takes the pie's color to share its urgency.
-	# Once cold, the next move follows prompt-cache-control: a recache worth acting on
-	# calls for /compact, and a small one for /clear if the task is done.
+	# /compact is suggested once the session has idled through COMPACT_HINT_PCT of the TTL,
+	# while compacting is still cheap, and stays suggested after the cache goes cold, since
+	# the history the next request re-reads then shrinks to the summary for every later turn.
 	if [ -n "$cache_recache" ]; then
-		[ "$cache_recache" -lt "$RECACHE_THRESHOLD" ] && cache_next="→/clear" || cache_next="→/compact"
-		[ "$cache_is_warm" = "true" ] && cache_next=""
 		if [ "$cache_recache" -lt "$RECACHE_THRESHOLD" ]; then
-			out+=" ↻$(fmt_tokens "$cache_recache")${cache_next}"
+			out+=" $(fmt_tokens "$cache_recache")"
 		else
-			out+=" ${cache_color}↻$(fmt_tokens "$cache_recache")${cache_next}${RST}"
+			[ "$elapsed_pct" -ge "$COMPACT_HINT_PCT" ] && cache_next="→/compact" || cache_next=""
+			out+=" ${cache_color}$(fmt_tokens "$cache_recache")${cache_next}${RST}"
 		fi
 	fi
+	out+=" ${cache_time}"
 	if [ -n "$cache_miss_at" ] && [ -n "$cache_miss_cause" ] &&
 		[ $((current_time - cache_miss_at)) -le "$MISS_CAUSE_WINDOW" ]; then
 		out+=" \033[33m⚠${cache_miss_cause}${RST}"
