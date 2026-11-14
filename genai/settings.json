@@ -15,6 +15,14 @@
 		"ANTHROPIC_DEFAULT_SONNET_MODEL": "claude-opus-5-5",
 		"ANTHROPIC_MODEL": "opusplan"
 	},
+	"modelSettings": {
+		"claude-fable-5-2": {
+			"effortLevel": "high"
+		},
+		"claude-opus-5-5": {
+			"effortLevel": "medium"
+		}
+	},
 	"attribution": {
 		"commit": "",
 		"pr": "",
