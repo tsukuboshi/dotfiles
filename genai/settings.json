@@ -20,7 +20,8 @@
 			"effortLevel": "high"
 		},
 		"claude-opus-5-5": {
-			"effortLevel": "medium"
+			"effortLevel": "medium",
+			"autoCompactWindow": 500000
 		}
 	},
 	"attribution": {
