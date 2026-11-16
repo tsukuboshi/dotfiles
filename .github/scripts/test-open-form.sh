@@ -122,6 +122,13 @@ expect_open "issue: a template comment inside a code block is content" \
 	"${REPO_URL}/issues/new?title=" "${ISSUE_BODY/なし/$code_block}" "${ISSUE_ARGS[@]}"
 expect_open "issue: a body that opens with a horizontal rule keeps its headings" \
 	"${REPO_URL}/issues/new?title=" "---"$'\n\n'"${ISSUE_BODY}" "${ISSUE_ARGS[@]}"
+expect_open "issue: #478 without a space is an issue reference, not a heading" \
+	"${REPO_URL}/issues/new?title=" "${ISSUE_BODY/なし/#478}" "${ISSUE_ARGS[@]}"
+expect_open "issue: a heading that starts with a number and goes on is a heading" \
+	"${REPO_URL}/issues/new?title=" "${ISSUE_BODY/なし/$'### 2026 年の計画\n\nなし'}" "${ISSUE_ARGS[@]}"
+issue_ref_in_code=$'```text\n# 478\n```'
+expect_open "issue: # 478 inside a code block is content" \
+	"${REPO_URL}/issues/new?title=" "${ISSUE_BODY/なし/$issue_ref_in_code}" "${ISSUE_ARGS[@]}"
 expect_open "issue: a section whose only content is a deeper heading after a tab is not empty" \
 	"${REPO_URL}/issues/new?title=" "${ISSUE_BODY/なし/$'###\t詳細\n\nなし'}" "${ISSUE_ARGS[@]}"
 english_body="${ISSUE_BODY}$(printf 'word %.0s' {1..600})"
@@ -165,6 +172,10 @@ if ((RC == 1)) && [[ "$OUTPUT" == *"Usage:"* ]]; then
 else
 	fail "issue: --allow-missing is not accepted, so no heading can be skipped" "want exit 1 and the usage, got exit ${RC}: ${OUTPUT}"
 fi
+expect_refuse "issue: # 478 at the start of a line is a heading, not an issue reference" "# 478" \
+	"${ISSUE_BODY/なし/# 478}" "${ISSUE_ARGS[@]}"
+expect_refuse "pr: ## 12 at the start of a line is a heading, not an issue reference" "## 12" \
+	"${PR_BODY/Closes #1/## 12}" "${PR_ARGS[@]}"
 long_body="${ISSUE_BODY}$(printf 'あ%.0s' {1..1000})"
 expect_refuse "issue: a URL over 8000 bytes is refused" "8000" \
 	"$long_body" "${ISSUE_ARGS[@]}"
