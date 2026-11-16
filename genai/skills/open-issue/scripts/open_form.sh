@@ -15,8 +15,10 @@ set -u
 # GitHub answers "Whoa there! Your request URL is too long." above about 8KB.
 MAX_URL_BYTES=8000
 # The same rules as the Markdown rule file, without the project's config,
-# since the body is not a file in the project.
-RUMDL_ARGS=(--no-config --disable "MD034,MD013,MD025,MD041")
+# since the body is not a file in the project. MD018 is off as well: on
+# GitHub a line starting with #478 is an issue reference, and its fix would
+# turn it into the heading "# 478".
+RUMDL_ARGS=(--no-config --disable "MD034,MD013,MD025,MD041,MD018")
 
 usage() {
 	sed -n '6,12s/^# \{0,1\}//p' "$0" >&2
@@ -166,6 +168,16 @@ output=$(awk '
 	!fence && /<!--/ { print }
 ' "$work_file")
 [[ -n "$output" ]] && findings+=("the body still has template comments; replace them with content or delete them:"$'\n'"${output}")
+
+# GitHub renders "# 478" as a heading instead of a link to #478, so a heading
+# that is only a number is an issue reference with a stray space. The
+# pattern spells out up to 3 spaces and 6 #s, since older mawk on CI does
+# not support {m,n}.
+output=$(awk '
+	/^[ \t]*(```|~~~)/ { fence = !fence; next }
+	!fence && /^(   |  | )?(######|#####|####|###|##|#)[ \t]+[0-9]+[ \t]*$/ { print }
+' "$work_file")
+[[ -n "$output" ]] && findings+=("the body has headings that are only a number; GitHub shows them as headings, not issue links, so remove the space after # (#478):"$'\n'"${output}")
 
 body_sections=$(sections "$work_file")
 while IFS=$'\t' read -r heading has_content; do
