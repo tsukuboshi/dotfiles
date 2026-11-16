@@ -5,7 +5,7 @@
 # a URL too long for GitHub never reaches the browser.
 # Usage:
 #   open_form.sh issue --repo-url URL --title TITLE --body-file PATH
-#     [--template PATH] [--labels a,b] [--allow-missing HEADING]... [--dry-run]
+#     [--template PATH] [--labels a,b] [--dry-run]
 #   open_form.sh pr --repo-url URL --base BRANCH --compare BRANCH --title TITLE
 #     --body-file PATH [same options as issue]
 # Exits 2 with the findings on stderr when a check fails. --dry-run prints
@@ -29,10 +29,9 @@ shift
 
 repo_url="" title="" body_file="" template="" labels="" base="" compare=""
 dry_run=false
-allow_missing=()
 while (($# > 0)); do
 	case "$1" in
-	--repo-url | --title | --body-file | --template | --labels | --base | --compare | --allow-missing)
+	--repo-url | --title | --body-file | --template | --labels | --base | --compare)
 		(($# >= 2)) || usage
 		case "$1" in
 		--repo-url) repo_url=$2 ;;
@@ -42,7 +41,6 @@ while (($# > 0)); do
 		--labels) labels=$2 ;;
 		--base) base=$2 ;;
 		--compare) compare=$2 ;;
-		--allow-missing) allow_missing+=("$2") ;;
 		esac
 		shift 2
 		;;
@@ -64,14 +62,14 @@ command -v jq >/dev/null 2>&1 || {
 findings=()
 warnings=()
 
-# Prints one line per section of a Markdown file: the heading, whether the
-# section has content (1/0), and whether it says it may be deleted (1/0).
-# Fenced code is skipped, and so is frontmatter when frontmatter=1, which
-# only templates have: in a body, a leading --- is a horizontal rule. A
-# section whose only content is deeper headings counts as having content.
+# Prints one line per section of a Markdown file: the heading and whether the
+# section has content (1/0). Fenced code is skipped, and so is frontmatter
+# when frontmatter=1, which only templates have: in a body, a leading --- is
+# a horizontal rule. A section whose only content is deeper headings counts
+# as having content.
 sections() {
 	awk -v OFS='\t' -v frontmatter="${2:-0}" '
-		function flush() { if (h != "") print h, c, d }
+		function flush() { if (h != "") print h, c }
 		frontmatter && NR == 1 && /^---[ \t]*$/ { fm = 1; next }
 		fm { if (/^---[ \t]*$/) fm = 0; next }
 		/^[ \t]*(```|~~~)/ { fence = !fence; c = 1; next }
@@ -81,21 +79,12 @@ sections() {
 			if (h != "" && level > lv) c = 1
 			flush()
 			h = $0; sub(/^#+[ \t]+/, "", h); sub(/[ \t]+$/, "", h)
-			lv = level; c = 0; d = 0
+			lv = level; c = 0
 			next
 		}
 		/[^ \t]/ { c = 1 }
-		/削除可/ { d = 1 }
 		END { flush() }
 	' "$1"
-}
-
-is_allowed_missing() {
-	local heading
-	for heading in "${allow_missing[@]+"${allow_missing[@]}"}"; do
-		[[ "$1" == "$heading" ]] && return 0
-	done
-	return 1
 }
 
 # Leaves the unreserved characters as they are, so ASCII text does not take
@@ -179,15 +168,16 @@ output=$(awk '
 [[ -n "$output" ]] && findings+=("the body still has template comments; replace them with content or delete them:"$'\n'"${output}")
 
 body_sections=$(sections "$work_file")
-while IFS=$'\t' read -r heading has_content _; do
+while IFS=$'\t' read -r heading has_content; do
 	[[ -n "$heading" && "$has_content" == 0 ]] &&
-		findings+=("section '${heading}' is empty; fill it or delete the heading")
+		findings+=("section '${heading}' is empty; fill it, or write なし when there is nothing to say")
 done <<<"$body_sections"
 
+# Every heading of the template is required, so the body keeps the
+# template's sections whatever its comments say.
 if [[ -n "$template" ]]; then
-	while IFS=$'\t' read -r heading _ deletable; do
-		[[ -z "$heading" || "$deletable" == 1 ]] && continue
-		is_allowed_missing "$heading" && continue
+	while IFS=$'\t' read -r heading _; do
+		[[ -z "$heading" ]] && continue
 		cut -f1 <<<"$body_sections" | grep -qxF -- "$heading" ||
 			findings+=("section '${heading}' of the template is missing from the body")
 	done < <(sections "$template" 1)

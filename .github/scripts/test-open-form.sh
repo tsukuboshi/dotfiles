@@ -17,7 +17,8 @@ FAILED=0
 PASSED=0
 
 body_file=$(mktemp)
-trap 'rm -f "$body_file"' EXIT
+template_file=$(mktemp)
+trap 'rm -f "$body_file" "$template_file"' EXIT
 
 pass() {
 	PASSED=$((PASSED + 1))
@@ -95,6 +96,10 @@ Body を検査してから開く。
 ## 動作確認
 
 - テストが通る
+
+## 補足事項
+
+なし
 '
 
 # open
@@ -106,12 +111,10 @@ if ((RC == 0)) && [[ "$OUTPUT" == *"&body=%23%23%20"* && "$OUTPUT" == *"&labels=
 else
 	fail "issue: the URL carries the encoded body and the labels" "got exit ${RC}: ${OUTPUT}"
 fi
-expect_open "pr: sections the template marks deletable may be left out" \
+expect_open "pr: a body that follows the template opens" \
 	"${REPO_URL}/compare/main...feat?quick_pull=1&title=" "$PR_BODY" "${PR_ARGS[@]}"
 expect_open "pr: a # in a branch name is encoded and a / is kept" \
 	"${REPO_URL}/compare/main...feat/fix%2312?quick_pull=1&title=" "$PR_BODY" "${PR_ARGS[@]}" --compare feat/fix#12
-expect_open "issue: a heading passed with --allow-missing may be left out" \
-	"${REPO_URL}/issues/new?title=" "${ISSUE_BODY%%## 補足情報*}" "${ISSUE_ARGS[@]}" --allow-missing 補足情報
 # Built outside the ${//} below, where the bash 3.2 of macOS runs the
 # backquotes of a $'...' replacement as a command substitution.
 code_block=$'```html\n<!-- x -->\n```'
@@ -151,6 +154,17 @@ expect_refuse "issue: a missing template heading is refused" "完了条件" \
 	"${ISSUE_BODY/完了条件/完了}" "${ISSUE_ARGS[@]}"
 expect_refuse "issue: an empty section is refused" "補足情報" \
 	"${ISSUE_BODY%なし*}" "${ISSUE_ARGS[@]}"
+expect_refuse "pr: every template heading is required, even one the template marks deletable" "補足事項" \
+	"${PR_BODY%%## 補足事項*}" "${PR_ARGS[@]}"
+printf '## 概要\n\n<!-- 1〜2行のサマリ -->\n\n## 補足事項\n\n<!-- なければ削除可 -->\n' >"$template_file"
+expect_refuse "pr: a template comment saying 削除可 does not make its heading optional" "補足事項" \
+	$'## 概要\n\nBody を検査してから開く。\n' "${PR_ARGS[@]}" --template "$template_file"
+run_form "${ISSUE_BODY%%## 補足情報*}" "${ISSUE_ARGS[@]}" --allow-missing 補足情報
+if ((RC == 1)) && [[ "$OUTPUT" == *"Usage:"* ]]; then
+	pass
+else
+	fail "issue: --allow-missing is not accepted, so no heading can be skipped" "want exit 1 and the usage, got exit ${RC}: ${OUTPUT}"
+fi
 long_body="${ISSUE_BODY}$(printf 'あ%.0s' {1..1000})"
 expect_refuse "issue: a URL over 8000 bytes is refused" "8000" \
 	"$long_body" "${ISSUE_ARGS[@]}"
