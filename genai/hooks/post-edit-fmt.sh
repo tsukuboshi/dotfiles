@@ -306,9 +306,24 @@ format_file() {
 		lint_ast_grep "$file_path" "$dir"
 		;;
 	*.ts | *.tsx | *.js | *.jsx | *.json)
-		# Only projects that configure biome are expected to have it.
-		if has_project_file "$dir" biome.json biome.jsonc; then
+		# Each tool the project configures runs, both where it uses biome to
+		# format and oxlint to lint, and biome with its defaults where it
+		# configures neither. The defaults leave JSON alone, since they would
+		# restyle JSON files the project formats some other way.
+		local oxlint_config=""
+		oxlint_config=$(find_config "$dir" .oxlintrc.json .oxlintrc.jsonc \
+			oxlint.config.ts oxlint.config.mts)
+		if has_project_file "$dir" biome.json biome.jsonc ||
+			[[ -z "$oxlint_config" && "$file_path" != *.json ]]; then
 			run_tool biome "$dir" check --fix "$file_path"
+		fi
+		# oxlint does not lint JSON. It reads its config only from the cwd,
+		# so it runs from the directory that holds it. Most of its default
+		# rules are warnings, which exit 0, so --deny-warnings reports them too.
+		if [[ -n "$oxlint_config" && "$file_path" != *.json ]]; then
+			pushd "${oxlint_config%/*}" >/dev/null || return 0
+			run_tool oxlint "$dir" --fix --deny-warnings --format unix "$file_path"
+			popd >/dev/null || return 0
 		fi
 		;;
 	*.go)

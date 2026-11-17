@@ -85,7 +85,27 @@ fmt_py() {
 	xargs ruff check --fix <<<"$1" 2>/dev/null
 	xargs ruff format <<<"$1" 2>/dev/null
 }
-fmt_js() { xargs biome check --fix <<<"$1" 2>/dev/null; }
+# Each tool the repository configures runs, as in the post-edit hook, and
+# biome with its defaults where it configures neither. The defaults leave
+# JSON alone, as there. oxlint reads its config from the cwd, which is the
+# repository root here, and does not lint JSON. Findings it cannot fix were
+# already reported by the post-edit hook.
+HAS_BIOME_CONFIG=false
+USE_OXLINT=false
+has_root_config biome.json biome.jsonc && HAS_BIOME_CONFIG=true
+has_root_config .oxlintrc.json .oxlintrc.jsonc oxlint.config.ts oxlint.config.mts &&
+	USE_OXLINT=true
+USE_BIOME=$HAS_BIOME_CONFIG
+$USE_OXLINT || USE_BIOME=true
+# GNU xargs runs oxlint once even on empty input, which would fix the whole
+# repository, so a commit of JSON alone skips it.
+fmt_js() {
+	local scripts
+	$USE_BIOME && xargs biome check --fix <<<"$1" >/dev/null 2>&1
+	scripts=$(grep -v '\.json$' <<<"$1")
+	$USE_OXLINT && [[ -n "$scripts" ]] && xargs oxlint --fix <<<"$scripts" >/dev/null 2>&1
+	return 0
+}
 fmt_go() { xargs golangci-lint fmt <<<"$1" >/dev/null 2>&1; }
 fmt_tf() { xargs terraform fmt <<<"$1" 2>/dev/null; }
 fmt_sh() { xargs shfmt -w <<<"$1" 2>/dev/null; }
@@ -174,10 +194,10 @@ elif command -v prek >/dev/null 2>&1 &&
 	run_prek
 else
 	process_ext '\.py$' fmt_py
-	# Only projects that configure biome are expected to have it, as in the
-	# post-edit hook.
-	if has_root_config biome.json biome.jsonc; then
+	if $HAS_BIOME_CONFIG; then
 		process_ext '\.(ts|tsx|js|jsx|json)$' fmt_js
+	else
+		process_ext '\.(ts|tsx|js|jsx)$' fmt_js
 	fi
 	process_ext '\.go$' fmt_go
 	process_ext '\.tf$' fmt_tf
