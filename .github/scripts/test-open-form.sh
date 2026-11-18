@@ -33,9 +33,9 @@ fail() {
 # Writes the body to the body file and runs the script with --dry-run,
 # leaving its stdout and stderr in OUTPUT and its exit code in RC.
 run_form() {
-	printf '%s' "$1" >"$body_file"
+	printf '%s' "$1" >"${body_file}"
 	shift
-	OUTPUT=$(bash "$@" --body-file "$body_file" --dry-run 2>&1)
+	OUTPUT=$(bash "$@" --body-file "${body_file}" --dry-run 2>&1)
 	RC=$?
 }
 
@@ -45,10 +45,10 @@ expect_open() {
 	local name=$1 want=$2
 	shift 2
 	run_form "$@"
-	if ((RC == 0)) && [[ "$OUTPUT" == "$want"* ]]; then
+	if ((RC == 0)) && [[ "${OUTPUT}" == "${want}"* ]]; then
 		pass
 	else
-		fail "$name" "want exit 0 and a URL starting with ${want}, got exit ${RC}: ${OUTPUT}"
+		fail "${name}" "want exit 0 and a URL starting with ${want}, got exit ${RC}: ${OUTPUT}"
 	fi
 }
 
@@ -58,15 +58,15 @@ expect_refuse() {
 	local name=$1 want=$2
 	shift 2
 	run_form "$@"
-	if ((RC == 2)) && [[ "$OUTPUT" == *"$want"* ]]; then
+	if ((RC == 2)) && [[ "${OUTPUT}" == *"${want}"* ]]; then
 		pass
 	else
-		fail "$name" "want exit 2 and '${want}', got exit ${RC}: ${OUTPUT}"
+		fail "${name}" "want exit 2 and '${want}', got exit ${RC}: ${OUTPUT}"
 	fi
 }
 
-ISSUE_ARGS=("$ISSUE_SCRIPT" issue --repo-url "$REPO_URL" --title "Body を検査したい" --template "$ISSUE_TEMPLATE")
-PR_ARGS=("$PR_SCRIPT" pr --repo-url "$REPO_URL" --base main --compare feat --title "feat: Body を検査する" --template "$PR_TEMPLATE")
+ISSUE_ARGS=("${ISSUE_SCRIPT}" issue --repo-url "${REPO_URL}" --title "Body を検査したい" --template "${ISSUE_TEMPLATE}")
+PR_ARGS=("${PR_SCRIPT}" pr --repo-url "${REPO_URL}" --base main --compare feat --title "feat: Body を検査する" --template "${PR_TEMPLATE}")
 
 ISSUE_BODY='## 背景
 
@@ -104,22 +104,22 @@ Body を検査してから開く。
 
 # open
 expect_open "issue: a body that follows the template opens" \
-	"${REPO_URL}/issues/new?title=" "$ISSUE_BODY" "${ISSUE_ARGS[@]}"
-run_form "$ISSUE_BODY" "${ISSUE_ARGS[@]}" --labels enhancement
-if ((RC == 0)) && [[ "$OUTPUT" == *"&body=%23%23%20"* && "$OUTPUT" == *"&labels=enhancement" ]]; then
+	"${REPO_URL}/issues/new?title=" "${ISSUE_BODY}" "${ISSUE_ARGS[@]}"
+run_form "${ISSUE_BODY}" "${ISSUE_ARGS[@]}" --labels enhancement
+if ((RC == 0)) && [[ "${OUTPUT}" == *"&body=%23%23%20"* && "${OUTPUT}" == *"&labels=enhancement" ]]; then
 	pass
 else
 	fail "issue: the URL carries the encoded body and the labels" "got exit ${RC}: ${OUTPUT}"
 fi
 expect_open "pr: a body that follows the template opens" \
-	"${REPO_URL}/compare/main...feat?quick_pull=1&title=" "$PR_BODY" "${PR_ARGS[@]}"
+	"${REPO_URL}/compare/main...feat?quick_pull=1&title=" "${PR_BODY}" "${PR_ARGS[@]}"
 expect_open "pr: a # in a branch name is encoded and a / is kept" \
-	"${REPO_URL}/compare/main...feat/fix%2312?quick_pull=1&title=" "$PR_BODY" "${PR_ARGS[@]}" --compare feat/fix#12
+	"${REPO_URL}/compare/main...feat/fix%2312?quick_pull=1&title=" "${PR_BODY}" "${PR_ARGS[@]}" --compare feat/fix#12
 # Built outside the ${//} below, where the bash 3.2 of macOS runs the
 # backquotes of a $'...' replacement as a command substitution.
 code_block=$'```html\n<!-- x -->\n```'
 expect_open "issue: a template comment inside a code block is content" \
-	"${REPO_URL}/issues/new?title=" "${ISSUE_BODY/なし/$code_block}" "${ISSUE_ARGS[@]}"
+	"${REPO_URL}/issues/new?title=" "${ISSUE_BODY/なし/${code_block}}" "${ISSUE_ARGS[@]}"
 expect_open "issue: a body that opens with a horizontal rule keeps its headings" \
 	"${REPO_URL}/issues/new?title=" "---"$'\n\n'"${ISSUE_BODY}" "${ISSUE_ARGS[@]}"
 expect_open "issue: #478 without a space is an issue reference, not a heading" \
@@ -128,27 +128,28 @@ expect_open "issue: a heading that starts with a number and goes on is a heading
 	"${REPO_URL}/issues/new?title=" "${ISSUE_BODY/なし/$'### 2026 年の計画\n\nなし'}" "${ISSUE_ARGS[@]}"
 issue_ref_in_code=$'```text\n# 478\n```'
 expect_open "issue: # 478 inside a code block is content" \
-	"${REPO_URL}/issues/new?title=" "${ISSUE_BODY/なし/$issue_ref_in_code}" "${ISSUE_ARGS[@]}"
+	"${REPO_URL}/issues/new?title=" "${ISSUE_BODY/なし/${issue_ref_in_code}}" "${ISSUE_ARGS[@]}"
 expect_open "issue: a section whose only content is a deeper heading after a tab is not empty" \
 	"${REPO_URL}/issues/new?title=" "${ISSUE_BODY/なし/$'###\t詳細\n\nなし'}" "${ISSUE_ARGS[@]}"
 english_body="${ISSUE_BODY}$(printf 'word %.0s' {1..600})"
 expect_open "issue: ASCII text is not encoded, so 3000 English characters fit" \
-	"${REPO_URL}/issues/new?title=" "$english_body" "${ISSUE_ARGS[@]}"
+	"${REPO_URL}/issues/new?title=" "${english_body}" "${ISSUE_ARGS[@]}"
 
 unformatted=$'## 背景\n\nなし\n## 完了条件\n\n- 開く\n\n## 補足情報\n\nなし'
-run_form "$unformatted" "${ISSUE_ARGS[@]}"
-if ((RC == 0)) && [[ "$(<"$body_file")" == "$unformatted" ]]; then
+run_form "${unformatted}" "${ISSUE_ARGS[@]}"
+if ((RC == 0)) && [[ "$(<"${body_file}")" == "${unformatted}" ]]; then
 	pass
 else
-	fail "issue: the body file passed in is left as it was" "got exit ${RC}: $(<"$body_file")"
+	fail "issue: the body file passed in is left as it was" "got exit ${RC}: $(<"${body_file}")"
 fi
 
 # A PATH without the linters, so each check reports that it was skipped.
-jq_dir=$(dirname "$(command -v jq)")
-OUTPUT=$(printf '%s' "$ISSUE_BODY" >"$body_file" &&
-	PATH="/usr/bin:/bin:${jq_dir}" bash "${ISSUE_ARGS[@]}" --body-file "$body_file" --dry-run 2>&1)
+jq_path=$(command -v jq)
+jq_dir=${jq_path%/*}
+OUTPUT=$(printf '%s' "${ISSUE_BODY}" >"${body_file}" &&
+	PATH="/usr/bin:/bin:${jq_dir}" bash "${ISSUE_ARGS[@]}" --body-file "${body_file}" --dry-run 2>&1)
 RC=$?
-if ((RC == 0)) && [[ "$OUTPUT" == *"gitleaks is not installed"* ]]; then
+if ((RC == 0)) && [[ "${OUTPUT}" == *"gitleaks is not installed"* ]]; then
 	pass
 else
 	fail "issue: a missing linter is reported as skipped" "got exit ${RC}: ${OUTPUT}"
@@ -163,11 +164,11 @@ expect_refuse "issue: an empty section is refused" "補足情報" \
 	"${ISSUE_BODY%なし*}" "${ISSUE_ARGS[@]}"
 expect_refuse "pr: every template heading is required, even one the template marks deletable" "補足事項" \
 	"${PR_BODY%%## 補足事項*}" "${PR_ARGS[@]}"
-printf '## 概要\n\n<!-- 1〜2行のサマリ -->\n\n## 補足事項\n\n<!-- なければ削除可 -->\n' >"$template_file"
+printf '## 概要\n\n<!-- 1〜2行のサマリ -->\n\n## 補足事項\n\n<!-- なければ削除可 -->\n' >"${template_file}"
 expect_refuse "pr: a template comment saying 削除可 does not make its heading optional" "補足事項" \
-	$'## 概要\n\nBody を検査してから開く。\n' "${PR_ARGS[@]}" --template "$template_file"
+	$'## 概要\n\nBody を検査してから開く。\n' "${PR_ARGS[@]}" --template "${template_file}"
 run_form "${ISSUE_BODY%%## 補足情報*}" "${ISSUE_ARGS[@]}" --allow-missing 補足情報
-if ((RC == 1)) && [[ "$OUTPUT" == *"Usage:"* ]]; then
+if ((RC == 1)) && [[ "${OUTPUT}" == *"Usage:"* ]]; then
 	pass
 else
 	fail "issue: --allow-missing is not accepted, so no heading can be skipped" "want exit 1 and the usage, got exit ${RC}: ${OUTPUT}"
@@ -178,7 +179,7 @@ expect_refuse "pr: ## 12 at the start of a line is a heading, not an issue refer
 	"${PR_BODY/Closes #1/## 12}" "${PR_ARGS[@]}"
 long_body="${ISSUE_BODY}$(printf 'あ%.0s' {1..1000})"
 expect_refuse "issue: a URL over 8000 bytes is refused" "8000" \
-	"$long_body" "${ISSUE_ARGS[@]}"
+	"${long_body}" "${ISSUE_ARGS[@]}"
 # Assembled at run time so the commit hook does not flag this file itself.
 token="ghp""_r7mqx2lk9vb4nc8zt1wy6hd3fj5ps0ga2k7q"
 expect_refuse "issue: a secret in the body is refused" "gitleaks" \
@@ -187,5 +188,5 @@ misspelling="te""h"
 expect_refuse "issue: a misspelling is refused" "typos" \
 	"${ISSUE_BODY/なし/see ${misspelling} docs}" "${ISSUE_ARGS[@]}"
 
-printf '%d passed, %d failed\n' "$PASSED" "$FAILED"
+printf '%d passed, %d failed\n' "${PASSED}" "${FAILED}"
 ((FAILED == 0))

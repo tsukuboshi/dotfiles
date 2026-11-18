@@ -4,7 +4,7 @@ SCRIPT_DIR="$(cd "$(dirname "$0")" && pwd)"
 
 get_multiplexer_config() {
 	local multiplexer_name=$1
-	case "$multiplexer_name" in
+	case "${multiplexer_name}" in
 	herdr)
 		echo "${HOME}/.config/herdr"
 		echo "config.toml"
@@ -36,9 +36,9 @@ link_multiplexer_config() {
 
 	printf "\n\033[1;36m=== Linking config to %s ===\033[0m\n" "${multiplexer_name}"
 
-	if [ ! -d "$config_path" ]; then
-		printf "\033[1;33m⚠ Directory does not exist. Creating: %s\033[0m\n" "$config_path"
-		mkdir -p "$config_path"
+	if [[ ! -d "${config_path}" ]]; then
+		printf "\033[1;33m⚠ Directory does not exist. Creating: %s\033[0m\n" "${config_path}"
+		mkdir -p "${config_path}"
 	fi
 
 	ln -fsvn "${SCRIPT_DIR}/${config_filename}" "${config_path}/${config_filename}"
@@ -51,15 +51,15 @@ setup_multiplexer() {
 	{
 		read -r config_path
 		read -r config_filename
-	} < <(get_multiplexer_config "$multiplexer_name")
+	} < <(get_multiplexer_config "${multiplexer_name}" || true)
 
-	if [ -z "$config_path" ]; then
+	if [[ -z "${config_path}" ]]; then
 		printf "\033[1;31m✗ Unknown multiplexer: %s\033[0m\n" "${multiplexer_name}"
 		printf "\033[1;33mAvailable multiplexers: herdr\033[0m\n"
 		return 1
 	fi
 
-	link_multiplexer_config "$multiplexer_name" "$config_path" "$config_filename"
+	link_multiplexer_config "${multiplexer_name}" "${config_path}" "${config_filename}"
 }
 
 MULTIPLEXER="herdr"
@@ -87,4 +87,4 @@ while [[ $# -gt 0 ]]; do
 	esac
 done
 
-setup_multiplexer "$MULTIPLEXER"
+setup_multiplexer "${MULTIPLEXER}"

@@ -5,10 +5,10 @@
 
 set -euo pipefail
 
-DOTFILES="$HOME/dotfiles"
+DOTFILES="${HOME}/dotfiles"
 
-if [[ ! -d "$DOTFILES" ]]; then
-	echo "WARNING: $DOTFILES not found. Check the bind-mount configuration." >&2
+if [[ ! -d "${DOTFILES}" ]]; then
+	echo "WARNING: ${DOTFILES} not found. Check the bind-mount configuration." >&2
 	exit 0
 fi
 
@@ -18,19 +18,20 @@ echo "=== post-create.sh: wiring up dotfiles ==="
 # .gitconfig contains macOS-specific settings (osxkeychain, code --wait), so it is
 # handled separately below using [include].
 echo "--- symlink shell dotfiles ---"
-for src in "$DOTFILES/common/".??*; do
-	name="$(basename "$src")"
-	case "$name" in
+for src in "${DOTFILES}/common/".??*; do
+	name="$(basename "${src}")"
+	case "${name}" in
 	.git | .github | .DS_Store | .Brewfile | .gitconfig) continue ;;
+	*) ;;
 	esac
-	ln -fsn "$src" "$HOME/$name"
+	ln -fsn "${src}" "${HOME}/${name}"
 done
 
 # ---------- .gitconfig (include the host config, override container-specific settings) ----------
 echo "--- generate container .gitconfig ---"
-cat >"$HOME/.gitconfig" <<EOF
+cat >"${HOME}/.gitconfig" <<EOF
 [include]
-	path = $DOTFILES/common/.gitconfig
+	path = ${DOTFILES}/common/.gitconfig
 [credential]
 	helper = store
 [core]
@@ -38,33 +39,33 @@ cat >"$HOME/.gitconfig" <<EOF
 EOF
 
 # .stCommitMsg (referenced by host .gitconfig commit.template; create an empty one to avoid commit errors)
-touch "$HOME/.stCommitMsg"
+touch "${HOME}/.stCommitMsg"
 
 # git-secrets template directory (referenced by [init].templatedir)
-git secrets --install -f "$HOME/.git-templates/git-secrets" >/dev/null
+git secrets --install -f "${HOME}/.git-templates/git-secrets" >/dev/null
 
 # ---------- mise (symlink runtime/config.toml and install runtimes) ----------
 echo "--- mise setup ---"
-mkdir -p "$HOME/.config/mise"
-ln -fsn "$DOTFILES/runtime/config.toml" "$HOME/.config/mise/config.toml"
-mise trust "$HOME/.config/mise/config.toml"
+mkdir -p "${HOME}/.config/mise"
+ln -fsn "${DOTFILES}/runtime/config.toml" "${HOME}/.config/mise/config.toml"
+mise trust "${HOME}/.config/mise/config.toml"
 mise install
 
 # ---------- Claude config (CLAUDE.md / settings.json / skills / rules) ----------
 echo "--- run genai/setup.sh -l ---"
-bash "$DOTFILES/genai/setup.sh" -l
+bash "${DOTFILES}/genai/setup.sh" -l
 
 # ---------- VS Code editor settings & extensions (single source of truth: editor/) ----------
 echo "--- link editor settings ---"
-mkdir -p "$HOME/.vscode-server/data/Machine"
-ln -fsn "$DOTFILES/editor/settings.json" "$HOME/.vscode-server/data/Machine/settings.json"
+mkdir -p "${HOME}/.vscode-server/data/Machine"
+ln -fsn "${DOTFILES}/editor/settings.json" "${HOME}/.vscode-server/data/Machine/settings.json"
 
 echo "--- install editor extensions ---"
 if command -v code >/dev/null 2>&1; then
 	while read -r ext; do
-		[ -z "$ext" ] && continue
-		code --install-extension "$ext" --force || true
-	done <"$DOTFILES/editor/extensions"
+		[[ -z "${ext}" ]] && continue
+		code --install-extension "${ext}" --force || true
+	done <"${DOTFILES}/editor/extensions"
 else
 	echo "WARNING: 'code' command not found; skipping extension install" >&2
 fi

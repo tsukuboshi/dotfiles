@@ -26,7 +26,7 @@ usage() {
 }
 
 kind=${1:-}
-[[ "$kind" == issue || "$kind" == pr ]] || usage
+[[ "${kind}" == issue || "${kind}" == pr ]] || usage
 shift
 
 repo_url="" title="" body_file="" template="" labels="" base="" compare=""
@@ -43,6 +43,7 @@ while (($# > 0)); do
 		--labels) labels=$2 ;;
 		--base) base=$2 ;;
 		--compare) compare=$2 ;;
+		*) ;; # Unreachable: the outer case lists the same options.
 		esac
 		shift 2
 		;;
@@ -53,9 +54,9 @@ while (($# > 0)); do
 	*) usage ;;
 	esac
 done
-[[ -n "$repo_url" && -n "$title" && -f "$body_file" ]] || usage
-[[ "$kind" == issue || (-n "$base" && -n "$compare") ]] || usage
-[[ -z "$template" || -f "$template" ]] || usage
+[[ -n "${repo_url}" && -n "${title}" && -f "${body_file}" ]] || usage
+[[ "${kind}" == issue || (-n "${base}" && -n "${compare}") ]] || usage
+[[ -z "${template}" || -f "${template}" ]] || usage
 command -v jq >/dev/null 2>&1 || {
 	echo "open_form: jq is required to encode the URL" >&2
 	exit 1
@@ -93,7 +94,11 @@ sections() {
 # three times its length out of the URL limit.
 urlencode() { jq -rn --arg s "$1" '$s | @uri'; }
 # A branch name keeps its slashes, which GitHub reads as part of the name.
-urlencode_branch() { urlencode "$1" | sed 's#%2F#/#g'; }
+urlencode_branch() {
+	local encoded
+	encoded=$(urlencode "$1")
+	printf '%s\n' "${encoded//%2F//}"
+}
 
 opener() {
 	case "$(uname -s)" in
@@ -127,37 +132,37 @@ check_tool() {
 # The checks read a formatted copy, so the caller's file stays as written.
 work_file=$(mktemp)
 trap 'rm -f "$work_file"' EXIT
-cp "$body_file" "$work_file"
+cp "${body_file}" "${work_file}"
 
 # Fix what rumdl can fix by itself, such as a missing final newline, before
 # anything reads the body.
 if command -v rumdl >/dev/null 2>&1; then
-	rumdl fmt "${RUMDL_ARGS[@]}" -- "$work_file" >/dev/null 2>&1
+	rumdl fmt "${RUMDL_ARGS[@]}" -- "${work_file}" >/dev/null 2>&1
 fi
-body=$(<"$work_file")
+body=$(<"${work_file}")
 
 # gitleaks exits 1 on its own errors too, so leaks get an exit code of their
 # own. --redact keeps the secret itself out of the transcript.
 if command -v gitleaks >/dev/null 2>&1; then
-	output=$(printf '%s\n\n%s\n' "$title" "$body" |
+	output=$(printf '%s\n\n%s\n' "${title}" "${body}" |
 		gitleaks stdin --no-banner --no-color --redact --log-level warn -v --exit-code 3 2>&1)
-	check_tool gitleaks "secrets in the title or body" 3 $? "$output"
+	check_tool gitleaks "secrets in the title or body" 3 $? "${output}"
 else
 	warnings+=("gitleaks is not installed; the title and body were not scanned for secrets")
 fi
 
 # rumdl exits 1 on violations and 2 on its own errors.
 if command -v rumdl >/dev/null 2>&1; then
-	output=$(rumdl check "${RUMDL_ARGS[@]}" --stdin --stdin-filename body.md <"$work_file" 2>&1)
-	check_tool rumdl "Markdown issues in the body" 1 $? "$output"
+	output=$(rumdl check "${RUMDL_ARGS[@]}" --stdin --stdin-filename body.md <"${work_file}" 2>&1)
+	check_tool rumdl "Markdown issues in the body" 1 $? "${output}"
 else
 	warnings+=("rumdl is not installed; the body was not checked for Markdown issues")
 fi
 
 # typos exits 2 on findings, as in the pre-commit hook.
 if command -v typos >/dev/null 2>&1; then
-	output=$(printf '%s\n\n%s\n' "$title" "$body" | typos --format brief --color never - 2>&1)
-	check_tool typos "misspellings in the title or body" 2 $? "$output"
+	output=$(printf '%s\n\n%s\n' "${title}" "${body}" | typos --format brief --color never - 2>&1)
+	check_tool typos "misspellings in the title or body" 2 $? "${output}"
 else
 	warnings+=("typos is not installed; the title and body were not checked for misspellings")
 fi
@@ -166,8 +171,8 @@ fi
 output=$(awk '
 	/^[ \t]*(```|~~~)/ { fence = !fence; next }
 	!fence && /<!--/ { print }
-' "$work_file")
-[[ -n "$output" ]] && findings+=("the body still has template comments; replace them with content or delete them:"$'\n'"${output}")
+' "${work_file}")
+[[ -n "${output}" ]] && findings+=("the body still has template comments; replace them with content or delete them:"$'\n'"${output}")
 
 # GitHub renders "# 478" as a heading instead of a link to #478, so a heading
 # that is only a number is an issue reference with a stray space. The
@@ -176,34 +181,39 @@ output=$(awk '
 output=$(awk '
 	/^[ \t]*(```|~~~)/ { fence = !fence; next }
 	!fence && /^(   |  | )?(######|#####|####|###|##|#)[ \t]+[0-9]+[ \t]*$/ { print }
-' "$work_file")
-[[ -n "$output" ]] && findings+=("the body has headings that are only a number; GitHub shows them as headings, not issue links, so remove the space after # (#478):"$'\n'"${output}")
+' "${work_file}")
+[[ -n "${output}" ]] && findings+=("the body has headings that are only a number; GitHub shows them as headings, not issue links, so remove the space after # (#478):"$'\n'"${output}")
 
-body_sections=$(sections "$work_file")
+body_sections=$(sections "${work_file}")
 while IFS=$'\t' read -r heading has_content; do
-	[[ -n "$heading" && "$has_content" == 0 ]] &&
+	[[ -n "${heading}" && "${has_content}" == 0 ]] &&
 		findings+=("section '${heading}' is empty; fill it, or write なし when there is nothing to say")
-done <<<"$body_sections"
+done <<<"${body_sections}"
 
 # Every heading of the template is required, so the body keeps the
 # template's sections whatever its comments say.
-if [[ -n "$template" ]]; then
+if [[ -n "${template}" ]]; then
+	body_headings=$(cut -f1 <<<"${body_sections}")
 	while IFS=$'\t' read -r heading _; do
-		[[ -z "$heading" ]] && continue
-		cut -f1 <<<"$body_sections" | grep -qxF -- "$heading" ||
+		[[ -z "${heading}" ]] && continue
+		grep -qxF -- "${heading}" <<<"${body_headings}" ||
 			findings+=("section '${heading}' of the template is missing from the body")
-	done < <(sections "$template" 1)
+	done < <(sections "${template}" 1 || true)
 fi
 
-if [[ "$kind" == issue ]]; then
+if [[ "${kind}" == issue ]]; then
 	url="${repo_url}/issues/new?"
 else
-	url="${repo_url}/compare/$(urlencode_branch "$base")...$(urlencode_branch "$compare")?quick_pull=1&"
+	base_ref=$(urlencode_branch "${base}")
+	compare_ref=$(urlencode_branch "${compare}")
+	url="${repo_url}/compare/${base_ref}...${compare_ref}?quick_pull=1&"
 fi
-url+="title=$(urlencode "$title")&body=$(urlencode "$body")"
+encoded_title=$(urlencode "${title}")
+encoded_body=$(urlencode "${body}")
+url+="title=${encoded_title}&body=${encoded_body}"
 gh_user=$(git config github.user 2>/dev/null)
-[[ -n "$gh_user" ]] && url+="&assignees=$(urlencode "$gh_user")"
-[[ -n "$labels" ]] && url+="&labels=$(urlencode "$labels")"
+[[ -n "${gh_user}" ]] && url+="&assignees=$(urlencode "${gh_user}")"
+[[ -n "${labels}" ]] && url+="&labels=$(urlencode "${labels}")"
 # The URL is all ASCII once encoded, so its length in characters is its
 # length in bytes.
 ((${#url} > MAX_URL_BYTES)) &&
@@ -217,8 +227,8 @@ if ((${#findings[@]} > 0)); then
 	exit 2
 fi
 
-if $dry_run; then
-	printf '%s\n' "$url"
+if ${dry_run}; then
+	printf '%s\n' "${url}"
 else
-	opener "$url"
+	opener "${url}"
 fi

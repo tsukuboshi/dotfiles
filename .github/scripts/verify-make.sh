@@ -25,7 +25,7 @@ expect_link() {
 	if [[ -L "$1" && "$1" -ef "$2" ]]; then
 		pass
 	else
-		fail "${1} links to ${2#"${root}/"}" "got $(ls -ld "$1" 2>&1)"
+		fail "${1} links to ${2#"${root}/"}" "got $(ls -ld "$1" 2>&1 || true)"
 	fi
 }
 
@@ -36,9 +36,9 @@ expect_link() {
 expect_dir_links() {
 	local entry
 	for entry in "$2"/$3; do
-		[[ "$3" == '*/' && -d "$entry" || -f "$entry" ]] || continue
+		[[ "$3" == '*/' && -d "${entry}" || -f "${entry}" ]] || continue
 		entry=${entry%/}
-		expect_link "${1}/${entry##*/}" "$entry"
+		expect_link "${1}/${entry##*/}" "${entry}"
 	done
 }
 
@@ -46,8 +46,9 @@ expect_dir_links() {
 for dotfile in "${root}/common"/.??*; do
 	case "${dotfile##*/}" in
 	.git | .github | .DS_Store) continue ;;
+	*) ;;
 	esac
-	expect_link "${HOME}/${dotfile##*/}" "$dotfile"
+	expect_link "${HOME}/${dotfile##*/}" "${dotfile}"
 done
 
 # genai/setup.sh -l for each agent.
@@ -68,15 +69,18 @@ expect_dir_links "${HOME}/.kiro/steering" "${G}/rules" '*'
 # the marker instead of linking it.
 marker="# --- dotfiles managed config end ---"
 managed() {
-	awk -v marker="$marker" '$0 == marker { exit } { print }' "$1"
+	awk -v marker="${marker}" '$0 == marker { exit } { print }' "$1"
 }
+# Read before the check below, so a missing file only leaves it empty.
+codex_managed=$(managed "${HOME}/.codex/config.toml" 2>/dev/null)
+repo_managed=$(managed "${G}/config.toml")
 if [[ -f "${HOME}/.codex/config.toml" && ! -L "${HOME}/.codex/config.toml" ]] &&
-	grep -Fxq "$marker" "${HOME}/.codex/config.toml" &&
-	[[ "$(managed "${HOME}/.codex/config.toml")" == "$(managed "${G}/config.toml")" ]]; then
+	grep -Fxq "${marker}" "${HOME}/.codex/config.toml" &&
+	[[ "${codex_managed}" == "${repo_managed}" ]]; then
 	pass
 else
 	fail "${HOME}/.codex/config.toml matches genai/config.toml above the marker" \
-		"got $(ls -ld "${HOME}/.codex/config.toml" 2>&1)"
+		"got $(ls -ld "${HOME}/.codex/config.toml" 2>&1 || true)"
 fi
 
 # runtime/setup.sh -l, multiplexer/setup.sh and editor/setup.sh -l.
@@ -89,7 +93,7 @@ for script in .sleep .wakeup; do
 	if [[ -x "${HOME}/${script}" ]] && grep -q 'blueutil -p [01]$' "${HOME}/${script}"; then
 		pass
 	else
-		fail "${HOME}/${script} toggles Bluetooth with blueutil" "got $(cat "${HOME}/${script}" 2>&1)"
+		fail "${HOME}/${script} toggles Bluetooth with blueutil" "got $(cat "${HOME}/${script}" 2>&1 || true)"
 	fi
 done
 
@@ -100,8 +104,8 @@ if output=$(HOMEBREW_NO_AUTO_UPDATE=1 HOMEBREW_BUNDLE_NO_UPGRADE=1 \
 	brew bundle check --global --verbose 2>&1); then
 	pass
 else
-	fail "every package in common/.Brewfile is installed" "$output"
+	fail "every package in common/.Brewfile is installed" "${output}"
 fi
 
-printf '%d passed, %d failed\n' "$PASSED" "$FAILED"
+printf '%d passed, %d failed\n' "${PASSED}" "${FAILED}"
 ((FAILED == 0))

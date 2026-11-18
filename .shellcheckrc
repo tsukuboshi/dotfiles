@@ -1,0 +1,9 @@
+# Every optional check is enabled, so scripts here are held to the strictest
+# rules shellcheck has. shellcheck finds this file by searching upward from
+# each script, so the post-edit hook and CI pick it up without --rcfile, and
+# scripts in other repositories keep the default rules.
+enable=all
+# Follow `source` into the files it reads, resolved from the script's own
+# directory, so they are checked along with the script.
+external-sources=true
+source-path=SCRIPTDIR

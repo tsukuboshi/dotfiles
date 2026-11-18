@@ -4,7 +4,7 @@ SCRIPT_DIR="$(cd "$(dirname "$0")" && pwd)"
 
 get_runtime_config() {
 	local runtime_name=$1
-	case "$runtime_name" in
+	case "${runtime_name}" in
 	mise)
 		echo "mise"
 		echo "${HOME}/.config/mise"
@@ -41,9 +41,9 @@ link_runtime_config() {
 
 	printf "\n\033[1;36m=== Linking config to %s ===\033[0m\n" "${runtime_name}"
 
-	if [ ! -d "$config_path" ]; then
-		printf "\033[1;33m⚠ Directory does not exist. Creating: %s\033[0m\n" "$config_path"
-		mkdir -p "$config_path"
+	if [[ ! -d "${config_path}" ]]; then
+		printf "\033[1;33m⚠ Directory does not exist. Creating: %s\033[0m\n" "${config_path}"
+		mkdir -p "${config_path}"
 	fi
 
 	ln -fsvn "${SCRIPT_DIR}/config.toml" "${config_path}/config.toml"
@@ -54,8 +54,8 @@ install_runtime_plugins() {
 	local command_name=$2
 
 	printf "\n\033[1;36m=== Installing plugins to %s ===\033[0m\n" "${runtime_name}"
-	if command -v "$command_name" &>/dev/null; then
-		"$command_name" install
+	if command -v "${command_name}" &>/dev/null; then
+		"${command_name}" install
 	else
 		printf "\033[1;31m✗ %s command not found. Skipping plugins installation\033[0m\n" "${command_name}"
 	fi
@@ -69,24 +69,24 @@ setup_runtime() {
 	{
 		read -r command_name
 		read -r config_path
-	} < <(get_runtime_config "$runtime_name")
+	} < <(get_runtime_config "${runtime_name}" || true)
 
-	if [ -z "$config_path" ]; then
+	if [[ -z "${config_path}" ]]; then
 		printf "\033[1;31m✗ Unknown runtime: %s\033[0m\n" "${runtime_name}"
 		printf "\033[1;33mAvailable runtimes: mise\033[0m\n"
 		return 1
 	fi
 
-	case "$mode" in
+	case "${mode}" in
 	link)
-		link_runtime_config "$runtime_name" "$config_path"
+		link_runtime_config "${runtime_name}" "${config_path}"
 		;;
 	install)
-		install_runtime_plugins "$runtime_name" "$command_name"
+		install_runtime_plugins "${runtime_name}" "${command_name}"
 		;;
 	*)
-		link_runtime_config "$runtime_name" "$config_path"
-		install_runtime_plugins "$runtime_name" "$command_name"
+		link_runtime_config "${runtime_name}" "${config_path}"
+		install_runtime_plugins "${runtime_name}" "${command_name}"
 		;;
 	esac
 }
@@ -125,4 +125,4 @@ while [[ $# -gt 0 ]]; do
 	esac
 done
 
-setup_runtime "$RUNTIME" "$MODE"
+setup_runtime "${RUNTIME}" "${MODE}"

@@ -26,8 +26,9 @@ fail() {
 # Runs post-edit-fmt.sh on an Edit of the file, leaving its stdout and
 # stderr in OUTPUT and its exit code in RC.
 post_edit() {
-	OUTPUT=$(jq -n --arg f "$1" '{tool_name: "Edit", tool_input: {file_path: $f}}' |
-		bash "${HOOKS_DIR}/post-edit-fmt.sh" 2>&1)
+	local input
+	input=$(jq -n --arg f "$1" '{tool_name: "Edit", tool_input: {file_path: $f}}')
+	OUTPUT=$(bash "${HOOKS_DIR}/post-edit-fmt.sh" <<<"${input}" 2>&1)
 	RC=$?
 }
 
@@ -36,10 +37,10 @@ post_edit() {
 # want-message is empty.
 expect_rc() {
 	local name=$1 want_rc=$2 want=$3
-	if ((RC == want_rc)) && { [[ -z "$want" && -z "$OUTPUT" ]] || [[ -n "$want" && "$OUTPUT" == *"$want"* ]]; }; then
+	if ((RC == want_rc)) && { [[ -z "${want}" && -z "${OUTPUT}" ]] || [[ -n "${want}" && "${OUTPUT}" == *"${want}"* ]]; }; then
 		pass
 	else
-		fail "$name" "want exit ${want_rc} and '${want}', got exit ${RC}: ${OUTPUT}"
+		fail "${name}" "want exit ${want_rc} and '${want}', got exit ${RC}: ${OUTPUT}"
 	fi
 }
 
@@ -63,17 +64,33 @@ printf "#!/bin/bash\necho \$1\n" >"${P}/unquoted.sh"
 post_edit "${P}/unquoted.sh"
 expect_rc "post-edit: a shellcheck finding is reported with exit 2" 2 "[shellcheck]"
 
+# The linter finds the repository's .shellcheckrc by searching upward from
+# the script, so a link to it beside a fixture stands in for a script here.
+mkdir -p "${P}/strict"
+ln -s "${root}/.shellcheckrc" "${P}/strict/.shellcheckrc"
+printf "#!/bin/bash\necho \"\$HOME\"\n" >"${P}/strict/braces.sh"
+post_edit "${P}/strict/braces.sh"
+expect_rc "post-edit: the repository's .shellcheckrc enables the optional checks" 2 "SC2250"
+
+# A directory linked from elsewhere, like the skills under ~/.claude, has no
+# .shellcheckrc above the link; the linter resolves the link and finds it.
+mkdir -p "${P}/strict/sub"
+printf "#!/bin/bash\necho \"\$HOME\"\n" >"${P}/strict/sub/linked.sh"
+ln -s "${P}/strict/sub" "${P}/linked-sub"
+post_edit "${P}/linked-sub/linked.sh"
+expect_rc "post-edit: a script edited through a linked directory gets the repository's .shellcheckrc" 2 "SC2250"
+
 printf "#!/bin/bash\nrm -rf \"\$1\"\n" >"${P}/recursive-rm.sh"
 post_edit "${P}/recursive-rm.sh"
 expect_rc "post-edit: a recursive rm is reported by ast-grep" 2 "sh-no-recursive-rm"
 
 # Assembled at run time so typos does not flag this file itself.
 misspelling="te""h"
-printf '# Notes\n\nSee %s docs.\n' "$misspelling" >"${P}/notes.md"
+printf '# Notes\n\nSee %s docs.\n' "${misspelling}" >"${P}/notes.md"
 post_edit "${P}/notes.md"
 expect_rc "post-edit: a misspelling in Markdown is reported by typos" 2 "[typos]"
 
-printf 'name: %s\n' "$misspelling" >"${P}/deps.lock.yaml"
+printf 'name: %s\n' "${misspelling}" >"${P}/deps.lock.yaml"
 post_edit "${P}/deps.lock.yaml"
 expect_rc "post-edit: a lock file is left alone" 0 ""
 
@@ -102,13 +119,14 @@ expect_rc "post-edit: a recursive rm in a .zsh script is reported by ast-grep" 2
 
 # Codex reports the edited files inside the patch body, one per header.
 printf '#!/bin/bash\nif true; then\n    echo "hello"\nfi\n' >"${P}/patched.sh"
-printf '# Notes\n\nSee %s docs.\n' "$misspelling" >"${P}/patched.md"
-OUTPUT=$(jq -n --arg sh "${P}/patched.sh" --arg md "${P}/patched.md" '{
+printf '# Notes\n\nSee %s docs.\n' "${misspelling}" >"${P}/patched.md"
+input=$(jq -n --arg sh "${P}/patched.sh" --arg md "${P}/patched.md" '{
 	tool_name: "apply_patch",
 	tool_input: {command: "*** Begin Patch\n*** Add File: \($sh)\n+x\n*** Update File: \($md)\n@@\n+x\n*** End Patch"}
-}' | bash "${HOOKS_DIR}/post-edit-fmt.sh" 2>&1)
+}')
+OUTPUT=$(bash "${HOOKS_DIR}/post-edit-fmt.sh" <<<"${input}" 2>&1)
 RC=$?
-if ((RC == 2)) && [[ "$OUTPUT" == *"[typos]"* && "$(<"${P}/patched.sh")" == *$'\techo'* ]]; then
+if ((RC == 2)) && [[ "${OUTPUT}" == *"[typos]"* && "$(<"${P}/patched.sh")" == *$'\techo'* ]]; then
 	pass
 else
 	fail "post-edit: apply_patch checks every file the patch names" "got exit ${RC}: ${OUTPUT}"
@@ -117,12 +135,13 @@ fi
 # A PATH holding only the commands the hook itself needs, so each linter
 # called for is reported missing even where the runner has one in /usr/bin.
 bare_bin="${WORK}/bare-bin"
-mkdir -p "$bare_bin"
+mkdir -p "${bare_bin}"
 for cmd in cat jq dirname sort paste sed grep awk; do
-	ln -s "$(command -v "$cmd")" "${bare_bin}/${cmd}"
+	cmd_path=$(command -v "${cmd}")
+	ln -s "${cmd_path}" "${bare_bin}/${cmd}"
 done
-OUTPUT=$(jq -n --arg f "${P}/clean.sh" '{tool_name: "Edit", tool_input: {file_path: $f}}' |
-	PATH="$bare_bin" "$BASH" "${HOOKS_DIR}/post-edit-fmt.sh" 2>&1)
+input=$(jq -n --arg f "${P}/clean.sh" '{tool_name: "Edit", tool_input: {file_path: $f}}')
+OUTPUT=$(PATH="${bare_bin}" "${BASH}" "${HOOKS_DIR}/post-edit-fmt.sh" <<<"${input}" 2>&1)
 RC=$?
 expect_rc "post-edit: missing linters are listed with exit 1" 1 \
 	"ast-grep, shellcheck, shfmt, typos unavailable"
@@ -135,14 +154,14 @@ COMMIT_INPUT='{"tool_name": "Bash", "tool_input": {"command": "git commit -m tes
 # --template= keeps the user's git hooks and templates out of it.
 new_repo() {
 	REPO=$(mktemp -d "${WORK}/repo.XXXXXX")
-	git -C "$REPO" init -q --template=
+	git -C "${REPO}" init -q --template=
 }
 
 # pre_commit [input]
 # Runs pre-commit-fmt.sh from REPO on a git commit, or on the input given,
 # leaving its stdout and stderr in OUTPUT and its exit code in RC.
 pre_commit() {
-	OUTPUT=$(cd "$REPO" && printf '%s' "${1:-$COMMIT_INPUT}" | bash "${HOOKS_DIR}/pre-commit-fmt.sh" 2>&1)
+	OUTPUT=$(cd "${REPO}" && printf '%s' "${1:-${COMMIT_INPUT}}" | bash "${HOOKS_DIR}/pre-commit-fmt.sh" 2>&1)
 	RC=$?
 }
 
@@ -155,10 +174,10 @@ expect_rc "pre-commit: a commit with nothing staged passes" 0 ""
 
 new_repo
 printf '#!/bin/bash\nif true; then\n    echo "hello"\nfi\n' >"${REPO}/fmt.sh"
-git -C "$REPO" add fmt.sh
+git -C "${REPO}" add fmt.sh
 pre_commit
-if ((RC == 0)) && [[ "$OUTPUT" == *"formatted 1 file(s): fmt.sh"* &&
-	"$(git -C "$REPO" show :fmt.sh)" == *$'\techo'* ]]; then
+staged=$(git -C "${REPO}" show :fmt.sh)
+if ((RC == 0)) && [[ "${OUTPUT}" == *"formatted 1 file(s): fmt.sh"* && "${staged}" == *$'\techo'* ]]; then
 	pass
 else
 	fail "pre-commit: a staged script is formatted and restaged" "got exit ${RC}: ${OUTPUT}"
@@ -166,11 +185,12 @@ fi
 
 new_repo
 printf '#!/bin/bash\nif true; then\n    echo "hello"\nfi\n' >"${REPO}/partial.sh"
-git -C "$REPO" add partial.sh
+git -C "${REPO}" add partial.sh
 printf 'echo "unstaged"\n' >>"${REPO}/partial.sh"
 pre_commit
-if ((RC == 0)) && [[ "$OUTPUT" == *"left partially staged file(s) unformatted: partial.sh"* &&
-	"$(git -C "$REPO" show :partial.sh)" == *"    echo"* ]]; then
+staged=$(git -C "${REPO}" show :partial.sh)
+if ((RC == 0)) && [[ "${OUTPUT}" == *"left partially staged file(s) unformatted: partial.sh"* &&
+	"${staged}" == *"    echo"* ]]; then
 	pass
 else
 	fail "pre-commit: a partially staged file is left as staged" "got exit ${RC}: ${OUTPUT}"
@@ -179,22 +199,22 @@ fi
 new_repo
 # Assembled at run time so the commit hook does not flag this file itself.
 token="ghp""_r7mqx2lk9vb4nc8zt1wy6hd3fj5ps0ga2k7q"
-printf 'token = "%s"\n' "$token" >"${REPO}/config.txt"
-git -C "$REPO" add config.txt
+printf 'token = "%s"\n' "${token}" >"${REPO}/config.txt"
+git -C "${REPO}" add config.txt
 pre_commit
 expect_rc "pre-commit: a staged secret blocks the commit" 2 "gitleaks found secrets"
 
 new_repo
 printf "#!/bin/bash\nrm -rf \"\$1\"\n" >"${REPO}/clean.sh"
-git -C "$REPO" add clean.sh
+git -C "${REPO}" add clean.sh
 pre_commit
 expect_rc "pre-commit: a recursive rm blocks the commit" 2 "sh-no-recursive-rm"
 
 new_repo
-printf '# Notes\n\nSee %s docs.\n' "$misspelling" >"${REPO}/notes.md"
-git -C "$REPO" add notes.md
+printf '# Notes\n\nSee %s docs.\n' "${misspelling}" >"${REPO}/notes.md"
+git -C "${REPO}" add notes.md
 pre_commit
 expect_rc "pre-commit: a misspelling blocks the commit" 2 "typos found misspellings"
 
-printf '%d passed, %d failed\n' "$PASSED" "$FAILED"
+printf '%d passed, %d failed\n' "${PASSED}" "${FAILED}"
 ((FAILED == 0))

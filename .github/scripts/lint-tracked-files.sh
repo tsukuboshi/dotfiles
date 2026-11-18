@@ -7,7 +7,7 @@
 set -u
 
 root=$(git rev-parse --show-toplevel) || exit 1
-cd "$root" || exit 1
+cd "${root}" || exit 1
 hook="${root}/genai/hooks/post-edit-fmt.sh"
 
 # Files another tool owns and rewrites: herdr overwrites its integration
@@ -19,25 +19,25 @@ excluded=(
 is_excluded() {
 	local path
 	for path in "${excluded[@]}"; do
-		[[ "$1" == "$path" ]] && return 0
+		[[ "$1" == "${path}" ]] && return 0
 	done
 	return 1
 }
 
 status=0
 while IFS= read -r -d '' file; do
-	is_excluded "$file" && continue
-	output=$(jq -n --arg f "${root}/${file}" '{tool_name: "Edit", tool_input: {file_path: $f}}' |
-		bash "$hook" 2>&1)
+	is_excluded "${file}" && continue
+	input=$(jq -n --arg f "${root}/${file}" '{tool_name: "Edit", tool_input: {file_path: $f}}')
+	output=$(bash "${hook}" <<<"${input}" 2>&1)
 	rc=$?
 	if ((rc != 0)); then
-		printf '== %s (exit %d)\n%s\n' "$file" "$rc" "$output"
+		printf '== %s (exit %d)\n%s\n' "${file}" "${rc}" "${output}"
 		status=1
 	fi
-done < <(git ls-files -z)
+done < <(git ls-files -z || true)
 
 if ! git diff --exit-code --stat; then
 	echo "lint-tracked-files: the formatters rewrote the files above; run them locally and commit the result"
 	status=1
 fi
-exit "$status"
+exit "${status}"
