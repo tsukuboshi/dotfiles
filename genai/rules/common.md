@@ -87,6 +87,7 @@ GitHub を扱うスキルは `gh` コマンドの代わりに使う。`gh` の O
 | `triage` | 他者から届いた issue・PR を分類・検証して agent-ready にするとき。`to-tickets` が作ったチケットは既に agent-ready なので対象外 |
 | `improve-codebase-architecture` | コードベースの設計改善候補を洗い出したいとき。HTML レポートで候補を提示し、選ばれた候補を grilling で詰める |
 | `prepare-oss` | リポジトリ、または親リポジトリ内で作り後から切り出すディレクトリを、OSS として公開する準備をするとき。`/prepare-oss [対象のパス]` の形で起動するよう促す（未指定なら今のリポジトリ） |
+| `visualize-diff` | コミットやブランチの差分を、差分を読んでいない人にも分かる形で説明したいとき。図と短い文の解説 HTML を作り、描画を確かめてからブラウザで開く。`/visualize-diff [コミット \| レンジ \| ブランチ]` の形で起動するよう促す（未指定なら base より先行するコミット、なければ HEAD） |
 
 `to-spec` / `to-tickets` / `triage` / `wayfinder` が Issue を発行・操作するときは、`open-issue` / `open-pr` と同様に GitHub Web UI（Issue 作成 URL をブラウザで開く）を使う。ラベル付与や blocking link の設定は Web UI 上の操作としてユーザーに依頼し、Web UI で表現しきれない依存関係はチケット本文に記載する。
 
