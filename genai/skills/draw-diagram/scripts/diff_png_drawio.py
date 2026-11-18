@@ -79,6 +79,8 @@ def main() -> None:
 
     require_safe_expat()
     png_page = embedded_mxfile(args.png).find("diagram")
+    if png_page is None:
+        sys.exit(f"{args.png} の図データにページがない")
     pages = ET.parse(args.drawio).getroot().findall("diagram")  # noqa: S314 -- 同上
     page = next(
         (p for p in pages if p.get("id") == png_page.get("id")),
