@@ -1,17 +1,17 @@
 ---
 name: "create-commit"
-description: "Generate commit message from staged changes and repository history, then commit — one commit per logical change, asking whether to stack them on separate branches for Stacked PRs. Use this skill whenever the user wants to commit, save changes, or asks to generate a commit message — even casually like 'commit this' or 'save my changes'."
+description: "Generate commit message from the given files (Files Default: every change in the repository) and repository history, then commit — one commit per logical change, asking whether to stack them on separate branches for Stacked PRs. Use this skill whenever the user wants to commit, save changes, or asks to generate a commit message — even casually like 'commit this' or 'save my changes'."
 argument-hint: "[file ...]"
 ---
 
-以下の手順でステージされた変更を論理的変更ごとのコミットに分け、コミットメッセージを生成して`git commit`を実行してください。
+以下の手順で変更をステージし、論理的変更ごとのコミットに分け、コミットメッセージを生成して`git commit`を実行してください。
 
 # 引数の解決
 
 `ARGUMENT`は以下の引数を受け取ります。
 
 ```bash
-# file ...: git add するファイルパス（複数指定可、省略可）
+# file ...: git add するファイルパス（複数指定可、省略可。省略時はリポジトリの変更すべて）
 # スペース区切りまたはクォートで囲まれたパスの連結（例: 'path1''path2'）の両方を受け付ける
 ```
 
@@ -23,7 +23,11 @@ argument-hint: "[file ...]"
 git add ファイルパス1 ファイルパス2 ...
 ```
 
-ファイルパスが指定されていない場合、このステップをスキップしてください。
+ファイルパスが指定されていない場合、リポジトリ全体の変更（変更・削除・`.gitignore` されていない未追跡ファイル）をステージングしてください。
+
+```bash
+git add -A
+```
 
 # ステージング内容の確認とコミット履歴のスタイル確認
 
@@ -50,6 +54,7 @@ git branch -r --format='%(refname:lstrip=3)'
 ```
 
 ステージされた変更がない場合は、その旨をユーザーに伝えて処理を終了してください。
+`git add -A` でステージした未追跡ファイルに、秘密情報や一時ファイルなどコミットすべきでないものが含まれていたら、`git reset <ファイル>` でステージから外し、その旨をユーザーに伝えてください。
 
 取得したコミット履歴から、以下の観点のみ分析してください：
 
@@ -117,7 +122,7 @@ git reset
 git apply --cached パッチファイル
 ```
 
-もともとステージされていなかった変更は、どの単位にも含めず作業ツリーに残してください。
+引数にファイルパスを指定した場合、もともとステージされていなかった変更は、どの単位にも含めず作業ツリーに残してください。
 
 ## コミットメッセージの生成
 
