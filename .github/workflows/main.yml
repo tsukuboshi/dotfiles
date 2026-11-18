@@ -121,6 +121,10 @@ jobs:
         if: ${{ !cancelled() }}
         run: bash .github/scripts/test-open-form.sh
 
+      - name: Test the page check of visualize-diff
+        if: ${{ !cancelled() }}
+        run: bash .github/scripts/test-verify-page.sh
+
   make:
     name: Make
     runs-on: macos-latest
