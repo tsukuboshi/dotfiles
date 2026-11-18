@@ -10,10 +10,10 @@ print_result() {
 	local description="$1" output
 	shift
 	if output=$("$@" 2>&1); then
-		printf "\033[1;32m✓\033[0m %s\n" "$description"
+		printf "\033[1;32m✓\033[0m %s\n" "${description}"
 	else
-		printf "\033[1;31m✗\033[0m %s\n" "$description"
-		[[ -n "$output" ]] && printf "  %s\n" "$output"
+		printf "\033[1;31m✗\033[0m %s\n" "${description}"
+		[[ -n "${output}" ]] && printf "  %s\n" "${output}"
 		FAILED=$((FAILED + 1))
 	fi
 }
@@ -79,6 +79,6 @@ for app in "Dock" \
 done
 
 if ((FAILED > 0)); then
-	printf "\n\033[1;31m✗ %d setting(s) could not be applied\033[0m\n" "$FAILED"
+	printf "\n\033[1;31m✗ %d setting(s) could not be applied\033[0m\n" "${FAILED}"
 	exit 1
 fi

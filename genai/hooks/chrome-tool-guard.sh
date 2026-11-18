@@ -27,12 +27,12 @@
 # trusted tool's tab context.
 
 INPUT=$(cat)
-EVENT=$(jq -r '.hook_event_name // empty' <<<"$INPUT" 2>/dev/null)
-TOOL_NAME=$(jq -r '.tool_name // empty' <<<"$INPUT" 2>/dev/null)
-SESSION_ID=$(jq -r '.session_id // empty' <<<"$INPUT" 2>/dev/null | tr -cd 'A-Za-z0-9-')
+EVENT=$(jq -r '.hook_event_name // empty' <<<"${INPUT}" 2>/dev/null)
+TOOL_NAME=$(jq -r '.tool_name // empty' <<<"${INPUT}" 2>/dev/null)
+SESSION_ID=$(jq -r '.session_id // empty' <<<"${INPUT}" 2>/dev/null | tr -cd 'A-Za-z0-9-' || true)
 
-STATE_DIR="${XDG_STATE_HOME:-$HOME/.local/state}/claude-chrome-guard"
-TAB_FILE="$STATE_DIR/tabs-${SESSION_ID:-unknown}.tsv"
+STATE_DIR="${XDG_STATE_HOME:-${HOME}/.local/state}/claude-chrome-guard"
+TAB_FILE="${STATE_DIR}/tabs-${SESSION_ID:-unknown}.tsv"
 
 LOOPBACK_URL_RE='^https?://(127\.0\.0\.1|localhost|[a-z0-9-]+\.localhost|\[::1\])(:[0-9]+)?(/|$)'
 TAB_LINE_RE='tabId ([0-9]+): .*\("([^"]*)"\)[[:space:]]*$'
@@ -53,13 +53,13 @@ ALLOWED_SCRIPT_SHA256_FILE="${BASH_SOURCE[0]%/*}/chrome-tool-guard.allowed-sha25
 # Prints "<sha256> <origin>" for each well-formed line of the hash file.
 registered_scripts() {
 	local hash origin
-	[[ -r "$ALLOWED_SCRIPT_SHA256_FILE" ]] || return 0
-	while read -r hash origin _ || [[ -n "$hash" ]]; do
+	[[ -r "${ALLOWED_SCRIPT_SHA256_FILE}" ]] || return 0
+	while read -r hash origin _ || [[ -n "${hash}" ]]; do
 		# A file saved with CRLF line endings leaves \r on each line.
 		hash=${hash%$'\r'} origin=${origin%$'\r'}
-		[[ "$hash" =~ ^[0-9a-f]{64}$ && "$origin" =~ ^https?://[a-z0-9.-]+(:[0-9]+)?$ ]] &&
-			printf '%s %s\n' "$hash" "$origin"
-	done <"$ALLOWED_SCRIPT_SHA256_FILE"
+		[[ "${hash}" =~ ^[0-9a-f]{64}$ && "${origin}" =~ ^https?://[a-z0-9.-]+(:[0-9]+)?$ ]] &&
+			printf '%s %s\n' "${hash}" "${origin}"
+	done <"${ALLOWED_SCRIPT_SHA256_FILE}"
 }
 
 # Prints the scheme://host[:port] of a URL, or nothing.
@@ -69,31 +69,31 @@ origin_of() {
 
 record_tab_urls() {
 	local text line tab_id url origin registered trusted=0
-	text=$(jq -r '.tool_response | [.. | strings] | .[]' <<<"$INPUT" 2>/dev/null) || return 0
-	mkdir -p "$STATE_DIR" && chmod 700 "$STATE_DIR" || return 0
-	[[ "$TOOL_NAME" =~ $TRUSTED_TOOLS_RE ]] && trusted=1
+	text=$(jq -r '.tool_response | [.. | strings] | .[]' <<<"${INPUT}" 2>/dev/null) || return 0
+	mkdir -p "${STATE_DIR}" && chmod 700 "${STATE_DIR}" || return 0
+	[[ "${TOOL_NAME}" =~ ${TRUSTED_TOOLS_RE} ]] && trusted=1
 	((trusted)) || registered=$(registered_scripts)
 	while IFS= read -r line; do
-		[[ "$line" =~ $TAB_LINE_RE ]] || continue
+		[[ "${line}" =~ ${TAB_LINE_RE} ]] || continue
 		# Copied out before the next match below resets BASH_REMATCH.
 		tab_id=${BASH_REMATCH[1]} url=${BASH_REMATCH[2]}
 		if ((! trusted)); then
-			[[ "$url" =~ $LOOPBACK_URL_RE ]] && continue
-			origin=$(origin_of "$url")
-			[[ -n "$origin" && "${registered}"$'\n' == *" ${origin}"$'\n'* ]] && continue
+			[[ "${url}" =~ ${LOOPBACK_URL_RE} ]] && continue
+			origin=$(origin_of "${url}")
+			[[ -n "${origin}" && "${registered}"$'\n' == *" ${origin}"$'\n'* ]] && continue
 		fi
-		printf '%s\t%s\n' "$tab_id" "$url" >>"$TAB_FILE"
-	done <<<"$text"
+		printf '%s\t%s\n' "${tab_id}" "${url}" >>"${TAB_FILE}"
+	done <<<"${text}"
 }
 
 # Prints the last URL recorded for a tab, or nothing.
 last_url_of_tab() {
 	local tab_id=$1
-	[[ -f "$TAB_FILE" ]] || return 0
-	awk -F'\t' -v id="$tab_id" '$1 == id { url = $2 } END { if (url != "") print url }' "$TAB_FILE"
+	[[ -f "${TAB_FILE}" ]] || return 0
+	awk -F'\t' -v id="${tab_id}" '$1 == id { url = $2 } END { if (url != "") print url }' "${TAB_FILE}"
 }
 
-if [[ "$EVENT" == "PostToolUse" ]]; then
+if [[ "${EVENT}" == "PostToolUse" ]]; then
 	record_tab_urls
 	exit 0
 fi
@@ -103,18 +103,18 @@ REASON="This operation is not allowed for ${TOOL_NAME:-unknown}. Ask the user to
 
 guard_computer() {
 	local action tab_id url
-	action=$(jq -r '.tool_input.action // empty' <<<"$INPUT" 2>/dev/null)
-	case "$action" in
+	action=$(jq -r '.tool_input.action // empty' <<<"${INPUT}" 2>/dev/null)
+	case "${action}" in
 	scroll | scroll_to | screenshot | zoom | hover | wait)
 		DECISION="allow"
 		REASON="Non-mutating action is allowed"
 		;;
 	left_click | right_click | double_click | triple_click | type | key | left_click_drag)
-		tab_id=$(jq -r '.tool_input.tabId // empty' <<<"$INPUT" 2>/dev/null)
-		url=$(last_url_of_tab "$tab_id")
-		if [[ "$tab_id" =~ ^[0-9]+$ && "$url" =~ $LOOPBACK_URL_RE ]]; then
+		tab_id=$(jq -r '.tool_input.tabId // empty' <<<"${INPUT}" 2>/dev/null)
+		url=$(last_url_of_tab "${tab_id}")
+		if [[ "${tab_id}" =~ ^[0-9]+$ && "${url}" =~ ${LOOPBACK_URL_RE} ]]; then
 			DECISION="allow"
-			REASON="Page-changing action is allowed on a loopback host ($url)"
+			REASON="Page-changing action is allowed on a loopback host (${url})"
 		else
 			REASON="${action} is allowed only on a tab at 127.0.0.1, localhost or [::1] (tab ${tab_id:-unknown} is at ${url:-an unrecorded URL}). Ask the user to perform this action."
 		fi
@@ -129,11 +129,11 @@ guard_javascript() {
 	local zoom_re="^document\.body\.style\.zoom[[:space:]]*=[[:space:]]*(['\"])((2[5-9]|[3-9][0-9]|100)%|0?\.(2[5-9]|[3-9][0-9]?)|1(\.0+)?)['\"][[:space:]]*;?$"
 	local ident_re='^[a-z_]+$'
 	local strings s zoom_found=0 other_found=0
-	local text body first json hash tab_id origin allowed allowed_origin
+	local text body first json canonical hash tab_id tab_url origin allowed allowed_origin
 
 	# $(...) drops NUL, so a string with one would be checked as something other than what
 	# Chrome runs. Nothing legitimate sends one.
-	if ! jq -e '[.tool_input | .. | strings | contains("\u0000")] | any | not' <<<"$INPUT" >/dev/null 2>&1; then
+	if ! jq -e '[.tool_input | .. | strings | contains("\u0000")] | any | not' <<<"${INPUT}" >/dev/null 2>&1; then
 		REASON="tool_input holds a NUL character. Ask the user to perform this action."
 		return
 	fi
@@ -143,61 +143,66 @@ guard_javascript() {
 		| (keys - ["action", "tabId", "text"] | length == 0)
 			and .action == "javascript_exec"
 			and (.tabId | type == "number")
-			and (.text | type == "string")' <<<"$INPUT" >/dev/null 2>&1; then
+			and (.text | type == "string")' <<<"${INPUT}" >/dev/null 2>&1; then
 		# $(...) drops trailing newlines, the same as the registration command above.
-		text=$(jq -r '.tool_input.text' <<<"$INPUT")
-		tab_id=$(jq -r '.tool_input.tabId' <<<"$INPUT")
-		origin=$(origin_of "$(last_url_of_tab "$tab_id")")
+		text=$(jq -r '.tool_input.text' <<<"${INPUT}")
+		tab_id=$(jq -r '.tool_input.tabId' <<<"${INPUT}")
+		tab_url=$(last_url_of_tab "${tab_id}")
+		origin=$(origin_of "${tab_url}")
 		# A script may start with one data line, `var PROPOSAL = <JSON object>;`, whose JSON
 		# is exactly as `jq -c` prints it. A JSON object is a JavaScript literal, so the line
 		# hands values to the registered body below it without adding code; the hash covers
 		# the body only.
-		body=$text
+		body=${text}
 		first=${text%%$'\n'*}
-		if [[ "$text" == *$'\n'* && "$first" =~ ^var\ PROPOSAL\ =\ (\{.*\})\;$ ]]; then
+		if [[ "${text}" == *$'\n'* && "${first}" =~ ^var\ PROPOSAL\ =\ (\{.*\})\;$ ]]; then
 			json=${BASH_REMATCH[1]}
-			if [[ "$(jq -c . <<<"$json" 2>/dev/null)" != "$json" ]] ||
-				! jq -e 'type == "object"' <<<"$json" >/dev/null 2>&1; then
+			# jq failing leaves this empty, which never equals the JSON, so the line is denied.
+			canonical=$(jq -c . <<<"${json}" 2>/dev/null)
+			if [[ "${canonical}" != "${json}" ]] ||
+				! jq -e 'type == "object"' <<<"${json}" >/dev/null 2>&1; then
 				REASON="The data line must be var PROPOSAL = <JSON object>; with the JSON exactly as jq -c prints it. Ask the user to perform this action."
 				return
 			fi
 			body=${text#*$'\n'}
 		fi
-		hash=$(printf '%s' "$body" | shasum -a 256 | cut -d' ' -f1)
+		hash=$(printf '%s' "${body}" | shasum -a 256)
+		hash=${hash%% *}
 		while read -r allowed allowed_origin; do
-			[[ "$hash" == "$allowed" ]] || continue
-			if [[ -n "$origin" && "$origin" == "$allowed_origin" ]]; then
+			[[ "${hash}" == "${allowed}" ]] || continue
+			if [[ -n "${origin}" && "${origin}" == "${allowed_origin}" ]]; then
 				DECISION="allow"
-				REASON="Registered script is allowed on ${origin} (sha256 $hash)"
+				REASON="Registered script is allowed on ${origin} (sha256 ${hash})"
 				return
 			fi
 			REASON="This registered script runs only on a tab at ${allowed_origin} (tab ${tab_id} is at ${origin:-an unrecorded URL}). Ask the user to perform this action."
-		done < <(registered_scripts)
-		[[ "$REASON" == "This registered script"* ]] && return
+		done < <(registered_scripts || true)
+		[[ "${REASON}" == "This registered script"* ]] && return
 	fi
 
 	REASON="Only a page zoom assignment (document.body.style.zoom = '25%'-'100%') or a script whose SHA-256 is registered in ${ALLOWED_SCRIPT_SHA256_FILE##*/} is allowed for ${TOOL_NAME}. Ask the user to perform this action."
-	strings=$(jq -r '.tool_input | [.. | strings] | .[]' <<<"$INPUT" 2>/dev/null) || return
+	strings=$(jq -r '.tool_input | [.. | strings] | .[]' <<<"${INPUT}" 2>/dev/null) || return
 	while IFS= read -r s; do
-		[[ -z "$s" ]] && continue
-		if [[ "$s" =~ $zoom_re ]]; then
+		[[ -z "${s}" ]] && continue
+		if [[ "${s}" =~ ${zoom_re} ]]; then
 			zoom_found=1
-		elif [[ ! "$s" =~ $ident_re ]]; then
+		elif [[ ! "${s}" =~ ${ident_re} ]]; then
 			other_found=1
 		fi
-	done <<<"$strings"
-	if [[ $zoom_found -eq 1 && $other_found -eq 0 ]]; then
+	done <<<"${strings}"
+	if [[ ${zoom_found} -eq 1 && ${other_found} -eq 0 ]]; then
 		DECISION="allow"
 		REASON="Page zoom change is allowed"
 	fi
 }
 
-case "$TOOL_NAME" in
+case "${TOOL_NAME}" in
 mcp__claude-in-chrome__computer) guard_computer ;;
 mcp__claude-in-chrome__javascript_tool) guard_javascript ;;
+*) ;; # Any other tool keeps the deny set above.
 esac
 
-jq -n --arg d "$DECISION" --arg r "$REASON" '{
+jq -n --arg d "${DECISION}" --arg r "${REASON}" '{
   hookSpecificOutput: {
     hookEventName: "PreToolUse",
     permissionDecision: $d,

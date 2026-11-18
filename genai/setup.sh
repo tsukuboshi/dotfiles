@@ -4,7 +4,7 @@ SCRIPT_DIR="$(cd "$(dirname "$0")" && pwd)"
 
 get_agent_config() {
 	local agent_name=$1
-	case "$agent_name" in
+	case "${agent_name}" in
 	claude)
 		echo "claude"
 		echo "${HOME}/.claude"
@@ -72,39 +72,39 @@ sync_codex_config() {
 	local marker="# --- dotfiles managed config end ---"
 	local next_file
 
-	if ! grep -Fxq "$marker" "$source_file"; then
-		printf "\033[1;31m✗ Marker not found in source config: %s\033[0m\n" "$source_file"
+	if ! grep -Fxq "${marker}" "${source_file}"; then
+		printf "\033[1;31m✗ Marker not found in source config: %s\033[0m\n" "${source_file}"
 		return 1
 	fi
 
 	# Detach a pre-existing symlink so writes do not follow it back into the source tree.
-	[ -L "$target_file" ] && unlink "$target_file"
+	[[ -L "${target_file}" ]] && unlink "${target_file}"
 
-	if [ ! -f "$target_file" ]; then
-		cp -fv "$source_file" "$target_file"
+	if [[ ! -f "${target_file}" ]]; then
+		cp -fv "${source_file}" "${target_file}"
 		return
 	fi
 
-	if ! grep -Fxq "$marker" "$target_file"; then
-		cp -fv "$source_file" "$target_file"
+	if ! grep -Fxq "${marker}" "${target_file}"; then
+		cp -fv "${source_file}" "${target_file}"
 		return
 	fi
 
 	if cmp -s \
-		<(awk -v marker="$marker" '$0 == marker { exit } { print }' "$source_file") \
-		<(awk -v marker="$marker" '$0 == marker { exit } { print }' "$target_file"); then
-		printf "%s is up to date above marker\n" "$target_file"
+		<(awk -v marker="${marker}" '$0 == marker { exit } { print }' "${source_file}" || true) \
+		<(awk -v marker="${marker}" '$0 == marker { exit } { print }' "${target_file}" || true); then
+		printf "%s is up to date above marker\n" "${target_file}"
 		return
 	fi
 
 	next_file=$(mktemp "${target_file}.tmp.XXXXXX")
 	{
-		awk -v marker="$marker" '$0 == marker { exit } { print }' "$source_file"
-		printf "%s\n" "$marker"
-		awk -v marker="$marker" 'found { print } $0 == marker { found = 1 }' "$target_file"
-	} >"$next_file"
-	mv -f "$next_file" "$target_file"
-	printf "%s updated above marker\n" "$target_file"
+		awk -v marker="${marker}" '$0 == marker { exit } { print }' "${source_file}"
+		printf "%s\n" "${marker}"
+		awk -v marker="${marker}" 'found { print } $0 == marker { found = 1 }' "${target_file}"
+	} >"${next_file}"
+	mv -f "${next_file}" "${target_file}"
+	printf "%s updated above marker\n" "${target_file}"
 }
 
 link_agent_config() {
@@ -119,35 +119,35 @@ link_agent_config() {
 
 	printf "\n\033[1;36m=== Linking config to %s ===\033[0m\n" "${agent_name}"
 
-	for dir_path in "$skills_path" "$rules_path"; do
-		if [ ! -d "$dir_path" ]; then
-			printf "\033[1;33m⚠ Directory does not exist. Creating: %s\033[0m\n" "$dir_path"
-			mkdir -p "$dir_path"
+	for dir_path in "${skills_path}" "${rules_path}"; do
+		if [[ ! -d "${dir_path}" ]]; then
+			printf "\033[1;33m⚠ Directory does not exist. Creating: %s\033[0m\n" "${dir_path}"
+			mkdir -p "${dir_path}"
 		fi
 	done
 
 	ln -fsvn "${SCRIPT_DIR}/AGENTS.md" "${config_path}/${agents_filename}"
-	if [ "${agent_name}" = "codex" ]; then
+	if [[ "${agent_name}" = "codex" ]]; then
 		sync_codex_config "${SCRIPT_DIR}/${main_settings_filename}" "${config_path}/${main_settings_filename}"
-	elif [ "${agent_name}" = "kiro" ]; then
+	elif [[ "${agent_name}" = "kiro" ]]; then
 		# Kiro agent config goes into ~/.kiro/agents/
 		local agents_dir="${config_path}/agents"
-		if [ ! -d "$agents_dir" ]; then
-			printf "\033[1;33m⚠ Directory does not exist. Creating: %s\033[0m\n" "$agents_dir"
-			mkdir -p "$agents_dir"
+		if [[ ! -d "${agents_dir}" ]]; then
+			printf "\033[1;33m⚠ Directory does not exist. Creating: %s\033[0m\n" "${agents_dir}"
+			mkdir -p "${agents_dir}"
 		fi
 		ln -fsvn "${SCRIPT_DIR}/${main_settings_filename}" "${agents_dir}/${main_settings_filename}"
 	else
 		ln -fsvn "${SCRIPT_DIR}/${main_settings_filename}" "${config_path}/${main_settings_filename}"
 	fi
 	for dir in "${SCRIPT_DIR}"/skills/*/; do
-		if [ -d "$dir" ]; then
-			ln -fsvn "$dir" "$skills_path"
+		if [[ -d "${dir}" ]]; then
+			ln -fsvn "${dir}" "${skills_path}"
 		fi
 	done
 	for file in "${SCRIPT_DIR}"/rules/*; do
-		if [ -f "$file" ]; then
-			ln -fsvn "$file" "$rules_path"
+		if [[ -f "${file}" ]]; then
+			ln -fsvn "${file}" "${rules_path}"
 		fi
 	done
 }
@@ -167,22 +167,22 @@ install_agent_apm() {
 	# apm 0.29.1+ refuses to run when ~/.apm itself is a symlink (it writes a
 	# lifecycle lock there). Keep ~/.apm a real directory and symlink only the
 	# git-tracked config files back into dotfiles.
-	if [ -L "${HOME}/.apm" ]; then
+	if [[ -L "${HOME}/.apm" ]]; then
 		unlink "${HOME}/.apm"
 	fi
 	mkdir -p "${HOME}/.apm"
 	for apm_file in .gitignore apm.yml config.json marketplaces.json; do
-		if [ -e "${SCRIPT_DIR}/apm/${apm_file}" ]; then
+		if [[ -e "${SCRIPT_DIR}/apm/${apm_file}" ]]; then
 			ln -fsvn "${SCRIPT_DIR}/apm/${apm_file}" "${HOME}/.apm/${apm_file}"
 		fi
 	done
 	# apm rewrites apm.lock.yaml in place, replacing a symlink with a regular
 	# file, so copy it in and back out instead of linking it.
-	if [ -f "${SCRIPT_DIR}/apm/apm.lock.yaml" ]; then
+	if [[ -f "${SCRIPT_DIR}/apm/apm.lock.yaml" ]]; then
 		cp "${SCRIPT_DIR}/apm/apm.lock.yaml" "${HOME}/.apm/apm.lock.yaml"
 	fi
 	(cd "${HOME}/.apm" && apm install -g)
-	if [ -f "${HOME}/.apm/apm.lock.yaml" ]; then
+	if [[ -f "${HOME}/.apm/apm.lock.yaml" ]]; then
 		cp "${HOME}/.apm/apm.lock.yaml" "${SCRIPT_DIR}/apm/apm.lock.yaml"
 		chmod 644 "${SCRIPT_DIR}/apm/apm.lock.yaml"
 	fi
@@ -204,24 +204,24 @@ setup_agent() {
 		read -r main_settings_filename
 		read -r skills_path
 		read -r rules_path
-	} < <(get_agent_config "$agent_name")
+	} < <(get_agent_config "${agent_name}" || true)
 
-	if [ -z "$config_path" ]; then
+	if [[ -z "${config_path}" ]]; then
 		printf "\033[1;31m✗ Unknown agent: %s\033[0m\n" "${agent_name}"
 		printf "\033[1;33mAvailable agents: claude, codex, kiro\033[0m\n"
 		return 1
 	fi
 
-	case "$mode" in
+	case "${mode}" in
 	link)
-		link_agent_config "$agent_name" "$command_name" "$config_path" "$agents_filename" "$main_settings_filename" "$skills_path" "$rules_path"
+		link_agent_config "${agent_name}" "${command_name}" "${config_path}" "${agents_filename}" "${main_settings_filename}" "${skills_path}" "${rules_path}"
 		;;
 	install)
-		install_agent_apm "$agent_name"
+		install_agent_apm "${agent_name}"
 		;;
 	*)
-		link_agent_config "$agent_name" "$command_name" "$config_path" "$agents_filename" "$main_settings_filename" "$skills_path" "$rules_path"
-		install_agent_apm "$agent_name"
+		link_agent_config "${agent_name}" "${command_name}" "${config_path}" "${agents_filename}" "${main_settings_filename}" "${skills_path}" "${rules_path}"
+		install_agent_apm "${agent_name}"
 		;;
 	esac
 }
@@ -260,4 +260,4 @@ while [[ $# -gt 0 ]]; do
 	esac
 done
 
-setup_agent "$AGENT" "$MODE"
+setup_agent "${AGENT}" "${MODE}"

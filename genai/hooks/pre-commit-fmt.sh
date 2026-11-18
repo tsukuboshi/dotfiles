@@ -6,17 +6,17 @@
 # shellcheck disable=SC2329
 
 INPUT=$(cat)
-COMMAND=$(jq -r '.tool_input.command // empty' <<<"$INPUT")
+COMMAND=$(jq -r '.tool_input.command // empty' <<<"${INPUT}")
 
 # Detect caller: `turn_id` is a Codex-specific field
-if jq -e '.turn_id' <<<"$INPUT" >/dev/null 2>&1; then
+if jq -e '.turn_id' <<<"${INPUT}" >/dev/null 2>&1; then
 	CALLER="Codex"
 else
 	CALLER="Claude Code"
 fi
 
 # Only run for git commit commands
-if ! grep -qE '^git\s+commit' <<<"$COMMAND"; then
+if ! grep -qE '^git\s+commit' <<<"${COMMAND}"; then
 	exit 0
 fi
 
@@ -26,10 +26,10 @@ AST_GREP_CONFIG="${BASH_SOURCE[0]%/*}/../lint/ast-grep/sgconfig.yml"
 # Staged paths are relative to the repository root, and rumdl looks for its
 # config upward from the cwd, so the formatters run from there.
 REPO_ROOT=$(git rev-parse --show-toplevel)
-cd "$REPO_ROOT" || exit 0
+cd "${REPO_ROOT}" || exit 0
 
 STAGED_FILES=$(git diff --cached --name-only --diff-filter=ACM)
-if [[ -z "$STAGED_FILES" ]]; then
+if [[ -z "${STAGED_FILES}" ]]; then
 	exit 0
 fi
 
@@ -40,7 +40,7 @@ fi
 LEAKS_FILE=""
 if command -v gitleaks >/dev/null 2>&1; then
 	LEAKS_FILE=$(mktemp)
-	gitleaks git --staged --no-banner --no-color --redact -v >"$LEAKS_FILE" 2>&1 &
+	gitleaks git --staged --no-banner --no-color --redact -v >"${LEAKS_FILE}" 2>&1 &
 	LEAKS_PID=$!
 	trap 'kill "$LEAKS_PID" 2>/dev/null; rm -f "$LEAKS_FILE"' EXIT
 fi
@@ -49,9 +49,9 @@ fi
 # file with unstaged changes beside its staged ones would have them committed
 # too. Such files are left out and reported instead.
 UNSTAGED_FILES=$(git diff --name-only)
-PARTIAL_FILES=$(grep -Fxf <(echo "$UNSTAGED_FILES") <<<"$STAGED_FILES" || true)
-if [[ -n "$PARTIAL_FILES" ]]; then
-	STAGED_FILES=$(grep -vFxf <(echo "$PARTIAL_FILES") <<<"$STAGED_FILES" || true)
+PARTIAL_FILES=$(grep -Fxf <(echo "${UNSTAGED_FILES}") <<<"${STAGED_FILES}" || true)
+if [[ -n "${PARTIAL_FILES}" ]]; then
+	STAGED_FILES=$(grep -vFxf <(echo "${PARTIAL_FILES}") <<<"${STAGED_FILES}" || true)
 fi
 
 FORMATTED_FILES=()
@@ -63,10 +63,10 @@ has_root_config() {
 	local spec name table
 	for spec in "$@"; do
 		name=${spec%%:*}
-		[[ -f "$name" ]] || continue
-		if [[ "$spec" == *:* ]]; then
+		[[ -f "${name}" ]] || continue
+		if [[ "${spec}" == *:* ]]; then
 			table=${spec#*:}
-			grep -qE "^\[${table//./\\.}[].]" "$name" || continue
+			grep -qE "^\[${table//./\\.}[].]" "${name}" || continue
 		fi
 		return 0
 	done
@@ -95,15 +95,15 @@ USE_OXLINT=false
 has_root_config biome.json biome.jsonc && HAS_BIOME_CONFIG=true
 has_root_config .oxlintrc.json .oxlintrc.jsonc oxlint.config.ts oxlint.config.mts &&
 	USE_OXLINT=true
-USE_BIOME=$HAS_BIOME_CONFIG
-$USE_OXLINT || USE_BIOME=true
+USE_BIOME=${HAS_BIOME_CONFIG}
+${USE_OXLINT} || USE_BIOME=true
 # GNU xargs runs oxlint once even on empty input, which would fix the whole
 # repository, so a commit of JSON alone skips it.
 fmt_js() {
 	local scripts
-	$USE_BIOME && xargs biome check --fix <<<"$1" >/dev/null 2>&1
+	${USE_BIOME} && xargs biome check --fix <<<"$1" >/dev/null 2>&1
 	scripts=$(grep -v '\.json$' <<<"$1")
-	$USE_OXLINT && [[ -n "$scripts" ]] && xargs oxlint --fix <<<"$scripts" >/dev/null 2>&1
+	${USE_OXLINT} && [[ -n "${scripts}" ]] && xargs oxlint --fix <<<"${scripts}" >/dev/null 2>&1
 	return 0
 }
 fmt_go() { xargs golangci-lint fmt <<<"$1" >/dev/null 2>&1; }
@@ -123,15 +123,15 @@ fmt_sql() { xargs sqruff fix -f none <<<"$1" >/dev/null 2>&1; }
 AST_GREP_FINDINGS=""
 lint_ast_grep() {
 	local files config=() json
-	files=$(grep -E '\.(py|sh|bash|ya?ml)$' <<<"$STAGED_FILES" || true)
-	[[ -z "$files" ]] && return 0
+	files=$(grep -E '\.(py|sh|bash|ya?ml)$' <<<"${STAGED_FILES}" || true)
+	[[ -z "${files}" ]] && return 0
 	command -v ast-grep >/dev/null 2>&1 || return 0
-	has_root_config sgconfig.yml sgconfig.yaml || config=(--config "$AST_GREP_CONFIG")
-	json=$(xargs ast-grep scan "${config[@]}" --color never --min-severity error --json=compact <<<"$files" 2>/dev/null)
+	has_root_config sgconfig.yml sgconfig.yaml || config=(--config "${AST_GREP_CONFIG}")
+	json=$(xargs ast-grep scan "${config[@]}" --color never --min-severity error --json=compact <<<"${files}" 2>/dev/null)
 	AST_GREP_FINDINGS=$(jq -r '
 		.[] | "\(.file):\(.range.start.line + 1):\(.range.start.column + 1) [\(.ruleId)] \(.message)"
 			+ (if .note then " " + (.note | gsub("\\s+"; " ") | rtrimstr(" ")) else "" end)
-	' <<<"$json" 2>/dev/null)
+	' <<<"${json}" 2>/dev/null)
 }
 
 # typos checks the staged files of every type with its own defaults or the
@@ -143,21 +143,21 @@ lint_typos() {
 	local files=() output
 	command -v typos >/dev/null 2>&1 || return 0
 	while IFS= read -r f; do
-		[[ -n "$f" ]] && files+=("$f")
-	done < <(grep -vE '(\.lock|[.-]lock\.ya?ml)$' <<<"$STAGED_FILES")
+		[[ -n "${f}" ]] && files+=("${f}")
+	done < <(grep -vE '(\.lock|[.-]lock\.ya?ml)$' <<<"${STAGED_FILES}" || true)
 	((${#files[@]} == 0)) && return 0
 	output=$(typos --force-exclude --format brief --color never -- "${files[@]}" 2>&1)
-	(($? == 2)) && TYPOS_FINDINGS=$output
+	(($? == 2)) && TYPOS_FINDINGS=${output}
 }
 
 process_ext() {
 	local pattern="$1" fmt="$2"
 	local files
-	files=$(grep -E "$pattern" <<<"$STAGED_FILES" || true)
-	[[ -z "$files" ]] && return 0
-	"$fmt" "$files"
-	xargs git add <<<"$files"
-	while IFS= read -r f; do FORMATTED_FILES+=("$f"); done <<<"$files"
+	files=$(grep -E "${pattern}" <<<"${STAGED_FILES}" || true)
+	[[ -z "${files}" ]] && return 0
+	"${fmt}" "${files}"
+	xargs git add <<<"${files}"
+	while IFS= read -r f; do FORMATTED_FILES+=("${f}"); done <<<"${files}"
 }
 
 # Run the project's own hooks with prek. Fixer hooks such as
@@ -166,35 +166,35 @@ process_ext() {
 # blocks the commit for the agent to fix.
 run_prek() {
 	local files=() before after output
-	while IFS= read -r f; do files+=("$f"); done <<<"$STAGED_FILES"
-	before=$(git -C "$REPO_ROOT" hash-object -- "${files[@]}")
-	if ! prek run --cd "$REPO_ROOT" --files "${files[@]}" >/dev/null 2>&1; then
-		git -C "$REPO_ROOT" add -- "${files[@]}"
-		if ! output=$(prek run --cd "$REPO_ROOT" --files "${files[@]}" 2>&1); then
+	while IFS= read -r f; do files+=("${f}"); done <<<"${STAGED_FILES}"
+	before=$(git -C "${REPO_ROOT}" hash-object -- "${files[@]}")
+	if ! prek run --cd "${REPO_ROOT}" --files "${files[@]}" >/dev/null 2>&1; then
+		git -C "${REPO_ROOT}" add -- "${files[@]}"
+		if ! output=$(prek run --cd "${REPO_ROOT}" --files "${files[@]}" 2>&1); then
 			printf 'Pre-commit (%s): prek hooks failed on the staged changes\n%s\n' \
 				"${CALLER}" "${output}" >&2
 			exit 2
 		fi
 	fi
-	after=$(git -C "$REPO_ROOT" hash-object -- "${files[@]}")
+	after=$(git -C "${REPO_ROOT}" hash-object -- "${files[@]}")
 	while IFS=$'\t' read -r f b a; do
-		[[ "$b" != "$a" ]] && FORMATTED_FILES+=("$f")
-	done < <(paste <(printf '%s\n' "${files[@]}") <(echo "$before") <(echo "$after"))
+		[[ "${b}" != "${a}" ]] && FORMATTED_FILES+=("${f}")
+	done < <(paste <(printf '%s\n' "${files[@]}") <(echo "${before}") <(echo "${after}") || true)
 }
 
 # Projects that declare their own hooks get those instead of the fixed
 # formatter set below, so the commit is checked the way CI checks it and no
 # formatter the project does not use rewrites its files.
-if [[ -z "$STAGED_FILES" ]]; then
+if [[ -z "${STAGED_FILES}" ]]; then
 	:
 elif command -v prek >/dev/null 2>&1 &&
-	[[ -f "$REPO_ROOT/.pre-commit-config.yaml" ||
-		-f "$REPO_ROOT/.pre-commit-config.yml" ||
-		-f "$REPO_ROOT/prek.toml" ]]; then
+	[[ -f "${REPO_ROOT}/.pre-commit-config.yaml" ||
+		-f "${REPO_ROOT}/.pre-commit-config.yml" ||
+		-f "${REPO_ROOT}/prek.toml" ]]; then
 	run_prek
 else
 	process_ext '\.py$' fmt_py
-	if $HAS_BIOME_CONFIG; then
+	if ${HAS_BIOME_CONFIG}; then
 		process_ext '\.(ts|tsx|js|jsx|json)$' fmt_js
 	else
 		process_ext '\.(ts|tsx|js|jsx)$' fmt_js
@@ -210,21 +210,21 @@ else
 fi
 
 # Block the commit when the staged changes carry a secret.
-if [[ -n "$LEAKS_FILE" ]] && ! wait "$LEAKS_PID"; then
+if [[ -n "${LEAKS_FILE}" ]] && ! wait "${LEAKS_PID}"; then
 	printf 'Pre-commit (%s): gitleaks found secrets in the staged changes\n%s\n' \
-		"${CALLER}" "$(<"$LEAKS_FILE")" >&2
+		"${CALLER}" "$(<"${LEAKS_FILE}")" >&2
 	exit 2
 fi
 
 # Block the commit on error-level ast-grep findings.
-if [[ -n "$AST_GREP_FINDINGS" ]]; then
+if [[ -n "${AST_GREP_FINDINGS}" ]]; then
 	printf 'Pre-commit (%s): ast-grep found rule violations in the staged changes\n%s\n' \
 		"${CALLER}" "${AST_GREP_FINDINGS}" >&2
 	exit 2
 fi
 
 # Block the commit on misspellings.
-if [[ -n "$TYPOS_FINDINGS" ]]; then
+if [[ -n "${TYPOS_FINDINGS}" ]]; then
 	printf 'Pre-commit (%s): typos found misspellings in the staged changes\n%s\n' \
 		"${CALLER}" "${TYPOS_FINDINGS}" >&2
 	exit 2
@@ -238,7 +238,7 @@ if [[ ${#FORMATTED_FILES[@]} -gt 0 ]]; then
 else
 	MESSAGE="no files matched formatting targets"
 fi
-if [[ -n "$PARTIAL_FILES" ]]; then
+if [[ -n "${PARTIAL_FILES}" ]]; then
 	MESSAGE+="; left partially staged file(s) unformatted: ${PARTIAL_FILES//$'\n'/, }"
 fi
 printf '{"systemMessage":"Pre-commit (%s): %s"}\n' "${CALLER}" "${MESSAGE}"

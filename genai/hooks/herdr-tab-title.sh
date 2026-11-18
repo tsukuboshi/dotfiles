@@ -6,7 +6,7 @@ set -u
 # Save the hook input first because the heredoc below takes over stdin
 hook_input_file="$(mktemp)" || exit 0
 trap 'rm -f "$hook_input_file"' EXIT
-cat >"$hook_input_file" 2>/dev/null || true
+cat >"${hook_input_file}" 2>/dev/null || true
 
 # Run only inside a herdr pane
 [ "${HERDR_ENV:-}" = "1" ] || exit 0
@@ -14,7 +14,7 @@ command -v herdr >/dev/null 2>&1 || exit 0
 command -v python3 >/dev/null 2>&1 || exit 0
 
 # Keep stdout empty: UserPromptSubmit stdout is injected into the model context
-HOOK_INPUT_FILE="$hook_input_file" python3 - <<'PY' >/dev/null 2>&1
+HOOK_INPUT_FILE="${hook_input_file}" python3 - <<'PY' >/dev/null 2>&1
 import json, os, subprocess, sys
 
 with open(os.environ["HOOK_INPUT_FILE"], encoding="utf-8") as fh:

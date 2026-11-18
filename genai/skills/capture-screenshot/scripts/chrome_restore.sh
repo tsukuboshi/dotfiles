@@ -8,7 +8,7 @@ if [[ $# -ne 5 ]]; then
 	exit 64
 fi
 for v in "$@"; do
-	if [[ ! "$v" =~ ^-?[0-9]+$ ]]; then
+	if [[ ! "${v}" =~ ^-?[0-9]+$ ]]; then
 		echo "not an integer: ${v}" >&2
 		exit 64
 	fi

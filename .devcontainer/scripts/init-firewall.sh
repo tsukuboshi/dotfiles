@@ -53,8 +53,8 @@ iptables -F INPUT 2>/dev/null || true
 ipset destroy allowed_ips 2>/dev/null || true
 
 # Restore Docker DNS rules
-if [[ -n "$DOCKER_DNS_RULES" ]]; then
-	echo "$DOCKER_DNS_RULES" | while read -r rule; do
+if [[ -n "${DOCKER_DNS_RULES}" ]]; then
+	echo "${DOCKER_DNS_RULES}" | while read -r rule; do
 		# shellcheck disable=SC2086
 		iptables -t nat ${rule/#-A/-A} 2>/dev/null || true
 	done
@@ -82,31 +82,31 @@ ipset create allowed_ips hash:ip
 echo "Fetching GitHub IP ranges..."
 GITHUB_META=$(curl -s https://api.github.com/meta 2>/dev/null || echo "{}")
 for key in web git api; do
-	echo "$GITHUB_META" | jq -r ".${key}[]? // empty" 2>/dev/null | while read -r cidr; do
+	echo "${GITHUB_META}" | jq -r ".${key}[]? // empty" 2>/dev/null | while read -r cidr; do
 		# /32 entries can be added directly; others go through iptables
-		if [[ "$cidr" == *"/32" ]]; then
+		if [[ "${cidr}" == *"/32" ]]; then
 			ipset add allowed_ips "${cidr%/32}" 2>/dev/null || true
 		else
-			iptables -A OUTPUT -d "$cidr" -j ACCEPT 2>/dev/null || true
+			iptables -A OUTPUT -d "${cidr}" -j ACCEPT 2>/dev/null || true
 		fi
 	done
 done
 
 # Resolve allow-listed domains and add their IPs
 for domain in "${ALLOWED_DOMAINS[@]}"; do
-	ips=$(dig +short A "$domain" 2>/dev/null || true)
-	for ip in $ips; do
-		if [[ "$ip" =~ ^[0-9]+\.[0-9]+\.[0-9]+\.[0-9]+$ ]]; then
-			ipset add allowed_ips "$ip" 2>/dev/null || true
+	ips=$(dig +short A "${domain}" 2>/dev/null || true)
+	for ip in ${ips}; do
+		if [[ "${ip}" =~ ^[0-9]+\.[0-9]+\.[0-9]+\.[0-9]+$ ]]; then
+			ipset add allowed_ips "${ip}" 2>/dev/null || true
 		fi
 	done
 done
 
 # Detect and allow the host network
 HOST_IP=$(ip route | grep default | awk '{print $3}' || true)
-if [[ -n "$HOST_IP" ]]; then
+if [[ -n "${HOST_IP}" ]]; then
 	HOST_NETWORK="${HOST_IP%.*}.0/24"
-	iptables -A OUTPUT -d "$HOST_NETWORK" -j ACCEPT
+	iptables -A OUTPUT -d "${HOST_NETWORK}" -j ACCEPT
 fi
 
 # Allow IPs from the allow-list

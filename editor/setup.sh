@@ -4,7 +4,7 @@ SCRIPT_DIR="$(cd "$(dirname "$0")" && pwd)"
 
 get_editor_config() {
 	local editor_name=$1
-	case "$editor_name" in
+	case "${editor_name}" in
 	vscode)
 		echo "code"
 		echo "${HOME}/Library/Application Support/Code/User"
@@ -47,9 +47,9 @@ link_editor_config() {
 
 	# The editor creates this directory on its first launch, which may not
 	# have happened yet on a new machine.
-	if [ ! -d "$settings_path" ]; then
-		printf "\033[1;33m⚠ Directory does not exist. Creating: %s\033[0m\n" "$settings_path"
-		mkdir -p "$settings_path"
+	if [[ ! -d "${settings_path}" ]]; then
+		printf "\033[1;33m⚠ Directory does not exist. Creating: %s\033[0m\n" "${settings_path}"
+		mkdir -p "${settings_path}"
 	fi
 
 	ln -fsvn "${SCRIPT_DIR}/settings.json" "${settings_path}/settings.json"
@@ -60,10 +60,10 @@ install_editor_extensions() {
 	local command_name=$2
 
 	printf "\n\033[1;36m=== Installing extensions to %s ===\033[0m\n" "${editor_name}"
-	if command -v "$command_name" &>/dev/null; then
+	if command -v "${command_name}" &>/dev/null; then
 		while read -r line; do
-			[ -z "$line" ] && continue
-			"$command_name" --install-extension "$line"
+			[[ -z "${line}" ]] && continue
+			"${command_name}" --install-extension "${line}"
 		done <"${SCRIPT_DIR}/extensions"
 	else
 		printf "\033[1;31m✗ %s command not found. Skipping extensions\033[0m\n" "${command_name}"
@@ -75,18 +75,18 @@ uninstall_unlisted_extensions() {
 	local command_name=$2
 
 	printf "\n\033[1;36m=== Uninstalling unlisted extensions from %s ===\033[0m\n" "${editor_name}"
-	if ! command -v "$command_name" &>/dev/null; then
+	if ! command -v "${command_name}" &>/dev/null; then
 		printf "\033[1;31m✗ %s command not found. Skipping uninstall\033[0m\n" "${command_name}"
 		return
 	fi
 
 	local extensions_file="${SCRIPT_DIR}/extensions"
 	while read -r installed; do
-		[ -z "$installed" ] && continue
-		if ! grep -qi "^${installed}$" "$extensions_file"; then
-			"$command_name" --uninstall-extension "$installed"
+		[[ -z "${installed}" ]] && continue
+		if ! grep -qi "^${installed}$" "${extensions_file}"; then
+			"${command_name}" --uninstall-extension "${installed}"
 		fi
-	done < <("$command_name" --list-extensions)
+	done < <("${command_name}" --list-extensions || true)
 }
 
 setup_editor() {
@@ -97,28 +97,28 @@ setup_editor() {
 	{
 		read -r command_name
 		read -r settings_path
-	} < <(get_editor_config "$editor_name")
+	} < <(get_editor_config "${editor_name}" || true)
 
-	if [ -z "$settings_path" ]; then
+	if [[ -z "${settings_path}" ]]; then
 		printf "\033[1;31m✗ Unknown editor: %s\033[0m\n" "${editor_name}"
 		printf "\033[1;33mAvailable editors: vscode cursor\033[0m\n"
 		return 1
 	fi
 
-	case "$mode" in
+	case "${mode}" in
 	link)
-		link_editor_config "$editor_name" "$settings_path"
+		link_editor_config "${editor_name}" "${settings_path}"
 		;;
 	install)
-		install_editor_extensions "$editor_name" "$command_name"
+		install_editor_extensions "${editor_name}" "${command_name}"
 		;;
 	uninstall)
-		uninstall_unlisted_extensions "$editor_name" "$command_name"
+		uninstall_unlisted_extensions "${editor_name}" "${command_name}"
 		;;
 	*)
-		link_editor_config "$editor_name" "$settings_path"
-		install_editor_extensions "$editor_name" "$command_name"
-		uninstall_unlisted_extensions "$editor_name" "$command_name"
+		link_editor_config "${editor_name}" "${settings_path}"
+		install_editor_extensions "${editor_name}" "${command_name}"
+		uninstall_unlisted_extensions "${editor_name}" "${command_name}"
 		;;
 	esac
 }
@@ -161,4 +161,4 @@ while [[ $# -gt 0 ]]; do
 	esac
 done
 
-setup_editor "$EDITOR" "$MODE"
+setup_editor "${EDITOR}" "${MODE}"

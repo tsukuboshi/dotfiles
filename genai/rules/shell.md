@@ -11,6 +11,7 @@ paths:
 - 構文ルール: `ast-grep scan --config ~/dotfiles/genai/lint/ast-grep/sgconfig.yml <file>`
 - zsh の構文チェック: `zsh -n <file>`
 
+`shellcheck` は、スクリプトのディレクトリから親へ辿って最初に見つけた `.shellcheckrc` を読む。dotfiles ではルートの `.shellcheckrc` でオプションのチェックをすべて有効にしている。指摘はコードを直して解消し、直すと挙動や読みやすさを損なうときだけ、理由のコメントを添えて `# shellcheck disable=` を付ける。
 `shellcheck` と `shfmt` は sh / bash / dash / ksh のみ対応するため、zsh スクリプト（`.zsh`、および `#!/bin/zsh` の `.sh`）は対象外とする。
 zsh スクリプトと `.zshrc` などの zsh の設定ファイルは、検査するリンタがないため `zsh -n` で構文エラーだけを検出する。
 `ast-grep` は再帰的な `rm`、`git checkout` などの破壊的な git 操作、ホーム配下の絶対パスを検出する。`settings.json` の `deny` はエージェントが直接実行するコマンドにだけ効き、スクリプトに書いたコマンドには効かないため、ast-grep で補う。Bash の文法で zsh も読めるため、zsh スクリプトも対象にする。

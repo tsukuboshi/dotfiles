@@ -2,12 +2,12 @@
 
 get_sleepwatcher_config() {
 	local blueutil_path
-	blueutil_path=$(which blueutil)
+	blueutil_path=$(command -v blueutil)
 
-	if [ -z "$blueutil_path" ]; then
+	if [[ -z "${blueutil_path}" ]]; then
 		echo ""
 	else
-		echo "$blueutil_path"
+		echo "${blueutil_path}"
 	fi
 }
 
@@ -36,12 +36,12 @@ create_sleep_script() {
 
 	printf "\n\033[1;36m=== Creating sleep script (~/.sleep) ===\033[0m\n"
 
-	if [ -z "$blueutil_path" ]; then
+	if [[ -z "${blueutil_path}" ]]; then
 		printf "\033[1;31m✗ blueutil command not found. Please install blueutil first\033[0m\n"
 		return 1
 	fi
 
-	echo "$blueutil_path -p 0" >~/.sleep
+	echo "${blueutil_path} -p 0" >~/.sleep
 	chmod 755 ~/.sleep
 	printf "\033[1;32m✓ Content: \033[0m"
 	cat ~/.sleep
@@ -53,12 +53,12 @@ create_wakeup_script() {
 
 	printf "\n\033[1;36m=== Creating wakeup script (~/.wakeup) ===\033[0m\n"
 
-	if [ -z "$blueutil_path" ]; then
+	if [[ -z "${blueutil_path}" ]]; then
 		printf "\033[1;31m✗ blueutil command not found. Please install blueutil first\033[0m\n"
 		return 1
 	fi
 
-	echo "$blueutil_path -p 1" >~/.wakeup
+	echo "${blueutil_path} -p 1" >~/.wakeup
 	chmod 755 ~/.wakeup
 	printf "\033[1;32m✓ Content: \033[0m"
 	cat ~/.wakeup
@@ -102,7 +102,7 @@ while [[ $# -gt 0 ]]; do
 	esac
 done
 
-case "$MODE" in
+case "${MODE}" in
 sleep)
 	create_sleep_script
 	;;
