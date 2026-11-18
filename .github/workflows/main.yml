@@ -125,6 +125,10 @@ jobs:
         if: ${{ !cancelled() }}
         run: bash .github/scripts/test-verify-page.sh
 
+      - name: Test the status line
+        if: ${{ !cancelled() }}
+        run: bash .github/scripts/test-statusline.sh
+
   make:
     name: Make
     runs-on: macos-latest

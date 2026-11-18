@@ -334,7 +334,7 @@
 	},
 	"statusLine": {
 		"type": "command",
-		"command": "zsh ~/dotfiles/genai/statusline/render.sh",
+		"command": "bash ~/dotfiles/genai/statusline/render.sh",
 		"refreshInterval": 60
 	},
 	"enabledPlugins": {
