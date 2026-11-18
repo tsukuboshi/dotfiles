@@ -259,6 +259,33 @@ lint_typos() {
 	return 0
 }
 
+# ty searches for its config and the project root, whose .venv holds the
+# packages it resolves imports from, upward from the cwd, so it runs from the
+# file's directory, given the bare file name so its findings name the file
+# the way the other linters do. It has no fixes, so every type error is left
+# to the agent. ty exits 1 on findings only, so any other failure, such as a
+# config it cannot load or an internal error, means it could not run.
+lint_ty() {
+	local file_path=$1 dir=$2
+	local bin output status
+	bin=$(resolve_bin ty "${dir}")
+	if [[ -z "${bin}" ]]; then
+		MISSING+=("ty")
+		return 0
+	fi
+	pushd "${dir}" >/dev/null || return 0
+	output=$("${bin}" check --force-exclude --output-format concise --no-progress --color never \
+		-- "${file_path##*/}" 2>&1)
+	status=$?
+	popd >/dev/null || return 0
+	case ${status} in
+	0) ;;
+	1) FINDINGS+=("[ty] ${output}") ;;
+	*) MISSING+=("ty") ;;
+	esac
+	return 0
+}
+
 # sqruff fix exits non-zero while unfixable findings remain and also lists
 # the ones it fixed, so its result is discarded and lint reports what is left.
 lint_sql() {
@@ -304,6 +331,7 @@ format_file() {
 			--extend-per-file-ignores '**/conftest.py:S101' \
 			"${file_path}"
 		run_tool ruff "${dir}" format "${file_path}"
+		lint_ty "${file_path}" "${dir}"
 		lint_ast_grep "${file_path}" "${dir}"
 		;;
 	*.ts | *.tsx | *.js | *.jsx | *.json)

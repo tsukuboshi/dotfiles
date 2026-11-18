@@ -49,7 +49,7 @@ jobs:
         with:
           install_args: >-
             actionlint aqua:owenlamont/ryl ast-grep gitleaks hadolint rumdl
-            ruff shellcheck shfmt taplo trivy typos zizmor
+            ruff shellcheck shfmt taplo trivy ty typos zizmor
           cache_key: "{{default}}-${{ hashFiles('runtime/config.toml') }}"
 
       # The post-edit hook checks zsh files with zsh -n, and the runner
@@ -94,7 +94,7 @@ jobs:
       - name: Install test tools
         uses: jdx/mise-action@6be3c7ed4c21d4f76b208d351d95aac273ebb76d  # v5.2.4
         with:
-          install_args: ast-grep gitleaks rumdl shellcheck shfmt typos
+          install_args: ast-grep gitleaks rumdl shellcheck shfmt ty typos
           cache_key: "{{default}}-${{ hashFiles('runtime/config.toml') }}"
 
       - name: Install zsh

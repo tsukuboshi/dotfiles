@@ -80,6 +80,31 @@ ln -s "${P}/strict/sub" "${P}/linked-sub"
 post_edit "${P}/linked-sub/linked.sh"
 expect_rc "post-edit: a script edited through a linked directory gets the repository's .shellcheckrc" 2 "SC2250"
 
+# ty has no fixes, so a type error is always left for the agent.
+printf 'def f(x: int) -> str:\n    return x\n' >"${P}/typed.py"
+post_edit "${P}/typed.py"
+expect_rc "post-edit: a type error is reported by ty" 2 "[ty] typed.py:2:12: error[invalid-return-type]"
+
+mkdir -p "${P}/ty-excluded" "${P}/ty-broken"
+printf '[src]\nexclude = ["generated.py"]\n' >"${P}/ty-excluded/ty.toml"
+printf 'def f(x: int) -> str:\n    return x\n' >"${P}/ty-excluded/generated.py"
+post_edit "${P}/ty-excluded/generated.py"
+if [[ "${OUTPUT}" != *"[ty]"* ]]; then
+	pass
+else
+	fail "post-edit: a file the ty config excludes is not checked by ty" "got exit ${RC}: ${OUTPUT}"
+fi
+
+# A config ty cannot load is the tool failing, not a type error to fix.
+printf '[rules\n' >"${P}/ty-broken/ty.toml"
+printf 'x = 1\n' >"${P}/ty-broken/broken.py"
+post_edit "${P}/ty-broken/broken.py"
+if [[ "${OUTPUT}" == *"ty unavailable"* && "${OUTPUT}" != *"[ty]"* ]]; then
+	pass
+else
+	fail "post-edit: a broken ty config is reported as ty unavailable" "got exit ${RC}: ${OUTPUT}"
+fi
+
 printf "#!/bin/bash\nrm -rf \"\$1\"\n" >"${P}/recursive-rm.sh"
 post_edit "${P}/recursive-rm.sh"
 expect_rc "post-edit: a recursive rm is reported by ast-grep" 2 "sh-no-recursive-rm"
