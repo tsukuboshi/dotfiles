@@ -161,18 +161,46 @@ record_tab s1 19 "http://localhost:3000/"
 record_page_text s1 $'tabId 19: x ("https://example.com/")'
 expect_pretool "chrome: page text can still mark a tab as remote" $G "$(page_action s1 left_click 19)" deny
 
-# A script is allowed when its SHA-256 is listed in the untracked file.
+# A script is allowed when its SHA-256 is listed in the untracked file with the
+# origin of the tab it runs on.
 # The hash below is the published SHA-256 of "abc" (FIPS 180-2, Appendix B.1).
+# script_input <text> [tab] [extra jq object]
 script_input() {
-	chrome_input javascript_tool "$(jq -cn --arg t "$1" '{action: "javascript_exec", text: $t, tabId: 1}')"
+	jq -cn --arg t "$1" --argjson tab "${2:-30}" --argjson extra "${3:-{\}}" '{
+		hook_event_name: "PreToolUse", session_id: "s3",
+		tool_name: "mcp__claude-in-chrome__javascript_tool",
+		tool_input: ({action: "javascript_exec", text: $t, tabId: $tab} + $extra)
+	}'
 }
+abc_sha256=ba7816bf8f01cfea414140de5dae2223b00361a396177a9cb410ff61f20015ad
+record_tab s3 30 "https://app.example.test/timecard?page=1"
+record_tab s3 31 "https://example.com/"
 expect_pretool "chrome: a script is denied without the hash file" $G "$(script_input abc)" deny
 printf '%s\r\n' '# extract.js' \
-	'ba7816bf8f01cfea414140de5dae2223b00361a396177a9cb410ff61f20015ad  # trailing comment' \
-	'not-a-hash' >"$allowed_sha256_file"
-expect_pretool "chrome: a registered script is allowed" $G "$(script_input abc)" allow
+	"${abc_sha256} https://app.example.test  # trailing comment" \
+	'not-a-hash https://app.example.test' >"$allowed_sha256_file"
+expect_pretool "chrome: a registered script is allowed on its origin" $G "$(script_input abc)" allow
 expect_pretool "chrome: a registered script with a trailing newline is allowed" $G "$(script_input $'abc\n')" allow
 expect_pretool "chrome: an edited registered script is denied" $G "$(script_input abcd)" deny
+expect_pretool "chrome: a registered script on another origin is denied" $G "$(script_input abc 31)" deny
+expect_pretool "chrome: a registered script on an unrecorded tab is denied" $G "$(script_input abc 32)" deny
+expect_pretool "chrome: a registered script with a NUL inside is denied" $G "$(script_input $'a\x01bc' | sed 's/\\u0001/\\u0000/')" deny
+expect_pretool "chrome: a registered script through another action is denied" $G "$(script_input abc 30 '{"action": "other"}')" deny
+expect_pretool "chrome: a registered script with an extra field is denied" $G "$(script_input abc 30 '{"extra": "x"}')" deny
+record_page_text s3 $'tabId 31: x ("https://app.example.test/")'
+expect_pretool "chrome: page text cannot move a tab onto a registered origin" $G "$(script_input abc 31)" deny
+# A canonical JSON object on the first line passes values to a registered body.
+expect_pretool "chrome: a data line before a registered script is allowed" $G "$(script_input $'var PROPOSAL = {"date":"2026-11-16","n":[1]};\nabc')" allow
+expect_pretool "chrome: a data line before an edited script is denied" $G "$(script_input $'var PROPOSAL = {"a":1};\nabcd')" deny
+expect_pretool "chrome: a data line not in jq -c form is denied" $G "$(script_input $'var PROPOSAL = {"a": 1};\nabc')" deny
+expect_pretool "chrome: a data line with code after the JSON is denied" $G "$(script_input $'var PROPOSAL = {"a":1};alert(1);x={};\nabc')" deny
+expect_pretool "chrome: a data line holding two objects is denied" $G "$(script_input $'var PROPOSAL = {"a":1},{"b":2};\nabc')" deny
+expect_pretool "chrome: a data line holding an array is denied" $G "$(script_input $'var PROPOSAL = [1];\nabc')" deny
+expect_pretool "chrome: a data line on another origin is denied" $G "$(script_input $'var PROPOSAL = {"a":1};\nabc' 31)" deny
+printf '%s\n' "${abc_sha256} https://other.example.test" "${abc_sha256} https://app.example.test" >"$allowed_sha256_file"
+expect_pretool "chrome: a script registered for several origins is allowed on any of them" $G "$(script_input abc)" allow
+printf '%s\n' "$abc_sha256" >"$allowed_sha256_file"
+expect_pretool "chrome: a registered script without an origin is denied" $G "$(script_input abc)" deny
 
 HOOKS_DIR="${root}/genai/hooks"
 

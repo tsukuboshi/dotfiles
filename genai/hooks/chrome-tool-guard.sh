@@ -7,9 +7,12 @@
 #                    only on a tab whose last recorded URL is on a loopback host
 #                    (127.0.0.1, localhost, *.localhost, [::1]), for testing local apps.
 #   javascript_tool: a single page zoom assignment, e.g. document.body.style.zoom = '80%'
-#                    (25-100% or 0.25-1), or a read-only script whose SHA-256 is listed in
-#                    ALLOWED_SCRIPT_SHA256_FILE. Any other string in tool_input, besides
-#                    lowercase identifiers such as the action name, is denied.
+#                    (25-100% or 0.25-1), or a script whose SHA-256 is listed in
+#                    ALLOWED_SCRIPT_SHA256_FILE, run by javascript_exec on a tab whose last
+#                    recorded URL is on the origin listed with it. The script may start with
+#                    one `var PROPOSAL = <JSON object>;` line that passes it values. Any
+#                    other string in tool_input, besides lowercase identifiers such as the
+#                    action name, is denied.
 # Fails closed: any other tool name, action or script, and unreadable input, is denied.
 #
 # PostToolUse: record each tab's current URL. Every Claude in Chrome result
@@ -17,10 +20,11 @@
 # seen for a tab is the one PreToolUse checks. A click that leaves the loopback
 # host is recorded by its own result, so the next action on that tab is denied.
 # Tools such as get_page_text also return text the page controls, which could
-# hold a forged tab line, so a loopback URL is recorded only from the tools in
-# TRUSTED_TOOLS_RE. A remote URL is recorded from any tool, since it can only
-# narrow what is allowed. A page title cannot hold a newline, so it cannot
-# start a forged line in a trusted tool's tab context.
+# hold a forged tab line, so a loopback URL, or one on an origin that a script is
+# registered for, is recorded only from the tools in TRUSTED_TOOLS_RE. Any other
+# remote URL is recorded from any tool, since it can only narrow what is allowed.
+# A page title cannot hold a newline, so it cannot start a forged line in a
+# trusted tool's tab context.
 
 INPUT=$(cat)
 EVENT=$(jq -r '.hook_event_name // empty' <<<"$INPUT" 2>/dev/null)
@@ -35,24 +39,49 @@ TAB_LINE_RE='tabId ([0-9]+): .*\("([^"]*)"\)[[:space:]]*$'
 TRUSTED_TOOLS_RE='^mcp__claude-in-chrome__(computer|navigate|tabs_context_mcp|tabs_create_mcp)$'
 
 # Read-only scripts that a skill passes to javascript_tool verbatim. Their hashes are kept
-# per machine in an untracked file next to this script (see .gitignore), one per line;
-# the rest of a line and lines starting with # are comments. The hash covers the whole
-# text, comments included, so any edit to a script needs its hash registered again:
+# per machine in an untracked file next to this script (see .gitignore), one per line as
+# "<sha256> <origin>", e.g. "<sha256> https://s2.ta.kingoftime.jp"; the rest of a line and
+# lines starting with # are comments. A script runs only on a tab at its origin, so a
+# page elsewhere cannot have it read that page and hand the result to Claude. The hash
+# covers the whole text, comments included, so any edit to a script needs its hash
+# registered again:
 #   printf '%s' "$(cat script.js)" | shasum -a 256
 # A missing file or a malformed line registers nothing, so scripts stay denied. The path
 # has no environment override, since a project's settings env could then swap the list.
 ALLOWED_SCRIPT_SHA256_FILE="${BASH_SOURCE[0]%/*}/chrome-tool-guard.allowed-sha256"
 
+# Prints "<sha256> <origin>" for each well-formed line of the hash file.
+registered_scripts() {
+	local hash origin
+	[[ -r "$ALLOWED_SCRIPT_SHA256_FILE" ]] || return 0
+	while read -r hash origin _ || [[ -n "$hash" ]]; do
+		# A file saved with CRLF line endings leaves \r on each line.
+		hash=${hash%$'\r'} origin=${origin%$'\r'}
+		[[ "$hash" =~ ^[0-9a-f]{64}$ && "$origin" =~ ^https?://[a-z0-9.-]+(:[0-9]+)?$ ]] &&
+			printf '%s %s\n' "$hash" "$origin"
+	done <"$ALLOWED_SCRIPT_SHA256_FILE"
+}
+
+# Prints the scheme://host[:port] of a URL, or nothing.
+origin_of() {
+	[[ "$1" =~ ^(https?://[^/?#]+) ]] && printf '%s' "${BASH_REMATCH[1]}"
+}
+
 record_tab_urls() {
-	local text line tab_id url trusted=0
+	local text line tab_id url origin registered trusted=0
 	text=$(jq -r '.tool_response | [.. | strings] | .[]' <<<"$INPUT" 2>/dev/null) || return 0
 	mkdir -p "$STATE_DIR" && chmod 700 "$STATE_DIR" || return 0
 	[[ "$TOOL_NAME" =~ $TRUSTED_TOOLS_RE ]] && trusted=1
+	((trusted)) || registered=$(registered_scripts)
 	while IFS= read -r line; do
 		[[ "$line" =~ $TAB_LINE_RE ]] || continue
 		# Copied out before the next match below resets BASH_REMATCH.
 		tab_id=${BASH_REMATCH[1]} url=${BASH_REMATCH[2]}
-		((trusted)) || [[ ! "$url" =~ $LOOPBACK_URL_RE ]] || continue
+		if ((! trusted)); then
+			[[ "$url" =~ $LOOPBACK_URL_RE ]] && continue
+			origin=$(origin_of "$url")
+			[[ -n "$origin" && "${registered}"$'\n' == *" ${origin}"$'\n'* ]] && continue
+		fi
 		printf '%s\t%s\n' "$tab_id" "$url" >>"$TAB_FILE"
 	done <<<"$text"
 }
@@ -100,20 +129,51 @@ guard_javascript() {
 	local zoom_re="^document\.body\.style\.zoom[[:space:]]*=[[:space:]]*(['\"])((2[5-9]|[3-9][0-9]|100)%|0?\.(2[5-9]|[3-9][0-9]?)|1(\.0+)?)['\"][[:space:]]*;?$"
 	local ident_re='^[a-z_]+$'
 	local strings s zoom_found=0 other_found=0
-	local text hash allowed
+	local text body first json hash tab_id origin allowed allowed_origin
 
-	# $(...) drops trailing newlines, the same as the registration command above.
-	text=$(jq -r '.tool_input.text // empty' <<<"$INPUT" 2>/dev/null)
-	if [[ -n "$text" && -r "$ALLOWED_SCRIPT_SHA256_FILE" ]]; then
-		hash=$(printf '%s' "$text" | shasum -a 256 | cut -d' ' -f1)
-		while read -r allowed _ || [[ -n "$allowed" ]]; do
-			# A file saved with CRLF line endings leaves \r on each line.
-			if [[ "${allowed%$'\r'}" =~ ^[0-9a-f]{64}$ && "$hash" == "${allowed%$'\r'}" ]]; then
-				DECISION="allow"
-				REASON="Registered read-only script is allowed (sha256 $hash)"
+	# $(...) drops NUL, so a string with one would be checked as something other than what
+	# Chrome runs. Nothing legitimate sends one.
+	if ! jq -e '[.tool_input | .. | strings | contains("\u0000")] | any | not' <<<"$INPUT" >/dev/null 2>&1; then
+		REASON="tool_input holds a NUL character. Ask the user to perform this action."
+		return
+	fi
+
+	# Only javascript_exec with nothing but action, text and tabId, where text is a string.
+	if jq -e '.tool_input
+		| (keys - ["action", "tabId", "text"] | length == 0)
+			and .action == "javascript_exec"
+			and (.tabId | type == "number")
+			and (.text | type == "string")' <<<"$INPUT" >/dev/null 2>&1; then
+		# $(...) drops trailing newlines, the same as the registration command above.
+		text=$(jq -r '.tool_input.text' <<<"$INPUT")
+		tab_id=$(jq -r '.tool_input.tabId' <<<"$INPUT")
+		origin=$(origin_of "$(last_url_of_tab "$tab_id")")
+		# A script may start with one data line, `var PROPOSAL = <JSON object>;`, whose JSON
+		# is exactly as `jq -c` prints it. A JSON object is a JavaScript literal, so the line
+		# hands values to the registered body below it without adding code; the hash covers
+		# the body only.
+		body=$text
+		first=${text%%$'\n'*}
+		if [[ "$text" == *$'\n'* && "$first" =~ ^var\ PROPOSAL\ =\ (\{.*\})\;$ ]]; then
+			json=${BASH_REMATCH[1]}
+			if [[ "$(jq -c . <<<"$json" 2>/dev/null)" != "$json" ]] ||
+				! jq -e 'type == "object"' <<<"$json" >/dev/null 2>&1; then
+				REASON="The data line must be var PROPOSAL = <JSON object>; with the JSON exactly as jq -c prints it. Ask the user to perform this action."
 				return
 			fi
-		done <"$ALLOWED_SCRIPT_SHA256_FILE"
+			body=${text#*$'\n'}
+		fi
+		hash=$(printf '%s' "$body" | shasum -a 256 | cut -d' ' -f1)
+		while read -r allowed allowed_origin; do
+			[[ "$hash" == "$allowed" ]] || continue
+			if [[ -n "$origin" && "$origin" == "$allowed_origin" ]]; then
+				DECISION="allow"
+				REASON="Registered script is allowed on ${origin} (sha256 $hash)"
+				return
+			fi
+			REASON="This registered script runs only on a tab at ${allowed_origin} (tab ${tab_id} is at ${origin:-an unrecorded URL}). Ask the user to perform this action."
+		done < <(registered_scripts)
+		[[ "$REASON" == "This registered script"* ]] && return
 	fi
 
 	REASON="Only a page zoom assignment (document.body.style.zoom = '25%'-'100%') or a script whose SHA-256 is registered in ${ALLOWED_SCRIPT_SHA256_FILE##*/} is allowed for ${TOOL_NAME}. Ask the user to perform this action."
