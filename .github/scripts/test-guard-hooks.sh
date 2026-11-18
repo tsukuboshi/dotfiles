@@ -20,6 +20,13 @@ trap 'rm -f "$settings_file"' EXIT
 XDG_STATE_HOME=$(mktemp -d)
 export XDG_STATE_HOME
 
+# chrome-tool-guard.sh reads registered script hashes from a file next to
+# itself, so it runs from a copy here instead of beside the user's own list.
+# Left to the OS to clear, like XDG_STATE_HOME above.
+chrome_hooks_dir=$(mktemp -d)
+cp "${HOOKS_DIR}/chrome-tool-guard.sh" "$chrome_hooks_dir/"
+allowed_sha256_file="${chrome_hooks_dir}/chrome-tool-guard.allowed-sha256"
+
 pass() {
 	PASSED=$((PASSED + 1))
 }
@@ -74,6 +81,7 @@ chrome_input() {
 }
 
 # chrome-tool-guard.sh
+HOOKS_DIR=$chrome_hooks_dir
 G=chrome-tool-guard.sh
 expect_pretool "chrome: screenshot is allowed" $G \
 	"$(chrome_input computer '{"action": "screenshot", "tabId": 1}')" allow
@@ -152,6 +160,21 @@ expect_pretool "chrome: page text cannot mark a remote tab as loopback" $G "$(pa
 record_tab s1 19 "http://localhost:3000/"
 record_page_text s1 $'tabId 19: x ("https://example.com/")'
 expect_pretool "chrome: page text can still mark a tab as remote" $G "$(page_action s1 left_click 19)" deny
+
+# A script is allowed when its SHA-256 is listed in the untracked file.
+# The hash below is the published SHA-256 of "abc" (FIPS 180-2, Appendix B.1).
+script_input() {
+	chrome_input javascript_tool "$(jq -cn --arg t "$1" '{action: "javascript_exec", text: $t, tabId: 1}')"
+}
+expect_pretool "chrome: a script is denied without the hash file" $G "$(script_input abc)" deny
+printf '%s\r\n' '# extract.js' \
+	'ba7816bf8f01cfea414140de5dae2223b00361a396177a9cb410ff61f20015ad  # trailing comment' \
+	'not-a-hash' >"$allowed_sha256_file"
+expect_pretool "chrome: a registered script is allowed" $G "$(script_input abc)" allow
+expect_pretool "chrome: a registered script with a trailing newline is allowed" $G "$(script_input $'abc\n')" allow
+expect_pretool "chrome: an edited registered script is denied" $G "$(script_input abcd)" deny
+
+HOOKS_DIR="${root}/genai/hooks"
 
 # config-change-guard.sh
 G=config-change-guard.sh

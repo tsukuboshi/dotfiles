@@ -6,9 +6,10 @@
 #                    zoom, hover and wait. Clicks, typing, key presses and drags are allowed
 #                    only on a tab whose last recorded URL is on a loopback host
 #                    (127.0.0.1, localhost, *.localhost, [::1]), for testing local apps.
-#   javascript_tool: a single page zoom assignment only, e.g. document.body.style.zoom = '80%'
-#                    (25-100% or 0.25-1). Any other string in tool_input, besides lowercase
-#                    identifiers such as the action name, is denied.
+#   javascript_tool: a single page zoom assignment, e.g. document.body.style.zoom = '80%'
+#                    (25-100% or 0.25-1), or a read-only script whose SHA-256 is listed in
+#                    ALLOWED_SCRIPT_SHA256_FILE. Any other string in tool_input, besides
+#                    lowercase identifiers such as the action name, is denied.
 # Fails closed: any other tool name, action or script, and unreadable input, is denied.
 #
 # PostToolUse: record each tab's current URL. Every Claude in Chrome result
@@ -32,6 +33,15 @@ TAB_FILE="$STATE_DIR/tabs-${SESSION_ID:-unknown}.tsv"
 LOOPBACK_URL_RE='^https?://(127\.0\.0\.1|localhost|[a-z0-9-]+\.localhost|\[::1\])(:[0-9]+)?(/|$)'
 TAB_LINE_RE='tabId ([0-9]+): .*\("([^"]*)"\)[[:space:]]*$'
 TRUSTED_TOOLS_RE='^mcp__claude-in-chrome__(computer|navigate|tabs_context_mcp|tabs_create_mcp)$'
+
+# Read-only scripts that a skill passes to javascript_tool verbatim. Their hashes are kept
+# per machine in an untracked file next to this script (see .gitignore), one per line;
+# the rest of a line and lines starting with # are comments. The hash covers the whole
+# text, comments included, so any edit to a script needs its hash registered again:
+#   printf '%s' "$(cat script.js)" | shasum -a 256
+# A missing file or a malformed line registers nothing, so scripts stay denied. The path
+# has no environment override, since a project's settings env could then swap the list.
+ALLOWED_SCRIPT_SHA256_FILE="${BASH_SOURCE[0]%/*}/chrome-tool-guard.allowed-sha256"
 
 record_tab_urls() {
 	local text line tab_id url trusted=0
@@ -90,8 +100,23 @@ guard_javascript() {
 	local zoom_re="^document\.body\.style\.zoom[[:space:]]*=[[:space:]]*(['\"])((2[5-9]|[3-9][0-9]|100)%|0?\.(2[5-9]|[3-9][0-9]?)|1(\.0+)?)['\"][[:space:]]*;?$"
 	local ident_re='^[a-z_]+$'
 	local strings s zoom_found=0 other_found=0
+	local text hash allowed
 
-	REASON="Only a page zoom assignment (document.body.style.zoom = '25%'-'100%') is allowed for ${TOOL_NAME}. Ask the user to perform this action."
+	# $(...) drops trailing newlines, the same as the registration command above.
+	text=$(jq -r '.tool_input.text // empty' <<<"$INPUT" 2>/dev/null)
+	if [[ -n "$text" && -r "$ALLOWED_SCRIPT_SHA256_FILE" ]]; then
+		hash=$(printf '%s' "$text" | shasum -a 256 | cut -d' ' -f1)
+		while read -r allowed _ || [[ -n "$allowed" ]]; do
+			# A file saved with CRLF line endings leaves \r on each line.
+			if [[ "${allowed%$'\r'}" =~ ^[0-9a-f]{64}$ && "$hash" == "${allowed%$'\r'}" ]]; then
+				DECISION="allow"
+				REASON="Registered read-only script is allowed (sha256 $hash)"
+				return
+			fi
+		done <"$ALLOWED_SCRIPT_SHA256_FILE"
+	fi
+
+	REASON="Only a page zoom assignment (document.body.style.zoom = '25%'-'100%') or a script whose SHA-256 is registered in ${ALLOWED_SCRIPT_SHA256_FILE##*/} is allowed for ${TOOL_NAME}. Ask the user to perform this action."
 	strings=$(jq -r '.tool_input | [.. | strings] | .[]' <<<"$INPUT" 2>/dev/null) || return
 	while IFS= read -r s; do
 		[[ -z "$s" ]] && continue
