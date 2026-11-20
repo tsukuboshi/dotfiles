@@ -105,6 +105,44 @@ else
 	fail "post-edit: a broken ty config is reported as ty unavailable" "got exit ${RC}: ${OUTPUT}"
 fi
 
+# Outside a crate, rustfmt parses as edition 2024 instead of its default 2015,
+# where async is not a keyword.
+printf 'async fn f( ) {}\n' >"${P}/standalone.rs"
+post_edit "${P}/standalone.rs"
+if ((RC == 0)) && [[ "$(<"${P}/standalone.rs")" == 'async fn f() {}' ]]; then
+	pass
+else
+	fail "post-edit: rustfmt formats a file outside a crate as edition 2024" "got exit ${RC}: ${OUTPUT}"
+fi
+
+printf 'fn f( {}\n' >"${P}/unclosed.rs"
+post_edit "${P}/unclosed.rs"
+expect_rc "post-edit: a Rust parse error is reported against the file" 2 "[rustfmt] error: this file contains an unclosed delimiter"
+if [[ "${OUTPUT}" == *"unclosed.rs:1"* ]]; then
+	pass
+else
+	fail "post-edit: a Rust parse error names the file instead of stdin" "got exit ${RC}: ${OUTPUT}"
+fi
+
+# gen is reserved from edition 2024, so this parses only with the crate's 2021.
+C="${P}/crate"
+mkdir -p "${C}/src"
+printf '[package]\nname = "fixture"\nversion = "0.1.0"\nedition = "2021"\n' >"${C}/Cargo.toml"
+printf 'pub mod child;\n\npub fn f() -> u32 {\n    let gen = 1;\n    gen + 1\n}\n' >"${C}/src/lib.rs"
+printf 'pub fn g( ) {}\n' >"${C}/src/child.rs"
+post_edit "${C}/src/lib.rs"
+expect_rc "post-edit: rustfmt parses with the crate's edition" 0 ""
+if [[ "$(<"${C}/src/child.rs")" == 'pub fn g( ) {}' ]]; then
+	pass
+else
+	fail "post-edit: rustfmt leaves the modules the file declares alone" "got: $(<"${C}/src/child.rs")"
+fi
+
+printf 'pub fn g() -> bool {\n    return true;\n}\n' >"${C}/src/child.rs"
+post_edit "${C}/src/child.rs"
+expect_rc "post-edit: a clippy finding is reported against the file" 2 \
+	"[clippy] child.rs:2:5 warning[clippy::needless_return]"
+
 printf "#!/bin/bash\nrm -rf \"\$1\"\n" >"${P}/recursive-rm.sh"
 post_edit "${P}/recursive-rm.sh"
 expect_rc "post-edit: a recursive rm is reported by ast-grep" 2 "sh-no-recursive-rm"
@@ -206,6 +244,20 @@ if ((RC == 0)) && [[ "${OUTPUT}" == *"formatted 1 file(s): fmt.sh"* && "${staged
 	pass
 else
 	fail "pre-commit: a staged script is formatted and restaged" "got exit ${RC}: ${OUTPUT}"
+fi
+
+new_repo
+mkdir -p "${REPO}/src"
+printf '[package]\nname = "fixture"\nversion = "0.1.0"\nedition = "2021"\n' >"${REPO}/Cargo.toml"
+printf 'pub mod child;\n\npub fn f( ) -> u32 {\n    let gen = 1;\n    gen + 1\n}\n' >"${REPO}/src/lib.rs"
+printf 'pub fn g( ) {}\n' >"${REPO}/src/child.rs"
+git -C "${REPO}" add src/lib.rs
+pre_commit
+staged=$(git -C "${REPO}" show :src/lib.rs)
+if ((RC == 0)) && [[ "${staged}" == *'pub fn f() -> u32 {'* && "$(<"${REPO}/src/child.rs")" == 'pub fn g( ) {}' ]]; then
+	pass
+else
+	fail "pre-commit: a staged Rust file alone is formatted with its crate's edition" "got exit ${RC}: ${OUTPUT}"
 fi
 
 new_repo

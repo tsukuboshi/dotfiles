@@ -107,6 +107,40 @@ fmt_js() {
 	return 0
 }
 fmt_go() { xargs golangci-lint fmt <<<"$1" >/dev/null 2>&1; }
+# rustfmt formats each file alone through stdin, from its directory with its
+# crate's edition, or 2024 outside a crate unless a rustfmt.toml decides, as
+# in the post-edit hook. A file rustfmt cannot parse is left as it is; the
+# post-edit hook already reported it.
+fmt_rs() {
+	local f dir edition args formatted
+	command -v rustfmt >/dev/null 2>&1 || return 0
+	while IFS= read -r f; do
+		dir="${REPO_ROOT}/$(dirname "${f}")"
+		edition=$(cd "${dir}" && cargo metadata --no-deps --format-version 1 2>/dev/null |
+			jq -r --arg f "$(pwd -P)/${f##*/}" '
+				[.packages[] | (.manifest_path | rtrimstr("Cargo.toml")) as $d | select($f | startswith($d))]
+				| max_by(.manifest_path | length) | .edition // ""
+			' 2>/dev/null || true)
+		args=()
+		if [[ -n "${edition}" ]]; then
+			args=(--edition "${edition}")
+		elif ! has_rustfmt_config "${dir}"; then
+			args=(--edition 2024)
+		fi
+		formatted=$(cd "${dir}" && rustfmt "${args[@]}" <"${REPO_ROOT}/${f}" 2>/dev/null) || continue
+		[[ -z "${formatted}" || "${formatted}" == "$(<"${REPO_ROOT}/${f}")" ]] ||
+			printf '%s\n' "${formatted}" >"${REPO_ROOT}/${f}"
+	done <<<"$1"
+}
+# rustfmt searches for its config upward from the cwd, past the repository.
+has_rustfmt_config() {
+	local dir=$1
+	while [[ -n "${dir}" && "${dir}" != "/" ]]; do
+		[[ -f "${dir}/rustfmt.toml" || -f "${dir}/.rustfmt.toml" ]] && return 0
+		dir=${dir%/*}
+	done
+	return 1
+}
 fmt_tf() { xargs terraform fmt <<<"$1" 2>/dev/null; }
 fmt_sh() { xargs shfmt -w <<<"$1" 2>/dev/null; }
 # rumdl fixes MD025 by demoting later h1s, which breaks the per-step h1
@@ -200,6 +234,7 @@ else
 		process_ext '\.(ts|tsx|js|jsx)$' fmt_js
 	fi
 	process_ext '\.go$' fmt_go
+	process_ext '\.rs$' fmt_rs
 	process_ext '\.tf$' fmt_tf
 	process_ext '\.(sh|bash)$' fmt_sh
 	process_ext '\.md$' fmt_md

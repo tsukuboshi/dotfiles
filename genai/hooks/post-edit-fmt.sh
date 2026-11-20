@@ -126,6 +126,78 @@ lint_go() {
 	return 0
 }
 
+# rustfmt also formats the out-of-line modules a file declares, and the
+# option that stops it is nightly-only, so the file goes through stdin and
+# only it is rewritten. Run directly, rustfmt parses as edition 2015, so the
+# crate's edition is passed as cargo fmt does, or 2024 outside a crate
+# unless a rustfmt.toml decides. clippy builds the whole crate, as
+# golangci-lint does a package, and only the diagnostics in $file_path are
+# kept, compile errors included. cargo reports paths with symlinks resolved,
+# so the file is matched by its physical path. rustfmt and cargo search for
+# their configs upward from the cwd, so both run from the file's directory.
+lint_rust() {
+	local file_path=$1 dir=$2
+	local cargo rustfmt real_path root="" edition="" args=()
+	cargo=$(resolve_bin cargo "${dir}")
+	rustfmt=$(resolve_bin rustfmt "${dir}")
+	pushd "${dir}" >/dev/null || return 0
+	real_path="$(pwd -P)/${file_path##*/}"
+	if [[ -n "${cargo}" ]] && has_project_file "${dir}" Cargo.toml; then
+		{
+			IFS= read -r root
+			IFS= read -r edition
+		} < <("${cargo}" metadata --no-deps --format-version 1 2>/dev/null | jq -r --arg f "${real_path}" '
+			.workspace_root,
+			([.packages[] | (.manifest_path | rtrimstr("Cargo.toml")) as $d | select($f | startswith($d))]
+				| max_by(.manifest_path | length) | .edition // "")
+		' 2>/dev/null || true)
+	fi
+	if [[ -n "${edition}" ]]; then
+		args=(--edition "${edition}")
+	elif ! has_project_file "${dir}" rustfmt.toml .rustfmt.toml; then
+		args=(--edition 2024)
+	fi
+
+	local formatted output
+	if [[ -z "${rustfmt}" ]]; then
+		MISSING+=("rustfmt")
+	elif formatted=$("${rustfmt}" "${args[@]}" <"${file_path}" 2>/dev/null); then
+		[[ -z "${formatted}" || "${formatted}" == "$(<"${file_path}")" ]] ||
+			printf '%s\n' "${formatted}" >"${file_path}"
+	elif "${rustfmt}" --version >/dev/null 2>&1; then
+		# A parse error names the input <stdin>.
+		output=$("${rustfmt}" "${args[@]}" <"${file_path}" 2>&1 >/dev/null)
+		FINDINGS+=("[rustfmt] ${output//<stdin>/${file_path##*/}}")
+	else
+		MISSING+=("rustfmt")
+	fi
+
+	# Outside a crate, or with a Cargo.toml cargo cannot load, there is
+	# nothing for clippy to build. A run that never finishes a build, such as
+	# one without the clippy component, means it could not run.
+	local json findings
+	if [[ -n "${root}" ]]; then
+		json=$("${cargo}" clippy --all-targets --no-deps --message-format=json --quiet 2>/dev/null)
+		if ! grep -q '"reason":"build-finished"' <<<"${json}"; then
+			MISSING+=("clippy")
+		else
+			# A file built into several targets, such as a library and its
+			# unit tests, gets each diagnostic once per target.
+			findings=$(jq -r --arg root "${root}/" --arg f "${real_path}" --arg t "${file_path##*/}" '
+				select(.reason == "compiler-message") | .message as $m
+				| $m.spans[] | select(.is_primary and $root + .file_name == $f)
+				| "\($t):\(.line_start):\(.column_start) \($m.level)"
+					+ (if $m.code then "[\($m.code.code)]" else "" end) + " \($m.message)"
+			' <<<"${json}" 2>/dev/null | awk '!seen[$0]++' || true)
+			[[ -n "${findings}" ]] && FINDINGS+=("[clippy] ${findings}")
+		fi
+	elif [[ -n "${cargo}" ]] && has_project_file "${dir}" Cargo.toml; then
+		MISSING+=("cargo")
+	fi
+	popd >/dev/null || return 0
+	return 0
+}
+
 # trivy resolves Terraform variables and modules across files, so it scans
 # $target as a whole and only the misconfigurations in $file_path are kept.
 # Only HIGH and CRITICAL are reported so the agent is not pushed into
@@ -358,6 +430,9 @@ format_file() {
 	*.go)
 		# Outside a module, golangci-lint cannot load the package at all.
 		has_project_file "${dir}" go.mod && lint_go "${file_path}" "${dir}"
+		;;
+	*.rs)
+		lint_rust "${file_path}" "${dir}"
 		;;
 	*.tf)
 		run_tool terraform "${dir}" fmt "${file_path}"
