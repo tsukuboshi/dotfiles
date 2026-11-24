@@ -221,6 +221,9 @@ function aliases() {
   echo ""
 }
 
+# Load machine-local settings kept out of git (e.g. CLAUDE_ENT_TOKEN_REF)
+[ -f "$HOME/.zshrc.local" ] && source "$HOME/.zshrc.local"
+
 ### MANAGED BY RANCHER DESKTOP START (DO NOT EDIT)
 export PATH="$HOME/.rd/bin:$PATH"
 ### MANAGED BY RANCHER DESKTOP END (DO NOT EDIT)

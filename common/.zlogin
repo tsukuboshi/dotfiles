@@ -355,6 +355,17 @@ alias dcd='docker compose down'
 # ============================================================================
 
 alias cus='open https://claude.ai/new#settings/usage'
+# Start Claude Code on the Enterprise account with a `claude setup-token` token kept in 1Password; plain `claude` keeps the /login account
+# Set CLAUDE_ENT_TOKEN_REF (op://<vault>/<item>/<field>) in ~/.zshrc.local, which stays out of git
+function claude-ent (){
+  local TOKEN
+  if [ -z "${CLAUDE_ENT_TOKEN_REF}" ]; then
+    echo "claude-ent: set CLAUDE_ENT_TOKEN_REF in ~/.zshrc.local" >&2
+    return 1
+  fi
+  TOKEN=$(op read "${CLAUDE_ENT_TOKEN_REF}") || return 1
+  CLAUDE_CODE_OAUTH_TOKEN=${TOKEN} claude "$@"
+}
 
 # ============================================================================
 # Code
