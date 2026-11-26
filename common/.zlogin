@@ -274,28 +274,6 @@ function ecsexec (){
   aws ecs execute-command --cluster ${CLUSTER_NAME} --task ${TASK_ID} --container ${CONTAINER_NAME} --interactive --command "/bin/sh"
 }
 
-# ============================================================================
-# SAM
-# ============================================================================
-
-alias samv='sam validate'
-alias samb='sam build'
-alias samp='sam deploy'
-alias samd='sam destroy'
-
-# ============================================================================
-# CDK
-# ============================================================================
-
-function cdkin (){
-  local LANGUAGE=${1:-typescript}
-  cdk init --language ${LANGUAGE}
-}
-alias cdks='cdk synthesize'
-alias cdki='cdk diff'
-alias cdkp='cdk deploy'
-alias cdkl='cdk list'
-alias cdkd='cdk destroy'
 
 # ============================================================================
 # Terraform
