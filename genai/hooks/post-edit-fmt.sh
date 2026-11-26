@@ -20,6 +20,12 @@ MISSING=()
 # reported that way for the agent to fix in its next edit.
 FINDINGS=()
 
+# Findings worth a look that need not hold up the agent, such as typos'
+# suggestions, which can be a project's own word. Reported on exit 0 as
+# additionalContext, which both Claude Code and Codex pass to the model
+# without marking the edit as failed.
+WARNINGS=()
+
 # Directory walks below step up with ${dir%/*} instead of $(dirname), which
 # forked once per level and took half of the hook's run time. $dir is always
 # absolute, and the walk stops before "/" either way.
@@ -325,7 +331,7 @@ lint_typos() {
 	status=$?
 	case ${status} in
 	0) ;;
-	2) FINDINGS+=("[typos] ${output}") ;;
+	2) WARNINGS+=("[typos] ${output}") ;;
 	*) MISSING+=("typos") ;;
 	esac
 	return 0
@@ -554,17 +560,38 @@ else
 	format_file "${FILE_PATH}"
 fi
 
+missing_notice=""
 if ((${#MISSING[@]} > 0)); then
 	# paste -d cycles through its delimiters one character at a time, so
 	# the list is joined with commas and a space is added after each.
 	names=$(printf '%s\n' "${MISSING[@]}" | sort -u | paste -sd, - | sed 's/,/, /g' || true)
-	printf 'post-edit-fmt: %s unavailable; file left unformatted\n' "${names}" >&2
+	missing_notice="post-edit-fmt: ${names} unavailable; file left unformatted"
+	printf '%s\n' "${missing_notice}" >&2
 fi
 
 if ((${#FINDINGS[@]} > 0)); then
 	printf 'post-edit-fmt: fix these lint findings\n' >&2
 	printf '%s\n' "${FINDINGS[@]}" >&2
+	if ((${#WARNINGS[@]} > 0)); then
+		printf 'post-edit-fmt: warnings (fix them unless the word is intended)\n' >&2
+		printf '%s\n' "${WARNINGS[@]}" >&2
+	fi
 	exit 2
+fi
+
+# The JSON is read only on exit 0, so a missing tool is reported in it too
+# rather than through exit 1, which would drop the warnings.
+if ((${#WARNINGS[@]} > 0)); then
+	warnings=$(printf '%s\n' "${WARNINGS[@]}")
+	jq -n --arg warnings "${warnings}" --arg missing "${missing_notice}" '{
+		systemMessage: ([("post-edit-fmt: typos warnings\n" + $warnings), $missing]
+			| map(select(. != "")) | join("\n")),
+		hookSpecificOutput: {
+			hookEventName: "PostToolUse",
+			additionalContext: ("post-edit-fmt: warnings (fix them unless the word is intended)\n" + $warnings)
+		}
+	}'
+	exit 0
 fi
 
 ((${#MISSING[@]} > 0)) && exit 1

@@ -170,7 +170,8 @@ lint_ast_grep() {
 
 # typos checks the staged files of every type with its own defaults or the
 # repository's config, which it finds by itself. It exits 2 on
-# findings only, so a config it cannot load does not block the commit.
+# findings only, so a config it cannot load is not reported. Its findings
+# are warnings rather than blockers, since a flagged word can be intended.
 # Lock files are generated, as in the post-edit hook.
 TYPOS_FINDINGS=""
 lint_typos() {
@@ -258,14 +259,8 @@ if [[ -n "${AST_GREP_FINDINGS}" ]]; then
 	exit 2
 fi
 
-# Block the commit on misspellings.
-if [[ -n "${TYPOS_FINDINGS}" ]]; then
-	printf 'Pre-commit (%s): typos found misspellings in the staged changes\n%s\n' \
-		"${CALLER}" "${TYPOS_FINDINGS}" >&2
-	exit 2
-fi
-
-# Output result as JSON (both Claude Code and Codex accept `systemMessage`)
+# Output result as JSON (both Claude Code and Codex accept `systemMessage`,
+# and pass a PreToolUse hook's `additionalContext` to the model)
 if [[ ${#FORMATTED_FILES[@]} -gt 0 ]]; then
 	FILE_LIST=$(printf ', %s' "${FORMATTED_FILES[@]}")
 	FILE_LIST=${FILE_LIST:2}
@@ -276,6 +271,15 @@ fi
 if [[ -n "${PARTIAL_FILES}" ]]; then
 	MESSAGE+="; left partially staged file(s) unformatted: ${PARTIAL_FILES//$'\n'/, }"
 fi
-printf '{"systemMessage":"Pre-commit (%s): %s"}\n' "${CALLER}" "${MESSAGE}"
+MESSAGE="Pre-commit (${CALLER}): ${MESSAGE}"
+if [[ -n "${TYPOS_FINDINGS}" ]]; then
+	WARNING="Pre-commit (${CALLER}): typos warnings in the staged changes (fix them unless the word is intended)"$'\n'"${TYPOS_FINDINGS}"
+	jq -n --arg msg "${MESSAGE}" --arg warn "${WARNING}" '{
+		systemMessage: ($msg + "\n" + $warn),
+		hookSpecificOutput: {hookEventName: "PreToolUse", additionalContext: $warn}
+	}'
+else
+	jq -n --arg msg "${MESSAGE}" '{systemMessage: $msg}'
+fi
 
 exit 0

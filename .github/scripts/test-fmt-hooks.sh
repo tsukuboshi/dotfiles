@@ -151,7 +151,7 @@ expect_rc "post-edit: a recursive rm is reported by ast-grep" 2 "sh-no-recursive
 misspelling="te""h"
 printf '# Notes\n\nSee %s docs.\n' "${misspelling}" >"${P}/notes.md"
 post_edit "${P}/notes.md"
-expect_rc "post-edit: a misspelling in Markdown is reported by typos" 2 "[typos]"
+expect_rc "post-edit: a misspelling in Markdown is a typos warning" 0 "\"additionalContext\": \"post-edit-fmt: warnings"
 
 printf 'name: %s\n' "${misspelling}" >"${P}/deps.lock.yaml"
 post_edit "${P}/deps.lock.yaml"
@@ -189,7 +189,7 @@ input=$(jq -n --arg sh "${P}/patched.sh" --arg md "${P}/patched.md" '{
 }')
 OUTPUT=$(bash "${HOOKS_DIR}/post-edit-fmt.sh" <<<"${input}" 2>&1)
 RC=$?
-if ((RC == 2)) && [[ "${OUTPUT}" == *"[typos]"* && "$(<"${P}/patched.sh")" == *$'\techo'* ]]; then
+if ((RC == 0)) && [[ "${OUTPUT}" == *"[typos]"* && "$(<"${P}/patched.sh")" == *$'\techo'* ]]; then
 	pass
 else
 	fail "post-edit: apply_patch checks every file the patch names" "got exit ${RC}: ${OUTPUT}"
@@ -291,7 +291,7 @@ new_repo
 printf '# Notes\n\nSee %s docs.\n' "${misspelling}" >"${REPO}/notes.md"
 git -C "${REPO}" add notes.md
 pre_commit
-expect_rc "pre-commit: a misspelling blocks the commit" 2 "typos found misspellings"
+expect_rc "pre-commit: a misspelling is a warning that lets the commit through" 0 "typos warnings in the staged changes"
 
 printf '%d passed, %d failed\n' "${PASSED}" "${FAILED}"
 ((FAILED == 0))
