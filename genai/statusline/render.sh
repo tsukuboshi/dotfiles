@@ -1,6 +1,6 @@
 #!/bin/bash
 # Claude Code Enhanced Status Line
-# Prompt | Model | Effort | Context % | Prompt Cache | 5h Rate | 7d Rate | Lines Changed
+# Prompt | Agent State | Model | Effort | Context % | Prompt Cache | 5h Rate | 7d Rate | Lines Changed
 
 # How long a cache miss cause stays visible after it happens
 MISS_CAUSE_WINDOW=300
@@ -21,6 +21,7 @@ RST='\033[0m'
 STATUSLINE_DIR=$(dirname "${BASH_SOURCE[0]}")
 STATUSLINE_DIR=$(cd "${STATUSLINE_DIR}" && pwd -P)
 source "${STATUSLINE_DIR}/format.sh"
+source "${STATUSLINE_DIR}/state-path.sh"
 
 IFS= read -r -d '' input
 
@@ -49,7 +50,9 @@ _data=$(jq -r '[
   (.prompt_cache.last_miss_at | if type == "number" then floor | tostring else "" end),
   ((.prompt_cache.last_miss_cause.causes[0]? | strings) // ""),
   (.cost.total_lines_added | if type == "number" then floor | tostring else "" end),
-  (.cost.total_lines_removed | if type == "number" then floor | tostring else "" end)
+  (.cost.total_lines_removed | if type == "number" then floor | tostring else "" end),
+  (.session_id // "" | tostring),
+  (.transcript_path // "" | tostring)
 ] | join("\u001f")' <<<"${input}" 2>/dev/null)
 
 # Use the ASCII Unit Separator (0x1f) so that empty fields (e.g. a missing
@@ -58,7 +61,8 @@ _data=$(jq -r '[
 IFS=$'\x1f' read -r model used_pct \
 	five_hour_pct five_hour_reset seven_day_pct seven_day_reset effort \
 	cache_observed cache_warm cache_ttl cache_expires cache_recache \
-	cache_miss_at cache_miss_cause lines_added lines_removed <<<"${_data}"
+	cache_miss_at cache_miss_cause lines_added lines_removed \
+	session_id transcript_path <<<"${_data}"
 
 pct_int=${used_pct%%.*}
 pct_int=${pct_int:-0}
@@ -87,6 +91,44 @@ out=""
 # read above, so nothing .zshrc loads can wait on it.
 prompt_str=$(zsh "${STATUSLINE_DIR}/prompt.zsh" </dev/null)
 [[ -n "${prompt_str}" ]] && out+="${prompt_str} │ "
+
+# Whether the agent is running, as genai/hooks/agent-state.sh last recorded it
+# for this session. No file (a session started before the hooks) shows nothing.
+# The status line does not rerun when a hook writes the file, so a change shows
+# on the next run, at the latest after refreshInterval.
+agent_state=""
+agent_state_at=""
+if agent_state_path "${session_id}"; then
+	read -r agent_state agent_state_at 2>/dev/null <"${AGENT_STATE_PATH}"
+fi
+# Esc runs no Stop hook, so a run stays recorded after an interrupt. Claude Code
+# writes the interrupt to the transcript as a user message, which its docs do not
+# describe, so this reads that shape and keeps run when it finds nothing.
+# A run begun in the same second as the interrupt is a new turn, so it stays run.
+if [[ "${agent_state}" == run && "${agent_state_at}" =~ ^[0-9]+$ && -f "${transcript_path}" ]]; then
+	# fromjson? skips a line still being written
+	interrupt_at=$(tail -n 50 "${transcript_path}" 2>/dev/null | jq -R -n -r '
+	  [inputs | fromjson? | select(.type? == "user")
+	   | select(any(.message.content[]?; .text? // "" | startswith("[Request interrupted by user")))
+	   | .timestamp? | strings | sub("\\.[0-9]+"; "") | fromdateiso8601?]
+	  | last // empty' 2>/dev/null || true)
+	[[ "${interrupt_at}" =~ ^[0-9]+$ ]] && [[ "${interrupt_at}" -gt "${agent_state_at}" ]] && agent_state=idle
+fi
+# Subagents run in the background after the main agent stops, so while any is
+# recorded as running, idle gives way to their count.
+bg_count=0
+if [[ "${agent_state}" == idle && -d "${AGENT_STATE_PATH}.agents" ]]; then
+	for f in "${AGENT_STATE_PATH}.agents"/*; do
+		[[ -e "${f}" ]] && bg_count=$((bg_count + 1))
+	done
+fi
+if [[ "${agent_state}" == run ]]; then
+	out+="🏃\033[32mrun${RST} │ "
+elif [[ "${bg_count}" -gt 0 ]]; then
+	out+="⏳\033[33mbg×${bg_count}${RST} │ "
+elif [[ "${agent_state}" == idle ]]; then
+	out+="💤idle │ "
+fi
 
 # Model and reasoning effort stay plain, except the choices that spend usage fastest
 # (Fable, and effort high or above), which take the same yellow as the cache miss warning.

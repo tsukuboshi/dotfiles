@@ -237,6 +237,16 @@
 	"hooks": {
 		"PreToolUse": [
 			{
+				"matcher": "*",
+				"hooks": [
+					{
+						"type": "command",
+						"command": "bash ~/dotfiles/genai/hooks/agent-state.sh run",
+						"timeout": 5
+					}
+				]
+			},
+			{
 				"matcher": "Bash",
 				"hooks": [
 					{
@@ -282,6 +292,23 @@
 					{
 						"type": "command",
 						"command": "bash ~/dotfiles/genai/hooks/stop-notify.sh"
+					},
+					{
+						"type": "command",
+						"command": "bash ~/dotfiles/genai/hooks/agent-state.sh idle",
+						"timeout": 5
+					}
+				]
+			}
+		],
+		"StopFailure": [
+			{
+				"matcher": "*",
+				"hooks": [
+					{
+						"type": "command",
+						"command": "bash ~/dotfiles/genai/hooks/agent-state.sh idle",
+						"timeout": 5
 					}
 				]
 			}
@@ -307,6 +334,49 @@
 						"timeout": 10
 					}
 				]
+			},
+			{
+				"matcher": "^(startup|resume|clear)$",
+				"hooks": [
+					{
+						"type": "command",
+						"command": "bash ~/dotfiles/genai/hooks/agent-state.sh start",
+						"timeout": 5
+					}
+				]
+			}
+		],
+		"SubagentStart": [
+			{
+				"hooks": [
+					{
+						"type": "command",
+						"command": "bash ~/dotfiles/genai/hooks/agent-state.sh agent-start",
+						"timeout": 5
+					}
+				]
+			}
+		],
+		"SubagentStop": [
+			{
+				"hooks": [
+					{
+						"type": "command",
+						"command": "bash ~/dotfiles/genai/hooks/agent-state.sh agent-stop",
+						"timeout": 5
+					}
+				]
+			}
+		],
+		"SessionEnd": [
+			{
+				"hooks": [
+					{
+						"type": "command",
+						"command": "bash ~/dotfiles/genai/hooks/agent-state.sh end",
+						"timeout": 5
+					}
+				]
 			}
 		],
 		"UserPromptSubmit": [
@@ -316,6 +386,11 @@
 						"type": "command",
 						"command": "bash ~/dotfiles/genai/hooks/herdr-tab-title.sh",
 						"timeout": 5
+					},
+					{
+						"type": "command",
+						"command": "bash ~/dotfiles/genai/hooks/agent-state.sh run",
+						"timeout": 5
 					}
 				]
 			}
@@ -324,7 +399,7 @@
 	"statusLine": {
 		"type": "command",
 		"command": "bash ~/dotfiles/genai/statusline/render.sh",
-		"refreshInterval": 60
+		"refreshInterval": 10
 	},
 	"enabledPlugins": {
 		"claude-md-management@claude-plugins-official": false,

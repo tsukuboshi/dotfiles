@@ -83,9 +83,11 @@ strip_colors() {
 
 # render <json>
 # Runs render.sh on json, leaving its output from the model on in OUTPUT,
-# with colors in RAW and without them in OUTPUT.
+# with colors in RAW and without them in OUTPUT. The agent state sits just
+# before the model, so the part in front of it is kept in HEAD, with colors.
 render() {
 	RAW=$(printf '%s' "$1" | /bin/bash "${STATUSLINE_DIR}/render.sh" 2>/dev/null)
+	HEAD=${RAW%%🤖*}
 	RAW="🤖${RAW#*🤖}"
 	OUTPUT=$(strip_colors "${RAW}")
 }
@@ -159,6 +161,188 @@ if [[ ! -e "${WORK}/ran" && "${OUTPUT}" == "🤖x │ 📊ctx ○ 0%" ]]; then
 	pass
 else
 	fail "render: a percentage that is not a number is not evaluated" "got '${OUTPUT}'"
+fi
+
+# agent-state.sh
+# The hook records whether the agent is running in a file per session, which
+# render.sh reads. CLAUDE_AGENT_STATE_DIR keeps the files of these cases apart.
+HOOK="${root}/genai/hooks/agent-state.sh"
+export CLAUDE_AGENT_STATE_DIR="${WORK}/state"
+S="${CLAUDE_AGENT_STATE_DIR}"
+
+# hook <action> <json>
+# Runs the hook, leaving what it printed in HOOK_OUT.
+hook() {
+	HOOK_OUT=$(printf '%s' "$2" | /bin/bash "${HOOK}" "$1" 2>&1)
+}
+
+# state_of <session_id>
+# Leaves the state recorded for the session, without its time, in GOT, and
+# the subagents recorded as running after it.
+state_of() {
+	local agents=("${S}/$1.agents"/*)
+	GOT=""
+	read -r GOT _ 2>/dev/null <"${S}/$1"
+	[[ -e "${agents[0]}" ]] && GOT+=" ${agents[*]##*/}"
+}
+
+hook run '{"session_id": "s-1", "hook_event_name": "UserPromptSubmit", "prompt": "hi"}'
+read -r got_state got_time 2>/dev/null <"${S}/s-1"
+if [[ "${got_state:-}" == run && "${got_time:-}" =~ ^[0-9]+$ && -z "${HOOK_OUT}" ]]; then
+	pass
+else
+	fail "agent-state: run is written with the time, printing nothing" \
+		"got '${got_state:-} ${got_time:-}', printed '${HOOK_OUT}'"
+fi
+
+hook idle '{"session_id": "s-1", "hook_event_name": "Stop"}'
+state_of s-1
+expect_eq "agent-state: idle replaces run" idle "${GOT}"
+
+# A subagent stopping says nothing about the main agent.
+hook idle '{"session_id": "s-2", "agent_id": "a-1", "hook_event_name": "Stop"}'
+# An empty session ID must not let the agent ID slide into its place.
+hook idle '{"session_id": "", "agent_id": "a-1"}'
+if [[ ! -e "${S}/s-2" && ! -e "${S}/a-1" ]]; then
+	pass
+else
+	fail "agent-state: a subagent's own event is ignored" "got $(ls "${S}" || true)"
+fi
+
+# The session ID becomes a file name, so one that could leave the directory is refused.
+hook run '{"session_id": "../escaped"}'
+if [[ ! -e "${WORK}/escaped" ]]; then
+	pass
+else
+	fail "agent-state: a session ID that is not a plain name is refused" "${WORK}/escaped was written"
+fi
+
+# Subagents: counted while they run, forgotten when Stop lists none in the background
+hook agent-start '{"session_id": "s-bg", "agent_id": "a-1", "hook_event_name": "SubagentStart"}'
+hook agent-start '{"session_id": "s-bg", "agent_id": "a-2", "hook_event_name": "SubagentStart"}'
+hook agent-start '{"session_id": "s-bg", "agent_id": "../x", "hook_event_name": "SubagentStart"}'
+hook agent-stop '{"session_id": "s-bg", "agent_id": "a-1", "hook_event_name": "SubagentStop"}'
+agents=("${S}/s-bg.agents"/*)
+expect_eq "agent-state: a subagent is recorded until it stops" "a-2" "${agents[*]##*/}"
+
+hook idle '{"session_id": "s-bg", "hook_event_name": "Stop", "background_tasks": [{"type": "subagent", "agent_type": "Explore"}]}'
+state_of s-bg
+expect_eq "agent-state: Stop keeps subagents it lists in the background" "idle a-2" "${GOT}"
+hook idle '{"session_id": "s-bg", "hook_event_name": "Stop", "background_tasks": [{"type": "shell"}]}'
+if [[ ! -e "${S}/s-bg.agents" ]]; then
+	pass
+else
+	fail "agent-state: Stop with no subagent in the background forgets them" "got $(ls "${S}/s-bg.agents" || true)"
+fi
+
+hook agent-start '{"session_id": "s-bg", "agent_id": "a-3"}'
+hook start '{"session_id": "s-bg", "hook_event_name": "SessionStart", "source": "resume"}'
+state_of s-bg
+expect_eq "agent-state: a new session is idle with no subagents" "idle" "${GOT}"
+
+hook agent-start '{"session_id": "s-bg", "agent_id": "a-4"}'
+hook end '{"session_id": "s-bg", "hook_event_name": "SessionEnd"}'
+if [[ ! -e "${S}/s-bg" && ! -e "${S}/s-bg.agents" ]]; then
+	pass
+else
+	fail "agent-state: the end of a session removes its files" "got $(ls "${S}" || true)"
+fi
+
+# render.sh with an agent state
+# write_state <session_id> <state> <epoch>
+write_state() {
+	printf '%s %s\n' "$2" "$3" >"${S}/$1"
+}
+RUN_HEAD="🏃"$'\033[32m'"run"$'\033[0m'" │ "
+
+write_state s-run run "${now}"
+render '{"session_id": "s-run", "model": {"display_name": "x"}}'
+# run is green, the color the status line gives to what is going well
+if [[ "${HEAD}" == *"${RUN_HEAD}" && "${OUTPUT}" == "🤖x │ 📊ctx ○ 0%" ]]; then
+	pass
+else
+	fail "render: a running agent is shown in green before the model" "got '${HEAD}${RAW}'"
+fi
+
+write_state s-idle idle "${now}"
+render '{"session_id": "s-idle", "model": {"display_name": "x"}}'
+if [[ "${HEAD}" == *"💤idle │ " ]]; then
+	pass
+else
+	fail "render: an idle agent is shown plain before the model" "got '${HEAD}'"
+fi
+
+# Subagents in the background are counted in yellow, but only once the main agent is idle.
+mkdir -p "${S}/s-idle.agents" "${S}/s-run.agents"
+touch "${S}/s-idle.agents/a-1" "${S}/s-idle.agents/a-2" "${S}/s-run.agents/a-1"
+render '{"session_id": "s-idle", "model": {"display_name": "x"}}'
+if [[ "${HEAD}" == *"⏳"$'\033[33m'"bg×2"$'\033[0m'" │ " ]]; then
+	pass
+else
+	fail "render: subagents left running are counted in yellow" "got '${HEAD}'"
+fi
+render '{"session_id": "s-run", "model": {"display_name": "x"}}'
+if [[ "${HEAD}" == *"${RUN_HEAD}" ]]; then
+	pass
+else
+	fail "render: a running main agent hides the subagent count" "got '${HEAD}'"
+fi
+
+# Esc runs no Stop hook, so a run recorded before an interrupt in the
+# transcript is shown as idle. The transcript lines are shaped like what
+# Claude Code writes, which its docs do not describe.
+# interrupt_line <epoch> [text]
+interrupt_line() {
+	jq -cn --argjson e "$1" --arg text "${2:-[Request interrupted by user]}" \
+		'{type: "user", message: {role: "user", content: [{type: "text", text: $text}]},
+		  timestamp: ($e | todate | sub("Z$"; ".123Z"))}'
+}
+transcript="${WORK}/transcript.jsonl"
+render_with_transcript() {
+	local json
+	json=$(jq -cn --arg p "${transcript}" '{session_id: "s-trans", transcript_path: $p, model: {display_name: "x"}}')
+	render "${json}"
+}
+
+write_state s-trans run "${now}"
+{
+	interrupt_line $((now + 3)) "[Request interrupted by user for tool use]"
+	printf '%s\n' '{"type": "system", "subtype": "turn_duration"}'
+} >"${transcript}"
+render_with_transcript
+if [[ "${HEAD}" == *"💤idle │ " ]]; then
+	pass
+else
+	fail "render: a run interrupted after it began is shown as idle" "got '${HEAD}'"
+fi
+
+# A prompt sent again within the second of the interrupt starts a new run.
+interrupt_line "${now}" >"${transcript}"
+render_with_transcript
+if [[ "${HEAD}" == *"${RUN_HEAD}" ]]; then
+	pass
+else
+	fail "render: an interrupt in the second the run began is ignored" "got '${HEAD}'"
+fi
+
+# Only the user message Claude Code writes counts, not the words anywhere else.
+{
+	jq -cn --argjson e $((now + 3)) \
+		'{type: "assistant", message: {role: "assistant", content: [{type: "text", text: "[Request interrupted by user]"}]}, timestamp: ($e | todate)}'
+	printf '%s\n' '{"type": "user", "message": {"content": [{"type": "text", "text": "[Request interrupt'
+} >"${transcript}"
+render_with_transcript
+if [[ "${HEAD}" == *"${RUN_HEAD}" ]]; then
+	pass
+else
+	fail "render: the interrupt words outside an interrupt are ignored" "got '${HEAD}'"
+fi
+
+render '{"session_id": "s-none", "model": {"display_name": "x"}}'
+if [[ "${HEAD}" != *"🏃"* && "${HEAD}" != *"💤"* && "${HEAD}" != *"⏳"* ]]; then
+	pass
+else
+	fail "render: no state file shows no state" "got '${HEAD}'"
 fi
 
 printf '%d passed, %d failed\n' "${PASSED}" "${FAILED}"
